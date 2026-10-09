@@ -7,8 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #070c1a;
-            --card-bg: rgba(17, 26, 51, 0.75);
+            --bg-dark: #050814;
+            --card-bg: rgba(15, 23, 42, 0.75);
             --card-border: rgba(255, 255, 255, 0.08);
             --accent-blue: #3b82f6;
             --accent-purple: #8b5cf6;
@@ -16,8 +16,8 @@
             --accent-red: #ef4444;
             --text-main: #f8fafc;
             --text-sub: #94a3b8;
-            --glow-blue: 0 8px 24px -6px rgba(59, 130, 246, 0.35);
-            --glow-green: 0 8px 24px -6px rgba(16, 185, 129, 0.35);
+            --glow-blue: 0 10px 30px -5px rgba(59, 130, 246, 0.4);
+            --glow-green: 0 10px 30px -5px rgba(16, 185, 129, 0.3);
         }
 
         * {
@@ -31,8 +31,8 @@
         body {
             background-color: var(--bg-dark);
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 40%);
+                radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 45%);
             color: var(--text-main);
             min-height: 100vh;
             padding-bottom: 95px;
@@ -41,7 +41,7 @@
         .container {
             max-width: 480px;
             margin: 0 auto;
-            padding: 16px;
+            padding: 18px 16px;
         }
 
         /* Top Header */
@@ -49,7 +49,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0 20px;
+            padding: 8px 0 22px;
         }
 
         .user-info {
@@ -59,18 +59,18 @@
         }
 
         .avatar {
-            width: 50px;
-            height: 50px;
+            width: 52px;
+            height: 52px;
             border-radius: 16px;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
             box-shadow: var(--glow-blue);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 19px;
+            font-size: 20px;
             color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             position: relative;
         }
 
@@ -79,8 +79,8 @@
             position: absolute;
             bottom: -2px;
             right: -2px;
-            width: 12px;
-            height: 12px;
+            width: 13px;
+            height: 13px;
             background: var(--accent-green);
             border: 2.5px solid var(--bg-dark);
             border-radius: 50%;
@@ -89,16 +89,16 @@
         .greeting-sub {
             font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: var(--text-sub);
-            font-weight: 700;
+            letter-spacing: 1px;
+            color: #60a5fa;
+            font-weight: 800;
         }
 
         .user-name {
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 800;
             color: #ffffff;
-            letter-spacing: -0.3px;
+            letter-spacing: -0.4px;
         }
 
         .notification-btn {
@@ -107,7 +107,7 @@
             border-radius: 14px;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -136,13 +136,12 @@
 
         .stat-card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(14px);
             border: 1px solid var(--card-border);
             border-radius: 20px;
-            padding: 16px;
+            padding: 18px 16px;
             position: relative;
             overflow: hidden;
-            transition: transform 0.2s ease, border-color 0.2s ease;
         }
 
         .stat-card::before {
@@ -153,7 +152,6 @@
             right: 0;
             height: 2px;
             background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
-            opacity: 0.5;
         }
 
         .stat-lbl {
@@ -177,11 +175,11 @@
 
         /* Progress Card */
         .progress-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(37, 99, 235, 0.12));
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(59, 130, 246, 0.25);
-            border-radius: 22px;
-            padding: 20px;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 58, 138, 0.35));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 24px;
+            padding: 22px;
             margin-bottom: 16px;
             box-shadow: var(--glow-blue);
         }
@@ -196,10 +194,10 @@
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 12px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.6px;
         }
 
         .group-title {
@@ -244,9 +242,9 @@
 
         .mini-stat {
             background: var(--card-bg);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 14px 10px;
             text-align: center;
         }
@@ -300,9 +298,9 @@
 
         .list-item {
             background: var(--card-bg);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 16px;
             display: flex;
             justify-content: space-between;
@@ -336,10 +334,10 @@
         /* Profile Details Card */
         .profile-card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(14px);
             border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 20px;
+            border-radius: 22px;
+            padding: 22px;
             margin-bottom: 16px;
         }
 
@@ -372,11 +370,11 @@
 
         .btn-logout {
             width: 100%;
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1));
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(220, 38, 38, 0.15));
             color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.35);
+            border: 1px solid rgba(239, 68, 68, 0.4);
             padding: 16px;
-            border-radius: 16px;
+            border-radius: 18px;
             font-weight: 800;
             font-size: 15px;
             cursor: pointer;
@@ -394,8 +392,8 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(7, 12, 26, 0.92);
-            backdrop-filter: blur(16px);
+            background: rgba(5, 8, 20, 0.92);
+            backdrop-filter: blur(20px);
             border-top: 1px solid var(--card-border);
             display: flex;
             justify-content: space-around;
@@ -430,7 +428,7 @@
         }
 
         .nav-item.active .nav-icon {
-            transform: scale(1.15);
+            transform: scale(1.18);
         }
     </style>
 </head>
@@ -440,10 +438,10 @@
         <!-- Header -->
         <div class="top-header">
             <div class="user-info">
-                <div class="avatar" id="userAvatar">MW</div>
+                <div class="avatar" id="userAvatar">--</div>
                 <div>
                     <div class="greeting-sub" id="greetingTime">HABARI ZA JIONI</div>
-                    <div class="user-name" id="userName">Mwanachama</div>
+                    <div class="user-name" id="userName">Akaunti Yangu</div>
                 </div>
             </div>
             <div class="notification-btn" onclick="alert('Hakuna taarifa mpya kwa sasa.')">
@@ -572,7 +570,7 @@
 
     </div>
 
-    <!-- Bottom Fixed Navigation Bar -->
+    <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('tab-home', this)">
             <span class="nav-icon">🏠</span>
@@ -592,7 +590,7 @@
         </div>
     </nav>
 
-    <!-- Client Logic & Data Engine -->
+    <!-- Dynamic Name Parser & Client Engine -->
     <script>
         document.addEventListener("DOMContentLoaded", async function() {
             // Setup time greeting
@@ -603,52 +601,89 @@
             else greeting = "HABARI ZA JIONI";
             document.getElementById("greetingTime").innerText = greeting;
 
-            // Load user data dynamically
-            await loadUserData();
+            // Extract registered name
+            await parseAndDisplayUser();
             await fetchDashboardStats();
         });
 
-        // Dynamic User Profile Loader
-        async function loadUserData() {
+        // Advanced User Name Parser
+        async function parseAndDisplayUser() {
             let userData = {};
-            try {
-                const stored = localStorage.getItem("user") || localStorage.getItem("currentUser") || sessionStorage.getItem("user");
-                if (stored) {
-                    userData = JSON.parse(stored);
-                }
-            } catch(e) {}
+            
+            // 1. Soma LocalStorage / SessionStorage
+            const keysToTry = ["user", "currentUser", "userData", "sb-user"];
+            for (let k of keysToTry) {
+                try {
+                    const raw = localStorage.getItem(k) || sessionStorage.getItem(k);
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (parsed && (parsed.full_name || parsed.name || parsed.email)) {
+                            userData = parsed;
+                            break;
+                        }
+                    }
+                } catch(e) {}
+            }
 
-            // Subiri au chukua kutoka API kama haipo kwenye LocalStorage
+            // 2. Token Parsing (Supabase JWT payload)
             const token = localStorage.getItem("token") || localStorage.getItem("sb-access-token");
-            if (token && (!userData.name && !userData.full_name)) {
+            if (!userData.full_name && !userData.name && token) {
+                try {
+                    const payloadBase64 = token.split('.')[1];
+                    if (payloadBase64) {
+                        const decoded = JSON.parse(atob(payloadBase64));
+                        if (decoded.user_metadata) {
+                            userData.full_name = decoded.user_metadata.full_name || decoded.user_metadata.name;
+                            userData.email = decoded.email || userData.email;
+                            userData.phone = decoded.phone || decoded.user_metadata.phone;
+                        }
+                    }
+                } catch(e) {}
+            }
+
+            // 3. Backend Fetch
+            if (!userData.full_name && !userData.name && token) {
                 try {
                     const res = await fetch("/api/user/me", {
                         headers: { "Authorization": "Bearer " + token }
                     });
                     if (res.ok) {
-                        userData = await res.json();
+                        const apiUser = await res.json();
+                        userData = { ...userData, ...apiUser };
                         localStorage.setItem("user", JSON.stringify(userData));
                     }
                 } catch(e) {}
             }
 
-            const name = userData.name || userData.full_name || userData.email?.split("@")[0] || "Mwanachama";
-            const email = userData.email || "Mwanachama@mchezowetu.com";
-            const phone = userData.phone || userData.phone_number || "Iliyothibitishwa";
+            // Chagua jina lililosajiliwa
+            let realName = userData.full_name || userData.name || userData.username;
+            
+            // Kama hamna jina, tumia sehemu ya kwanza ya barua pepe
+            if (!realName && userData.email) {
+                const emailPrefix = userData.email.split("@")[0];
+                realName = emailPrefix.replace(/[._-]/g, ' ').replace(/w/g, l => l.toUpperCase());
+            }
 
-            // Update UI
-            document.getElementById("userName").innerText = name;
-            document.getElementById("profileFullName").innerText = name;
-            document.getElementById("profileEmail").innerText = email;
-            document.getElementById("profilePhone").innerText = phone;
+            if (!realName) realName = "Akaunti Yangu";
 
-            // Initials Avatar
-            const parts = name.trim().split(" ");
+            const emailDisplay = userData.email || "Iliyo verified";
+            const phoneDisplay = userData.phone || userData.phone_number || "Iliyothibitishwa";
+
+            // Update UI elements
+            document.getElementById("userName").innerText = realName;
+            document.getElementById("profileFullName").innerText = realName;
+            document.getElementById("profileEmail").innerText = emailDisplay;
+            document.getElementById("profilePhone").innerText = phoneDisplay;
+
+            // Generate Initials
             let initials = "MW";
-            if (parts.length >= 2) {
-                initials = (parts[0][0] + parts[1][0]).toUpperCase();
-            } else if (parts[0]) {
-                initials = parts[0].substring(0, 2).toUpperCase();
+            if (realName && realName !== "Akaunti Yangu") {
+                const parts = realName.trim().split(/s+/);
+                if (parts.length >= 2) {
+                    initials = (parts[0][0] + parts[1][0]).toUpperCase();
+                } else if (parts[0]) {
+                    initials = parts[0].substring(0, 2).toUpperCase();
+                }
             }
             document.getElementById("userAvatar").innerText = initials;
         }
@@ -689,7 +724,7 @@
                     }
                 }
             } catch (err) {
-                console.log("Analytics system ready");
+                console.log("Analytics engine active");
             }
         }
 
