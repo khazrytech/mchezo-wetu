@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050b18">
+<title>Lipa Mchango Salama</title>
+
+<style>
+:root {
+  --bg: #050b18;
+  --card: #0c162b;
+  --card2: #101e36;
+  --line: rgba(140,170,220,.16);
+  --text: #f5f8ff;
+  --muted: #91a2bd;
+  --blue: #168cff;
+  --green: #00d6a0;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 0 0, #102653 0, transparent 43%),
+    radial-gradient(ellipse at 100% 100%, #06352f 0, transparent 35%),
+    var(--bg);
+}
+
+button, input {
+  font: inherit;
+}
+
+.payment {
+  width: 100%;
+  max-width: 450px;
+  padding: 21px;
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  background: linear-gradient(155deg, #101c34, #091226 80%);
+  box-shadow: 0 25px 75px #0007;
+  animation: enter .35s ease-out;
+}
+
+@keyframes enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid var(--line);
+}
+
+.header-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #178cff, #1752e8);
+  font-size: 24px;
+}
+
+.header-copy {
+  flex: 1;
+}
+
+.header h1 {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -.5px;
+}
+
+.header p {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.close {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: #ffffff10;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.amount-card {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin: 18px 0 22px;
+  padding: 17px;
+  border: 1px solid #00d6a044;
+  border-radius: 19px;
+  background: linear-gradient(110deg, #00d6a018, #168cff0c);
+}
+
+.money-icon {
+  width: 45px;
+  height: 45px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 15px;
+  background: #00d6a01a;
+  font-size: 23px;
+}
+
+.amount-info {
+  flex: 1;
+}
+
+.amount-info small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.amount {
+  margin-top: 3px;
+  color: var(--green);
+  font-size: 27px;
+  font-weight: 900;
+  letter-spacing: -.7px;
+}
+
+.secure-tag {
+  color: #82e9cf;
+  font-size: 10px;
+  text-align: center;
+}
+
+.section-title {
+  margin-bottom: 5px;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.hint {
+  margin-bottom: 13px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.networks {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.network {
+  position: relative;
+  min-width: 0;
+  padding: 12px 3px 11px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #ffffff04;
+  color: white;
+  cursor: pointer;
+  transition: .18s ease;
+}
+
+.network.selected {
+  border: 2px solid var(--brand);
+  padding: 11px 2px 10px;
+  background: color-mix(in srgb, var(--brand) 9%, transparent);
+}
+
+.network:active {
+  transform: scale(.97);
+}
+
+.logo {
+  width: 43px;
+  height: 43px;
+  margin: 0 auto 8px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--brand);
+  color: white;
+  font-weight: 900;
+  font-size: 14px;
+  letter-spacing: -.5px;
+}
+
+.network-name {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.network-sub {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.tick {
+  display: none;
+  position: absolute;
+  top: -7px;
+  right: -5px;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  place-items: center;
+  background: var(--brand);
+  color: #061321;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.network.selected .tick {
+  display: grid;
+}
+
+.field {
+  margin-top: 22px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.phone-box {
+  display: flex;
+  align-items: center;
+  min-height: 57px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #ffffff06;
+}
+
+.phone-box:focus-within {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px #168cff18;
+}
+
+.prefix {
+  padding: 0 12px;
+  border-right: 1px solid var(--line);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+input {
+  width: 100%;
+  min-width: 0;
+  padding: 15px 12px;
+  outline: 0;
+  border: 0;
+  background: transparent;
+  color: white;
+  font-size: 15px;
+  letter-spacing: .5px;
+}
+
+input::placeholder {
+  color: #71809a;
+}
+
+.status {
+  margin-top: 7px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.status.error { color: #ff7288; }
+.status.success { color: var(--green); }
+.status.info { color: var(--blue); }
+
+.summary {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #ffffff04;
+}
+
+.summary-title {
+  margin-bottom: 11px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.row strong {
+  max-width: 65%;
+  text-align: right;
+  overflow-wrap: anywhere;
+  color: #f0f5ff;
+}
+
+.row.total {
+  margin-top: 6px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+}
+
+.row.total strong {
+  color: var(--green);
+  font-size: 18px;
+}
+
+.pay-button {
+  width: 100%;
+  min-height: 59px;
+  margin-top: 18px;
+  border: 0;
+  border-radius: 17px;
+  background: linear-gradient(105deg, #00d7a0, #00a97a);
+  color: #03251c;
+  font-size: 15px;
+  font-weight: 900;
+  box-shadow: 0 9px 27px #00d6a021;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.pay-button:active {
+  transform: scale(.985);
+}
+
+.pay-button:disabled {
+  opacity: .65;
+  cursor: wait;
+}
+
+.footer {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.footer strong { color: #60b5ff; }
+</style>
+</head>
+
+<body>
+<main class="payment">
+
+  <header class="header">
+    <div class="header-icon" aria-hidden="true">ϟ</div>
+    <div class="header-copy">
+      <h1>Lipa Mchango Salama</h1>
+      <p>Chagua mtandao na uweke namba yako</p>
+    </div>
+    <button class="close" id="close" type="button" aria-label="Funga">×</button>
+  </header>
+
+  <section class="amount-card">
+    <div class="money-icon">💰</div>
+    <div class="amount-info">
+      <small>Kiasi cha kulipa</small>
+      <div class="amount" id="amount">TSh 2,000</div>
+    </div>
+    <div class="secure-tag">🛡️<br>Malipo salama</div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Chagua Mtandao</h2>
+    <p class="hint">Chagua mtandao wa namba unayotumia.</p>
+
+    <div class="networks" id="networks">
+
+      <button class="network selected" type="button"
+        data-id="mpesa" data-name="M-Pesa"
+        style="--brand:#f3c928" aria-pressed="true">
+        <span class="logo" style="color:#153d2b">M</span>
+        <span class="network-name">M-Pesa</span>
+        <span class="network-sub">Vodacom</span>
+        <span class="tick">✓</span>
+      </button>
+
+      <button class="network" type="button"
+        data-id="airtel" data-name="Airtel Money"
+        style="--brand:#ef3340" aria-pressed="false">
+        <span class="logo">A</span>
+        <span class="network-name">Airtel</span>
+        <span class="network-sub">Money</span>
+        <span class="tick">✓</span>
+      </button>
+
+      <button class="network" type="button"
+        data-id="tigo" data-name="Tigo Pesa"
+        style="--brand:#147cf5" aria-pressed="false">
+        <span class="logo">tigo</span>
+        <span class="network-name">Tigo</span>
+        <span class="network-sub">Pesa</span>
+        <span class="tick">✓</span>
+      </button>
+
+      <button class="network" type="button"
+        data-id="halo" data-name="HaloPesa"
+        style="--brand:#20b85a" aria-pressed="false">
+        <span class="logo">halo</span>
+        <span class="network-name">Halo</span>
+        <span class="network-sub">Pesa</span>
+        <span class="tick">✓</span>
+      </button>
+
+    </div>
+  </section>
+
+  <section class="field">
+    <label class="label" for="phone">📱 Namba ya simu ya malipo</label>
+    <p class="hint">Weka namba iliyosajiliwa kwenye mtandao uliochagua.</p>
+
+    <div class="phone-box">
+      <span class="prefix">+255</span>
+      <input id="phone" type="tel" inputmode="numeric"
+        autocomplete="tel-national" maxlength="12"
+        placeholder="07XX XXX XXX">
+    </div>
+
+    <div id="status" class="status" aria-live="polite"></div>
+  </section>
+
+  <section class="summary">
+    <div class="summary-title">🧾 Muhtasari wa Malipo</div>
+
+    <div class="row">
+      <span>Aina ya malipo</span>
+      <strong>Mchango</strong>
+    </div>
+
+    <div class="row">
+      <span>Mtandao</span>
+      <strong id="networkName">M-Pesa</strong>
+    </div>
+
+    <div class="row">
+      <span>Namba ya simu</span>
+      <strong id="phoneSummary">Haijawekwa</strong>
+    </div>
+
+    <div class="row total">
+      <span>Jumla ya kulipa</span>
+      <strong id="total">TSh 2,000</strong>
+    </div>
+  </section>
+
+  <button class="pay-button" id="pay" type="button">
+    🔒 Lipa TSh 2,000 Sasa →
+  </button>
+
+  <footer class="footer">
+    <span>🛡️ Malipo salama</span>
+    <span>•</span>
+    <strong>FimiPay</strong>
+  </footer>
+
+</main>
+
+<script>
+"use strict";
+
+const AMOUNT = 2000;
+let network = "mpesa";
+let networkName = "M-Pesa";
+
+const phone = document.getElementById("phone");
+const status = document.getElementById("status");
+const phoneSummary = document.getElementById("phoneSummary");
+const networkSummary = document.getElementById("networkName");
+const pay = document.getElementById("pay");
+
+function money(value) {
+  return "TSh " + value.toLocaleString("en-US");
+}
+
+function normalizedPhone(value) {
+  let n = value.replace(/\D/g, "");
+  if (n.startsWith("255")) n = n.slice(3);
+  if (n.startsWith("0")) n = n.slice(1);
+  return /^[67]\d{8}$/.test(n) ? "0" + n : null;
+}
+
+function checkPhone() {
+  if (!phone.value.trim()) {
+    status.textContent = "";
+    status.className = "status";
+    phoneSummary.textContent = "Haijawekwa";
+    return false;
+  }
+
+  const valid = normalizedPhone(phone.value);
+
+  if (!valid) {
+    status.textContent = "Weka namba sahihi ya simu ya Tanzania (Mf. 07XXXXXXXX).";
+    status.className = "status error";
+    phoneSummary.textContent = "Haijathibitishwa";
+    return false;
+  }
+
+  status.textContent = "✓ Namba ni sahihi, endelea na malipo.";
+  status.className = "status success";
+
+  phoneSummary.textContent = valid.slice(0, 4) + " " + valid.slice(4, 7) + " " + valid.slice(7);
+  return true;
+}
+
+document.querySelectorAll(".network").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".network").forEach(item => {
+      item.classList.remove("selected");
+      item.setAttribute("aria-pressed", "false");
+    });
+
+    button.classList.add("selected");
+    button.setAttribute("aria-pressed", "true");
+
+    network = button.dataset.id;
+    networkName = button.dataset.name;
+    networkSummary.textContent = networkName;
+
+    checkPhone();
+  });
+});
+
+phone.addEventListener("input", () => {
+  phone.value = phone.value.replace(/[^\d+\s()-]/g, "");
+  checkPhone();
+});
+
+// Kuunganisha na API halisi ya malipo ya FimiPay
+pay.addEventListener("click", async () => {
+  if (!checkPhone()) {
+    phone.focus();
+    return;
+  }
+
+  let cleanPhone = normalizedPhone(phone.value);
+
+  pay.disabled = true;
+  pay.textContent = "⏳ Inaandaa malipo...";
+  status.textContent = "Inatuma ombi la malipo kwenda " + networkName + "...";
+  status.className = "status info";
+
+  try {
+    const res = await fetch("/api/fimipay-pay", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        phone: cleanPhone, 
+        amount: AMOUNT, 
+        network: network 
+      })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      pay.textContent = "✅ Malipo yametumwa!";
+      status.textContent = "📲 Tafadhali weka PIN kwenye simu yako (" + cleanPhone + ") kukamilisha malipo.";
+      status.className = "status success";
+      setTimeout(() => {
+        pay.disabled = false;
+        pay.textContent = "🔒 Lipa " + money(AMOUNT) + " Sasa →";
+      }, 6000);
+    } else {
+      pay.disabled = false;
+      pay.textContent = "🔒 Lipa " + money(AMOUNT) + " Sasa →";
+      status.textContent = data.message || "Imeshindikana. Tafadhali jaribu tena.";
+      status.className = "status error";
+    }
+  } catch (err) {
+    pay.disabled = false;
+    pay.textContent = "🔒 Lipa " + money(AMOUNT) + " Sasa →";
+    status.textContent = "Ombi limetumwa. Tafadhali angalia simu yako au jaribu tena.";
+    status.className = "status success";
+  }
+});
+
+document.getElementById("close").addEventListener("click", () => {
+  window.dispatchEvent(new CustomEvent("payment:close"));
+  if (window.history.length > 1) {
+    window.history.back();
+  }
+});
+
+document.getElementById("amount").textContent = money(AMOUNT);
+document.getElementById("total").textContent = money(AMOUNT);
+pay.textContent = "🔒 Lipa " + money(AMOUNT) + " Sasa →";
+</script>
+</body>
+</html>
