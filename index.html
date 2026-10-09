@@ -12,6 +12,7 @@
             --primary: #3b82f6;
             --accent: #10b981;
             --warning: #f59e0b;
+            --danger: #ef4444;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
@@ -79,9 +80,22 @@
         }
         .badge-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
         .badge-approved { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        /* Toast Notification Pro (Inasimama juu badala ya browser alert) */
+        #toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: #1e293b; color: #fff; padding: 12px 24px; border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.2); font-size: 13px; font-weight: 600;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 3000;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none; display: flex; align-items: center; gap: 10px;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
+    <div id="toast">✅ Ujumbe</div>
+
     <div class="container">
         <!-- 1. LOGIN VIEW -->
         <div id="loginView" class="card">
@@ -150,6 +164,14 @@
     </div>
 
     <script>
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.style.borderColor = isError ? 'rgba(239, 68, 68, 0.4)' : 'rgba(255, 255, 255, 0.2)';
+            toast.innerHTML = `${isError ? '⚠️' : '✅'} ${message}`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
         let pollingInterval = null;
         let registeredPhone = '';
 
@@ -181,11 +203,12 @@
                     registeredPhone = phone;
                     showView('pendingView');
                     startStatusPolling(phone);
+                    showToast(data.message);
                 } else {
-                    alert(data.message);
+                    showToast(data.message, true);
                 }
             } catch (err) {
-                alert('Hitilafu ya mtandao.');
+                showToast('Hitilafu ya mtandao.', true);
             }
         }
 
@@ -239,18 +262,21 @@
                 const data = await res.json();
                 
                 if (data.success) {
-                    alert(data.message);
-                    window.location.href = '/dashboard.html'; 
+                    localStorage.setItem('mchezo_user', JSON.stringify(data.user));
+                    showToast(data.message);
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 1000);
                 } else if (data.pending) {
-                    alert(data.message);
+                    showToast(data.message, true);
                     registeredPhone = identifier;
                     showView('pendingView');
                     startStatusPolling(identifier);
                 } else {
-                    alert(data.message);
+                    showToast(data.message, true);
                 }
             } catch (err) {
-                alert('Hitilafu ya mtandao.');
+                showToast('Hitilafu ya mtandao.', true);
             }
         }
     </script>
