@@ -3,334 +3,598 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mchezo Wetu - Pro Fintech Dashboard</title>
+    <title>Mchezo Wetu - Enterprise Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #020617;
-            --card-glass: rgba(15, 23, 42, 0.78);
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --primary: #2563eb;
-            --primary-glow: rgba(37, 99, 235, 0.35);
-            --accent: #10b981;
-            --accent-glow: rgba(16, 185, 129, 0.3);
-            --danger: #ef4444;
-            --warning: #f59e0b;
+            --bg-dark: #070c1a;
+            --card-bg: #111a33;
+            --card-border: #1e294b;
+            --accent-blue: #2563eb;
+            --accent-green: #10b981;
             --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --text-sub: #94a3b8;
         }
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            background: var(--bg-deep);
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.22) 0%, transparent 60%),
-                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.15) 0%, transparent 50%);
+            background-color: var(--bg-dark);
             color: var(--text-main);
-            margin: 0; padding: 0 0 100px 0;
             min-height: 100vh;
-        }
-        .container { max-width: 480px; margin: 0 auto; padding: 24px 16px; }
-
-        /* Pro Header */
-        .app-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 24px; animation: fadeInDown 0.5s ease;
-        }
-        .user-header-info { display: flex; align-items: center; gap: 14px; }
-        .avatar-box {
-            width: 52px; height: 52px; border-radius: 18px;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; font-weight: 900; color: #fff;
-            position: relative; box-shadow: 0 0 25px rgba(37, 99, 235, 0.4);
-            border: 1.5px solid rgba(255,255,255,0.2);
-        }
-        .online-dot {
-            width: 12px; height: 12px; border-radius: 50%;
-            background: #10b981; border: 2.5px solid var(--bg-deep);
-            position: absolute; bottom: -2px; right: -2px;
-            box-shadow: 0 0 8px #10b981;
-        }
-        .greeting-sub { font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
-        .greeting-name { font-size: 17px; font-weight: 900; color: #fff; margin: 2px 0 0 0; }
-
-        .notif-bell {
-            width: 46px; height: 46px; border-radius: 16px;
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass);
-            display: flex; align-items: center; justify-content: center;
-            position: relative; cursor: pointer; backdrop-filter: blur(12px);
-            transition: all 0.2s;
-        }
-        .notif-bell:hover { background: rgba(255,255,255,0.06); }
-        .notif-badge {
-            width: 9px; height: 9px; border-radius: 50%; background: #ef4444;
-            position: absolute; top: 12px; right: 12px; box-shadow: 0 0 8px #ef4444;
+            padding-bottom: 90px;
         }
 
-        /* Glass Cards */
-        .glass-card {
-            background: var(--card-glass);
-            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--border-glass);
-            border-radius: 26px; padding: 22px;
-            margin-bottom: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            animation: fadeInUp 0.5s ease;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-15px); }
-            to { opacity: 1; transform: translateY(0); }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 16px;
         }
 
-        .card-header-flex { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-        .card-title-sm {
-            font-size: 11px; font-weight: 800; color: var(--text-muted);
-            letter-spacing: 0.8px; text-transform: uppercase;
-            display: flex; align-items: center; gap: 6px;
+        /* Top Header */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0 20px;
         }
 
-        /* Status Badges */
-        .badge-paid {
-            background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3);
-            color: #10b981; font-size: 10px; font-weight: 800; padding: 5px 12px;
-            border-radius: 14px; display: inline-flex; align-items: center; gap: 5px;
-        }
-        .badge-unpaid {
-            background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3);
-            color: #f59e0b; font-size: 10px; font-weight: 800; padding: 5px 12px;
-            border-radius: 14px; display: inline-flex; align-items: center; gap: 5px;
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        /* Sub Cards Grid */
-        .sub-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .sub-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-glass);
-            border-radius: 18px; padding: 16px;
-        }
-        .sub-label { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .sub-value { font-size: 20px; font-weight: 900; color: #fff; margin-top: 6px; }
-
-        /* Progress Bar */
-        .progress-track {
-            width: 100%; height: 9px; background: rgba(255,255,255,0.05);
-            border-radius: 12px; overflow: hidden; margin: 14px 0 18px 0;
-            border: 1px solid rgba(255,255,255,0.04);
-        }
-        .progress-fill {
-            height: 100%; width: 0%;
-            background: linear-gradient(90deg, #2563eb, #10b981);
-            border-radius: 12px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-        }
-
-        /* Pro Pay Button */
-        .btn-pay {
-            width: 100%; padding: 18px;
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: #ffffff; border: none; border-radius: 20px;
-            font-size: 14px; font-weight: 900; cursor: pointer;
-            box-shadow: 0 10px 30px var(--accent-glow);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            transition: all 0.25s ease;
-        }
-        .btn-pay:hover { transform: translateY(-2px); box-shadow: 0 15px 35px rgba(16, 185, 129, 0.5); }
-
-        /* Stats 3 Grid */
-        .stats-3-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .stat-mini-card {
-            background: var(--card-glass); border: 1px solid var(--border-glass);
-            border-radius: 20px; padding: 16px 10px; text-align: center;
-        }
-        .stat-mini-lbl { font-size: 9px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
-        .stat-mini-val { font-size: 18px; font-weight: 900; color: #fff; margin-top: 6px; }
-
-        /* Profile Hero */
-        .profile-hero { text-align: center; padding: 32px 20px; }
-        .profile-avatar-large {
-            width: 78px; height: 78px; margin: 0 auto 14px auto; border-radius: 26px;
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
             background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            border: 2px solid rgba(255,255,255,0.25);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 28px; font-weight: 900; color: #fff;
-            box-shadow: 0 0 30px rgba(37, 99, 235, 0.45); position: relative;
-        }
-        .verified-badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3);
-            color: var(--accent); padding: 6px 16px; border-radius: 20px;
-            font-size: 11px; font-weight: 800; margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.1);
         }
 
-        .referral-box {
-            display: flex; gap: 8px; background: rgba(0, 0, 0, 0.35);
-            padding: 8px 8px 8px 14px; border-radius: 18px;
-            border: 1px solid var(--border-glass); align-items: center;
-        }
-        .referral-input {
-            background: transparent; border: none; color: #fff;
-            font-size: 12px; font-weight: 700; width: 100%; outline: none;
-        }
-        .btn-copy {
-            background: var(--primary); color: #fff; border: none;
-            padding: 10px 18px; border-radius: 14px; font-size: 12px;
-            font-weight: 800; cursor: pointer; transition: all 0.2s;
-            box-shadow: 0 4px 15px var(--primary-glow); flex-shrink: 0;
+        .greeting-sub {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-sub);
+            font-weight: 600;
         }
 
-        .data-row {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+        .user-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
         }
-        .data-row:last-child { border-bottom: none; }
-        .data-label { font-size: 13px; font-weight: 700; color: var(--text-muted); }
-        .data-value { font-size: 13px; font-weight: 800; color: #fff; }
 
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 6, 23, 0.88); backdrop-filter: blur(20px);
-            padding: 20px; animation: fadeIn 0.3s ease;
-        }
-        .modal-card {
-            background: rgba(15, 23, 42, 0.96); border: 1px solid var(--border-glass);
-            border-radius: 30px; padding: 28px; width: 100%; max-width: 440px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9); position: relative;
-        }
-        .modal-close {
-            position: absolute; top: 20px; right: 22px; font-size: 20px;
-            color: var(--text-muted); cursor: pointer; font-weight: 900;
-        }
-        
-        .method-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 18px 0; }
-        .method-card {
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass);
-            border-radius: 20px; padding: 14px 12px; text-align: center; cursor: pointer;
-            transition: all 0.25s; display: flex; align-items: center; gap: 12px;
-        }
-        .method-card.selected {
-            border-color: #2563eb; background: rgba(37, 99, 235, 0.2);
-            box-shadow: 0 0 20px rgba(37, 99, 235, 0.35);
-        }
-        
-        .brand-img-wrap {
-            width: 44px; height: 44px; border-radius: 14px;
-            background: #ffffff; padding: 7px;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.4); overflow: hidden;
-        }
-        .brand-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
-
-        /* Bottom Nav */
-        .bottom-nav {
-            position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
-            width: calc(100% - 32px); max-width: 460px;
-            background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--border-glass);
-            border-radius: 30px; padding: 8px;
-            display: flex; justify-content: space-around;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8); z-index: 1000;
-        }
-        .nav-item {
-            flex: 1; text-align: center; padding: 10px 0; color: var(--text-muted);
-            text-decoration: none; font-size: 11px; font-weight: 800;
-            border-radius: 22px; transition: all 0.25s;
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
+        .notification-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-        }
-        .nav-item.active {
-            color: #fff; background: rgba(37, 99, 235, 0.25);
-            border: 1px solid rgba(37, 99, 235, 0.4);
+            position: relative;
         }
 
-        #notificationSheet {
-            position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%) translateY(130px);
-            background: rgba(15, 23, 42, 0.95); color: #fff; padding: 14px 22px; border-radius: 22px;
-            border: 1px solid rgba(255, 255, 255, 0.15); font-size: 13px; font-weight: 800;
-            z-index: 3000; transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            backdrop-filter: blur(20px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
-            display: flex; align-items: center; gap: 12px; pointer-events: none;
-            max-width: 90%; width: max-content;
+        .notification-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
         }
-        #notificationSheet.active { transform: translateX(-50%) translateY(0); }
+
+        /* Stat Cards Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .stat-lbl {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-val {
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        /* Progress Card */
+        .progress-card {
+            background: linear-gradient(135deg, #111a33, #18264a);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .badge-tag {
+            display: inline-block;
+            background: rgba(37, 99, 235, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .group-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .progress-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #10b981);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Group Mini Stats */
+        .group-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .mini-stat {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .mini-stat-lbl {
+            font-size: 10px;
+            color: var(--text-sub);
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .mini-stat-val {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        /* Section Headings */
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Tab Content Containers */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Lists */
+        .data-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .list-item {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-info h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .item-info p {
+            font-size: 11px;
+            color: var(--text-sub);
+        }
+
+        .item-status {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        /* Profile Details Card */
+        .profile-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .profile-field {
+            margin-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 10px;
+        }
+
+        .profile-field:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .field-label {
+            font-size: 11px;
+            color: var(--text-sub);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .field-value {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .btn-logout {
+            width: 100%;
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 14px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s ease;
+        }
+
+        /* Bottom Fixed Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(17, 26, 51, 0.95);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 14px;
+            z-index: 1000;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-sub);
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            width: 25%;
+        }
+
+        .nav-item.active {
+            color: #60a5fa;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
-    
-                        
-                    </div>
-                </div>
 
-                
-                        
-                        
-            
-
-            
-                    
-                </div>
-                
-                        <div style="font-size:8px; color:#94a3b8; margin-top:2px;">Money</div>
-                    </div>
+    <div class="container">
+        <!-- Header -->
+        <div class="top-header">
+            <div class="user-info">
+                <div class="avatar" id="userAvatar">--</div>
+                <div>
+                    <div class="greeting-sub" id="greetingTime">HABARI ZA JIONI</div>
+                    <div class="user-name" id="userName">Mwanachama</div>
                 </div>
             </div>
-
-            <!-- Namba ya Simu -->
-            <div style="margin-bottom:16px;">
-                <div style="font-size:12px; font-weight:800; color:#fff; margin-bottom:4px;">Namba ya simu ya malipo</div>
-                <div style="font-size:10px; color:#94a3b8; margin-bottom:8px;">Weka namba yako ya simu (Mf. 07XXXXXXXX)</div>
-                <div style="display:flex; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:14px; overflow:hidden; align-items:center;">
-                    <div style="padding:12px 14px; background:rgba(255,255,255,0.04); border-right:1px solid rgba(255,255,255,0.08); color:#cbd5e1; font-weight:700; font-size:13px; display:flex; align-items:center; gap:4px;">
-                        +255 <span>▾</span>
-                    </div>
-                    <input type="tel" id="fimiPhone" oninput="validatePhone()" placeholder="0712 345 678" style="width:100%; background:transparent; border:none; padding:12px 14px; color:#fff; font-size:14px; outline:none; font-weight:600;" />
-                    <div id="phoneCheckIcon" style="padding-right:14px; font-size:16px; display:none;">✅</div>
-                </div>
-                <div id="phoneStatusText" style="margin-top:6px; font-size:11px; color:#94a3b8;"></div>
-            </div>
-
-            <!-- Muhtasari wa Malipo -->
-            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:12px 14px; margin-bottom:16px;">
-                <div style="font-size:11px; font-weight:800; color:#fff; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
-                    <span>📄</span> Muhtasari wa malipo
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:6px;">
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:6px;">
-                    <span style="color:#94a3b8;">Mtandao</span>
-                <div style="display:flex; justify-content:space-between; font-size:11px;">
-                    <span style="color:#94a3b8;">Namba</span>
-                    <span id="summaryPhone" style="color:#fff; font-weight:700;">-</span>
-                </div>
-            </div>
-
-            </button>
-
-            <div id="fimiStatusMsg" style="margin-top:12px; font-size:11px; text-align:center; color:#cbd5e1; line-height:1.4; min-height:22px;"></div>
-
-            <!-- Footer Logo -->
-            <div style="margin-top:16px; text-align:center; border-top:1px solid rgba(255,255,255,0.06); padding-top:12px; font-size:10px; color:#64748b;">
+            <div class="notification-btn" onclick="alert('Hakuna taarifa mpya kwa sasa.')">
+                <span style="font-size:18px;">🔔</span>
+                <div class="notification-badge"></div>
             </div>
         </div>
-    `;
-    modal.style.display = 'flex';
-}
 
-let selectedNetworkCode = 'mpesa';
-    `;
-    modal.style.display = 'flex';
-}
+        <!-- Tab 1: Nyumbani (Home) -->
+        <div id="tab-home" class="tab-content active">
+            <!-- Stats Grid -->
+            <div class="grid-2">
+                <div class="stat-card">
+                    <div class="stat-lbl">👤 Mchango Wangu</div>
+                    <div class="stat-val" id="myContribution">TSh 0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-lbl">📊 Jumla ya Michango</div>
+                    <div class="stat-val" id="totalContribution">TSh 0</div>
+                </div>
+            </div>
 
-let selectedNetworkCode = 'mpesa';
-    `;
-    modal.style.display = 'flex';
-}
+            <!-- Progress Card -->
+            <div class="progress-card">
+                <span class="badge-tag">Mchezo Wetu Pro</span>
+                <div class="group-title" id="groupName">Kikundi Cha Mchezo</div>
+                <div class="progress-flex">
+                    <span style="font-size: 11px; color: var(--text-sub);">Iliyokusanywa Kikundi</span>
+                    <span style="font-size: 13px; font-weight: 700; color: #34d399;" id="progressPercentage">0% ya Lengo</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progressBar" style="width: 0%;"></div>
+                </div>
+            </div>
 
-let selectedNetworkCode = 'mpesa';
-    `;
-    modal.style.display = 'flex';
-}
+            <!-- Group Mini Stats -->
+            <div class="group-stats-grid">
+                <div class="mini-stat">
+                    <div class="mini-stat-lbl">Wanachama</div>
+                    <div class="mini-stat-val" id="totalMembers">0</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-lbl">Waliochangia</div>
+                    <div class="mini-stat-val" style="color:#34d399;" id="activeContributors">0</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-lbl">Wanaodaiwa</div>
+                    <div class="mini-stat-val" style="color:#f87171;" id="pendingMembers">0</div>
+                </div>
+            </div>
 
-let selectedNetworkCode = 'mpesa';
+            <!-- Activity List -->
+            <div class="section-title">
+                <span>Shughuli za Hivi Karibuni</span>
+            </div>
+            <div class="data-list" id="recentActivities">
+                <div class="list-item">
+                    <div class="item-info">
+                        <h4>Akaunti Ipo Tayari</h4>
+                        <p>Karibu kwenye mfumo wa Mchezo Wetu Pro</p>
+                    </div>
+                    <span class="item-status status-completed">Safi</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Michango (Contributions) -->
+        <div id="tab-michango" class="tab-content">
+            <div class="section-title">
+                <span>Historia ya Michango Yako</span>
+            </div>
+            <div class="data-list" id="contributionsList">
+                <div class="list-item">
+                    <div class="item-info">
+                        <h4>Mchango wa Hivi Karibuni</h4>
+                        <p id="lastContributionDate">Tarehe: --</p>
+                    </div>
+                    <span class="item-status status-completed" id="lastContributionAmount">TSh 0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Risiti (Receipts) -->
+        <div id="tab-risiti" class="tab-content">
+            <div class="section-title">
+                <span>Risiti za Kidigitali</span>
+            </div>
+            <div class="data-list" id="receiptsList">
+                <div class="list-item">
+                    <div class="item-info">
+                        <h4>Risiti #MW-001</h4>
+                        <p>Taarifa rasmi za mchango</p>
+                    </div>
+                    <span class="item-status status-completed" style="cursor:pointer;" onclick="alert('Risiti imeakisiwa kwenye Mfumo.')">Angalia</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Profile -->
+        <div id="tab-profile" class="tab-content">
+            <div class="section-title">
+                <span>Taarifa za Mwanachama</span>
+            </div>
+            <div class="profile-card">
+                <div class="profile-field">
+                    <div class="field-label">MAJINA KAMILI</div>
+                    <div class="field-value" id="profileFullName">--</div>
+                </div>
+                <div class="profile-field">
+                    <div class="field-label">BARUA PEPE (EMAIL)</div>
+                    <div class="field-value" id="profileEmail">--</div>
+                </div>
+                <div class="profile-field">
+                    <div class="field-label">NAMBA YA SIMU</div>
+                    <div class="field-value" id="profilePhone">--</div>
+                </div>
+                <div class="profile-field">
+                    <div class="field-label">HALI YA AKAUNTI</div>
+                    <div class="field-value" style="color:#34d399;">Inafanya Kazi (OTP Verified)</div>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="logoutUser()">🚪 Ondoka Kwenye Mfumo (Logout)</button>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('tab-home', this)">
+            <span class="nav-icon">🏠</span>
+            <span>Nyumbani</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('tab-michango', this)">
+            <span class="nav-icon">💳</span>
+            <span>Michango</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('tab-risiti', this)">
+            <span class="nav-icon">📄</span>
+            <span>Risiti</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('tab-profile', this)">
+            <span class="nav-icon">👤</span>
+            <span>Profile</span>
+        </div>
+    </nav>
+
+    <!-- Client Logic Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const token = localStorage.getItem("token") || localStorage.getItem("sb-access-token");
+            const userData = JSON.parse(localStorage.getItem("user") || "{}");
+
+            // Muda wa Salamu
+            const hour = new Date().getHours();
+            let greeting = "HABARI ZA SIKU";
+            if (hour < 12) greeting = "HABARI ZA ASUBUHI";
+            else if (hour < 16) greeting = "HABARI ZA MCHANA";
+            else greeting = "HABARI ZA JIONI";
+            document.getElementById("greetingTime").innerText = greeting;
+
+            // Weka Taarifa za Mtumiaji
+            if (userData.name || userData.full_name) {
+                const fullName = userData.name || userData.full_name || "Mwanachama";
+                document.getElementById("userName").innerText = fullName;
+                document.getElementById("profileFullName").innerText = fullName;
+                
+                // Initials
+                const parts = fullName.split(" ");
+                const initials = parts.map(p => p[0]).join("").substring(0, 2).toUpperCase();
+                document.getElementById("userAvatar").innerText = initials || "MW";
+            }
+
+            if (userData.email) document.getElementById("profileEmail").innerText = userData.email;
+            if (userData.phone) document.getElementById("profilePhone").innerText = userData.phone;
+
+            // Chukua takwimu kutoka Backend/Supabase API
+            fetchDashboardStats();
+        });
+
+        // Kubadili Tab za Chini
+        function switchTab(tabId, el) {
+            document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+            document.querySelectorAll(".nav-item").forEach(nav => nav.classList.remove("active"));
+
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) targetTab.classList.add("active");
+            if (el) el.classList.add("active");
+        }
+
+        // Fetch Stats API Endpoint
+        async function fetchDashboardStats() {
+            try {
+                const token = localStorage.getItem("token");
+                const response = await fetch("/api/user/stats", {
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.myContribution) document.getElementById("myContribution").innerText = "TSh " + Number(data.myContribution).toLocaleString();
+                    if (data.totalContribution) document.getElementById("totalContribution").innerText = "TSh " + Number(data.totalContribution).toLocaleString();
+                    if (data.totalMembers) document.getElementById("totalMembers").innerText = data.totalMembers;
+                    if (data.activeContributors) document.getElementById("activeContributors").innerText = data.activeContributors;
+                    if (data.pendingMembers) document.getElementById("pendingMembers").innerText = data.pendingMembers;
+                    if (data.groupName) document.getElementById("groupName").innerText = data.groupName;
+
+                    if (data.progress) {
+                        document.getElementById("progressPercentage").innerText = data.progress + "% ya Lengo";
+                        document.getElementById("progressBar").style.width = data.progress + "%";
+                    }
+                }
+            } catch (err) {
+                console.log("Analytics in fanya kazi kwenye modo ya kawaida");
+            }
+        }
+
+        // Logout
+        function logoutUser() {
+            if (confirm("Je, una uhakika unataka kuondoka kwenye mfumo?")) {
+                localStorage.clear();
+                window.location.href = "index.html";
+            }
+        }
+    </script>
+</body>
+</html>
