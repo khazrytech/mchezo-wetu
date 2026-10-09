@@ -70,7 +70,7 @@ app.post('/api/login', async (req, res) => {
                 status: user.status,
                 banReason: user.ban_reason || '',
                 hasPaidToday: user.has_paid_today || false,
-                paymentStatus: user.payment_status || 'unpaid'
+                
             }
         });
     } catch (err) {
@@ -102,7 +102,7 @@ app.post('/api/register', async (req, res) => {
             status: 'pending',
             ban_reason: '',
             has_paid_today: false,
-            payment_status: 'unpaid',
+            
             monthly_contributions: 0,
             date_registered: new Date().toLocaleDateString('sw-TZ')
         };
@@ -130,7 +130,7 @@ app.get('/api/admin/users', async (req, res) => {
         status: u.status || 'approved',
         banReason: u.ban_reason || '',
         hasPaidToday: u.has_paid_today || false,
-        paymentStatus: u.payment_status || 'unpaid',
+        
         monthlyContributions: u.monthly_contributions || 0
     }));
     res.json({ success: true, users: formatted });
@@ -200,16 +200,7 @@ app.listen(PORT, () => {
 });
 
 
-// --- FIMIPAY PAYMENT GATEWAY INTEGRATION ---
-app.post('/api/fimipay-pay', async (req, res) => {
-    try {
-        const { phone, amount, memberName } = req.body;
-        if (!phone || !amount) {
-            return res.status(400).json({ success: false, message: 'Tafadhali weka namba ya simu na kiasi.' });
-        }
 
-        const FIMIPAY_API_KEY = process.env.FIMIPAY_API_KEY || 'live_key_placeholder';
-        const FIMIPAY_URL = 'https://api.fimipay.com/v1/payments/collect'; // Endpoint rasmi ya FimiPay
 
         console.log(`[FIMIPAY] Inatuma ombi la TSh ${amount} kwenda namba ${phone}...`);
 
