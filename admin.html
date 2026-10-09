@@ -7,60 +7,103 @@
     <style>
         :root {
             --bg-deep: #020617;
-            --card-glass: rgba(15, 23, 42, 0.82);
+            --card-glass: rgba(15, 23, 42, 0.85);
             --border-glass: rgba(255, 255, 255, 0.08);
             --primary: #2563eb;
+            --primary-glow: rgba(37, 99, 235, 0.35);
             --accent: #10b981;
             --danger: #ef4444;
+            --warning: #f59e0b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background: var(--bg-deep); color: var(--text-main); margin: 0; padding: 0 0 90px 0; min-height: 100vh; }
+        body {
+            background: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.18) 0%, transparent 65%),
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.12) 0%, transparent 55%);
+            color: var(--text-main);
+            margin: 0; padding: 0 0 90px 0;
+            min-height: 100vh;
+        }
         .container { max-width: 500px; margin: 0 auto; padding: 20px 16px; }
 
-        .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        /* Top Header */
+        .app-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 20px;
+        }
         .pro-emblem {
-            width: 44px; height: 44px; border-radius: 14px;
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(16, 185, 129, 0.25));
-            border: 1px solid rgba(59, 130, 246, 0.4);
+            width: 48px; height: 48px; border-radius: 16px;
+            background: linear-gradient(135deg, #2563eb, #10b981);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
         }
 
+        /* Glass Cards */
         .glass-card {
-            background: var(--card-glass); backdrop-filter: blur(20px);
-            border: 1px solid var(--border-glass); border-radius: 24px; padding: 20px;
+            background: var(--card-glass);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px; padding: 20px;
             margin-bottom: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
 
-        .stats-2-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
-        .stat-card { background: var(--card-glass); border: 1px solid var(--border-glass); border-radius: 20px; padding: 18px 14px; }
-        .stat-val { font-size: 28px; font-weight: 900; color: #fff; margin-bottom: 4px; }
-        .stat-lbl { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+        .stats-3-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+        .stat-card {
+            background: var(--card-glass); border: 1px solid var(--border-glass);
+            border-radius: 18px; padding: 14px 10px; text-align: center;
+        }
+        .stat-val { font-size: 20px; font-weight: 900; color: #fff; margin-top: 4px; }
+        .stat-lbl { font-size: 9px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
 
+        /* User Item Card */
         .user-item-card {
             background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass);
             border-radius: 18px; padding: 16px; margin-bottom: 12px;
         }
         .user-top-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
         .user-title { font-size: 15px; font-weight: 900; color: #fff; }
-        .user-phone { font-size: 12px; font-weight: 700; color: #60a5fa; font-family: monospace; }
+        .user-phone { font-size: 11px; font-weight: 700; color: #60a5fa; font-family: monospace; }
         
-        .badge-status { font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 12px; text-transform: uppercase; }
+        .badge-status { font-size: 9px; font-weight: 800; padding: 4px 10px; border-radius: 12px; text-transform: uppercase; }
         .status-approved { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
         .status-pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .status-suspended { background: rgba(249, 115, 22, 0.15); color: #f97316; border: 1px solid rgba(249, 115, 22, 0.3); }
         .status-banned { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
 
-        .user-actions-row { display: flex; gap: 8px; margin-top: 12px; }
+        .user-actions-row { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
         .btn-sm-action {
-            flex: 1; padding: 10px; border-radius: 12px; border: none;
-            font-size: 11px; font-weight: 800; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 4px;
+            flex: 1; min-width: 80px; padding: 8px 10px; border-radius: 12px; border: none;
+            font-size: 11px; font-weight: 800; cursor: pointer; text-align: center;
         }
         .btn-approve { background: #10b981; color: #fff; }
+        .btn-suspend { background: rgba(249, 115, 22, 0.2); border: 1px solid rgba(249, 115, 22, 0.4); color: #fb923c; }
         .btn-ban { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; }
         .btn-unban { background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); color: #60a5fa; }
 
+        /* Settings Toggle Rows */
+        .setting-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .setting-row:last-child { border-bottom: none; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255,255,255,0.15); transition: .3s; border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: white; transition: .3s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Bottom Nav */
         .bottom-nav {
             position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
             width: calc(100% - 32px); max-width: 460px;
@@ -75,6 +118,7 @@
         }
         .nav-item.active { color: #fff; background: rgba(37, 99, 235, 0.2); border: 1px solid rgba(37, 99, 235, 0.3); }
 
+        /* Modal Overlay */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(16px);
@@ -99,10 +143,11 @@
     </div>
 
     <div class="container">
+        <!-- HEADER -->
         <div class="app-header">
             <div style="display:flex; align-items:center; gap:12px;">
                 <div class="pro-emblem">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.2"><rect x="2" y="5" width="20" height="14" rx="3"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><rect x="2" y="5" width="20" height="14" rx="3"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
                 </div>
                 <div>
                     <h1 style="font-size:18px; font-weight:900; margin:0; color:#fff;">Jopo la Utawala Pro</h1>
@@ -111,63 +156,104 @@
             </div>
         </div>
 
+        <!-- TAB 1: DASHBODI -->
         <div id="tab-dash">
-            <div class="stats-2-grid">
+            <div class="stats-3-grid">
                 <div class="stat-card">
+                    <div class="stat-lbl">Jumla</div>
                     <div class="stat-val" id="statTotalUsers">0</div>
-                    <div class="stat-lbl">Jumla ya Wanachama</div>
                 </div>
                 <div class="stat-card">
+                    <div class="stat-lbl">Waliidhinishwa</div>
                     <div class="stat-val" style="color:var(--accent);" id="statApprovedUsers">0</div>
-                    <div class="stat-lbl">Walioidhinishwa</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-lbl">Wenye Vikwazo</div>
+                    <div class="stat-val" style="color:var(--danger);" id="statBannedUsers">0</div>
                 </div>
             </div>
 
             <div class="glass-card">
-                <h2 style="font-size:13px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 14px 0;">Tuma Tangazo la Mfumo</h2>
+                <h2 style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 14px 0;">Tuma Tangazo la Mfumo kwa Wanachama</h2>
                 <input type="text" id="annTitle" placeholder="Kichwa cha Tangazo" style="width:100%; padding:14px; background:rgba(255,255,255,0.04); border:1px solid var(--border-glass); border-radius:14px; color:#fff; font-size:13px; outline:none; margin-bottom:12px;">
-                <textarea id="annMsg" placeholder="Andika ujumbe hapa..." style="width:100%; height:90px; padding:14px; background:rgba(255,255,255,0.04); border:1px solid var(--border-glass); border-radius:14px; color:#fff; font-size:13px; outline:none; margin-bottom:12px; resize:none;"></textarea>
-                <button onclick="postAnnouncement()" style="width:100%; padding:14px; background:var(--primary); color:#fff; border:none; border-radius:14px; font-weight:800; font-size:13px; cursor:pointer;">
-                    Tuma Tangazo kwa Wanachama ➔
+                <textarea id="annMsg" placeholder="Andika ujumbe wa tangazo hapa..." style="width:100%; height:90px; padding:14px; background:rgba(255,255,255,0.04); border:1px solid var(--border-glass); border-radius:14px; color:#fff; font-size:13px; outline:none; margin-bottom:12px; resize:none;"></textarea>
+                <button onclick="postAnnouncement()" style="width:100%; padding:14px; background:var(--primary); color:#fff; border:none; border-radius:14px; font-weight:800; font-size:13px; cursor:pointer; box-shadow:0 6px 20px var(--primary-glow);">
+                    🚀 Tuma Tangazo Rasmi
                 </button>
             </div>
         </div>
 
+        <!-- TAB 2: WANACHAMA (MEMBERS & ACTIONS: APPROVE, SUSPEND, BAN, UNBAN) -->
         <div id="tab-users" style="display:none;">
             <div class="glass-card">
-                <h2 style="font-size:13px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 16px 0;">Usimamizi wa Wanachama</h2>
+                <h2 style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 16px 0;">Usimamizi Kamili wa Wanachama</h2>
                 <div id="usersList">
                     <div style="font-size:13px; color:var(--text-muted);">Inapakia orodha ya wanachama...</div>
                 </div>
             </div>
         </div>
 
+        <!-- TAB 3: SETINGI (SETTINGS) -->
         <div id="tab-settings" style="display:none;">
             <div class="glass-card">
-                <h2 style="font-size:13px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 14px 0;">Akaunti ya Msimamizi</h2>
-                <div style="font-size:14px; font-weight:800; color:#fff;">Msimamizi Mkuu</div>
-                <div style="font-size:12px; color:var(--text-muted);">Email OTP Authentication Active 🔒</div>
+                <h2 style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 14px 0;">Mipangilio ya Uendeshaji wa Mfumo</h2>
+                
+                <div class="setting-row">
+                    <div>
+                        <div style="font-size:13px; font-weight:800; color:#fff;">Auto-Approve Wanachama</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Idhinisha usajili mpya moja kwa moja</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="settingAutoApprove"><span class="slider"></span></label>
+                </div>
+
+                <div class="setting-row">
+                    <div>
+                        <div style="font-size:13px; font-weight:800; color:#fff;">Email Notifications</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Pata barua pepe wakati wa usajili mpya</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="settingEmailNotif" checked><span class="slider"></span></label>
+                </div>
+
+                <div class="setting-row">
+                    <div>
+                        <div style="font-size:13px; font-weight:800; color:#fff;">Maintenance Mode</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Funga mfumo kwa muda kwa matengenezo</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="settingMaintenance"><span class="slider"></span></label>
+                </div>
             </div>
+
             <div class="glass-card">
-                <button onclick="handleAdminLogout()" style="width:100%; padding:15px; border-radius:16px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#f87171; font-weight:800; cursor:pointer;">
+                <h2 style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 14px 0;">Akaunti ya Msimamizi Mkuu</h2>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                    <div>
+                        <div style="font-size:13px; font-weight:800; color:#fff;">Email OTP Authentication</div>
+                        <div style="font-size:11px; color:var(--accent);">Resend HTTP Gateway Active 🔒</div>
+                    </div>
+                </div>
+                <button onclick="handleAdminLogout()" style="width:100%; padding:14px; border-radius:14px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#f87171; font-weight:800; cursor:pointer; font-size:13px;">
                     🚪 Toka Kwenye Admin Portal (Logout)
                 </button>
             </div>
         </div>
     </div>
 
-    <div class="modal-overlay" id="banModal">
+    <!-- PUNISHMENT MODAL (SUSPEND OR BAN WITH REASON) -->
+    <div class="modal-overlay" id="punishModal">
         <div class="modal-card">
-            <h3 style="font-size:18px; font-weight:900; color:#fff; margin:0 0 6px 0;">Piga Marufuku Akaunti (Ban)</h3>
-            <p style="font-size:12px; color:var(--text-muted); margin:0 0 16px 0;">Andika sababu halisi ya kumfungia mwanachama huyu ili aione kwenye Dashboard yake:</p>
-            <textarea id="banReasonInput" placeholder="Mfano: Hujaweka mchango kwa siku 3 mfululizo." style="width:100%; height:90px; padding:14px; background:rgba(255,255,255,0.04); border:1px solid var(--border-glass); border-radius:14px; color:#fff; font-size:13px; outline:none; margin-bottom:16px; resize:none;"></textarea>
+            <h3 style="font-size:17px; font-weight:900; color:#fff; margin:0 0 6px 0;" id="modalTitleText">Weka Kikwazo Kwenye Akaunti</h3>
+            <p style="font-size:12px; color:var(--text-muted); margin:0 0 16px 0;" id="modalSubText">Andika sababu halisi itakayoonekana kwenye Dashboard ya mwanachama huyu:</p>
+            
+            <textarea id="punishReasonInput" placeholder="Mfano: Kuchelewesha mchango au kukiuka sheria za kikundi." style="width:100%; height:90px; padding:14px; background:rgba(255,255,255,0.04); border:1px solid var(--border-glass); border-radius:14px; color:#fff; font-size:13px; outline:none; margin-bottom:16px; resize:none;"></textarea>
+            
             <div style="display:flex; gap:10px;">
-                <button onclick="closeBanModal()" style="flex:1; padding:14px; background:rgba(255,255,255,0.05); border:1px solid var(--border-glass); color:#fff; border-radius:14px; font-weight:800; cursor:pointer;">Ghairi</button>
-                <button onclick="submitBanUser()" style="flex:1; padding:14px; background:#ef4444; border:none; color:#fff; border-radius:14px; font-weight:800; cursor:pointer;">Thibitisha Ban 🚫</button>
+                <button onclick="closePunishModal()" style="flex:1; padding:14px; background:rgba(255,255,255,0.05); border:1px solid var(--border-glass); color:#fff; border-radius:14px; font-weight:800; cursor:pointer;">Ghairi</button>
+                <button onclick="submitPunishment()" id="modalSubmitBtn" style="flex:1; padding:14px; background:#ef4444; border:none; color:#fff; border-radius:14px; font-weight:800; cursor:pointer;">Thibitisha</button>
             </div>
         </div>
     </div>
 
+    <!-- BOTTOM NAV -->
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('dash', this)">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -185,6 +271,7 @@
 
     <script>
         let currentTargetPhone = '';
+        let currentActionType = '';
 
         function showNotification(msg, type = 'info') {
             const sheet = document.getElementById('notificationSheet');
@@ -213,11 +300,14 @@
                     document.getElementById('statTotalUsers').innerText = data.users.length;
                     const approved = data.users.filter(u => u.status === 'approved').length;
                     document.getElementById('statApprovedUsers').innerText = approved;
+                    const banned = data.users.filter(u => u.status === 'banned' || u.status === 'suspended').length;
+                    document.getElementById('statBannedUsers').innerText = banned;
 
                     const list = document.getElementById('usersList');
                     list.innerHTML = data.users.map(u => {
                         let statusBadge = `<span class="badge-status status-approved">Approved ●</span>`;
                         if (u.status === 'pending') statusBadge = `<span class="badge-status status-pending">Pending ⏳</span>`;
+                        if (u.status === 'suspended') statusBadge = `<span class="badge-status status-suspended">Suspended ⏱️</span>`;
                         if (u.status === 'banned') statusBadge = `<span class="badge-status status-banned">Banned 🚫</span>`;
 
                         return `
@@ -229,10 +319,13 @@
                                     </div>
                                     ${statusBadge}
                                 </div>
-                                ${u.banReason ? `<div style="font-size:11px; color:#f87171; margin-bottom:8px; font-weight:700;">Sababu ya Ban: ${u.banReason}</div>` : ''}
+                                ${u.banReason ? `<div style="font-size:11px; color:#f87171; margin-bottom:8px; font-weight:700;">Sababu: ${u.banReason}</div>` : ''}
                                 <div class="user-actions-row">
                                     ${u.status === 'pending' ? `<button class="btn-sm-action btn-approve" onclick="approveUser('${u.phone}')">✓ Approve</button>` : ''}
-                                    ${u.status !== 'banned' ? `<button class="btn-sm-action btn-ban" onclick="openBanModal('${u.phone}')">🚫 Ban</button>` : `<button class="btn-sm-action btn-unban" onclick="unbanUser('${u.phone}')">🔓 Unban</button>`}
+                                    ${u.status !== 'suspended' && u.status !== 'banned' ? `
+                                        <button class="btn-sm-action btn-suspend" onclick="openPunishModal('${u.phone}', 'suspend')">⏱️ Suspend</button>
+                                        <button class="btn-sm-action btn-ban" onclick="openPunishModal('${u.phone}', 'ban')">🚫 Ban</button>
+                                    ` : `<button class="btn-sm-action btn-unban" onclick="unbanUser('${u.phone}')">🔓 Ondoa Kifungo</button>`}
                                 </div>
                             </div>
                         `;
@@ -254,18 +347,32 @@
             fetchUsers();
         }
 
-        function openBanModal(phone) {
+        function openPunishModal(phone, actionType) {
             currentTargetPhone = phone;
-            document.getElementById('banReasonInput').value = '';
-            document.getElementById('banModal').style.display = 'flex';
+            currentActionType = actionType;
+            document.getElementById('punishReasonInput').value = '';
+
+            if (actionType === 'suspend') {
+                document.getElementById('modalTitleText').innerText = 'Simamisha Akaunti kwa Muda (Suspend)';
+                document.getElementById('modalSubmitBtn').style.background = '#f97316';
+                document.getElementById('modalSubmitBtn').innerText = 'Thibitisha Suspend ⏱️';
+            } else {
+                document.getElementById('modalTitleText').innerText = 'Fungia Akaunti Kabisa (Permanent Ban)';
+                document.getElementById('modalSubmitBtn').style.background = '#ef4444';
+                document.getElementById('modalSubmitBtn').innerText = 'Thibitisha Ban 🚫';
+            }
+
+            document.getElementById('punishModal').style.display = 'flex';
         }
 
-        function closeBanModal() { document.getElementById('banModal').style.display = 'none'; }
+        function closePunishModal() { document.getElementById('punishModal').style.display = 'none'; }
 
-        async function submitBanUser() {
-            const reason = document.getElementById('banReasonInput').value.trim();
-            closeBanModal();
-            const res = await fetch('/api/admin/ban', {
+        async function submitPunishment() {
+            const reason = document.getElementById('punishReasonInput').value.trim();
+            closePunishModal();
+
+            const endpoint = currentActionType === 'suspend' ? '/api/admin/suspend' : '/api/admin/ban';
+            const res = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ phone: currentTargetPhone, reason })
