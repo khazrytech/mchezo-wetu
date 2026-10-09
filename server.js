@@ -33,7 +33,7 @@ app.post('/api/register', (req, res) => {
     };
 
     users.push(newUser);
-    res.json({ success: true, message: 'Usajili umefanikiwa! Subiri idhini (approval) kutoka kwa Msimamizi.' });
+    res.json({ success: true, message: 'Ombi lako limetumwa kwa mafanikio!', user: newUser });
 });
 
 // 2. Admin kuona orodha ya wanachama wote
@@ -41,7 +41,7 @@ app.get('/api/admin/users', (req, res) => {
     res.json(users);
 });
 
-// 3. Admin ku-approve mwanachama na kumpa namba ya uanachama
+// 3. Admin ku-approve mwanachama
 app.post('/api/admin/approve/:id', (req, res) => {
     const userId = req.params.id;
     const user = users.find(u => u.id === userId);
@@ -77,13 +77,14 @@ app.post('/api/login', (req, res) => {
     });
 
     if (!user) {
-        return res.status(400).json({ success: false, message: 'Taarifa si sahihi. Tumia Namba ya Simu, Jina, au Namba ya Mwanachama na Password.' });
+        return res.status(400).json({ success: false, message: 'Taarifa si sahihi. Angalia namba, jina au password.' });
     }
 
     if (user.status !== 'approved') {
         return res.status(403).json({ 
             success: false, 
-            message: 'Akaunti yako bado haijaidhinishwa na Msimamizi (Pending Approval).' 
+            pending: true,
+            message: 'Akaunti yako bado iko kwenye mchakato wa kusubiri idhini (Pending Approval) kutoka kwa Msimamizi.' 
         });
     }
 
