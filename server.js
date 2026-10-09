@@ -247,3 +247,9 @@ app.post('/api/fimipay-pay', async (req, res) => {
         res.status(500).json({ success: false, message: 'Imeshindwa kuwasiliana na FimiPay Gateway.' });
     }
 });
+
+
+app.get('/payment', (req, res) => {
+    res.sendFile(__dirname + '/payment.html');
+});
+        
