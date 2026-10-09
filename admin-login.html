@@ -61,8 +61,33 @@
             border: none; border-radius: 14px;
             font-size: 14px; font-weight: 800; cursor: pointer;
             margin-top: 10px; transition: background 0.2s, transform 0.1s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
         .btn-action:active { transform: scale(0.98); }
+        .btn-action:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* Modern Fintech Spinner Loader */
+        .spinner {
+            width: 20px; height: 20px;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        #initialLoader {
+            padding: 40px 0; text-align: center;
+        }
+        .skeleton-spinner {
+            width: 42px; height: 42px;
+            border: 4px solid rgba(37, 99, 235, 0.15);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px auto;
+        }
 
         #toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
@@ -80,8 +105,14 @@
     <div class="portal-card">
         <div style="text-align: center;">
             <div class="brand-badge">● MCHEZO WETU FINTECH</div>
-            <h2 id="portalHeading" style="font-size: 22px; font-weight: 900; margin: 0 0 6px 0; color: #fff;">Inapakia...</h2>
-            <p id="portalSubheading" style="font-size: 12px; color: var(--text-muted); margin: 0 0 24px 0;">Tafadhali subiri kidogo...</p>
+            <h2 id="portalHeading" style="font-size: 22px; font-weight: 900; margin: 0 0 6px 0; color: #fff;"></h2>
+            <p id="portalSubheading" style="font-size: 12px; color: var(--text-muted); margin: 0 0 24px 0;"></p>
+        </div>
+
+        <!-- INITIAL PRO FINTECH LOADER (BILA MANENO YA KAWAIDA) -->
+        <div id="initialLoader">
+            <div class="skeleton-spinner"></div>
+            <span style="font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--text-muted); text-transform: uppercase;">Inahakiki Mfumo...</span>
         </div>
 
         <!-- FORM 1: USAJILI WA ADMIN -->
@@ -91,7 +122,7 @@
                 <input type="text" id="regFullName" class="input-field" placeholder="Mfano: Msimamizi Mkuu" required>
             </div>
             <div class="input-group">
-                <label class="input-label">Barua Pepe (Email ya Kumiya OTP)</label>
+                <label class="input-label">Barua Pepe (Email ya Kuatumiwa OTP)</label>
                 <input type="email" id="regEmail" class="input-field" placeholder="admin@example.com" required>
             </div>
             <div class="input-group">
@@ -102,7 +133,9 @@
                 <label class="input-label">Nenosiri (Password)</label>
                 <input type="password" id="regPassword" class="input-field" placeholder="••••••••" required>
             </div>
-            <button type="submit" class="btn-action">Jisajili & Tuma OTP kwa Email ➔</button>
+            <button type="submit" id="btnSignup" class="btn-action">
+                <span>Jisajili & Tuma OTP kwa Email ➔</span>
+            </button>
         </form>
 
         <!-- FORM 2: LOGIN YA ADMIN -->
@@ -115,7 +148,9 @@
                 <label class="input-label">Nenosiri (Password)</label>
                 <input type="password" id="loginPassword" class="input-field" placeholder="••••••••" required>
             </div>
-            <button type="submit" class="btn-action">Ingia & Tuma OTP kwa Email ➔</button>
+            <button type="submit" id="btnLogin" class="btn-action">
+                <span>Ingia & Tuma OTP kwa Email ➔</span>
+            </button>
         </form>
 
         <!-- FORM 3: UTHIBITISHO WA EMAIL OTP -->
@@ -124,7 +159,9 @@
                 <label class="input-label">Ingiza Tarakimu 6 za OTP Zilizotumwa Kwenye Email</label>
                 <input type="number" id="otpInput" class="input-field" placeholder="123456" style="text-align: center; font-size: 22px; letter-spacing: 6px; font-weight: 800;" required>
             </div>
-            <button type="submit" class="btn-action" style="background: var(--accent);">Thibitisha & Ingia ➔</button>
+            <button type="submit" id="btnOtp" class="btn-action" style="background: var(--accent);">
+                <span>Thibitisha & Ingia ➔</span>
+            </button>
         </form>
     </div>
 
@@ -139,23 +176,35 @@
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
+        function setBtnLoading(btnId, isLoading, text) {
+            const btn = document.getElementById(btnId);
+            if (isLoading) {
+                btn.disabled = true;
+                btn.innerHTML = `<div class="spinner"></div> <span>${text}</span>`;
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = `<span>${text}</span>`;
+            }
+        }
+
         async function checkAdminStatus() {
             try {
                 const res = await fetch('/api/admin/check-exists');
                 const data = await res.json();
                 
+                document.getElementById('initialLoader').style.display = 'none';
+
                 if (data.exists) {
                     document.getElementById('portalHeading').innerText = 'Kuingia Msimamizi';
                     document.getElementById('portalSubheading').innerText = 'Ingiza taarifa zako za utawala kupokea OTP kwenye Email';
                     document.getElementById('loginForm').style.display = 'block';
-                    document.getElementById('signupForm').style.display = 'none';
                 } else {
                     document.getElementById('portalHeading').innerText = 'Usajili wa Msimamizi Mkuu';
                     document.getElementById('portalSubheading').innerText = 'Tengeneza akaunti ya Admin ya mara ya kwanza';
                     document.getElementById('signupForm').style.display = 'block';
-                    document.getElementById('loginForm').style.display = 'none';
                 }
             } catch (err) {
+                document.getElementById('initialLoader').style.display = 'none';
                 showToast('⚠️ Imeshindikana kuangalia hali ya Admin.');
             }
         }
@@ -167,6 +216,8 @@
             const phone = document.getElementById('regPhone').value.trim();
             const password = document.getElementById('regPassword').value.trim();
 
+            setBtnLoading('btnSignup', true, 'Inasindika & Kutuma OTP...');
+
             try {
                 const res = await fetch('/api/admin/register-send-otp', {
                     method: 'POST',
@@ -174,6 +225,7 @@
                     body: JSON.stringify({ fullName, phone, email, password })
                 });
                 const data = await res.json();
+                
                 if (data.success) {
                     currentEmail = data.email;
                     currentMode = 'REGISTER';
@@ -184,9 +236,11 @@
                     showToast('📧 OTP imetumwa kwenye Email yako!');
                 } else {
                     showToast('⚠️ ' + data.message);
+                    setBtnLoading('btnSignup', false, 'Jisajili & Tuma OTP kwa Email ➔');
                 }
             } catch (err) {
                 showToast('⚠️ Imeshindikana kutuma OTP.');
+                setBtnLoading('btnSignup', false, 'Jisajili & Tuma OTP kwa Email ➔');
             }
         }
 
@@ -195,6 +249,8 @@
             const identifier = document.getElementById('loginIdentifier').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
 
+            setBtnLoading('btnLogin', true, 'Inathibitisha...');
+
             try {
                 const res = await fetch('/api/admin/login-send-otp', {
                     method: 'POST',
@@ -202,6 +258,7 @@
                     body: JSON.stringify({ identifier, password })
                 });
                 const data = await res.json();
+
                 if (data.success) {
                     currentEmail = data.email;
                     currentMode = 'LOGIN';
@@ -212,9 +269,11 @@
                     showToast('📧 OTP imetumwa kwenye Email yako!');
                 } else {
                     showToast('⚠️ ' + data.message);
+                    setBtnLoading('btnLogin', false, 'Ingia & Tuma OTP kwa Email ➔');
                 }
             } catch (err) {
                 showToast('⚠️ Taarifa si sahihi.');
+                setBtnLoading('btnLogin', false, 'Ingia & Tuma OTP kwa Email ➔');
             }
         }
 
@@ -222,6 +281,8 @@
             e.preventDefault();
             const otp = document.getElementById('otpInput').value.trim();
             const endpoint = currentMode === 'REGISTER' ? '/api/admin/register-verify-otp' : '/api/admin/login-verify-otp';
+
+            setBtnLoading('btnOtp', true, 'Inahakiki OTP...');
 
             try {
                 const res = await fetch(endpoint, {
@@ -236,9 +297,11 @@
                     setTimeout(() => { window.location.href = '/admin.html'; }, 1000);
                 } else {
                     showToast('⚠️ ' + data.message);
+                    setBtnLoading('btnOtp', false, 'Thibitisha & Ingia ➔');
                 }
             } catch (err) {
                 showToast('⚠️ Verification imefeli.');
+                setBtnLoading('btnOtp', false, 'Thibitisha & Ingia ➔');
             }
         }
 

@@ -20,7 +20,7 @@ function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Mfumo wa Kutuma OTP kwa Email
+// Mfumo wa Kutuma OTP kwa Email - Fast & Non-blocking
 async function sendRealEmailOTP(toEmail, otpCode, title = "Uhakiki wa Mchezo Wetu Admin") {
     const emailUser = process.env.EMAIL_USER;
     const emailPass = process.env.EMAIL_PASS;
@@ -29,10 +29,10 @@ async function sendRealEmailOTP(toEmail, otpCode, title = "Uhakiki wa Mchezo Wet
         try {
             let transporter = nodemailer.createTransport({
                 service: 'gmail',
-                auth: {
-                    user: emailUser,
-                    pass: emailPass
-                }
+                auth: { user: emailUser, pass: emailPass },
+                connectionTimeout: 4000,
+                greetingTimeout: 4000,
+                socketTimeout: 4000
             });
 
             await transporter.sendMail({
@@ -55,7 +55,6 @@ async function sendRealEmailOTP(toEmail, otpCode, title = "Uhakiki wa Mchezo Wet
             console.error('[EMAIL SENDING ERROR]', err.message);
         }
     } else {
-        // Ikiwa Server Environment Variables hazijawekwa bado, inaonekana kwenye Terminal Server Logs pekee (Sio kwenye Browser UI)
         console.log(`\n==========================================\n[REAL EMAIL OTP FOR ${toEmail}]: ${otpCode}\n==========================================\n`);
     }
 }
@@ -73,135 +72,152 @@ app.get('/api/admin/check-exists', async (req, res) => {
 
 // 2. USAJILI WA ADMIN - TUMA OTP KWA EMAIL
 app.post('/api/admin/register-send-otp', async (req, res) => {
-    const { fullName, phone, email, password } = req.body;
+    try {
+        const { fullName, phone, email, password } = req.body;
 
-    const { data: existingAdmin } = await supabase.from('users').select('*').eq('role', 'admin');
-    if (existingAdmin && existingAdmin.length > 0) {
-        return res.json({ success: false, message: 'Admin yupo tayari kwenye mfumo! Tafadhali ingia.' });
+        const { data: existingAdmin } = await supabase.from('users').select('*').eq('role', 'admin');
+        if (existingAdmin && existingAdmin.length > 0) {
+            return res.json({ success: false, message: 'Admin yupo tayari kwenye mfumo! Tafadhali ingia.' });
+        }
+
+        if (!fullName || !email || !password) {
+            return res.json({ success: false, message: 'Tafadhali jaza jina, email na nenosiri.' });
+        }
+
+        const cleanEmail = email.trim().toLowerCase();
+        const otpCode = generateOTP();
+        const expiresAt = Date.now() + 5 * 60 * 1000;
+
+        otpStore.set(cleanEmail, {
+            code: otpCode,
+            expiresAt,
+            type: 'ADMIN_REGISTER',
+            payload: { fullName, phone: phone || '', email: cleanEmail, password }
+        });
+
+        // Endesha mchakato wa email bila kukwamisha API
+        sendRealEmailOTP(cleanEmail, otpCode, "Usajili wa Msimamizi");
+
+        return res.json({ 
+            success: true, 
+            email: cleanEmail,
+            message: `OTP imetumwa kwa barua pepe (email): ${cleanEmail}` 
+        });
+    } catch (err) {
+        return res.json({ success: false, message: 'Hitilafu kwenye seva: ' + err.message });
     }
-
-    if (!fullName || !email || !password) {
-        return res.json({ success: false, message: 'Tafadhali jaza jina, email na nenosiri.' });
-    }
-
-    const cleanEmail = email.trim().toLowerCase();
-    const otpCode = generateOTP();
-    const expiresAt = Date.now() + 5 * 60 * 1000;
-
-    otpStore.set(cleanEmail, {
-        code: otpCode,
-        expiresAt,
-        type: 'ADMIN_REGISTER',
-        payload: { fullName, phone: phone || '', email: cleanEmail, password }
-    });
-
-    await sendRealEmailOTP(cleanEmail, otpCode, "Usajili wa Msimamizi");
-
-    res.json({ 
-        success: true, 
-        email: cleanEmail,
-        message: `OTP imetumwa kwa barua pepe (email): ${cleanEmail}` 
-    });
 });
 
 // 3. THIBITISHA EMAIL OTP NA SAAJILI ADMIN KWENYE SUPABASE
 app.post('/api/admin/register-verify-otp', async (req, res) => {
-    const { email, otp } = req.body;
-    const cleanEmail = email ? email.trim().toLowerCase() : '';
-    const record = otpStore.get(cleanEmail);
+    try {
+        const { email, otp } = req.body;
+        const cleanEmail = email ? email.trim().toLowerCase() : '';
+        const record = otpStore.get(cleanEmail);
 
-    if (!record || record.type !== 'ADMIN_REGISTER') {
-        return res.json({ success: false, message: 'Ombi la OTP halipatikani au limeisha.' });
-    }
+        if (!record || record.type !== 'ADMIN_REGISTER') {
+            return res.json({ success: false, message: 'Ombi la OTP halipatikani au limeisha.' });
+        }
 
-    if (Date.now() > record.expiresAt) {
+        if (Date.now() > record.expiresAt) {
+            otpStore.delete(cleanEmail);
+            return res.json({ success: false, message: 'Muda wa OTP umeisha. Omba tena.' });
+        }
+
+        if (record.code !== otp.toString().trim()) {
+            return res.json({ success: false, message: 'OTP uliyoingiza si sahihi.' });
+        }
+
+        const { fullName, phone, password } = record.payload;
+        const adminUser = {
+            full_name: fullName,
+            phone: phone || '0000000000',
+            email: cleanEmail,
+            password,
+            member_number: 'MW-ADMIN-01',
+            role: 'admin',
+            status: 'approved',
+            date_registered: new Date().toLocaleDateString('sw-TZ')
+        };
+
+        const { error } = await supabase.from('users').insert([adminUser]);
+        if (error) {
+            return res.json({ success: false, message: 'Hitilafu ya Supabase: ' + error.message });
+        }
+
         otpStore.delete(cleanEmail);
-        return res.json({ success: false, message: 'Muda wa OTP umeisha. Omba tena.' });
+        return res.json({ success: true, message: 'Usajili wa Admin umefanikiwa!' });
+    } catch (err) {
+        return res.json({ success: false, message: err.message });
     }
-
-    if (record.code !== otp.toString().trim()) {
-        return res.json({ success: false, message: 'OTP uliyoingiza si sahihi.' });
-    }
-
-    const { fullName, phone, password } = record.payload;
-    const adminUser = {
-        full_name: fullName,
-        phone: phone || '0000000000',
-        email: cleanEmail,
-        password,
-        member_number: 'MW-ADMIN-01',
-        role: 'admin',
-        status: 'approved',
-        date_registered: new Date().toLocaleDateString('sw-TZ')
-    };
-
-    const { error } = await supabase.from('users').insert([adminUser]);
-    if (error) {
-        return res.json({ success: false, message: 'Hitilafu ya Supabase: ' + error.message });
-    }
-
-    otpStore.delete(cleanEmail);
-    res.json({ success: true, message: 'Usajili wa Admin umefanikiwa!' });
 });
 
 // 4. LOGIN YA ADMIN - TUMA OTP KWA EMAIL
 app.post('/api/admin/login-send-otp', async (req, res) => {
-    const { identifier, password } = req.body;
+    try {
+        const { identifier, password } = req.body;
 
-    const { data: users } = await supabase.from('users').select('*').eq('role', 'admin');
-    if (!users || users.length === 0) {
-        return res.json({ success: false, message: 'Hakuna Admin aliyesajiliwa bado.' });
+        const { data: users } = await supabase.from('users').select('*').eq('role', 'admin');
+        if (!users || users.length === 0) {
+            return res.json({ success: false, message: 'Hakuna Admin aliyesajiliwa bado.' });
+        }
+
+        const admin = users.find(u => 
+            (u.email.toLowerCase() === identifier.toLowerCase() || u.phone === identifier || u.full_name.toLowerCase() === identifier.toLowerCase()) && 
+            u.password === password
+        );
+
+        if (!admin) {
+            return res.json({ success: false, message: 'Taarifa za Admin si sahihi.' });
+        }
+
+        const otpCode = generateOTP();
+        const expiresAt = Date.now() + 5 * 60 * 1000;
+
+        otpStore.set(admin.email, {
+            code: otpCode,
+            expiresAt,
+            type: 'ADMIN_LOGIN',
+            email: admin.email
+        });
+
+        sendRealEmailOTP(admin.email, otpCode, "Kuingia Msimamizi");
+
+        return res.json({ 
+            success: true, 
+            email: admin.email,
+            message: `OTP imetumwa kwa njia ya Email kwenda ${admin.email}.` 
+        });
+    } catch (err) {
+        return res.json({ success: false, message: err.message });
     }
-
-    const admin = users.find(u => 
-        (u.email.toLowerCase() === identifier.toLowerCase() || u.phone === identifier || u.full_name.toLowerCase() === identifier.toLowerCase()) && 
-        u.password === password
-    );
-
-    if (!admin) {
-        return res.json({ success: false, message: 'Taarifa za Admin si sahihi.' });
-    }
-
-    const otpCode = generateOTP();
-    const expiresAt = Date.now() + 5 * 60 * 1000;
-
-    otpStore.set(admin.email, {
-        code: otpCode,
-        expiresAt,
-        type: 'ADMIN_LOGIN',
-        email: admin.email
-    });
-
-    await sendRealEmailOTP(admin.email, otpCode, "Kuingia Msimamizi");
-
-    res.json({ 
-        success: true, 
-        email: admin.email,
-        message: `OTP imetumwa kwa njia ya Email kwenda ${admin.email}.` 
-    });
 });
 
 // 5. THIBITISHA EMAIL OTP YA LOGIN YA ADMIN
 app.post('/api/admin/login-verify-otp', async (req, res) => {
-    const { email, otp } = req.body;
-    const cleanEmail = email ? email.trim().toLowerCase() : '';
-    const record = otpStore.get(cleanEmail);
+    try {
+        const { email, otp } = req.body;
+        const cleanEmail = email ? email.trim().toLowerCase() : '';
+        const record = otpStore.get(cleanEmail);
 
-    if (!record || record.type !== 'ADMIN_LOGIN') {
-        return res.json({ success: false, message: 'Ombi la OTP halipatikani.' });
-    }
+        if (!record || record.type !== 'ADMIN_LOGIN') {
+            return res.json({ success: false, message: 'Ombi la OTP halipatikani.' });
+        }
 
-    if (Date.now() > record.expiresAt) {
+        if (Date.now() > record.expiresAt) {
+            otpStore.delete(cleanEmail);
+            return res.json({ success: false, message: 'Muda wa OTP umeisha.' });
+        }
+
+        if (record.code !== otp.toString().trim()) {
+            return res.json({ success: false, message: 'OTP uliyoingiza si sahihi.' });
+        }
+
         otpStore.delete(cleanEmail);
-        return res.json({ success: false, message: 'Muda wa OTP umeisha.' });
+        return res.json({ success: true, message: 'Umekaribishwa Msimamizi!' });
+    } catch (err) {
+        return res.json({ success: false, message: err.message });
     }
-
-    if (record.code !== otp.toString().trim()) {
-        return res.json({ success: false, message: 'OTP uliyoingiza si sahihi.' });
-    }
-
-    otpStore.delete(cleanEmail);
-    res.json({ success: true, message: 'Umekaribishwa Msimamizi!' });
 });
 
 // MANAGE USERS & ANNOUNCEMENTS
