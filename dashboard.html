@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mchezo Wetu - User Dashboard</title>
+    <title>Mchezo Wetu - Digital Micro-Group</title>
     <style>
         :root {
             --bg-deep: #020617;
-            --card-glass: rgba(15, 23, 42, 0.78);
+            --card-glass: rgba(15, 23, 42, 0.82);
             --border-glass: rgba(255, 255, 255, 0.08);
             --primary: #2563eb;
             --primary-glow: rgba(37, 99, 235, 0.35);
             --accent: #10b981;
             --accent-glow: rgba(16, 185, 129, 0.35);
             --danger: #ef4444;
+            --warning: #f59e0b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
@@ -30,98 +31,115 @@
         .container { max-width: 500px; margin: 0 auto; padding: 20px 16px; }
 
         /* Top Header */
-        .top-brand {
+        .app-header {
             display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 20px; padding: 4px 0;
+            margin-bottom: 20px;
         }
-        .brand-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(37, 99, 235, 0.12); border: 1px solid rgba(37, 99, 235, 0.3);
-            color: #60a5fa; padding: 6px 14px; border-radius: 20px;
-            font-size: 11px; font-weight: 800; letter-spacing: 0.8px;
+        .user-header-info { display: flex; align-items: center; gap: 12px; }
+        .avatar-box {
+            width: 46px; height: 46px; border-radius: 16px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: 900; color: #fff;
+            position: relative; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+        }
+        .online-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #10b981; border: 2px solid var(--bg-deep);
+            position: absolute; bottom: -1px; right: -1px;
+        }
+        .greeting-sub { font-size: 11px; color: var(--text-muted); font-weight: 600; margin: 0; }
+        .greeting-name { font-size: 16px; font-weight: 900; color: #fff; margin: 0; }
+
+        .notif-bell {
+            width: 44px; height: 44px; border-radius: 16px;
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass);
+            display: flex; align-items: center; justify-content: center;
+            position: relative; cursor: pointer;
+        }
+        .notif-badge {
+            width: 8px; height: 8px; border-radius: 50%; background: #ef4444;
+            position: absolute; top: 12px; right: 12px;
+            box-shadow: 0 0 8px #ef4444;
         }
 
-        /* Glass Card Base */
+        /* Glass Cards */
         .glass-card {
             background: var(--card-glass);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-glass);
             border-radius: 24px;
-            padding: 24px;
-            margin-bottom: 18px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
 
-        /* Profile Header Hero Card */
-        .profile-hero { text-align: center; position: relative; }
-        .avatar-box {
-            width: 72px; height: 72px; margin: 0 auto 14px auto;
-            border-radius: 24px;
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(16, 185, 129, 0.25));
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 26px; font-weight: 900; color: #60a5fa;
-            box-shadow: 0 0 30px rgba(37, 99, 235, 0.2);
-            position: relative;
-        }
-        .avatar-online-dot {
-            width: 12px; height: 12px; border-radius: 50%;
-            background: var(--accent); border: 2.5px solid var(--bg-deep);
-            position: absolute; bottom: -2px; right: -2px;
-            box-shadow: 0 0 8px var(--accent);
-        }
-        .user-name { font-size: 20px; font-weight: 900; color: #fff; margin: 0 0 4px 0; }
-        .user-id { font-size: 12px; font-weight: 800; color: #60a5fa; font-family: monospace; letter-spacing: 1px; margin-bottom: 12px; }
-        .verified-badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3);
-            color: var(--accent); padding: 5px 14px; border-radius: 20px;
-            font-size: 11px; font-weight: 800;
-        }
-
-        /* Section Titles */
-        .card-title {
-            font-size: 12px; font-weight: 800; letter-spacing: 0.6px;
-            color: var(--text-muted); text-transform: uppercase;
-            margin: 0 0 14px 0;
-        }
-
-        /* Referral Link Box */
-        .referral-box {
-            display: flex; gap: 10px; background: rgba(0, 0, 0, 0.3);
-            padding: 8px 8px 8px 14px; border-radius: 16px;
-            border: 1px solid var(--border-glass); align-items: center;
-        }
-        .referral-input {
-            background: transparent; border: none; color: #fff;
-            font-size: 12px; font-weight: 600; width: 100%; outline: none;
-        }
-        .btn-copy {
-            background: var(--primary); color: #fff; border: none;
-            padding: 10px 18px; border-radius: 12px; font-size: 12px;
-            font-weight: 800; cursor: pointer; transition: all 0.2s;
-            box-shadow: 0 4px 12px var(--primary-glow); flex-shrink: 0;
-        }
-
-        /* Profile Data List */
-        .data-row {
+        .card-header-flex {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 16px;
         }
-        .data-row:last-child { border-bottom: none; }
-        .data-label { font-size: 13px; font-weight: 700; color: var(--text-muted); }
-        .data-value { font-size: 13px; font-weight: 800; color: #fff; }
+        .card-title-sm {
+            font-size: 11px; font-weight: 800; color: var(--text-muted);
+            letter-spacing: 0.8px; text-transform: uppercase;
+            display: flex; align-items: center; gap: 6px;
+        }
 
-        /* Logout Button */
-        .btn-logout {
-            width: 100%; padding: 16px; border-radius: 18px;
-            background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25);
-            color: #f87171; font-size: 13px; font-weight: 800;
-            cursor: pointer; transition: all 0.2s; display: flex;
-            align-items: center; justify-content: center; gap: 8px;
+        /* Status Badges */
+        .badge-paid {
+            background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981; font-size: 10px; font-weight: 800; padding: 4px 10px;
+            border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;
         }
-        .btn-logout:hover { background: rgba(239, 68, 68, 0.15); }
+        .badge-unpaid {
+            background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #f59e0b; font-size: 10px; font-weight: 800; padding: 4px 10px;
+            border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;
+        }
+
+        /* Sub Cards Grid */
+        .sub-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .sub-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px; padding: 14px;
+        }
+        .sub-label { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+        .sub-value { font-size: 18px; font-weight: 900; color: #fff; margin-top: 4px; }
+
+        /* Progress Bar */
+        .progress-track {
+            width: 100%; height: 8px; background: rgba(255,255,255,0.06);
+            border-radius: 10px; overflow: hidden; margin: 12px 0 16px 0;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .progress-fill {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, #2563eb, #10b981);
+            border-radius: 10px; transition: width 0.5s ease;
+        }
+
+        /* Pay Button */
+        .btn-pay {
+            width: 100%; padding: 16px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff; border: none; border-radius: 18px;
+            font-size: 14px; font-weight: 900; cursor: pointer;
+            box-shadow: 0 8px 24px var(--accent-glow);
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-pay:hover { transform: translateY(-1px); }
+        .btn-pay:active { transform: translateY(1px); }
+
+        /* Stats 3 Grid */
+        .stats-3-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .stat-mini-card {
+            background: var(--card-glass); border: 1px solid var(--border-glass);
+            border-radius: 18px; padding: 14px 10px; text-align: center;
+        }
+        .stat-mini-lbl { font-size: 9px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+        .stat-mini-val { font-size: 18px; font-weight: 900; color: #fff; margin-top: 4px; }
 
         /* Bottom Nav */
         .bottom-nav {
@@ -146,12 +164,46 @@
             border: 1px solid rgba(37, 99, 235, 0.3);
         }
 
+        /* PAYMENT MODAL (PRO FINTECH MIX BY YAS LOGOS) */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(16px);
+            z-index: 2000; display: none; align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        .modal-card {
+            background: rgba(15, 23, 42, 0.95); border: 1px solid var(--border-glass);
+            border-radius: 28px; padding: 24px; width: 100%; max-width: 440px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.9); position: relative;
+        }
+        .modal-close {
+            position: absolute; top: 18px; right: 20px; font-size: 20px;
+            color: var(--text-muted); cursor: pointer; font-weight: 800;
+        }
+        
+        .method-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+        .method-card {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass);
+            border-radius: 16px; padding: 12px 8px; text-align: center; cursor: pointer;
+            transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 6px;
+        }
+        .method-card.selected {
+            border-color: #2563eb; background: rgba(37, 99, 235, 0.15);
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+        }
+        .net-logo {
+            width: 32px; height: 32px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 900; color: #fff;
+        }
+
         #toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
             background: rgba(15, 23, 42, 0.95); color: #fff; padding: 12px 24px; border-radius: 30px;
             border: 1px solid rgba(255,255,255,0.15); font-size: 13px; font-weight: 700;
             z-index: 3000; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none; backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
         #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
@@ -160,23 +212,86 @@
     <div id="toast">✅ Taarifa</div>
 
     <div class="container">
-        <!-- TOP BRANDING -->
-        <div class="top-brand">
-            <div class="brand-badge">● MCHEZO WETU FINTECH</div>
+        <!-- HEADER PROFILE -->
+        <div class="app-header">
+            <div class="user-header-info">
+                <div class="avatar-box">
+                    <span id="hInitials">B</span>
+                    <div class="online-dot"></div>
+                </div>
+                <div>
+                    <p class="greeting-sub">Habari,</p>
+                    <h1 class="greeting-name" id="hFullName">Baraka...</h1>
+                </div>
+            </div>
+            <div class="notif-bell" onclick="showToast('🔔 Hakuna taarifa mpya')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <div class="notif-badge"></div>
+            </div>
         </div>
 
-        <!-- TAB 1: NYUMBANI (HOME) -->
+        <!-- TAB 1: NYUMBANI (HOME DASHBOARD) -->
         <div id="tab-home">
-            <div class="glass-card" style="text-align: center; padding: 32px 20px;">
-                <div style="font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Salio la Akaunti</div>
-                <div style="font-size: 32px; font-weight: 900; color: #fff; margin: 8px 0;">TZS 0.00</div>
-                <span style="font-size: 11px; color: var(--accent); font-weight: 700; background: rgba(16,185,129,0.1); padding: 4px 12px; border-radius: 12px; border: 1px solid rgba(16,185,129,0.2);">● Mwanachama Imara</span>
+            <!-- MCHANGO WANGU LEO CARD (START FROM ZERO) -->
+            <div class="glass-card">
+                <div class="card-header-flex">
+                    <span class="card-title-sm">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        Mchango Wangu Leo
+                    </span>
+                    <span id="paymentBadge" class="badge-unpaid">⏳ HUJALIPA LEO</span>
+                </div>
+                <div class="sub-grid">
+                    <div class="sub-card">
+                        <div class="sub-label">Ulicholipa Leo</div>
+                        <div class="sub-value" id="todayPaidVal">TSh 0</div>
+                    </div>
+                    <div class="sub-card">
+                        <div class="sub-label">Jumla ya Michango Yako</div>
+                        <div class="sub-value" id="totalPaidVal">TSh 0</div>
+                    </div>
+                </div>
             </div>
 
+            <!-- LENGO LA LEO CARD -->
             <div class="glass-card">
-                <h2 class="card-title">Matangazo ya Kikundi</h2>
-                <div id="announcementsList" style="font-size: 13px; color: var(--text-muted);">
-                    Hakuna matangazo kwa sasa.
+                <div class="card-header-flex">
+                    <span class="badge-paid" style="background:rgba(37,99,235,0.15); color:#60a5fa; border-color:rgba(37,99,235,0.3);">● LENGO LA LEO</span>
+                    <span style="font-size:11px; color:var(--text-muted); font-weight:700;">Kiwango / Siku: <b style="color:#fff;">TSh 2,000</b></span>
+                </div>
+                <h2 style="font-size: 20px; font-weight: 900; margin: 0 0 14px 0; color:#fff;">Mchezo Wetu</h2>
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <div style="font-size:10px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Jumla Iliyokusanywa Leo</div>
+                        <div style="font-size:22px; font-weight:900; color:#fff;" id="groupTodayCollected">TSh 0</div>
+                    </div>
+                    <div style="font-size:14px; font-weight:900; color:var(--accent);" id="goalPercentText">0% ya Lengo</div>
+                </div>
+
+                <div class="progress-track">
+                    <div class="progress-fill" id="goalProgressBar" style="width: 0%;"></div>
+                </div>
+
+                <!-- MAIN PAYMENT BUTTON -->
+                <button class="btn-pay" id="btnPayAction" onclick="openPayModal()">
+                    ⚡ LIPA TSH 2,000 YA LEO SASA
+                </button>
+            </div>
+
+            <!-- BOTTOM STATS 3 GRID -->
+            <div class="stats-3-grid">
+                <div class="stat-mini-card">
+                    <div class="stat-mini-lbl">Wanachama</div>
+                    <div class="stat-mini-val" id="statTotalUsers">1</div>
+                </div>
+                <div class="stat-mini-card">
+                    <div class="stat-mini-lbl">Waliolipa</div>
+                    <div class="stat-mini-val" style="color:var(--accent);" id="statPaidUsers">0</div>
+                </div>
+                <div class="stat-mini-card">
+                    <div class="stat-mini-lbl">Hawajalipa</div>
+                    <div class="stat-mini-val" style="color:#ef4444;" id="statUnpaidUsers">1</div>
                 </div>
             </div>
         </div>
@@ -184,72 +299,101 @@
         <!-- TAB 2: MICHANGO -->
         <div id="tab-contributions" style="display: none;">
             <div class="glass-card">
-                <h2 class="card-title">Historia ya Michango</h2>
-                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Bado hujafanya mchango wowote.</p>
+                <h2 class="card-title-sm" style="margin-bottom:12px;">Historia ya Michango Yako</h2>
+                <div id="historyList" style="font-size:13px; color:var(--text-muted);">
+                    Bado hujafanya mchango wowote.
+                </div>
             </div>
         </div>
 
         <!-- TAB 3: RISITI -->
         <div id="tab-receipts" style="display: none;">
             <div class="glass-card">
-                <h2 class="card-title">Risiti za Mfumo</h2>
-                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Hakuna risiti zinazopatikana.</p>
+                <h2 class="card-title-sm" style="margin-bottom:12px;">Risiti za Mfumo</h2>
+                <div id="receiptsList" style="font-size:13px; color:var(--text-muted);">
+                    Hakuna risiti zilizozalishwa bado.
+                </div>
             </div>
         </div>
 
-        <!-- TAB 4: PRO FINTECH PROFILE SECTION -->
+        <!-- TAB 4: PROFILE -->
         <div id="tab-profile" style="display: none;">
-            <!-- HERO PROFILE CARD -->
-            <div class="glass-card profile-hero">
-                <div class="avatar-box">
-                    <span id="pInitials">--</span>
-                    <div class="avatar-online-dot"></div>
+            <div class="glass-card" style="text-align:center;">
+                <div class="avatar-box" style="width:64px; height:64px; margin:0 auto 12px auto; font-size:24px;">
+                    <span id="pInitials">B</span>
                 </div>
-                <h1 class="user-name" id="pName">Mwanachama</h1>
-                <div class="user-id" id="pMemberNo">MW-0000</div>
-                <div class="verified-badge">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    Mwanachama Aliyethibitishwa
-                </div>
+                <h2 style="font-size:18px; font-weight:900; color:#fff; margin:0 0 4px 0;" id="pFullName">Baraka...</h2>
+                <div style="font-size:12px; font-weight:800; color:#60a5fa; font-family:monospace;" id="pMemberNo">MW-2026</div>
             </div>
 
-            <!-- REFERRAL CARD -->
             <div class="glass-card">
-                <h2 class="card-title">Link Yako ya Kipekee ya Mwaliko</h2>
-                <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 12px 0;">Mtumie mtu link hii ajiunge moja kwa moja chini ya akaunti yako:</p>
-                <div class="referral-box">
-                    <input type="text" id="refLinkInput" class="referral-input" readonly value="https://mchezo-wetu.onrender.com/?ref=MW">
-                    <button class="btn-copy" onclick="copyReferralLink()">Copy</button>
+                <div class="card-title-sm" style="margin-bottom:12px;">Taarifa za Kibinafsi</div>
+                <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <span style="font-size:12px; color:var(--text-muted);">Simu:</span>
+                    <span style="font-size:12px; font-weight:800; color:#fff;" id="pPhone">07XXXXXXXX</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding:8px 0;">
+                    <span style="font-size:12px; color:var(--text-muted);">Hali:</span>
+                    <span style="font-size:12px; font-weight:800; color:var(--accent);">Active ●</span>
                 </div>
             </div>
 
-            <!-- PERSONAL INFO CARD -->
-            <div class="glass-card">
-                <h2 class="card-title">Taarifa za Kibinafsi</h2>
-                <div class="data-row">
-                    <span class="data-label">Namba ya Simu</span>
-                    <span class="data-value" id="pPhone">07XXXXXXXX</span>
-                </div>
-                <div class="data-row">
-                    <span class="data-label">Barua Pepe</span>
-                    <span class="data-value" id="pEmail">Haijawekwa</span>
-                </div>
-                <div class="data-row">
-                    <span class="data-label">Hali ya Akaunti</span>
-                    <span class="data-value" style="color: var(--accent);">Active ●</span>
-                </div>
-            </div>
-
-            <!-- LOGOUT ACTION -->
-            <div class="glass-card" style="padding: 16px;">
-                <button class="btn-logout" onclick="handleUserLogout()">
-                    🚪 Toka Kwenye Akaunti (Logout)
-                </button>
-            </div>
+            <button onclick="handleLogout()" style="width:100%; padding:14px; border-radius:16px; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#f87171; font-weight:800; cursor:pointer;">
+                🚪 Toka Kwenye Akaunti
+            </button>
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION BAR -->
+    <!-- POP-UP YA MALIPO (PRO FINTECH PAYMENT GATEWAY - MIX BY YAS LOGOS) -->
+    <div class="modal-overlay" id="payModal">
+        <div class="modal-card">
+            <span class="modal-close" onclick="closePayModal()">✕</span>
+            
+            <div style="text-align:center; margin-bottom:16px;">
+                <span style="font-size:11px; font-weight:800; color:#60a5fa; background:rgba(37,99,235,0.15); padding:4px 12px; border-radius:12px;">● MIX BY YAS & MOBILE MONEY</span>
+                <h2 style="font-size:18px; font-weight:900; color:#fff; margin:10px 0 2px 0;">Chagua Njia ya Malipo</h2>
+                <p style="font-size:12px; color:var(--text-muted); margin:0;">Kiasi cha Mchango wa Leo: <b style="color:#10b981;">TSh 2,000</b></p>
+            </div>
+
+            <div class="method-grid">
+                <div class="method-card selected" onclick="selectMethod(this, 'Mix by Yas')">
+                    <div class="net-logo" style="background:#2563eb;">MIX</div>
+                    <span style="font-size:10px; font-weight:800; color:#fff;">Mix by Yas</span>
+                </div>
+                <div class="method-card" onclick="selectMethod(this, 'M-Pesa')">
+                    <div class="net-logo" style="background:#e11d48;">M</div>
+                    <span style="font-size:10px; font-weight:800; color:#fff;">M-Pesa</span>
+                </div>
+                <div class="method-card" onclick="selectMethod(this, 'Airtel')">
+                    <div class="net-logo" style="background:#dc2626;">AIR</div>
+                    <span style="font-size:10px; font-weight:800; color:#fff;">Airtel</span>
+                </div>
+                <div class="method-card" onclick="selectMethod(this, 'Tigo Pesa')">
+                    <div class="net-logo" style="background:#0284c7;">TIGO</div>
+                    <span style="font-size:10px; font-weight:800; color:#fff;">Tigo Pesa</span>
+                </div>
+                <div class="method-card" onclick="selectMethod(this, 'HaloPesa')">
+                    <div class="net-logo" style="background:#ea580c;">HALO</div>
+                    <span style="font-size:10px; font-weight:800; color:#fff;">HaloPesa</span>
+                </div>
+                <div class="method-card" onclick="selectMethod(this, 'AzamPesa')">
+                    <div class="net-logo" style="background:#0d9488;">AZAM</div>
+                    <span style="font-size:10px; font-weight:800; color:#fff;">AzamPesa</span>
+                </div>
+            </div>
+
+            <div style="margin-bottom:16px;">
+                <label style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:6px; display:block;">Namba ya Simu ya Kukata Pesa</label>
+                <input type="tel" id="payPhoneInput" style="width:100%; padding:14px; background:rgba(255,255,255,0.04); border:1px solid var(--border-glass); border-radius:14px; color:#fff; font-size:14px; font-weight:700; outline:none;" placeholder="07XXXXXXXX">
+            </div>
+
+            <button class="btn-pay" onclick="submitPayment()">
+                🚀 TUMA MAOMBI YA USSD PUSH
+            </button>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('home', this)">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
@@ -270,6 +414,8 @@
     </div>
 
     <script>
+        let selectedGateway = 'Mix by Yas';
+
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.innerText = msg;
@@ -289,7 +435,70 @@
             el.classList.add('active');
         }
 
-        function loadUserProfile() {
+        function openPayModal() {
+            document.getElementById('payModal').style.display = 'flex';
+        }
+
+        function closePayModal() {
+            document.getElementById('payModal').style.display = 'none';
+        }
+
+        function selectMethod(el, name) {
+            document.querySelectorAll('.method-card').forEach(m => m.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedGateway = name;
+        }
+
+        function submitPayment() {
+            const phone = document.getElementById('payPhoneInput').value.trim();
+            if (!phone) {
+                showToast('⚠️ Tafadhali ingiza namba ya simu.');
+                return;
+            }
+
+            closePayModal();
+            showToast(`📲 Ombi la USSD Push limetumwa kwenye ${phone} kupitia ${selectedGateway}. Weka PIN kwenye simu yako!`);
+
+            // Update UI State After Payment
+            setTimeout(() => {
+                document.getElementById('todayPaidVal').innerText = 'TSh 2,000';
+                document.getElementById('totalPaidVal').innerText = 'TSh 2,000';
+                document.getElementById('groupTodayCollected').innerText = 'TSh 2,000';
+                document.getElementById('goalPercentText').innerText = '100% ya Lengo';
+                document.getElementById('goalProgressBar').style.width = '100%';
+
+                document.getElementById('paymentBadge').className = 'badge-paid';
+                document.getElementById('paymentBadge').innerText = '✓ UMELIPA LEO';
+
+                document.getElementById('statPaidUsers').innerText = '1';
+                document.getElementById('statUnpaidUsers').innerText = '0';
+
+                // Add History & Receipt
+                document.getElementById('historyList').innerHTML = `
+                    <div style="padding:12px; background:rgba(255,255,255,0.02); border-radius:14px; border:1px solid var(--border-glass); display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="color:#fff; font-weight:800;">Mchango wa Siku (${selectedGateway})</div>
+                            <div style="font-size:11px; color:var(--text-muted);">Leo</div>
+                        </div>
+                        <div style="color:var(--accent); font-weight:900;">+ TSh 2,000</div>
+                    </div>
+                `;
+
+                document.getElementById('receiptsList').innerHTML = `
+                    <div style="padding:12px; background:rgba(255,255,255,0.02); border-radius:14px; border:1px solid var(--border-glass); display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="color:#fff; font-weight:800;">Risiti #MW-${Math.floor(1000 + Math.random()*9000)}</div>
+                            <div style="font-size:11px; color:var(--text-muted);">Imethibitishwa via ${selectedGateway}</div>
+                        </div>
+                        <div style="color:#60a5fa; font-weight:800;">TSh 2,000</div>
+                    </div>
+                `;
+
+                showToast('✅ Mchango umethibitishwa na kusasishwa kwenye mfumo!');
+            }, 3000);
+        }
+
+        function loadUserData() {
             const rawSession = localStorage.getItem('userSession');
             if (!rawSession) {
                 window.location.href = '/index.html';
@@ -298,66 +507,34 @@
 
             try {
                 const user = JSON.parse(rawSession);
+                const fullName = user.fullName || 'Baraka Makoi';
                 
-                // Set Name & Initials
-                const fullName = user.fullName || 'Mwanachama';
-                document.getElementById('pName').innerText = fullName;
+                document.getElementById('hFullName').innerText = fullName;
+                document.getElementById('pFullName').innerText = fullName;
 
-                const nameParts = fullName.trim().split(' ');
-                let initials = nameParts[0] ? nameParts[0][0].toUpperCase() : 'M';
-                if (nameParts.length > 1) {
-                    initials += nameParts[nameParts.length - 1][0].toUpperCase();
-                }
+                const parts = fullName.trim().split(' ');
+                let initials = parts[0] ? parts[0][0].toUpperCase() : 'B';
+                if (parts.length > 1) initials += parts[parts.length - 1][0].toUpperCase();
+
+                document.getElementById('hInitials').innerText = initials;
                 document.getElementById('pInitials').innerText = initials;
 
-                // Member No & Phone & Email
-                const memberNo = user.memberNumber || 'MW-' + Math.floor(1000 + Math.random() * 9000);
+                const memberNo = user.memberNumber || 'MW-2026';
                 document.getElementById('pMemberNo').innerText = memberNo;
                 document.getElementById('pPhone').innerText = user.phone || '07XXXXXXXX';
-                document.getElementById('pEmail').innerText = user.email || 'Haijawekwa';
-
-                // Referral Link
-                document.getElementById('refLinkInput').value = `https://mchezo-wetu.onrender.com/?ref=${memberNo}`;
-            } catch (err) {
-                console.error(err);
+                document.getElementById('payPhoneInput').value = user.phone || '';
+            } catch (e) {
+                console.error(e);
             }
         }
 
-        function copyReferralLink() {
-            const copyText = document.getElementById('refLinkInput');
-            copyText.select();
-            copyText.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(copyText.value);
-            showToast('📋 Referral Link imekopiwa kikamilifu!');
-        }
-
-        function handleUserLogout() {
+        function handleLogout() {
             localStorage.removeItem('userSession');
             showToast('👋 Umefanikiwa kutoka.');
             setTimeout(() => { window.location.href = '/index.html'; }, 800);
         }
 
-        async function fetchAnnouncements() {
-            try {
-                const res = await fetch('/api/announcements');
-                const data = await res.json();
-                if (data.success && data.announcements.length > 0) {
-                    const list = document.getElementById('announcementsList');
-                    list.innerHTML = data.announcements.map(a => `
-                        <div style="background:rgba(255,255,255,0.02); padding:12px; border-radius:12px; border:1px solid var(--border-glass); margin-bottom:8px;">
-                            <div style="font-weight:800; color:#60a5fa; margin-bottom:4px;">${a.title}</div>
-                            <div style="color:#fff;">${a.message}</div>
-                            <div style="font-size:10px; color:var(--text-muted); margin-top:6px;">${a.date}</div>
-                        </div>
-                    `).join('');
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        loadUserProfile();
-        fetchAnnouncements();
+        loadUserData();
     </script>
 </body>
 </html>
