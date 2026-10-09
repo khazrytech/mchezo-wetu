@@ -6,20 +6,22 @@
     <title>Mchezo Wetu - Admin Portal</title>
     <style>
         :root {
-            --bg-deep: #030712;
-            --card-glass: rgba(17, 24, 39, 0.75);
-            --border-glass: rgba(255, 255, 255, 0.08);
+            --bg-deep: #020617;
+            --card-glass: rgba(15, 23, 42, 0.8);
+            --border-glass: rgba(255, 255, 255, 0.1);
             --primary: #2563eb;
+            --primary-glow: rgba(37, 99, 235, 0.4);
             --accent: #10b981;
-            --text-main: #f9fafb;
-            --text-muted: #9ca3af;
+            --accent-glow: rgba(16, 185, 129, 0.4);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         body {
             background: var(--bg-deep);
             background-image: 
-                radial-gradient(circle at 50% 10%, rgba(37, 99, 235, 0.15) 0%, transparent 60%),
-                radial-gradient(circle at 90% 90%, rgba(16, 185, 129, 0.1) 0%, transparent 60%);
+                radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.2) 0%, transparent 70%),
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.15) 0%, transparent 60%);
             color: var(--text-main);
             margin: 0; min-height: 100vh;
             display: flex; align-items: center; justify-content: center;
@@ -28,73 +30,96 @@
         .portal-card {
             background: var(--card-glass);
             backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--border-glass);
             border-radius: 28px;
             padding: 36px 28px;
-            width: 100%; max-width: 400px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            width: 100%; max-width: 420px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(37, 99, 235, 0.1);
+            position: relative;
+            overflow: hidden;
         }
         .brand-badge {
             display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(37, 99, 235, 0.1); border: 1px solid rgba(37, 99, 235, 0.25);
-            color: #60a5fa; padding: 6px 14px; border-radius: 20px;
-            font-size: 11px; font-weight: 800; letter-spacing: 0.5px;
-            margin-bottom: 16px;
+            background: rgba(37, 99, 235, 0.12); border: 1px solid rgba(37, 99, 235, 0.3);
+            color: #60a5fa; padding: 6px 16px; border-radius: 20px;
+            font-size: 11px; font-weight: 800; letter-spacing: 0.8px;
+            margin-bottom: 20px;
         }
-        .input-group { margin-bottom: 16px; }
+        .input-group { margin-bottom: 18px; position: relative; }
         .input-label {
             font-size: 11px; font-weight: 800; color: var(--text-muted);
-            letter-spacing: 0.5px; margin-bottom: 6px; display: block;
+            letter-spacing: 0.6px; margin-bottom: 8px; display: block;
             text-transform: uppercase;
         }
+        .input-wrapper {
+            position: relative;
+            display: flex; align-items: center;
+        }
+        .input-icon {
+            position: absolute; left: 16px;
+            color: var(--text-muted); width: 18px; height: 18px;
+            pointer-events: none;
+        }
         .input-field {
-            width: 100%; padding: 14px 16px;
+            width: 100%; padding: 14px 16px 14px 44px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-glass);
-            border-radius: 14px; color: #fff;
-            font-size: 14px; outline: none; transition: border-color 0.2s;
+            border-radius: 16px; color: #fff;
+            font-size: 14px; outline: none; transition: all 0.25s ease;
         }
-        .input-field:focus { border-color: var(--primary); }
+        .input-field:focus { 
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+        }
         .btn-action {
-            width: 100%; padding: 14px;
-            background: var(--primary); color: white;
-            border: none; border-radius: 14px;
+            width: 100%; padding: 16px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white; border: none; border-radius: 16px;
             font-size: 14px; font-weight: 800; cursor: pointer;
-            margin-top: 10px; transition: background 0.2s, transform 0.1s;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
+            margin-top: 12px; transition: all 0.2s ease;
+            box-shadow: 0 8px 20px var(--primary-glow);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-        .btn-action:active { transform: scale(0.98); }
-        .btn-action:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-action:hover { transform: translateY(-1px); box-shadow: 0 12px 24px var(--primary-glow); }
+        .btn-action:active { transform: translateY(1px); }
+        .btn-action:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
 
-        /* Modern Fintech Spinner Loader */
-        .spinner {
-            width: 20px; height: 20px;
-            border: 3px solid rgba(255,255,255,0.2);
+        /* Modern Fintech Skeleton Pulse Loader (Bila neno 'Inapakia') */
+        #skeletonPulse {
+            padding: 30px 0; text-align: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .glowing-orb {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: radial-gradient(circle, #3b82f6 0%, rgba(37,99,235,0.1) 70%);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+            animation: pulseGlow 1.5s infinite ease-in-out;
+            margin-bottom: 16px;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(0.95); opacity: 0.6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
+            50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 30px rgba(59, 130, 246, 0.8); }
+        }
+
+        .btn-spinner {
+            width: 18px; height: 18px;
+            border: 2.5px solid rgba(255,255,255,0.3);
             border-top-color: #ffffff;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            display: inline-block;
+            animation: spin 0.7s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        #initialLoader {
-            padding: 40px 0; text-align: center;
-        }
-        .skeleton-spinner {
-            width: 42px; height: 42px;
-            border: 4px solid rgba(37, 99, 235, 0.15);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 16px auto;
-        }
-
         #toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
-            background: rgba(31, 41, 55, 0.95); color: #fff; padding: 12px 24px; border-radius: 30px;
+            background: rgba(15, 23, 42, 0.95); color: #fff; padding: 14px 28px; border-radius: 30px;
             border: 1px solid rgba(255,255,255,0.15); font-size: 13px; font-weight: 700;
             z-index: 3000; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none; backdrop-filter: blur(10px);
+            pointer-events: none; backdrop-filter: blur(12px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
         #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
@@ -104,49 +129,71 @@
 
     <div class="portal-card">
         <div style="text-align: center;">
-            <div class="brand-badge">● MCHEZO WETU FINTECH</div>
+            <div class="brand-badge">● MCHEZO WETU FINTECH ADMIN</div>
             <h2 id="portalHeading" style="font-size: 22px; font-weight: 900; margin: 0 0 6px 0; color: #fff;"></h2>
             <p id="portalSubheading" style="font-size: 12px; color: var(--text-muted); margin: 0 0 24px 0;"></p>
         </div>
 
-        <!-- INITIAL PRO FINTECH LOADER (BILA MANENO YA KAWAIDA) -->
-        <div id="initialLoader">
-            <div class="skeleton-spinner"></div>
-            <span style="font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--text-muted); text-transform: uppercase;">Inahakiki Mfumo...</span>
+        <!-- FINTECH GLOWING ORB SKELETON (BILA MANENO YA KAWAIDA) -->
+        <div id="skeletonPulse">
+            <div class="glowing-orb">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            </div>
         </div>
 
-        <!-- FORM 1: USAJILI WA ADMIN -->
+        <!-- FORM 1: USAJILI WA ADMIN (MARA YA KWANZA PEKEE) -->
         <form id="signupForm" style="display: none;" onsubmit="handleAdminSignup(event)">
             <div class="input-group">
                 <label class="input-label">Jina Kamili la Admin</label>
-                <input type="text" id="regFullName" class="input-field" placeholder="Mfano: Msimamizi Mkuu" required>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <input type="text" id="regFullName" class="input-field" placeholder="Mfano: Msimamizi Mkuu" required>
+                </div>
             </div>
             <div class="input-group">
                 <label class="input-label">Barua Pepe (Email ya Kuatumiwa OTP)</label>
-                <input type="email" id="regEmail" class="input-field" placeholder="admin@example.com" required>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    <input type="email" id="regEmail" class="input-field" placeholder="admin@mchezowetu.com" required>
+                </div>
             </div>
             <div class="input-group">
                 <label class="input-label">Namba ya Simu</label>
-                <input type="tel" id="regPhone" class="input-field" placeholder="07XXXXXXXX">
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    <input type="tel" id="regPhone" class="input-field" placeholder="07XXXXXXXX">
+                </div>
             </div>
             <div class="input-group">
                 <label class="input-label">Nenosiri (Password)</label>
-                <input type="password" id="regPassword" class="input-field" placeholder="••••••••" required>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    <input type="password" id="regPassword" class="input-field" placeholder="••••••••" required>
+                </div>
             </div>
             <button type="submit" id="btnSignup" class="btn-action">
                 <span>Jisajili & Tuma OTP kwa Email ➔</span>
             </button>
         </form>
 
-        <!-- FORM 2: LOGIN YA ADMIN -->
+        <!-- FORM 2: LOGIN YA ADMIN (INAPOKUWAPO SUPABASE) -->
         <form id="loginForm" style="display: none;" onsubmit="handleAdminLogin(event)">
             <div class="input-group">
                 <label class="input-label">Email au Namba ya Simu</label>
-                <input type="text" id="loginIdentifier" class="input-field" placeholder="Ingiza Email au Simu" required>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <input type="text" id="loginIdentifier" class="input-field" placeholder="Ingiza Email au Simu" required>
+                </div>
             </div>
             <div class="input-group">
                 <label class="input-label">Nenosiri (Password)</label>
-                <input type="password" id="loginPassword" class="input-field" placeholder="••••••••" required>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    <input type="password" id="loginPassword" class="input-field" placeholder="••••••••" required>
+                </div>
             </div>
             <button type="submit" id="btnLogin" class="btn-action">
                 <span>Ingia & Tuma OTP kwa Email ➔</span>
@@ -156,10 +203,10 @@
         <!-- FORM 3: UTHIBITISHO WA EMAIL OTP -->
         <form id="otpForm" style="display: none;" onsubmit="handleVerifyOtp(event)">
             <div class="input-group" style="text-align: center;">
-                <label class="input-label">Ingiza Tarakimu 6 za OTP Zilizotumwa Kwenye Email</label>
-                <input type="number" id="otpInput" class="input-field" placeholder="123456" style="text-align: center; font-size: 22px; letter-spacing: 6px; font-weight: 800;" required>
+                <label class="input-label">Ingiza OTP Ya Tarakimu 6</label>
+                <input type="number" id="otpInput" class="input-field" placeholder="123456" style="padding-left: 16px; text-align: center; font-size: 24px; letter-spacing: 8px; font-weight: 900; background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.3);" required>
             </div>
-            <button type="submit" id="btnOtp" class="btn-action" style="background: var(--accent);">
+            <button type="submit" id="btnOtp" class="btn-action" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 8px 20px var(--accent-glow);">
                 <span>Thibitisha & Ingia ➔</span>
             </button>
         </form>
@@ -176,14 +223,14 @@
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
-        function setBtnLoading(btnId, isLoading, text) {
+        function setBtnLoading(btnId, isLoading, defaultText, loadingText) {
             const btn = document.getElementById(btnId);
             if (isLoading) {
                 btn.disabled = true;
-                btn.innerHTML = `<div class="spinner"></div> <span>${text}</span>`;
+                btn.innerHTML = `<div class="btn-spinner"></div> <span>${loadingText}</span>`;
             } else {
                 btn.disabled = false;
-                btn.innerHTML = `<span>${text}</span>`;
+                btn.innerHTML = `<span>${defaultText}</span>`;
             }
         }
 
@@ -192,11 +239,11 @@
                 const res = await fetch('/api/admin/check-exists');
                 const data = await res.json();
                 
-                document.getElementById('initialLoader').style.display = 'none';
+                document.getElementById('skeletonPulse').style.display = 'none';
 
                 if (data.exists) {
                     document.getElementById('portalHeading').innerText = 'Kuingia Msimamizi';
-                    document.getElementById('portalSubheading').innerText = 'Ingiza taarifa zako za utawala kupokea OTP kwenye Email';
+                    document.getElementById('portalSubheading').innerText = 'Ingiza taarifa za utawala kupokea OTP kwenye Email';
                     document.getElementById('loginForm').style.display = 'block';
                 } else {
                     document.getElementById('portalHeading').innerText = 'Usajili wa Msimamizi Mkuu';
@@ -204,7 +251,7 @@
                     document.getElementById('signupForm').style.display = 'block';
                 }
             } catch (err) {
-                document.getElementById('initialLoader').style.display = 'none';
+                document.getElementById('skeletonPulse').style.display = 'none';
                 showToast('⚠️ Imeshindikana kuangalia hali ya Admin.');
             }
         }
@@ -216,7 +263,7 @@
             const phone = document.getElementById('regPhone').value.trim();
             const password = document.getElementById('regPassword').value.trim();
 
-            setBtnLoading('btnSignup', true, 'Inasindika & Kutuma OTP...');
+            setBtnLoading('btnSignup', true, '', 'Inasindika & Kutuma OTP...');
 
             try {
                 const res = await fetch('/api/admin/register-send-otp', {
@@ -236,11 +283,11 @@
                     showToast('📧 OTP imetumwa kwenye Email yako!');
                 } else {
                     showToast('⚠️ ' + data.message);
-                    setBtnLoading('btnSignup', false, 'Jisajili & Tuma OTP kwa Email ➔');
+                    setBtnLoading('btnSignup', false, 'Jisajili & Tuma OTP kwa Email ➔', '');
                 }
             } catch (err) {
                 showToast('⚠️ Imeshindikana kutuma OTP.');
-                setBtnLoading('btnSignup', false, 'Jisajili & Tuma OTP kwa Email ➔');
+                setBtnLoading('btnSignup', false, 'Jisajili & Tuma OTP kwa Email ➔', '');
             }
         }
 
@@ -249,7 +296,7 @@
             const identifier = document.getElementById('loginIdentifier').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
 
-            setBtnLoading('btnLogin', true, 'Inathibitisha...');
+            setBtnLoading('btnLogin', true, '', 'Inathibitisha...');
 
             try {
                 const res = await fetch('/api/admin/login-send-otp', {
@@ -269,11 +316,11 @@
                     showToast('📧 OTP imetumwa kwenye Email yako!');
                 } else {
                     showToast('⚠️ ' + data.message);
-                    setBtnLoading('btnLogin', false, 'Ingia & Tuma OTP kwa Email ➔');
+                    setBtnLoading('btnLogin', false, 'Ingia & Tuma OTP kwa Email ➔', '');
                 }
             } catch (err) {
                 showToast('⚠️ Taarifa si sahihi.');
-                setBtnLoading('btnLogin', false, 'Ingia & Tuma OTP kwa Email ➔');
+                setBtnLoading('btnLogin', false, 'Ingia & Tuma OTP kwa Email ➔', '');
             }
         }
 
@@ -282,7 +329,7 @@
             const otp = document.getElementById('otpInput').value.trim();
             const endpoint = currentMode === 'REGISTER' ? '/api/admin/register-verify-otp' : '/api/admin/login-verify-otp';
 
-            setBtnLoading('btnOtp', true, 'Inahakiki OTP...');
+            setBtnLoading('btnOtp', true, '', 'Inahakiki OTP...');
 
             try {
                 const res = await fetch(endpoint, {
@@ -297,11 +344,11 @@
                     setTimeout(() => { window.location.href = '/admin.html'; }, 1000);
                 } else {
                     showToast('⚠️ ' + data.message);
-                    setBtnLoading('btnOtp', false, 'Thibitisha & Ingia ➔');
+                    setBtnLoading('btnOtp', false, 'Thibitisha & Ingia ➔', '');
                 }
             } catch (err) {
                 showToast('⚠️ Verification imefeli.');
-                setBtnLoading('btnOtp', false, 'Thibitisha & Ingia ➔');
+                setBtnLoading('btnOtp', false, 'Thibitisha & Ingia ➔', '');
             }
         }
 

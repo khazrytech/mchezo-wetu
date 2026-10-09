@@ -20,42 +20,55 @@ function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Mfumo wa Kutuma OTP kwa Email - Fast & Non-blocking
+// Mfumo Madhubuti wa Kutuma Email OTP (SMTP Port 465 SSL Direct)
 async function sendRealEmailOTP(toEmail, otpCode, title = "Uhakiki wa Mchezo Wetu Admin") {
-    const emailUser = process.env.EMAIL_USER;
-    const emailPass = process.env.EMAIL_PASS;
+    const emailUser = process.env.EMAIL_USER ? process.env.EMAIL_USER.trim() : null;
+    const rawPass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.trim() : null;
+    // Ondoa nafasi zozote kutoka kwenye App Password ya Google (mfano: "abcd efgh ijkl mnop" -> "abcdefghijklmnop")
+    const cleanPass = rawPass ? rawPass.replace(/\s+/g, '') : null;
 
-    if (emailUser && emailPass) {
+    if (emailUser && cleanPass) {
         try {
             let transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: { user: emailUser, pass: emailPass },
-                connectionTimeout: 4000,
-                greetingTimeout: 4000,
-                socketTimeout: 4000
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true, // Tumia SSL moja kwa moja kwa usalama zaidi Render
+                auth: {
+                    user: emailUser,
+                    pass: cleanPass
+                },
+                tls: {
+                    rejectUnauthorized: false
+                }
             });
 
-            await transporter.sendMail({
+            const info = await transporter.sendMail({
                 from: `"Mchezo Wetu Admin" <${emailUser}>`,
                 to: toEmail,
-                subject: `${title} - OTP Code`,
+                subject: `🔑 ${otpCode} ni kodi yako ya ${title}`,
                 html: `
-                    <div style="font-family: Arial, sans-serif; padding: 24px; background-color: #030712; color: #ffffff; border-radius: 16px; max-width: 500px; margin: auto; border: 1px solid rgba(255,255,255,0.1);">
-                        <h2 style="color: #3b82f6; margin-top: 0;">Mchezo Wetu Fintech</h2>
-                        <p style="color: #9ca3af; font-size: 14px;">Namba yako ya uhakiki ya OTP kwa ajili ya Admin Portal ni:</p>
-                        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); padding: 16px; border-radius: 12px; text-align: center; margin: 20px 0;">
-                            <span style="font-size: 32px; font-weight: 900; color: #10b981; letter-spacing: 6px;">${otpCode}</span>
+                    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 32px; background-color: #030712; color: #ffffff; border-radius: 20px; max-width: 480px; margin: auto; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 40px rgba(0,0,0,0.8);">
+                        <div style="text-align: center; margin-bottom: 24px;">
+                            <span style="background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37, 99, 235, 0.3); color: #60a5fa; padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: 1px;">● MCHEZO WETU FINTECH</span>
+                            <h2 style="color: #ffffff; font-size: 20px; font-weight: 800; margin-top: 16px;">Uhakiki wa Utawala (Admin)</h2>
                         </div>
-                        <p style="color: #9ca3af; font-size: 12px;">Muda wa matumizi ya namba hii ni dakika 5. Usiigawie mtu yeyote kwa sababu za kiusalama.</p>
+                        <p style="color: #9ca3af; font-size: 14px; line-height: 1.5; text-align: center;">Namba yako ya siri ya mara moja (OTP) kwa ajili ya kuthibitisha ufikiaji wa Admin Portal ni:</p>
+                        <div style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(16, 185, 129, 0.1)); border: 1px solid rgba(59, 130, 246, 0.3); padding: 20px; border-radius: 16px; text-align: center; margin: 24px 0;">
+                            <span style="font-size: 36px; font-weight: 900; color: #10b981; letter-spacing: 8px; font-family: monospace;">${otpCode}</span>
+                        </div>
+                        <p style="color: #6b7280; font-size: 12px; text-align: center; margin-bottom: 0;">Muda wa matumizi ya namba hii ni dakika 5. Usiigawie mtu yeyote kwa sababu za kiusalama.</p>
                     </div>
                 `
             });
-            console.log(`[EMAIL OTP SENT TO ${toEmail}]`);
+            console.log(`[EMAIL OTP SUCCESS] MessageID: ${info.messageId} -> Sent to: ${toEmail}`);
+            return { success: true };
         } catch (err) {
-            console.error('[EMAIL SENDING ERROR]', err.message);
+            console.error('[EMAIL SMTP ERROR]', err.message);
+            return { success: false, error: err.message };
         }
     } else {
-        console.log(`\n==========================================\n[REAL EMAIL OTP FOR ${toEmail}]: ${otpCode}\n==========================================\n`);
+        console.log(`\n==========================================\n[SERVER LOG OTP FOR ${toEmail}]: ${otpCode}\n==========================================\n`);
+        return { success: true, logOnly: true };
     }
 }
 
@@ -95,16 +108,17 @@ app.post('/api/admin/register-send-otp', async (req, res) => {
             payload: { fullName, phone: phone || '', email: cleanEmail, password }
         });
 
-        // Endesha mchakato wa email bila kukwamisha API
-        sendRealEmailOTP(cleanEmail, otpCode, "Usajili wa Msimamizi");
+        const sendResult = await sendRealEmailOTP(cleanEmail, otpCode, "Usajili wa Msimamizi");
 
         return res.json({ 
             success: true, 
             email: cleanEmail,
-            message: `OTP imetumwa kwa barua pepe (email): ${cleanEmail}` 
+            message: sendResult.logOnly 
+                ? `OTP imezalishwa. (Weka EMAIL_USER na EMAIL_PASS kwenye Render kupokea kwenye Email)`
+                : `OTP imetumwa kwa njia ya barua pepe kwenda ${cleanEmail}` 
         });
     } catch (err) {
-        return res.json({ success: false, message: 'Hitilafu kwenye seva: ' + err.message });
+        return res.json({ success: false, message: 'Hitilafu ya Seva: ' + err.message });
     }
 });
 
@@ -181,7 +195,7 @@ app.post('/api/admin/login-send-otp', async (req, res) => {
             email: admin.email
         });
 
-        sendRealEmailOTP(admin.email, otpCode, "Kuingia Msimamizi");
+        await sendRealEmailOTP(admin.email, otpCode, "Kuingia Msimamizi");
 
         return res.json({ 
             success: true, 
