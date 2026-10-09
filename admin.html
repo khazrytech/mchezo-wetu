@@ -131,7 +131,6 @@
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(2, 6, 23, 0.88); backdrop-filter: blur(16px);
-            z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px;
         }
         .modal-card { background: rgba(15, 23, 42, 0.96); border: 1px solid var(--border-glass); border-radius: 28px; padding: 24px; width: 100%; max-width: 440px; position: relative; }
 
@@ -187,7 +186,6 @@
                     <div class="stat-val" id="statTotalUsers">0</div>
                 </div>
                 <div class="stat-card" onclick="switchTab('users'); filterUsers('paid')">
-                    <div class="stat-lbl">💰 Waliolipa Leo</div>
                     <div class="stat-val" style="color:var(--accent);" id="statPaidToday">0</div>
                 </div>
                 <div class="stat-card" onclick="switchTab('users'); filterUsers('unpaid')">
@@ -227,8 +225,6 @@
 
                 <div class="filter-row">
                     <div class="filter-chip active" onclick="filterUsers('all', this)">Wote</div>
-                    <div class="filter-chip" onclick="filterUsers('paid', this)">🟢 Waliolipa</div>
-                    <div class="filter-chip" onclick="filterUsers('unpaid', this)">🔴 Hawajalipa</div>
                     <div class="filter-chip" onclick="filterUsers('pending', this)">⏳ Pending Approval</div>
                 </div>
 
@@ -276,7 +272,6 @@
 
                 <div class="setting-input-group">
                     <label class="setting-label">Kiasi cha Mchango (TSh)</label>
-                    <input type="number" class="setting-input" id="confAmount" value="2000">
                 </div>
 
                 <div class="setting-input-group">
@@ -401,17 +396,13 @@
 
         function updateDashboardStats(users) {
             const total = users.length;
-            const paid = users.filter(u => u.hasPaidToday).length;
             const unpaid = total - paid;
-            const monthlyCol = paid * 2000 * 30; // 30 days estimate
 
             document.getElementById('statTotalUsers').innerText = total;
             document.getElementById('statPaidToday').innerText = paid;
             document.getElementById('statUnpaidToday').innerText = unpaid;
             document.getElementById('statMonthlyCol').innerText = `TSh ${monthlyCol.toLocaleString()}`;
 
-            document.getElementById('repToday').innerText = `TSh ${(paid * 2000).toLocaleString()}`;
-            document.getElementById('repDebt').innerText = `TSh ${(unpaid * 2000).toLocaleString()}`;
         }
 
         function renderUsersList(users) {
@@ -422,8 +413,6 @@
                 filtered = filtered.filter(u => u.fullName.toLowerCase().includes(searchVal) || u.phone.includes(searchVal));
             }
 
-            if (currentFilter === 'paid') filtered = filtered.filter(u => u.hasPaidToday);
-            if (currentFilter === 'unpaid') filtered = filtered.filter(u => !u.hasPaidToday && u.status === 'approved');
             if (currentFilter === 'pending') filtered = filtered.filter(u => u.status === 'pending');
 
             const list = document.getElementById('usersList');
@@ -448,12 +437,10 @@
                             ${statusBadge}
                         </div>
                         <div style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">
-                            Mchango wa Leo: ${u.hasPaidToday ? '<b style="color:var(--accent);">✓ Amelipa TSh 2,000</b>' : '<b style="color:var(--danger);">⏳ Hajalipa</b>'}
                         </div>
                         ${u.banReason ? `<div style="font-size:11px; color:#f87171; margin-bottom:8px; font-weight:700;">Sababu: ${u.banReason}</div>` : ''}
                         <div class="user-actions-row">
                             ${u.status === 'pending' ? `<button class="btn-sm-action btn-approve" onclick="approveUser('${u.phone}')">✓ Approve</button>` : ''}
-                            <button class="btn-sm-action btn-detail" onclick="openDetailModal('${u.fullName}', '${u.phone}', '${u.memberNumber}', '${u.hasPaidToday}', '${u.status}')">ℹ️ Maelezo</button>
                             ${u.status !== 'suspended' && u.status !== 'banned' ? `
                                 <button class="btn-sm-action btn-suspend" onclick="openPunishModal('${u.phone}', 'suspend')">⏱️ Suspend</button>
                                 <button class="btn-sm-action btn-ban" onclick="openPunishModal('${u.phone}', 'ban')">🚫 Ban</button>
@@ -482,7 +469,6 @@
             document.getElementById('mModalBody').innerHTML = `
                 <b>Namba ya Simu:</b> ${phone}<br>
                 <b>Kitambulisho:</b> ${memberNo}<br>
-                <b>Hali ya Malipo ya Leo:</b> ${paid === 'true' ? 'Amelipa TSh 2,000' : 'Hajalipa'}<br>
                 <b>Hali ya Akaunti:</b> ${status.toUpperCase()}<br>
                 <b>Kiasi Kinachotakiwa:</b> TSh 2,000
             `;

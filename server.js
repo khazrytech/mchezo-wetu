@@ -69,7 +69,6 @@ app.post('/api/login', async (req, res) => {
                 role: user.role || 'member',
                 status: user.status,
                 banReason: user.ban_reason || '',
-                hasPaidToday: user.has_paid_today || false,
             }
         });
     } catch (err) {
@@ -100,7 +99,6 @@ app.post('/api/register', async (req, res) => {
             role: 'member',
             status: 'pending',
             ban_reason: '',
-            has_paid_today: false,
             monthly_contributions: 0,
             date_registered: new Date().toLocaleDateString('sw-TZ')
         };
@@ -127,7 +125,6 @@ app.get('/api/admin/users', async (req, res) => {
         role: u.role || 'member',
         status: u.status || 'approved',
         banReason: u.ban_reason || '',
-        hasPaidToday: u.has_paid_today || false,
         monthlyContributions: u.monthly_contributions || 0
     }));
     res.json({ success: true, users: formatted });

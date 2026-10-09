@@ -324,7 +324,6 @@
 
                 if (data.success) {
                     showNotification(data.message, 'success');
-                    setTimeout(() => toggleMode('login'), 2000);
                 } else {
                     showNotification(data.message, 'error');
                     btn.disabled = false;
