@@ -12,187 +12,178 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Hifadhi ya muda ya OTP (In-Memory OTP Store)
-const otpStore = new Map(); // phone -> { code, expiresAt, payload }
-const adminOtpStore = new Map(); // adminIdentifier -> { code, expiresAt }
+// Hifadhi ya muda ya OTP kwenye Seva
+const otpStore = new Map(); // phone -> { code, expiresAt, payload, type }
 
-// Zalisha namba 6 za OTP
 function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// 1. TUMA OTP KWA MWANACHAMA WAKATI WA USAJILI
-app.post('/api/send-user-otp', async (req, res) => {
-    const { fullName, phone, email, password, ref } = req.body;
+// 1. ANGALIA KAMA KUNA ADMIN TAYARI KWENYE SUPABASE
+app.get('/api/admin/check-exists', async (req, res) => {
+    try {
+        const { data, error } = await supabase.from('users').select('*').eq('role', 'admin');
+        if (error) throw error;
+        res.json({ success: true, exists: data && data.length > 0 });
+    } catch (err) {
+        res.json({ success: false, exists: false, message: err.message });
+    }
+});
+
+// 2. ADMIN REGISTRATION - TUMA OTP (MARA YA KWANZA TU)
+app.post('/api/admin/register-send-otp', async (req, res) => {
+    const { fullName, phone, email, password } = req.body;
+
+    // Hakikisha hakuna admin tayari
+    const { data: existingAdmin } = await supabase.from('users').select('*').eq('role', 'admin');
+    if (existingAdmin && existingAdmin.length > 0) {
+        return res.json({ success: false, message: 'Admin yupo tayari kwenye mfumo! Tafadhali ingia (Login).' });
+    }
 
     if (!fullName || !phone || !password) {
         return res.json({ success: false, message: 'Tafadhali jaza jina, namba ya simu na nenosiri.' });
     }
 
-    // Angalia kama namba tayari ipo
-    const { data: existing } = await supabase.from('users').select('*').eq('phone', phone).single();
-    if (existing) {
-        return res.json({ success: false, message: 'Namba hii ya simu imeshasajiliwa tayari.' });
-    }
-
     const otpCode = generateOTP();
-    const expiresAt = Date.now() + 5 * 60 * 1000; // Inakaa dakika 5
+    const expiresAt = Date.now() + 5 * 60 * 1000;
 
-    // Hifadhi data na OTP kwenye kumbukumbu ya muda
     otpStore.set(phone, {
         code: otpCode,
         expiresAt,
-        payload: { fullName, phone, email: email || '', password, ref: ref || 'Direct' }
+        type: 'ADMIN_REGISTER',
+        payload: { fullName, phone, email: email || '', password }
     });
 
-    console.log(`[OTP DISPATCH] OTP ya usajili wa ${fullName} (${phone}) ni: ${otpCode}`);
+    console.log(`[ADMIN SETUP OTP] OTP ya Usajili wa Admin (${phone}): ${otpCode}`);
 
-    // Hapa tunaweza kuunganisha SMS Gateway (k.m. Beem Africa) au kuionyesha kwenye Response
     res.json({ 
         success: true, 
-        message: `OTP imetumwa kwa namba ${phone}. (Demo OTP: ${otpCode})`,
+        message: `OTP ya usajili imetumwa kwa namba ${phone}.`, 
         demoOtp: otpCode 
     });
 });
 
-// 2. THIBITISHA OTP NA HIFADHI KWENYE SUPABASE (PENDING ADMIN APPROVAL)
-app.post('/api/verify-user-otp', async (req, res) => {
+// 3. THIBITISHA OTP YA USAJILI WA ADMIN NA HIFADHI SUPABASE
+app.post('/api/admin/register-verify-otp', async (req, res) => {
     const { phone, otp } = req.body;
-
     const record = otpStore.get(phone);
-    if (!record) {
-        return res.json({ success: false, message: 'Hukutuma maombi ya OTP au muda umeisha.' });
+
+    if (!record || record.type !== 'ADMIN_REGISTER') {
+        return res.json({ success: false, message: 'Ombi la OTP halipatikani au limeisha.' });
     }
 
     if (Date.now() > record.expiresAt) {
         otpStore.delete(phone);
-        return res.json({ success: false, message: 'Muda wa OTP umeisha. Omba OTP mpya.' });
+        return res.json({ success: false, message: 'Muda wa OTP umeisha. Omba tena.' });
     }
 
     if (record.code !== otp.toString().trim()) {
-        return res.json({ success: false, message: 'Namba ya OTP si sahihi. Angalia vizuri.' });
+        return res.json({ success: false, message: 'OTP si sahihi. Angalia vizuri.' });
     }
 
-    // OTP NI SAHIHI! Sasa tunahifadhi kwenye Supabase
-    const { fullName, email, password, ref } = record.payload;
-    const memberNumber = `MW-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-
-    const newUser = {
+    const { fullName, email, password } = record.payload;
+    const adminUser = {
         full_name: fullName,
         phone,
         email,
         password,
-        member_number: memberNumber,
-        referred_by: ref,
-        status: 'pending',
+        member_number: 'MW-ADMIN-01',
+        role: 'admin',
+        status: 'approved',
         date_registered: new Date().toLocaleDateString('sw-TZ')
     };
 
-    const { error } = await supabase.from('users').insert([newUser]);
+    const { error } = await supabase.from('users').insert([adminUser]);
     if (error) {
-        return res.json({ success: false, message: 'Hitilafu kwenye Database: ' + error.message });
+        return res.json({ success: false, message: 'Hitilafu ya Supabase: ' + error.message });
     }
 
-    // Futa OTP iliyokwisha tumika
     otpStore.delete(phone);
+    res.json({ success: true, message: 'Usajili wa Admin umefanikiwa! Sasa unaweza kuingia.' });
+});
+
+// 4. ADMIN LOGIN - TUMA OTP YA KUINGIA
+app.post('/api/admin/login-send-otp', async (req, res) => {
+    const { identifier, password } = req.body;
+
+    const { data: users } = await supabase.from('users').select('*').eq('role', 'admin');
+    if (!users || users.length === 0) {
+        return res.json({ success: false, message: 'Hakuna Admin aliyesajiliwa bado.' });
+    }
+
+    const admin = users.find(u => 
+        (u.phone === identifier || u.email === identifier || u.full_name.toLowerCase() === identifier.toLowerCase()) && 
+        u.password === password
+    );
+
+    if (!admin) {
+        return res.json({ success: false, message: 'Taarifa za Admin si sahihi.' });
+    }
+
+    const otpCode = generateOTP();
+    const expiresAt = Date.now() + 5 * 60 * 1000;
+
+    otpStore.set(admin.phone, {
+        code: otpCode,
+        expiresAt,
+        type: 'ADMIN_LOGIN',
+        phone: admin.phone
+    });
+
+    console.log(`[ADMIN LOGIN OTP] OTP ya Admin (${admin.phone}): ${otpCode}`);
 
     res.json({ 
         success: true, 
-        message: 'OTP imethibitishwa! Ombi lako limetumwa kwa Msimamizi ili uidhinishwe.', 
-        memberNumber 
+        phone: admin.phone,
+        message: `OTP ya kuingia imetumwa kwa ${admin.phone}.`, 
+        demoOtp: otpCode 
     });
 });
 
-// 3. ADMIN LOGIN - STEP 1: TUMA OTP YA ADMIN
-app.post('/api/admin/send-otp', (req, res) => {
-    const { identifier, password } = req.body;
+// 5. THIBITISHA OTP YA LOGIN YA ADMIN
+app.post('/api/admin/login-verify-otp', async (req, res) => {
+    const { phone, otp } = req.body;
+    const record = otpStore.get(phone);
 
-    if ((identifier === 'admin' || identifier === '0700000000') && password === 'admin123') {
-        const adminOtp = generateOTP();
-        const expiresAt = Date.now() + 5 * 60 * 1000;
-
-        adminOtpStore.set(identifier, { code: adminOtp, expiresAt });
-
-        console.log(`[ADMIN OTP] OTP ya Msimamizi ni: ${adminOtp}`);
-
-        return res.json({ 
-            success: true, 
-            message: `OTP ya Admin imetumwa. (Demo OTP: ${adminOtp})`,
-            demoOtp: adminOtp 
-        });
-    }
-
-    res.json({ success: false, message: 'Taarifa za Msimamizi si sahihi!' });
-});
-
-// 4. ADMIN LOGIN - STEP 2: THIBITISHA OTP YA ADMIN
-app.post('/api/admin/verify-otp', (req, res) => {
-    const { identifier, otp } = req.body;
-
-    const record = adminOtpStore.get(identifier);
-    if (!record) {
-        return res.json({ success: false, message: 'Ombi la Admin OTP halipatikani au limeisha muda.' });
+    if (!record || record.type !== 'ADMIN_LOGIN') {
+        return res.json({ success: false, message: 'Ombi la OTP halipatikani.' });
     }
 
     if (Date.now() > record.expiresAt) {
-        adminOtpStore.delete(identifier);
-        return res.json({ success: false, message: 'Muda wa OTP umeisha. Jaribu kuingia tena.' });
+        otpStore.delete(phone);
+        return res.json({ success: false, message: 'Muda wa OTP umeisha.' });
     }
 
     if (record.code !== otp.toString().trim()) {
-        return res.json({ success: false, message: 'OTP ya Admin si sahihi!' });
+        return res.json({ success: false, message: 'OTP si sahihi.' });
     }
 
-    adminOtpStore.delete(identifier);
-    res.json({ success: true, message: 'Karibu Super Admin!' });
+    otpStore.delete(phone);
+    res.json({ success: true, message: 'Umekaribishwa Msimamizi!' });
 });
 
-// ADMIN ENDPOINTS KUCHOTA NA KUIDHINISHA
+// MANAGE USERS & ANNOUNCEMENTS
 app.get('/api/admin/users', async (req, res) => {
     const { data: users, error } = await supabase.from('users').select('*').order('id', { ascending: false });
-    if (error) {
-        return res.json({ success: false, message: error.message });
-    }
-    const formattedUsers = users.map(u => ({
+    if (error) return res.json({ success: false, message: error.message });
+
+    const formatted = users.map(u => ({
         fullName: u.full_name,
         phone: u.phone,
         email: u.email,
         memberNumber: u.member_number,
+        role: u.role || 'member',
         status: u.status,
         dateRegistered: u.date_registered || 'Leo'
     }));
-    res.json({ success: true, users: formattedUsers });
+    res.json({ success: true, users: formatted });
 });
 
 app.post('/api/admin/approve', async (req, res) => {
     const { phone } = req.body;
     const { data, error } = await supabase.from('users').update({ status: 'approved' }).eq('phone', phone).select();
-    if (error || !data || data.length === 0) {
-        return res.json({ success: false, message: 'Imeshindikana kuidhinisha mwanachama.' });
-    }
-    res.json({ success: true, message: `Mwanachama amethibitishwa rasmi!` });
-});
-
-// USER CHECK STATUS & LOGIN
-app.post('/api/login', async (req, res) => {
-    const { identifier, password } = req.body;
-    const { data: users } = await supabase.from('users').select('*');
-    if (!users) return res.json({ success: false, message: 'Hitilafu ya kurejesha taarifa.' });
-
-    const user = users.find(u => 
-        (u.phone === identifier || u.full_name.toLowerCase() === identifier.toLowerCase() || u.member_number === identifier) && 
-        u.password === password
-    );
-
-    if (!user) {
-        return res.json({ success: false, message: 'Taarifa si sahihi.' });
-    }
-
-    if (user.status !== 'approved') {
-        return res.json({ success: false, pending: true, message: 'Akaunti yako bado haijathibitishwa na Msimamizi.' });
-    }
-
-    res.json({ success: true, message: 'Umekaribishwa kwenye mfumo!', user: { fullName: user.full_name, phone: user.phone, memberNumber: user.member_number } });
+    if (error || !data || data.length === 0) return res.json({ success: false, message: 'Imeshindikana kuidhinisha.' });
+    res.json({ success: true, message: 'Mwanachama amethibitishwa!' });
 });
 
 app.get('/api/announcements', async (req, res) => {
@@ -202,13 +193,13 @@ app.get('/api/announcements', async (req, res) => {
 
 app.post('/api/announcements', async (req, res) => {
     const { title, message } = req.body;
-    if (!title || !message) return res.json({ success: false, message: 'Jaza kichwa na ujumbe.' });
+    if (!title || !message) return res.json({ success: false, message: 'Kichwa na ujumbe vinahitajika.' });
 
     const newAnn = { title, message, date: new Date().toLocaleDateString('sw-TZ') };
     const { error } = await supabase.from('announcements').insert([newAnn]);
     if (error) return res.json({ success: false, message: 'Imeshindikana kutuma.' });
 
-    res.json({ success: true, message: 'Tangazo limetumwa!' });
+    res.json({ success: true, message: 'Tangazo limetumwa kwa wanachama!' });
 });
 
 app.listen(PORT, () => {
