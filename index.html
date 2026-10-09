@@ -6,18 +6,36 @@
     <title>Mchezo Wetu - Fintech Platform</title>
     <style>
         :root {
-            --bg: #090d16;
-            --card-bg: rgba(255, 255, 255, 0.98);
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
+            --bg-deep: #030712;
+            --card-glass: rgba(15, 23, 42, 0.85);
+            --border-glass: rgba(255, 255, 255, 0.12);
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.4);
             --accent: #10b981;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border: #cbd5e1;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.5); }
+            100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+        }
+
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--bg) 100%);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at 50% -20%, #1e3a8a 0%, var(--bg-deep) 70%);
             color: var(--text-main);
             margin: 0;
             padding: 0;
@@ -25,43 +43,67 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
+
         .container {
             width: 100%;
-            max-width: 400px;
-            background: var(--card-bg);
-            padding: 32px 24px;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            max-width: 420px;
+            background: var(--card-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            padding: 36px 28px;
+            border-radius: 28px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
             margin: 16px;
             box-sizing: border-box;
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
         .brand-header {
             text-align: center;
             margin-bottom: 24px;
         }
+
         .brand-header h1 {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 800;
-            color: var(--text-main);
-            margin: 0 0 6px 0;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0 0 8px 0;
             letter-spacing: -0.5px;
         }
-        .brand-header p {
+
+        .welcome-banner {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            padding: 10px 14px;
+            border-radius: 12px;
             font-size: 13px;
-            color: var(--text-muted);
-            margin: 0;
+            color: #34d399;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
+
         .tabs {
             display: flex;
-            background: #f1f5f9;
-            padding: 4px;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5px;
+            border-radius: 14px;
             margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
+
         .tab-btn {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: none;
             background: none;
             font-size: 14px;
@@ -69,145 +111,169 @@
             color: var(--text-muted);
             cursor: pointer;
             border-radius: 10px;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
         }
+
         .tab-btn.active {
-            background: #ffffff;
-            color: var(--primary);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px var(--primary-glow);
+            transform: scale(1.02);
         }
+
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
+
         label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 600;
             font-size: 12px;
-            color: #475569;
+            color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
         }
+
         input {
             width: 100%;
-            padding: 13px 16px;
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
+            padding: 14px 16px;
+            border: 1.5px solid var(--border-glass);
+            border-radius: 14px;
             font-size: 14px;
             box-sizing: border-box;
-            background: #f8fafc;
+            background: rgba(255, 255, 255, 0.04);
             color: var(--text-main);
-            transition: all 0.2s;
+            transition: all 0.3s ease;
         }
+
         input:focus {
             outline: none;
             border-color: var(--primary);
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 4px var(--primary-glow);
         }
+
         .btn-submit {
             width: 100%;
-            padding: 14px;
-            background: var(--primary);
+            padding: 15px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 15px;
             font-weight: 700;
             cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 8px;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+            animation: pulseGlow 3s infinite;
         }
+
         .btn-submit:hover {
-            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(59, 130, 246, 0.6);
         }
+
         .alert {
             padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 16px;
+            border-radius: 12px;
+            margin-bottom: 18px;
             font-size: 13px;
             text-align: center;
             font-weight: 600;
+            animation: fadeInUp 0.3s ease;
         }
-        .alert-error { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
-        .alert-success { background: #d1fae5; color: #047857; border: 1px solid #a7f3d0; }
-        
+        .alert-error { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .alert-success { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
         /* Pending Screen */
         .pending-box {
             text-align: center;
             padding: 10px 0;
+            animation: fadeInUp 0.5s ease;
         }
         .pending-icon {
-            width: 64px;
-            height: 64px;
-            background: #fef3c7;
-            color: #d97706;
+            width: 72px;
+            height: 72px;
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            margin: 0 auto 16px auto;
+            font-size: 32px;
+            margin: 0 auto 20px auto;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.2);
         }
 
         /* Profile View */
         .profile-view {
             text-align: center;
+            animation: fadeInUp 0.5s ease;
         }
         .avatar {
-            width: 70px;
-            height: 70px;
-            background: #e0f2fe;
-            color: var(--primary);
+            width: 76px;
+            height: 76px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
-            margin: 0 auto 12px auto;
+            margin: 0 auto 14px auto;
+            box-shadow: 0 8px 20px var(--primary-glow);
         }
         .verified-badge {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            background: #ecfdf5;
-            color: #059669;
-            padding: 5px 12px;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 700;
-            border: 1px solid #a7f3d0;
-            margin-top: 6px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            margin-top: 8px;
         }
         .member-card {
-            background: #f8fafc;
-            border: 1px dashed var(--border);
-            padding: 14px;
-            border-radius: 12px;
-            margin: 16px 0;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px dashed var(--border-glass);
+            padding: 16px;
+            border-radius: 16px;
+            margin: 20px 0;
         }
         .btn-logout {
-            background: #fee2e2;
-            color: #b91c1c;
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
             box-shadow: none;
             margin-top: 10px;
         }
         .btn-logout:hover {
-            background: #fecaca;
+            background: rgba(239, 68, 68, 0.25);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
         }
     </style>
 </head>
 <body>
     <div class="container">
         
-        <!-- TABS / HEADER -->
+        <!-- HEADER & TABS -->
         <div id="authHeader">
             <div class="brand-header">
                 <h1>Mchezo Wetu</h1>
-                <p>Mfumo wa Kikundi cha Kifedha</p>
+                <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Mfumo wa Kikundi cha Kifedha</p>
             </div>
+            
+            <div class="welcome-banner" id="welcomeBanner">
+                ✨ Karibu sana kwenye familia yetu!
+            </div>
+
             <div class="tabs">
                 <button class="tab-btn active" id="tabLoginBtn" onclick="switchTab('login')">Ingia</button>
                 <button class="tab-btn" id="tabSignupBtn" onclick="switchTab('signup')">Jisajili</button>
@@ -250,42 +316,42 @@
                     <label>Neno la Siri (Password)</label>
                     <input type="password" id="regPassword" required placeholder="Weka password imara">
                 </div>
-                <button type="submit" class="btn-submit">Tuma Ombi la Usajili</button>
+                <button type="submit" class="btn-submit">Tuma Ombi la Kujiunga</button>
             </form>
         </div>
 
-        <!-- PENDING APPROVAL SCREEN (Mwanachama akishajisajili) -->
+        <!-- PENDING APPROVAL SCREEN -->
         <div id="pendingSection" style="display: none;" class="pending-box">
             <div class="pending-icon">⏳</div>
-            <h2 style="font-size: 20px; margin-bottom: 8px; color: #1e293b;">Ombi Limeshapelekwa!</h2>
-            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">
-                Asante kwa kujisajili. Tafadhali subiri uthibitisho (approval) kutoka kwa Msimamizi ndani ya muda mfupi ujao ili uweze kutumia mfumo.
+            <h2 style="font-size: 20px; margin-bottom: 8px; color: var(--text-main);">Ombi Limeshapokelewa!</h2>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px;">
+                Asante sana kwa kujiunga nasi! Ombi lako limetumwa kwa Msimamizi. Tafadhali subiri kwa muda mfupi upate uthibitisho (approval) ili uanze kutumia mfumo.
             </p>
-            <div style="background: #f8fafc; padding: 12px; border-radius: 10px; font-size: 13px; margin-bottom: 16px;">
-                Hali: <strong style="color: #d97706;">Inasubiri Idhini (Pending)</strong>
+            <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass); padding: 12px; border-radius: 12px; font-size: 13px; margin-bottom: 20px;">
+                Hali ya Ombi: <strong style="color: #fbbf24;">Inasubiri Idhini (Pending)</strong>
             </div>
-            <button class="btn-submit" onclick="resetToLogin()" style="background: #64748b;">Rudi Kwenye Ukurasa wa Kuingia</button>
+            <button class="btn-submit" onclick="resetToLogin()" style="background: rgba(255,255,255,0.1); box-shadow: none;">Rudi Ukurasa wa Kuingia</button>
         </div>
 
-        <!-- PROFILE SECTION (Approved Member) -->
+        <!-- PROFILE SECTION -->
         <div id="profileSection" style="display: none;" class="profile-view">
             <div class="avatar" id="userAvatar">MW</div>
-            <h2 id="profName" style="margin: 0 0 2px 0; font-size: 18px;">Jina</h2>
+            <h2 id="profName" style="margin: 0 0 4px 0; font-size: 20px;">Jina</h2>
             <div>
                 <span class="verified-badge">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#059669"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#34d399"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
                     Verified Member
                 </span>
             </div>
 
             <div class="member-card">
-                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Namba ya Uanachama Rasmi</span><br>
-                <span id="profMemberNumber" style="font-size: 20px; color: var(--primary); font-weight: 800;"></span>
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">Namba ya Uanachama Rasmi</span><br>
+                <span id="profMemberNumber" style="font-size: 22px; color: #60a5fa; font-weight: 800; display: block; margin-top: 4px;"></span>
             </div>
 
-            <div style="text-align: left; font-size: 13px; background: #f8fafc; padding: 12px; border-radius: 10px; margin-bottom: 14px;">
-                <p style="margin: 4px 0; color: var(--text-muted);">Simu: <strong id="profPhone" style="color: var(--text-main);"></strong></p>
-                <p style="margin: 4px 0; color: var(--text-muted);">Hali ya Akaunti: <strong style="color: #059669;">Imethibitishwa (Active)</strong></p>
+            <div style="text-align: left; font-size: 13px; background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass); padding: 14px; border-radius: 14px; margin-bottom: 16px;">
+                <p style="margin: 6px 0; color: var(--text-muted);">Simu: <strong id="profPhone" style="color: var(--text-main);"></strong></p>
+                <p style="margin: 6px 0; color: var(--text-muted);">Hali ya Akaunti: <strong style="color: #34d399;">Imethibitishwa (Active)</strong></p>
             </div>
 
             <button class="btn-submit btn-logout" onclick="handleLogout()">Ondoka (Logout)</button>
@@ -306,17 +372,20 @@
             const signupSec = document.getElementById('signupSection');
             const loginBtn = document.getElementById('tabLoginBtn');
             const signupBtn = document.getElementById('tabSignupBtn');
+            const banner = document.getElementById('welcomeBanner');
 
             if (tab === 'login') {
                 loginSec.style.display = 'block';
                 signupSec.style.display = 'none';
                 loginBtn.classList.add('active');
                 signupBtn.classList.remove('active');
+                banner.innerHTML = "👋 Karibu tena kwenye akaunti yako!";
             } else {
                 loginSec.style.display = 'none';
                 signupSec.style.display = 'block';
                 signupBtn.classList.add('active');
                 loginBtn.classList.remove('active');
+                banner.innerHTML = "🚀 Jiunge sasa ujenge maisha ya kifedha nasi!";
             }
         }
 
@@ -337,7 +406,6 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    // Ficha vichwa vya habari na fomu, onyesha Pending Screen
                     document.getElementById('authHeader').style.display = 'none';
                     document.getElementById('signupSection').style.display = 'none';
                     document.getElementById('pendingSection').style.display = 'block';
