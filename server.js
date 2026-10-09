@@ -21,7 +21,7 @@ async function logActivity(adminName, action, details) {
             details: details,
             date: new Date().toLocaleString('sw-TZ')
         }]);
-    } catch (e) {
+//     } catch (e) { // Imesafishwa na mfumo
         console.error('Log error:', e.message);
     }
 }
