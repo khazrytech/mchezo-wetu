@@ -62,6 +62,21 @@ app.post('/api/login', (req, res) => {
     res.json({ success: true, message: 'Umekaribishwa kwenye mfumo!', user });
 });
 
+// ADMIN ENDPOINTS (Kusoma na kuidhinisha wanachama wapya)
+app.get('/api/admin/users', (req, res) => {
+    res.json({ success: true, users });
+});
+
+app.post('/api/admin/approve', (req, res) => {
+    const { phone } = req.body;
+    const user = users.find(u => u.phone === phone);
+    if (!user) {
+        return res.json({ success: false, message: 'Mtumiaji hapatikani kwenye mfumo.' });
+    }
+    user.status = 'approved';
+    res.json({ success: true, message: `Mwanachama ${user.fullName} amethibitishwa rasmi!` });
+});
+
 app.get('/api/announcements', (req, res) => {
     res.json({ success: true, announcements });
 });
