@@ -1,498 +1,325 @@
 <!DOCTYPE html>
-<html lang="sw" class="dark">
+<html lang="sw">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Mchezo Wetu - Digital Micro-Group</title>
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {}
-      }
-    }
-  </script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    * { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-    .gradient-card { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #064e3b 100%); }
-    .glow-emerald { box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.4); }
-    .network-card { transition: all 0.2s ease-in-out; }
-    .network-card.selected { border-color: #10b981; background: rgba(16, 185, 129, 0.15); }
-
-    /* Animated Success Checkmark */
-    .checkmark-circle { stroke-dasharray: 166; stroke-dashoffset: 166; stroke-width: 3; stroke-miterlimit: 10; stroke: #10b981; fill: none; animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards; }
-    .checkmark-check { transform-origin: 50% 50%; stroke-dasharray: 48; stroke-dashoffset: 48; stroke: #10b981; animation: stroke 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards; }
-    @keyframes stroke { 100% { stroke-dashoffset: 0; } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mchezo Wetu - Fintech Platform</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #10b981;
+            --accent-hover: #059669;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #334155;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            margin: 16px;
+            box-sizing: border-box;
+        }
+        h2 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 24px;
+            font-size: 24px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        button:hover {
+            background-color: var(--accent-hover);
+        }
+        .switch-btn {
+            background: none;
+            color: var(--accent);
+            border: none;
+            margin-top: 12px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .message.error { background: #fee2e2; color: #991b1b; }
+        .message.success { background: #d1fae5; color: #065f46; }
+        
+        .profile-card {
+            text-align: center;
+        }
+        .avatar-container {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px auto;
+            background: #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #eff6ff;
+            color: #2563eb;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 8px;
+            border: 1px solid #bfdbfe;
+        }
+        .member-number-box {
+            background: #f1f5f9;
+            padding: 14px;
+            border-radius: 8px;
+            margin: 16px 0;
+            font-size: 15px;
+        }
+        .logout-btn {
+            background-color: #ef4444;
+            margin-top: 16px;
+        }
+        .logout-btn:hover {
+            background-color: #dc2626;
+        }
+    </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen pb-28 select-none transition-colors duration-300">
-
-  <!-- HEADER -->
-  <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800/80 px-4 py-3 transition-colors duration-300">
-    <div class="max-w-md mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <div class="relative">
-          <div id="user-avatar" class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-400 to-indigo-600 flex items-center justify-center text-slate-950 font-black text-sm shadow-lg">
-            JHA
-          </div>
-          <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-slate-950 rounded-full"></span>
-        </div>
-        <div>
-          <h1 id="greeting-text" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Habari za usiku, Juma 👋</h1>
-          <div class="flex items-center gap-1.5 mt-0.5">
-            <span class="text-xs font-extrabold text-slate-900 dark:text-white">Karibu Mchezo Wetu</span>
-            <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-              Mwanachama Hai ●
-            </span>
-          </div>
-        </div>
-      </div>
-      
-      <button onclick="switchTab('notifs')" class="relative p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300">
-        <i class="fa-solid fa-bell text-base"></i>
-        <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-rose-500 rounded-full animate-ping"></span>
-        <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-rose-500 rounded-full"></span>
-      </button>
-    </div>
-  </header>
-
-  <main class="max-w-md mx-auto px-4 pt-4 space-y-5">
-
-    <!-- VIEW: DASHBOARD (HOME) -->
-    <div id="view-dashboard" class="space-y-5">
-
-      <!-- MCHANGO WANGU -->
-      <div class="p-4 rounded-3xl bg-white dark:bg-slate-900 border border-emerald-500/30 shadow-xl space-y-3 relative overflow-hidden transition-colors duration-300">
-        <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-2.5">
-          <span class="text-[11px] font-extrabold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-user-check"></i> MCHANGO WANGU LEO
-          </span>
-          <span id="my-status-badge" class="text-[10px] font-black px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
-            ✓ UMELIPA LEO
-          </span>
-        </div>
-        <div class="grid grid-cols-2 gap-2 pt-1">
-          <div>
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase">Ulicholipa Leo</p>
-            <p id="my-paid-today" class="text-lg font-black text-slate-900 dark:text-white mt-0.5">TSh 2,000</p>
-          </div>
-          <div class="text-right">
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase">Jumla ya Michango Yako</p>
-            <p id="my-total-alltime" class="text-lg font-black text-indigo-600 dark:text-indigo-300 mt-0.5">TSh 62,000</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- KADI KUU YA MCHEZO WETU -->
-      <div class="p-5 rounded-3xl gradient-card border border-slate-800 shadow-2xl space-y-4 glow-emerald">
-        <div class="flex justify-between items-start">
-          <div>
-            <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/80 px-2.5 py-1 rounded-lg border border-emerald-800/50">
-              Lengo la Leo
-            </span>
-            <h2 id="group-title" class="text-xl font-black text-white mt-2">Mchezo Wetu</h2>
-          </div>
-          <div class="text-right">
-            <span class="text-xs text-slate-400 block">Kiwango / Siku</span>
-            <span class="text-sm font-extrabold text-emerald-300">TSh <span id="target-amount">2,000</span></span>
-          </div>
+<body>
+    <div class="container" id="appContainer">
+        <!-- Fomu ya Usajili (Sign Up) -->
+        <div id="signupSection">
+            <h2>Jiunge na Mchezo Wetu</h2>
+            <div id="signupMsg"></div>
+            <form id="signupForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Jina Kamili</label>
+                    <input type="text" id="regName" required placeholder="Weka jina lako kamili">
+                </div>
+                <div class="form-group">
+                    <label>Namba ya Simu</label>
+                    <input type="tel" id="regPhone" required placeholder="07xxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label>Barua Pepe (Hiari)</label>
+                    <input type="email" id="regEmail" placeholder="mkononi@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Neno la Siri (Password)</label>
+                    <input type="password" id="regPassword" required placeholder="Weka neno la siri">
+                </div>
+                <button type="submit">Jisajili Sasa</button>
+            </form>
+            <button class="switch-btn" onclick="showLogin()">Una akaunti? Ingia (Sign In)</button>
         </div>
 
-        <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800/80 space-y-3">
-          <div class="flex justify-between items-end">
+        <!-- Fomu ya Kuingia (Sign In) -->
+        <div id="loginSection" style="display: none;">
+            <h2>Ingia kwenye Mfumo</h2>
+            <div id="loginMsg"></div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Namba ya Simu</label>
+                    <input type="tel" id="loginPhone" required placeholder="07xxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label>Neno la Siri (Password)</label>
+                    <input type="password" id="loginPassword" required placeholder="Weka neno la siri">
+                </div>
+                <button type="submit">Ingia (Sign In)</button>
+            </form>
+            <button class="switch-btn" id="switchToSignupBtn" onclick="showSignup()">Haujasajiliwa? Jisajili</button>
+        </div>
+
+        <!-- Profaili ya Mwanachama aliyekubaliwa (Approved) -->
+        <div id="profileSection" style="display: none;" class="profile-card">
+            <div class="avatar-container" id="userAvatar">MW</div>
+            <h2 id="profName" style="margin-bottom: 4px;">Jina la Mwanachama</h2>
+            
             <div>
-              <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Jumla Iliyokusanywa Leo</p>
-              <p id="total-collected" class="text-2xl font-black text-white mt-1">TSh 0</p>
+                <span class="verified-badge">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="#2563eb"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    Verified Member
+                </span>
             </div>
-            <div class="text-right">
-              <span id="progress-percent" class="text-base font-black text-emerald-400">0%</span>
-              <p class="text-[10px] text-slate-500 font-semibold">ya Lengo</p>
+
+            <div class="member-number-box">
+                Namba ya Uanachama: <br>
+                <span id="profMemberNumber" style="font-size: 18px; color: var(--accent); font-weight: bold;"></span>
             </div>
-          </div>
-          <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-700/50">
-            <div id="progress-bar" class="bg-gradient-to-r from-emerald-500 via-teal-400 to-indigo-500 h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
-          </div>
-        </div>
 
-        <button onclick="openPayModal()" class="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 text-slate-950 font-black text-xs sm:text-sm shadow-xl active:scale-[0.98] flex items-center justify-center gap-2 tracking-wide uppercase">
-          <i class="fa-solid fa-bolt text-base"></i> LIPA TSH 2,000 YA LEO SASA
-        </button>
-      </div>
+            <div style="text-align: left; background: #f8fafc; padding: 12px; border-radius: 8px; font-size: 14px; margin-bottom: 16px;">
+                <p style="margin: 6px 0;"><strong>Simu:</strong> <span id="profPhone"></span></p>
+                <p style="margin: 6px 0;"><strong>Hali:</strong> <span style="color: var(--accent); font-weight: bold;">Imethibitishwa (Active)</span></p>
+            </div>
 
-      <!-- TAKWIMU ZA JUMLA -->
-      <div class="grid grid-cols-3 gap-2.5">
-        <div class="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center transition-colors duration-300">
-          <i class="fa-solid fa-users text-indigo-500 dark:text-indigo-400 text-sm mb-1 block"></i>
-          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase block">Wanachama</span>
-          <span id="stat-total" class="text-base font-black text-slate-900 dark:text-white">0</span>
+            <button class="logout-btn" onclick="handleLogout()">Ondoka (Logout)</button>
         </div>
-        <div class="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-emerald-500/20 text-center transition-colors duration-300">
-          <i class="fa-solid fa-circle-check text-emerald-500 dark:text-emerald-400 text-sm mb-1 block"></i>
-          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase block">Waliolipa</span>
-          <span id="stat-paid" class="text-base font-black text-emerald-600 dark:text-emerald-400">0</span>
-        </div>
-        <div class="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-rose-500/20 text-center transition-colors duration-300">
-          <i class="fa-solid fa-clock text-rose-500 dark:text-rose-400 text-sm mb-1 block"></i>
-          <span class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase block">Hawajalipa</span>
-          <span id="stat-unpaid" class="text-base font-black text-rose-600 dark:text-rose-400">0</span>
-        </div>
-      </div>
-
-      <!-- HALI YA MICHANGO -->
-      <div class="space-y-3">
-        <div class="flex justify-between items-center">
-          <h3 class="text-sm font-extrabold text-slate-900 dark:text-slate-200">Hali ya Michango</h3>
-          <span id="member-count" class="text-xs text-slate-500 dark:text-slate-400 font-semibold">0 Wanachama</span>
-        </div>
-
-        <div class="relative">
-          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 dark:text-slate-500 text-xs"></i>
-          <input type="text" id="search-input" onkeyup="filterMembers()" placeholder="Tafuta jina au namba..." class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors duration-300">
-        </div>
-
-        <div class="flex gap-2 text-xs">
-          <button onclick="setFilter('all')" id="btn-filter-all" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-bold">Wote</button>
-          <button onclick="setFilter('paid')" id="btn-filter-paid" class="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-semibold">Waliolipa</button>
-          <button onclick="setFilter('unpaid')" id="btn-filter-unpaid" class="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-semibold">Hawajalipa</button>
-        </div>
-
-        <div id="members-list" class="space-y-2"></div>
-      </div>
     </div>
 
-    <!-- MICHANGO YANGU VIEW -->
-    <div id="view-contributions" class="hidden space-y-4">
-      <h2 class="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">MAENDELEO YANGU</h2>
-      <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3 transition-colors duration-300">
-        <div class="flex justify-between items-center text-xs">
-          <span class="text-slate-600 dark:text-slate-400">Michango iliyokamilika:</span>
-          <span id="my-completed-days" class="font-black text-emerald-600 dark:text-emerald-400">0 siku</span>
-        </div>
-        <div class="flex justify-between items-center text-xs">
-          <span class="text-slate-600 dark:text-slate-400">Siku ambazo hujakamilisha:</span>
-          <span id="my-missed-days" class="font-black text-rose-600 dark:text-rose-400">0 siku</span>
-        </div>
-      </div>
-    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Kama mtumiaji alishajisajili kwenye kifaa hiki, fichua sehemu ya kujisajili iwe Sign In pekee
+            const isRegistered = localStorage.getItem('mchezo_registered');
+            if (isRegistered) {
+                document.getElementById('signupSection').style.display = 'none';
+                document.getElementById('loginSection').style.display = 'block';
+                const switchBtn = document.getElementById('switchToSignupBtn');
+                if(switchBtn) switchBtn.style.display = 'none';
+            }
 
-    <!-- RISITI VIEW -->
-    <div id="view-receipts" class="hidden space-y-4">
-      <h2 class="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">RISITI NA HISTORIA YA MALIPO</h2>
-      <div id="receipts-list" class="space-y-2"></div>
-    </div>
+            // Kama yupo tayari ndani ya session
+            const savedUser = localStorage.getItem('mchezo_user');
+            if (savedUser) {
+                showProfile(JSON.parse(savedUser));
+            }
+        });
 
-    <!-- PROFILE VIEW PAMOJA NA DARK MODE SETTINGS -->
-    <div id="view-profile" class="hidden space-y-5">
-      <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center relative overflow-hidden shadow-2xl transition-colors duration-300">
-        <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 opacity-20 dark:opacity-25"></div>
-        
-        <div class="relative z-10 space-y-3">
-          <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-emerald-400 to-indigo-500 p-1 shadow-xl glow-emerald">
-            <div class="w-full h-full bg-slate-50 dark:bg-slate-950 rounded-[22px] flex items-center justify-center text-2xl font-black text-emerald-500 dark:text-emerald-400">
-              JHA
-            </div>
-          </div>
-
-          <div>
-            <h2 id="prof-name" class="text-lg font-black text-slate-900 dark:text-white">Juma Hamisi Ally</h2>
-            <p id="prof-phone" class="text-xs text-slate-500 dark:text-slate-400 font-medium">0712345678</p>
-          </div>
-
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold">
-            <i class="fa-solid fa-shield-check"></i> Mwekahazina Aliyehakikiwa
-          </div>
-        </div>
-      </div>
-
-      <!-- MIPANGILIO (SETTINGS) -->
-      <div class="p-5 rounded-3xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-4 transition-colors duration-300">
-        <h3 class="text-xs font-extrabold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
-          <i class="fa-solid fa-gear text-emerald-500"></i> Mipangilio ya Akaunti
-        </h3>
-
-        <!-- Dark Mode Toggle Switch -->
-        <div class="flex justify-between items-center p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800/80">
-          <div class="flex items-center gap-3">
-            <i class="fa-solid fa-moon text-slate-500 dark:text-slate-400 text-sm"></i>
-            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Muonekano wa Giza (Dark Mode)</span>
-          </div>
-          
-          <button id="theme-toggle-btn" onclick="toggleTheme()" class="relative inline-flex h-6 w-11 items-center rounded-full bg-emerald-500 transition-colors">
-            <span id="theme-toggle-circle" class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-6"></span>
-          </button>
-        </div>
-      </div>
-
-      <div class="p-5 rounded-3xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-3 transition-colors duration-300">
-        <h3 class="text-xs font-extrabold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
-          <i class="fa-solid fa-users text-emerald-500"></i> Taarifa Za Kikundi Chako
-        </h3>
-        <div class="space-y-2 text-xs">
-          <div class="flex justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800/80">
-            <span class="text-slate-600 dark:text-slate-400">Jina la Kikundi:</span>
-            <span class="font-bold text-slate-900 dark:text-white">Mchezo Wetu</span>
-          </div>
-          <div class="flex justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800/80">
-            <span class="text-slate-600 dark:text-slate-400">Mzunguko Wa Mchango:</span>
-            <span class="font-bold text-emerald-600 dark:text-emerald-400">Kila Siku (Daily)</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- ========================================== -->
-  <!-- 🔥 4-ITEM NAVIGATION BAR (NO CENTER BUTTON) 🔥 -->
-  <!-- ========================================== -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800/80 px-6 py-2 transition-colors duration-300">
-    <div class="max-w-md mx-auto flex justify-between items-center text-slate-400 dark:text-slate-500">
-      
-      <button onclick="switchTab('dashboard')" id="nav-dash" class="w-14 flex flex-col items-center gap-1 text-emerald-500 font-bold">
-        <i class="fa-solid fa-house text-lg"></i>
-        <span class="text-[9px]">Nyumbani</span>
-      </button>
-
-      <button onclick="switchTab('contributions')" id="nav-contrib" class="w-14 flex flex-col items-center gap-1 hover:text-slate-600 dark:hover:text-slate-300">
-        <i class="fa-solid fa-wallet text-lg"></i>
-        <span class="text-[9px]">Michango</span>
-      </button>
-
-      <button onclick="switchTab('receipts')" id="nav-receipt" class="w-14 flex flex-col items-center gap-1 hover:text-slate-600 dark:hover:text-slate-300">
-        <i class="fa-solid fa-receipt text-lg"></i>
-        <span class="text-[9px]">Risiti</span>
-      </button>
-
-      <button onclick="switchTab('profile')" id="nav-prof" class="w-14 flex flex-col items-center gap-1 hover:text-slate-600 dark:hover:text-slate-300">
-        <i class="fa-solid fa-user text-lg"></i>
-        <span class="text-[9px]">Profile</span>
-      </button>
-
-    </div>
-  </nav>
-
-  <!-- ========================================== -->
-  <!-- MODAL YA MALIPO (BILA KUBADILIKA) -->
-  <!-- ========================================== -->
-  <div id="pay-modal" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex justify-center items-end sm:items-center p-0 sm:p-4">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 border border-slate-200 dark:border-slate-800 space-y-4 max-h-[90vh] overflow-y-auto transition-colors duration-300">
-      
-      <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
-        <div>
-          <h3 class="text-base font-extrabold text-slate-900 dark:text-white">Chagua Njia ya Malipo</h3>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400">Lipa TSh 2,000 kwa Njia ya Mtandao</p>
-        </div>
-        <button onclick="closePayModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1">
-          <i class="fa-solid fa-xmark text-xl"></i>
-        </button>
-      </div>
-      
-      <div class="space-y-2">
-        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Chagua Mtandao Wako:</label>
-        
-        <div class="grid grid-cols-1 gap-2">
-          
-          <div onclick="selectNetwork('Vodacom M-Pesa')" id="net-mpesa" class="network-card selected p-3 rounded-2xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-between cursor-pointer">
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-xl bg-rose-600 flex items-center justify-center text-white font-black text-xs shadow-md">M</div>
-              <div>
-                <p class="text-xs font-bold text-slate-900 dark:text-white">Vodacom M-Pesa</p>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400">STK Push Inatumwa Papo Hapo</p>
-              </div>
-            </div>
-            <i class="fa-solid fa-circle-check text-emerald-500 dark:text-emerald-400 text-base"></i>
-          </div>
-
-          <div onclick="selectNetwork('Mixx by Yas (TigoPesa)')" id="net-tigo" class="network-card p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-between cursor-pointer">
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-xs shadow-md">T</div>
-              <div>
-                <p class="text-xs font-bold text-slate-900 dark:text-white">Tigo Pesa (Mixx by Yas)</p>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400">STK Push Inatumwa Papo Hapo</p>
-              </div>
-            </div>
-            <i class="fa-solid fa-circle text-slate-300 dark:text-slate-700 text-base"></i>
-          </div>
-          
-          <!-- ... Airtel, HaloPesa, AzamPesa zimefupishwa kwa usafi ... -->
-
-        </div>
-      </div>
-
-      <div class="space-y-3 text-xs pt-1">
-        <div>
-          <label class="block text-slate-700 dark:text-slate-300 font-bold mb-1">Namba ya Simu ya Malipo</label>
-          <input type="text" id="pay-phone" value="0712345678" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white font-bold focus:outline-none focus:border-emerald-500">
-        </div>
-      </div>
-
-      <div class="pt-2 flex gap-3">
-        <button onclick="closePayModal()" class="w-1/3 py-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs">Ghairi</button>
-        <button onclick="submitStkPayment()" class="w-2/3 py-3.5 rounded-xl bg-emerald-500 dark:bg-emerald-400 text-white dark:text-slate-950 font-black text-xs shadow-lg glow-emerald active:scale-95 transition-all">ANZISHA MALIPO</button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- MODERN ANIMATED SUCCESS MODAL -->
-  <div id="success-modal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex justify-center items-center p-4">
-    <div class="bg-white dark:bg-slate-900 border border-emerald-500/30 w-full max-w-sm rounded-3xl p-6 text-center space-y-4 shadow-2xl glow-emerald transition-colors duration-300">
-      
-      <div class="w-20 h-20 mx-auto">
-        <svg class="w-full h-full" viewBox="0 0 52 52">
-          <circle class="checkmark-circle" cx="26" cy="26" r="23" fill="none"/>
-          <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-        </svg>
-      </div>
-
-      <div>
-        <h3 class="text-lg font-black text-slate-900 dark:text-white">Malipo Yamethibitishwa!</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Ujumbe wa uthibitisho umetumwa kwenye simu yako.</p>
-      </div>
-
-      <button onclick="closeSuccessModal()" class="w-full py-3.5 rounded-2xl bg-emerald-500 dark:bg-emerald-400 text-white dark:text-slate-950 font-black text-xs shadow-xl glow-emerald active:scale-95 transition-all">
-        ENDELEA
-      </button>
-
-    </div>
-  </div>
-
-  <script>
-    const GROUP_ID = 'grp-101';
-    const MEMBER_ID = 1;
-    let allMembers = [];
-    let currentFilter = 'all';
-    let selectedProvider = 'Vodacom M-Pesa';
-
-    // DARK MODE TOGGLE LOGIC - Imeboreshwa kutumia Switch
-    function toggleTheme() {
-      const html = document.documentElement;
-      const toggleBtn = document.getElementById('theme-toggle-btn');
-      const toggleCircle = document.getElementById('theme-toggle-circle');
-
-      if (html.classList.contains('dark')) {
-        html.classList.remove('dark');
-        // Badilisha Switch ikae upande wa Mwanga (Kushoto)
-        toggleBtn.className = "relative inline-flex h-6 w-11 items-center rounded-full bg-slate-300 transition-colors";
-        toggleCircle.className = "inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-1 shadow-sm";
-      } else {
-        html.classList.add('dark');
-        // Badilisha Switch ikae upande wa Giza (Kulia)
-        toggleBtn.className = "relative inline-flex h-6 w-11 items-center rounded-full bg-emerald-500 transition-colors";
-        toggleCircle.className = "inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-6 shadow-sm";
-      }
-    }
-
-    // Logic za kawaida za API ...
-    async function loadDashboard() {
-      try {
-        const res = await fetch(`/api/dashboard/${GROUP_ID}/${MEMBER_ID}`);
-        const data = await res.json();
-        
-        document.getElementById('group-title').innerText = data.groupName;
-        document.getElementById('target-amount').innerText = data.targetContribution.toLocaleString();
-        document.getElementById('total-collected').innerText = `TSh ${data.totalCollectedToday.toLocaleString()}`;
-        document.getElementById('progress-percent').innerText = `${data.progressPercent}%`;
-        document.getElementById('progress-bar').style.width = `${data.progressPercent}%`;
-
-        document.getElementById('my-paid-today').innerText = `TSh ${data.myContribution.paidToday.toLocaleString()}`;
-        document.getElementById('my-total-alltime').innerText = `TSh ${data.myContribution.totalPaidAllTime.toLocaleString()}`;
-        
-        allMembers = data.members;
-        renderMembers();
-      } catch (err) { console.error("Error loading data", err); }
-    }
-
-    function renderMembers() {
-      const listContainer = document.getElementById('members-list');
-      const searchVal = document.getElementById('search-input').value.toLowerCase();
-      listContainer.innerHTML = '';
-
-      allMembers.filter(m => {
-        const matchesFilter = currentFilter === 'all' || (currentFilter === 'paid' && m.hasPaid) || (currentFilter === 'unpaid' && !m.hasPaid);
-        const matchesSearch = m.name.toLowerCase().includes(searchVal) || m.phone.includes(searchVal);
-        return matchesFilter && matchesSearch;
-      }).forEach(member => {
-        const item = document.createElement('div');
-        item.className = "p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex justify-between items-center transition-colors duration-300";
-        
-        if (member.hasPaid) {
-          item.innerHTML = `
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold text-xs"><i class="fa-solid fa-check"></i></div>
-              <div><p class="font-bold text-xs text-slate-900 dark:text-white">${member.name}</p><p class="text-[10px] text-slate-500 dark:text-slate-400">${member.phone}</p></div>
-            </div>
-            <div class="text-right"><span class="text-xs font-black text-emerald-600 dark:text-emerald-400">TSh ${member.amountPaid.toLocaleString()}</span><p class="text-[9px] text-emerald-600 dark:text-emerald-500 font-bold uppercase">🟢 Kalipa Leo</p></div>
-          `;
-        } else {
-          item.innerHTML = `
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400 font-bold text-xs"><i class="fa-solid fa-clock"></i></div>
-              <div><p class="font-bold text-xs text-slate-900 dark:text-white">${member.name}</p><p class="text-[10px] text-slate-500 dark:text-slate-400">${member.phone}</p></div>
-            </div>
-            <div class="text-right"><span class="text-xs font-black text-rose-600 dark:text-rose-400">Anadaiwa</span><p class="text-[9px] text-slate-500 font-bold uppercase">🔴 Hajalipa</p></div>
-          `;
+        function showLogin() {
+            document.getElementById('signupSection').style.display = 'none';
+            document.getElementById('loginSection').style.display = 'block';
         }
-        listContainer.appendChild(item);
-      });
-    }
 
-    function setFilter(filter) {
-      currentFilter = filter;
-      document.getElementById('btn-filter-all').className = filter === 'all' ? 'px-3 py-1.5 rounded-lg bg-emerald-500 text-white dark:text-slate-950 font-bold' : 'px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-semibold';
-      document.getElementById('btn-filter-paid').className = filter === 'paid' ? 'px-3 py-1.5 rounded-lg bg-emerald-500 text-white dark:text-slate-950 font-bold' : 'px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-semibold';
-      document.getElementById('btn-filter-unpaid').className = filter === 'unpaid' ? 'px-3 py-1.5 rounded-lg bg-emerald-500 text-white dark:text-slate-950 font-bold' : 'px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-semibold';
-      renderMembers();
-    }
-    function filterMembers() { renderMembers(); }
-
-    function switchTab(tab) {
-      ['dashboard', 'contributions', 'receipts', 'notifs', 'profile'].forEach(t => document.getElementById(`view-${t}`)?.classList.add('hidden'));
-      document.getElementById(`view-${tab}`)?.classList.remove('hidden');
-
-      const navBtns = ['nav-dash', 'nav-contrib', 'nav-receipt', 'nav-prof'];
-      navBtns.forEach(btn => {
-        const el = document.getElementById(btn);
-        if(el) el.className = "w-14 flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300";
-      });
-
-      const activeEl = document.getElementById(`nav-${tab === 'dashboard' ? 'dash' : tab === 'contributions' ? 'contrib' : tab === 'profile' ? 'prof' : 'receipt'}`);
-      if(activeEl) activeEl.className = "w-14 flex flex-col items-center gap-1 text-emerald-500 font-bold";
-    }
-
-    function openPayModal() { document.getElementById('pay-modal').classList.remove('hidden'); }
-    function closePayModal() { document.getElementById('pay-modal').classList.add('hidden'); }
-    function selectNetwork(provider) {
-      selectedProvider = provider;
-      const cardIds = { 'Vodacom M-Pesa': 'net-mpesa', 'Mixx by Yas (TigoPesa)': 'net-tigo' }; // Nimefupisha kwa mfano tu
-      Object.keys(cardIds).forEach(key => {
-        const el = document.getElementById(cardIds[key]);
-        if(!el) return;
-        const icon = el.querySelector('.fa-solid');
-        if (key === provider) {
-          el.className = "network-card selected p-3 rounded-2xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-between cursor-pointer";
-          icon.className = "fa-solid fa-circle-check text-emerald-500 dark:text-emerald-400 text-base";
-        } else {
-          el.className = "network-card p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-between cursor-pointer";
-          icon.className = "fa-solid fa-circle text-slate-300 dark:text-slate-700 text-base";
+        function showSignup() {
+            document.getElementById('signupSection').style.display = 'block';
+            document.getElementById('loginSection').style.display = 'none';
         }
-      });
-    }
 
-    async function submitStkPayment() {
-      closePayModal();
-      document.getElementById('success-modal').classList.remove('hidden');
-    }
-    function closeSuccessModal() { document.getElementById('success-modal').classList.add('hidden'); }
+        async function handleRegister(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('regName').value;
+            const phone = document.getElementById('regPhone').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const msgBox = document.getElementById('signupMsg');
 
-    loadDashboard();
-  </script>
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullName, phone, email, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    msgBox.className = 'message success';
+                    msgBox.innerText = data.message;
+                    localStorage.setItem('mchezo_registered', 'true');
+                    setTimeout(() => {
+                        showLogin();
+                        const switchBtn = document.getElementById('switchToSignupBtn');
+                        if(switchBtn) switchBtn.style.display = 'none';
+                    }, 2000);
+                } else {
+                    msgBox.className = 'message error';
+                    msgBox.innerText = data.message;
+                }
+            } catch (err) {
+                msgBox.className = 'message error';
+                msgBox.innerText = 'Hitilafu imetokea. Jaribu tena.';
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const phone = document.getElementById('loginPhone').value;
+            const password = document.getElementById('loginPassword').value;
+            const msgBox = document.getElementById('loginMsg');
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    localStorage.setItem('mchezo_user', JSON.stringify(data.user));
+                    showProfile(data.user);
+                } else {
+                    msgBox.className = 'message error';
+                    msgBox.innerText = data.message;
+                }
+            } catch (err) {
+                msgBox.className = 'message error';
+                msgBox.innerText = 'Hitilafu imetokea wakati wa kuingia.';
+            }
+        }
+
+        function showProfile(user) {
+            document.getElementById('signupSection').style.display = 'none';
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('profileSection').style.display = 'block';
+
+            document.getElementById('profName').innerText = user.fullName;
+            document.getElementById('profPhone').innerText = user.phone;
+            document.getElementById('profMemberNumber').innerText = user.memberNumber;
+            
+            const initials = user.fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('userAvatar').innerText = initials;
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('mchezo_user');
+            location.reload();
+        }
+    </script>
 </body>
 </html>
