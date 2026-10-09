@@ -75,7 +75,7 @@ app.post('/api/login', async (req, res) => {
         });
     
         return res.json({ success: false, message: 'Hitilafu ya Seva: ' + err.message });
-    }
+//     } // Imesafishwa
 });
 
 // REGISTER API
