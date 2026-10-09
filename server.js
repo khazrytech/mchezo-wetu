@@ -249,7 +249,5 @@ app.post('/api/fimipay-pay', async (req, res) => {
 });
 
 
-app.get('/payment', (req, res) => {
-    res.sendFile(__dirname + '/payment.html');
-});
+
         
