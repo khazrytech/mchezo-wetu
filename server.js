@@ -7,6 +7,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
 let users = [];
+let transactions = [
+    { id: 1, type: 'Mchango', amount: 50000, member: 'Mwanachama Mfano', date: '2026-10-08' }
+];
+let announcements = [
+    { id: 1, title: 'Karibu Mchezo Wetu', message: 'Mfuko umeanza rasmi.', date: '2026-10-01' }
+];
+let groupStats = {
+    balance: 245000,
+    total: 1250000,
+    thisMonth: 340000,
+    loans: 45000
+};
 
 // 1. Usajili wa mwanachama mpya
 app.post('/api/register', (req, res) => {
@@ -36,9 +48,14 @@ app.post('/api/register', (req, res) => {
     res.json({ success: true, message: 'Ombi lako limetumwa kwa mafanikio!', user: newUser });
 });
 
-// 2. Admin kuona orodha ya wanachama wote
-app.get('/api/admin/users', (req, res) => {
-    res.json(users);
+// 2. Admin kupata data zote za mfumo
+app.get('/api/admin/data', (req, res) => {
+    res.json({
+        users,
+        transactions,
+        announcements,
+        groupStats
+    });
 });
 
 // 3. Admin ku-approve mwanachama
@@ -57,7 +74,7 @@ app.post('/api/admin/approve/:id', (req, res) => {
     res.json({ success: true, message: 'Mwanachama amekubaliwa kikamilifu!', user });
 });
 
-// 4. Admin ku-reject / kufuta ombi la mwanachama
+// 4. Admin ku-reject mwanachama
 app.post('/api/admin/reject/:id', (req, res) => {
     const userId = req.params.id;
     const index = users.findIndex(u => u.id === userId);
@@ -70,7 +87,42 @@ app.post('/api/admin/reject/:id', (req, res) => {
     res.json({ success: true, message: 'Ombi limekataliwa na kufutwa.' });
 });
 
-// 5. Kuingia kwenye mfumo (Sign In)
+// 5. Admin kuongeza Miamala / Rekodi
+app.post('/api/admin/transaction', (req, res) => {
+    const { type, amount, member } = req.body;
+    if (!type || !amount || !member) {
+        return res.status(400).json({ success: false, message: 'Jaza taarifa zote za muamala.' });
+    }
+    const numAmount = parseFloat(amount);
+    transactions.unshift({
+        id: Date.now(),
+        type,
+        amount: numAmount,
+        member,
+        date: new Date().toISOString().split('T')[0]
+    });
+    groupStats.balance += numAmount;
+    groupStats.total += numAmount;
+
+    res.json({ success: true, message: 'Muamala umehifadhiwa kikamilifu!', groupStats, transactions });
+});
+
+// 6. Admin kutuma Tangazo
+app.post('/api/admin/announcement', (req, res) => {
+    const { title, message } = req.body;
+    if (!title || !message) {
+        return res.status(400).json({ success: false, message: 'Jaza kichwa na ujumbe wa tangazo.' });
+    }
+    announcements.unshift({
+        id: Date.now(),
+        title,
+        message,
+        date: new Date().toISOString().split('T')[0]
+    });
+    res.json({ success: true, message: 'Tangazo limetumwa kwa wanachama wote!', announcements });
+});
+
+// 7. Kuingia kwenye mfumo (Sign In)
 app.post('/api/login', (req, res) => {
     const { identifier, password } = req.body;
 

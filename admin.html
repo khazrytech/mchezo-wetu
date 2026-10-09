@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mchezo Wetu - Jopo la Utawala</title>
+    <title>Mchezo Wetu - Jopo la Utawala Pro</title>
     <style>
         :root {
             --bg-deep: #090d16;
@@ -154,7 +154,7 @@
         .nav-item.active {
             color: var(--primary);
         }
-        /* User Requests in Watu Tab */
+        /* User Requests & Cards */
         .user-request-card {
             background: #111827;
             border: 1px solid var(--border-glass);
@@ -200,6 +200,70 @@
             border: 1px solid rgba(16, 185, 129, 0.3);
             margin-top: 6px;
         }
+        /* Modals Pro */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+        .modal-card {
+            background: #111827;
+            border: 1px solid var(--border-glass);
+            width: 100%;
+            max-width: 380px;
+            padding: 24px;
+            border-radius: 22px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+        }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1.5px solid var(--border-glass);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn-close {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
@@ -207,7 +271,7 @@
         <div class="admin-badge-box">
             <div class="shield-icon">🛡️</div>
             <div>
-                <div style="font-size: 13px; font-weight: 800; letter-spacing: -0.3px;">JOPO LA UTAWALA</div>
+                <div style="font-size: 13px; font-weight: 800;">JOPO LA UTAWALA PRO</div>
                 <div style="font-size: 10px; color: #ec4899; font-weight: 700;">Super Admin</div>
             </div>
         </div>
@@ -217,13 +281,13 @@
     <!-- TAB 1: DASHIBODI -->
     <div id="tabDashibodi" class="tab-content">
         <div class="balance-card">
-            <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">SALIO KUU LA KIKUNDI</div>
-            <div style="font-size: 30px; font-weight: 800; margin: 8px 0; color: #fff; letter-spacing: -0.5px;">TSh 245,000</div>
+            <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">SALIO KUU LA KIKUNDI</div>
+            <div id="mainBalance" style="font-size: 30px; font-weight: 800; margin: 8px 0; color: #fff;">TSh 245,000</div>
             <div class="action-grid">
-                <div class="action-btn" onclick="switchTab('watu')">👤 SAJILI</div>
-                <div class="action-btn" onclick="switchTab('watu')">💰 REKODI</div>
-                <div class="action-btn" onclick="switchTab('setingi')">📢 TANGAZO</div>
-                <div class="action-btn" onclick="switchTab('dashibodi')">📊 RIPOTI</div>
+                <div class="action-btn" onclick="openModal('sajiliModal')">👤 SAJILI</div>
+                <div class="action-btn" onclick="openModal('rekodiModal')">💰 REKODI</div>
+                <div class="action-btn" onclick="openModal('tangazoModal')">📢 TANGAZO</div>
+                <div class="action-btn" onclick="openModal('ripotiModal')">📊 RIPOTI</div>
             </div>
         </div>
 
@@ -231,15 +295,15 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">JUMLA ZOTE</div>
-                <div style="font-size: 16px; font-weight: 800; margin-top: 6px; color: #fff;">TSh 1,250,000</div>
+                <div id="statTotal" style="font-size: 16px; font-weight: 800; margin-top: 6px; color: #fff;">TSh 1,250,000</div>
             </div>
             <div class="stat-card">
                 <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">MWEZI HUU</div>
-                <div style="font-size: 16px; font-weight: 800; margin-top: 6px; color: #fff;">TSh 340,000</div>
+                <div id="statMonth" style="font-size: 16px; font-weight: 800; margin-top: 6px; color: #fff;">TSh 340,000</div>
             </div>
             <div class="stat-card">
                 <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">MIKOPO / MADENI</div>
-                <div style="font-size: 16px; font-weight: 800; margin-top: 6px; color: #f87171;">TSh 45,000</div>
+                <div id="statLoans" style="font-size: 16px; font-weight: 800; margin-top: 6px; color: #f87171;">TSh 45,000</div>
             </div>
             <div class="stat-card" onclick="switchTab('watu')" style="cursor: pointer;">
                 <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">YANAYOSUBIRI</div>
@@ -282,7 +346,7 @@
         <div class="stat-card" style="margin-top: 12px;">
             <div style="font-weight: 700; margin-bottom: 8px; font-size: 15px;">Taarifa za Kikundi</div>
             <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;"><strong>Jina:</strong> Mchezo Wetu Fintech</div>
-            <div style="font-size: 13px; color: var(--text-muted);"><strong>Hali ya Server:</strong> Inafanya Kazi (Active)</div>
+            <div style="font-size: 13px; color: var(--text-muted);"><strong>Hali ya Server:</strong> Inafanya Kazi (Active Pro)</div>
         </div>
     </div>
 
@@ -299,6 +363,62 @@
         </button>
     </div>
 
+    <!-- MODALS PRO -->
+    <!-- Sajili Modal -->
+    <div id="sajiliModal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="margin-top:0; font-size: 18px;">Sajili Mwanachama Mpya</h3>
+            <form onsubmit="handleAdminRegister(event)">
+                <div class="form-group"><label>Jina Kamili</label><input type="text" id="adminRegName" required placeholder="Jina la mwanachama"></div>
+                <div class="form-group"><label>Namba ya Simu</label><input type="tel" id="adminRegPhone" required placeholder="07xxxxxxxx"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="adminRegPass" required placeholder="Neno la siri"></div>
+                <button type="submit" class="btn-submit">Sajili Mwanachama</button>
+                <button type="button" class="btn-submit btn-close" onclick="closeModal('sajiliModal')">Funga</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Rekodi Modal -->
+    <div id="rekodiModal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="margin-top:0; font-size: 18px;">Rekodi Muamala / Mchango</h3>
+            <form onsubmit="handleRecordTransaction(event)">
+                <div class="form-group">
+                    <label>Aina ya Muamala</label>
+                    <select id="recType"><option value="Mchango">Mchango</option><option value="Malipo ya Mkopo">Malipo ya Mkopo</option><option value="Mapato Mengine">Mapato Mengine</option></select>
+                </div>
+                <div class="form-group"><label>Kiasi (TSh)</label><input type="number" id="recAmount" required placeholder="Mf. 50000"></div>
+                <div class="form-group"><label>Jina la Mwanachama</label><input type="text" id="recMember" required placeholder="Jina la aliyetoa"></div>
+                <button type="submit" class="btn-submit">Hifadhi Muamala</button>
+                <button type="button" class="btn-submit btn-close" onclick="closeModal('rekodiModal')">Funga</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tangazo Modal -->
+    <div id="tangazoModal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="margin-top:0; font-size: 18px;">Tuma Tangazo</h3>
+            <form onsubmit="handlePostAnnouncement(event)">
+                <div class="form-group"><label>Kichwa cha Habari</label><input type="text" id="annTitle" required placeholder="Kichwa cha tangazo"></div>
+                <div class="form-group"><label>Ujumbe</label><textarea id="annMsg" rows="3" required placeholder="Andika ujumbe hapa..."></textarea></div>
+                <button type="submit" class="btn-submit">Tuma Tangazo</button>
+                <button type="button" class="btn-submit btn-close" onclick="closeModal('tangazoModal')">Funga</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ripoti Modal -->
+    <div id="ripotiModal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="margin-top:0; font-size: 18px;">Ripoti Fupi ya Kikundi</h3>
+            <div id="reportContent" style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px;">
+                Inapakia takwimu...
+            </div>
+            <button type="button" class="btn-submit btn-close" onclick="closeModal('ripotiModal')">Funga</button>
+        </div>
+    </div>
+
     <script>
         function switchTab(tab) {
             document.getElementById('tabDashibodi').style.display = tab === 'dashibodi' ? 'block' : 'none';
@@ -310,21 +430,37 @@
             document.getElementById('navSet').className = tab === 'setingi' ? 'nav-item active' : 'nav-item';
         }
 
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+            if(id === 'ripotiModal') generateReport();
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
         async function loadAdminData() {
             try {
-                const res = await fetch('/api/admin/users');
-                const users = await res.json();
+                const res = await fetch('/api/admin/data');
+                const data = await res.json();
+
+                // Stats
+                document.getElementById('mainBalance').innerText = `TSh ${data.groupStats.balance.toLocaleString()}`;
+                document.getElementById('statTotal').innerText = `TSh ${data.groupStats.total.toLocaleString()}`;
+                document.getElementById('statMonth').innerText = `TSh ${data.groupStats.thisMonth.toLocaleString()}`;
+                document.getElementById('statLoans').innerText = `TSh ${data.groupStats.loans.toLocaleString()}`;
 
                 const pendingList = document.getElementById('pendingList');
                 const approvedList = document.getElementById('approvedList');
 
-                const pendingUsers = users.filter(u => u.status === 'pending');
-                const approvedUsers = users.filter(u => u.status === 'approved');
+                const pendingUsers = data.users.filter(u => u.status === 'pending');
+                const approvedUsers = data.users.filter(u => u.status === 'approved');
 
                 document.getElementById('pendingCount').innerText = pendingUsers.length;
                 document.getElementById('pendingStatCount').innerText = pendingUsers.length;
                 document.getElementById('approvedCount').innerText = approvedUsers.length;
 
+                // Pending
                 if (pendingUsers.length === 0) {
                     pendingList.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 30px; font-size: 13px;">Hakuna maombi mapya yanayosubiri.</div>`;
                 } else {
@@ -336,8 +472,8 @@
                             <div style="font-size: 13px; line-height: 1.6;">
                                 <strong>Jina Kamili:</strong> ${u.fullName}<br>
                                 <strong>Namba ya Simu:</strong> ${u.phone}<br>
-                                <strong>Barua Pepe:</strong> ${u.email || 'Hakuna'}<br>
-                                <strong>Tarehe ya Ombi:</strong> ${u.createdAt}
+                                <strong>Barua Pepe:</strong> ${u.email}<br>
+                                <strong>Tarehe:</strong> ${u.createdAt}
                             </div>
                             <div class="btn-group">
                                 <button class="btn btn-approve" onclick="approveUser('${u.id}')">Kubali (Approve)</button>
@@ -348,6 +484,7 @@
                     });
                 }
 
+                // Approved
                 if (approvedUsers.length === 0) {
                     approvedList.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 30px; font-size: 13px;">Hakuna wanachama waliothibitishwa bado.</div>`;
                 } else {
@@ -387,6 +524,79 @@
                     loadAdminData();
                 }
             }
+        }
+
+        async function handleAdminRegister(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('adminRegName').value;
+            const phone = document.getElementById('adminRegPhone').value;
+            const password = document.getElementById('adminRegPass').value;
+
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fullName, phone, password })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert(data.message);
+                closeModal('sajiliModal');
+                loadAdminData();
+            } else {
+                alert(data.message);
+            }
+        }
+
+        async function handleRecordTransaction(e) {
+            e.preventDefault();
+            const type = document.getElementById('recType').value;
+            const amount = document.getElementById('recAmount').value;
+            const member = document.getElementById('recMember').value;
+
+            const res = await fetch('/api/admin/transaction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type, amount, member })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert(data.message);
+                closeModal('rekodiModal');
+                loadAdminData();
+            } else {
+                alert(data.message);
+            }
+        }
+
+        async function handlePostAnnouncement(e) {
+            e.preventDefault();
+            const title = document.getElementById('annTitle').value;
+            const message = document.getElementById('annMsg').value;
+
+            const res = await fetch('/api/admin/announcement', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, message })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert(data.message);
+                closeModal('tangazoModal');
+            } else {
+                alert(data.message);
+            }
+        }
+
+        async function generateReport() {
+            const res = await fetch('/api/admin/data');
+            const data = await res.json();
+            document.getElementById('reportContent').innerHTML = `
+                <strong>Salio la Sasa:</strong> TSh ${data.groupStats.balance.toLocaleString()}<br>
+                <strong>Jumla ya Fedha Zilizopita:</strong> TSh ${data.groupStats.total.toLocaleString()}<br>
+                <strong>Wanachama Hai:</strong> ${data.users.filter(u => u.status === 'approved').length}<br>
+                <strong>Maombi Yanayosubiri:</strong> ${data.users.filter(u => u.status === 'pending').length}<br>
+                <strong>Jumla ya Miamala:</strong> ${data.transactions.length}
+            `;
         }
 
         loadAdminData();
