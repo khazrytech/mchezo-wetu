@@ -6,14 +6,16 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
+// Seva ya kuhifadhi wanachama kwa muda
 let users = [];
 
 let announcements = [
     { title: "Karibu Mchezo Wetu", message: "Nawasalimu wote, karibuni kwenye mfumo mpya wa kidijitali wa kikundi.", date: "09 Oktoba 2026" }
 ];
 
+// Usajili wa Mwanachama Mpya
 app.post('/api/register', (req, res) => {
-    const { fullName, phone, email, password } = req.body;
+    const { fullName, phone, email, password, ref } = req.body;
     if (!fullName || !phone || !password) {
         return res.json({ success: false, message: 'Tafadhali jaza jina, namba ya simu na password.' });
     }
@@ -29,12 +31,17 @@ app.post('/api/register', (req, res) => {
         email: email || '',
         password,
         memberNumber,
-        status: 'pending'
+        referredBy: ref || 'Direct',
+        status: 'pending',
+        dateRegistered: new Date().toLocaleDateString('sw-TZ')
     };
+    
     users.push(newUser);
+    console.log("Ombi jipya la uanachama limepokelewa:", newUser);
     res.json({ success: true, message: 'Ombi lako limetumwa kwa Msimamizi.', memberNumber });
 });
 
+// Angalia hali ya akaunti
 app.post('/api/check-status', (req, res) => {
     const { phone } = req.body;
     const user = users.find(u => u.phone === phone);
@@ -44,6 +51,7 @@ app.post('/api/check-status', (req, res) => {
     res.json({ success: true, status: user.status, fullName: user.fullName, memberNumber: user.memberNumber });
 });
 
+// Kuingia kwenye mfumo (Login)
 app.post('/api/login', (req, res) => {
     const { identifier, password } = req.body;
     const user = users.find(u => 
@@ -62,11 +70,12 @@ app.post('/api/login', (req, res) => {
     res.json({ success: true, message: 'Umekaribishwa kwenye mfumo!', user });
 });
 
-// ADMIN ENDPOINTS (Kusoma na kuidhinisha wanachama wapya)
+// ADMIN: Pata orodha ya wanachama wote kwa ajili ya jopo la utawala
 app.get('/api/admin/users', (req, res) => {
     res.json({ success: true, users });
 });
 
+// ADMIN: Idhinisha ombi la mwanachama
 app.post('/api/admin/approve', (req, res) => {
     const { phone } = req.body;
     const user = users.find(u => u.phone === phone);
@@ -77,6 +86,7 @@ app.post('/api/admin/approve', (req, res) => {
     res.json({ success: true, message: `Mwanachama ${user.fullName} amethibitishwa rasmi!` });
 });
 
+// Matangazo / Arifa
 app.get('/api/announcements', (req, res) => {
     res.json({ success: true, announcements });
 });
