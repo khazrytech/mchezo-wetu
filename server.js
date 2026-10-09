@@ -1,61 +1,69 @@
 const express = require('express');
 const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
-// Seva ya kuhifadhi wanachama kwa muda
-let users = [];
-
-let announcements = [
-    { title: "Karibu Mchezo Wetu", message: "Nawasalimu wote, karibuni kwenye mfumo mpya wa kidijitali wa kikundi.", date: "09 Oktoba 2026" }
-];
+// Kuunganisha na Supabase
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Usajili wa Mwanachama Mpya
-app.post('/api/register', (req, res) => {
+app.post('/api/register', async (req, res) => {
     const { fullName, phone, email, password, ref } = req.body;
     if (!fullName || !phone || !password) {
         return res.json({ success: false, message: 'Tafadhali jaza jina, namba ya simu na password.' });
     }
-    const existing = users.find(u => u.phone === phone);
+
+    // Angalia kama namba ipo tayari
+    const { data: existing } = await supabase.from('users').select('*').eq('phone', phone).single();
     if (existing) {
         return res.json({ success: false, message: 'Namba hii ya simu imeshasajiliwa tayari.' });
     }
 
     const memberNumber = `MW-2026-${Math.floor(1000 + Math.random() * 9000)}`;
     const newUser = {
-        fullName,
+        full_name: fullName,
         phone,
         email: email || '',
         password,
-        memberNumber,
-        referredBy: ref || 'Direct',
+        member_number: memberNumber,
+        referred_by: ref || 'Direct',
         status: 'pending',
-        dateRegistered: new Date().toLocaleDateString('sw-TZ')
+        date_registered: new Date().toLocaleDateString('sw-TZ')
     };
-    
-    users.push(newUser);
-    console.log("Ombi jipya la uanachama limepokelewa:", newUser);
+
+    const { error } = await supabase.from('users').insert([newUser]);
+    if (error) {
+        return res.json({ success: false, message: 'Hitilafu kwenye Database: ' + error.message });
+    }
+
     res.json({ success: true, message: 'Ombi lako limetumwa kwa Msimamizi.', memberNumber });
 });
 
 // Angalia hali ya akaunti
-app.post('/api/check-status', (req, res) => {
+app.post('/api/check-status', async (req, res) => {
     const { phone } = req.body;
-    const user = users.find(u => u.phone === phone);
+    const { data: user } = await supabase.from('users').select('*').eq('phone', phone).single();
     if (!user) {
         return res.json({ success: false, message: 'Mtumiaji hapatikani.' });
     }
-    res.json({ success: true, status: user.status, fullName: user.fullName, memberNumber: user.memberNumber });
+    res.json({ success: true, status: user.status, fullName: user.full_name, memberNumber: user.member_number });
 });
 
 // Kuingia kwenye mfumo (Login)
-app.post('/api/login', (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { identifier, password } = req.body;
+    
+    // Tafuta kwa namba ya simu, jina au namba ya uanachama
+    const { data: users } = await supabase.from('users').select('*');
     const user = users.find(u => 
-        (u.phone === identifier || u.fullName.toLowerCase() === identifier.toLowerCase() || u.memberNumber === identifier) && 
+        (u.phone === identifier || u.full_name.toLowerCase() === identifier.toLowerCase() || u.member_number === identifier) && 
         u.password === password
     );
 
@@ -67,31 +75,53 @@ app.post('/api/login', (req, res) => {
         return res.json({ success: false, pending: true, message: 'Akaunti yako bado haijathibitishwa na Msimamizi.' });
     }
 
-    res.json({ success: true, message: 'Umekaribishwa kwenye mfumo!', user });
+    // Safisha data kabla ya kurudisha ili kuzuia password kusafiri isivyotakiwa
+    const safeUser = {
+        fullName: user.full_name,
+        phone: user.phone,
+        email: user.email,
+        memberNumber: user.member_number,
+        status: user.status
+    };
+
+    res.json({ success: true, message: 'Umekaribishwa kwenye mfumo!', user: safeUser });
 });
 
-// ADMIN: Pata orodha ya wanachama wote kwa ajili ya jopo la utawala
-app.get('/api/admin/users', (req, res) => {
-    res.json({ success: true, users });
+// ADMIN: Pata orodha ya wanachama wote
+app.get('/api/admin/users', async (req, res) => {
+    const { data: users, error } = await supabase.from('users').select('*');
+    if (error) {
+        return res.json({ success: false, message: error.message });
+    }
+    // Badilisha muundo kidogo ili uendane na frontend ya admin (full_name -> fullName, n.k)
+    const formattedUsers = users.map(u => ({
+        fullName: u.full_name,
+        phone: u.phone,
+        email: u.email,
+        memberNumber: u.member_number,
+        status: u.status,
+        dateRegistered: u.date_registered
+    }));
+    res.json({ success: true, users: formattedUsers });
 });
 
 // ADMIN: Idhinisha ombi la mwanachama
-app.post('/api/admin/approve', (req, res) => {
+app.post('/api/admin/approve', async (req, res) => {
     const { phone } = req.body;
-    const user = users.find(u => u.phone === phone);
-    if (!user) {
-        return res.json({ success: false, message: 'Mtumiaji hapatikani kwenye mfumo.' });
+    const { data, error } = await supabase.from('users').update({ status: 'approved' }).eq('phone', phone).select();
+    if (error || !data || data.length === 0) {
+        return res.json({ success: false, message: 'Imeshindikana kuidhinisha mwanachama.' });
     }
-    user.status = 'approved';
-    res.json({ success: true, message: `Mwanachama ${user.fullName} amethibitishwa rasmi!` });
+    res.json({ success: true, message: `Mwanachama amethibitishwa rasmi!` });
 });
 
 // Matangazo / Arifa
-app.get('/api/announcements', (req, res) => {
-    res.json({ success: true, announcements });
+app.get('/api/announcements', async (req, res) => {
+    const { data: announcements } = await supabase.from('announcements').select('*').order('id', { ascending: false });
+    res.json({ success: true, announcements: announcements || [] });
 });
 
-app.post('/api/announcements', (req, res) => {
+app.post('/api/announcements', async (req, res) => {
     const { title, message } = req.body;
     if (!title || !message) {
         return res.json({ success: false, message: 'Kichwa cha habari na ujumbe vinahitajika.' });
@@ -101,7 +131,10 @@ app.post('/api/announcements', (req, res) => {
         message,
         date: new Date().toLocaleDateString('sw-TZ', { day: 'numeric', month: 'long', year: 'numeric' })
     };
-    announcements.unshift(newAnn);
+    const { error } = await supabase.from('announcements').insert([newAnn]);
+    if (error) {
+        return res.json({ success: false, message: 'Imeshindikana kutuma tangazo.' });
+    }
     res.json({ success: true, message: 'Tangazo limetumwa na kuhifadhiwa kwenye arifa za wanachama.' });
 });
 
