@@ -241,29 +241,51 @@
         .btn-submit { width: 100%; padding: 13px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
         .btn-close { background: rgba(255,255,255,0.05); color: var(--text-muted); margin-top: 8px; }
         
-        /* Toast Notification Pro */
+        /* Toast Notification Pro (Imepandishwa juu na haina ugandaji) */
         #toast {
             position: fixed;
-            bottom: 80px;
+            top: 20px;
             left: 50%;
-            transform: translateX(-50%) translateY(100px);
+            transform: translateX(-50%) translateY(-100px);
             background: #1e293b;
             color: #fff;
             padding: 12px 24px;
             border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
             font-size: 13px;
             font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            z-index: 2000;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            z-index: 3000;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         #toast.show {
             transform: translateX(-50%) translateY(0);
+        }
+
+        /* Setting Modern Styles */
+        .setting-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 14px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 13px;
+        }
+        .setting-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
         }
     </style>
 </head>
@@ -343,14 +365,46 @@
         </div>
     </div>
 
-    <!-- TAB 3: SETINGI -->
+    <!-- TAB 3: SETINGI (Mipangilio ya Kisasa na ya Kibenki) -->
     <div id="tabSetingi" class="tab-content" style="display: none;">
-        <div class="section-title">Mipangilio ya Mfumo</div>
-        <div class="stat-card" style="margin-top: 12px;">
-            <div style="font-weight: 700; margin-bottom: 10px; font-size: 15px;">Taarifa za Kikundi na Utawala</div>
-            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 6px;"><strong>Jina la Mfumo:</strong> Mchezo Wetu Fintech</div>
-            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 6px;"><strong>Hali ya Server:</strong> Inafanya Kazi (Active Pro)</div>
-            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 6px;"><strong>Uwezo wa Ban/Suspend:</strong> Amewashwa Kikamilifu</div>
+        <div class="section-title">Mipangilio na Utawala</div>
+        
+        <div class="setting-card">
+            <div style="font-weight: 700; margin-bottom: 12px; font-size: 14px; color: #fff; display: flex; align-items: center; gap: 8px;">
+                🏢 Taarifa za Kikundi
+            </div>
+            <div class="setting-row">
+                <span style="color: var(--text-muted);">Jina la Mfuko:</span>
+                <strong style="color: #fff;">Mchezo Wetu Fintech</strong>
+            </div>
+            <div class="setting-row">
+                <span style="color: var(--text-muted);">Aina ya Akaunti:</span>
+                <strong style="color: #ec4899;">Super Admin Pro</strong>
+            </div>
+            <div class="setting-row">
+                <span style="color: var(--text-muted);">Hali ya Server:</span>
+                <strong style="color: #34d399;">Inafanya Kazi (Active Pro)</strong>
+            </div>
+        </div>
+
+        <div class="setting-card">
+            <div style="font-weight: 700; margin-bottom: 12px; font-size: 14px; color: #fff; display: flex; align-items: center; gap: 8px;">
+                🔒 Usalama na Udhibiti
+            </div>
+            <div class="setting-row">
+                <span style="color: var(--text-muted);">Uwezo wa Ban / Suspend:</span>
+                <strong style="color: #34d399;">Umekamilika & Umeamilishwa</strong>
+            </div>
+            <div class="setting-row">
+                <span style="color: var(--text-muted);">Ulinzi wa Data (SSL):</span>
+                <strong style="color: #34d399;">Salama (Encrypted)</strong>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <a href="/" class="btn" style="display: block; text-align: center; text-decoration: none; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 14px; border-radius: 14px; font-weight: 700;">
+                🚪 Toka Kwenye Jopo la Utawala (Logout)
+            </a>
         </div>
     </div>
 
