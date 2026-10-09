@@ -12,6 +12,7 @@
             --primary: #3b82f6;
             --accent: #10b981;
             --warning: #f59e0b;
+            --danger: #ef4444;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
@@ -23,7 +24,6 @@
             padding: 16px 16px 100px 16px;
             box-sizing: border-box;
         }
-        /* Top Greeting Header */
         .top-header {
             display: flex;
             justify-content: space-between;
@@ -84,8 +84,6 @@
             background: #ef4444;
             border-radius: 50%;
         }
-
-        /* Cards Pro */
         .card-main {
             background: var(--card-glass);
             backdrop-filter: blur(20px);
@@ -114,12 +112,6 @@
             color: #34d399;
             border: 1px solid rgba(16, 185, 129, 0.3);
         }
-        .badge-dark {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-            border: 1px solid var(--border-glass);
-        }
-
         .stats-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -132,8 +124,6 @@
             border-radius: 14px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-
-        /* Progress Bar */
         .progress-container {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
@@ -148,8 +138,6 @@
             border-radius: 10px;
             width: 67%;
         }
-
-        /* Action Button Pro */
         .btn-action {
             width: 100%;
             padding: 14px;
@@ -166,11 +154,7 @@
             gap: 8px;
             margin-top: 16px;
             box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
-            transition: all 0.2s;
         }
-        .btn-action:hover { opacity: 0.95; transform: translateY(-1px); }
-
-        /* Quick Stats Grid (3 columns) */
         .grid-3 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -184,8 +168,6 @@
             border-radius: 16px;
             text-align: center;
         }
-
-        /* Bottom Navigation Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -213,11 +195,8 @@
             align-items: center;
             gap: 4px;
             text-decoration: none;
-            transition: color 0.2s;
         }
         .nav-item.active { color: var(--accent); }
-
-        /* Toast Notification */
         #toast {
             position: fixed;
             top: 20px;
@@ -244,91 +223,108 @@
 <body>
     <div id="toast">✅ Taarifa</div>
 
-    <!-- TOP HEADER -->
-    <div class="top-header">
-        <div class="user-profile-box">
-            <div id="userAvatar" class="avatar">J</div>
-            <div>
-                <div id="userGreeting" style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Habari za leo 👋</div>
-                <div id="userNameDisplay" style="font-size: 14px; font-weight: 800; color: #fff;">Inapakia...</div>
+    <!-- HOME VIEW -->
+    <div id="homeView">
+        <div class="top-header">
+            <div class="user-profile-box">
+                <div id="userAvatar" class="avatar">J</div>
+                <div>
+                    <div id="userGreeting" style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Habari za leo 👋</div>
+                    <div id="userNameDisplay" style="font-size: 14px; font-weight: 800; color: #fff;">Inapakia...</div>
+                </div>
+            </div>
+            <div class="notification-btn" onclick="showToast('Hakuna arifa mpya kwa sasa')">🔔</div>
+        </div>
+
+        <div class="card-main">
+            <div class="card-header-flex">
+                <span style="font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 0.5px;">👤 MCHANGO WANGU LEO</span>
+                <span class="badge-tag badge-success">✓ UMELIPA LEO</span>
+            </div>
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">ULICHOLIPA LEO</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #fff; margin-top: 4px;">TSh 2,000</div>
+                </div>
+                <div class="stat-box">
+                    <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">JUMLA YA MICHANGO YAKO</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #fff; margin-top: 4px;">TSh 60,000</div>
+                </div>
             </div>
         </div>
-        <div class="notification-btn" onclick="showToast('Hakuna arifa mpya kwa sasa')">🔔</div>
+
+        <div class="card-main" style="background: linear-gradient(135deg, #0f172a 0%, #090d16 100%);">
+            <div class="card-header-flex">
+                <span class="badge-tag badge-success" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);">🟢 LENGO LA LEO</span>
+                <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">Kiwango / Siku: <strong style="color: #fff;">TSh 2,000</strong></span>
+            </div>
+            <div style="font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 12px;">Mchezo Wetu</div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 16px; padding: 14px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">JUMLA ILIYOKUSANYWA LEO</span>
+                    <span style="font-size: 13px; font-weight: 800; color: var(--accent);">67% ya Lengo</span>
+                </div>
+                <div style="font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px;">TSh 4,000</div>
+                <div class="progress-container"><div class="progress-bar"></div></div>
+            </div>
+            <button class="btn-action" onclick="showToast('Tayari umeshatimiza mchango wako wa leo!')">
+                ⚡ LIPA TSH 2,000 YA LEO SASA
+            </button>
+        </div>
+
+        <div class="grid-3">
+            <div class="card-mini">
+                <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">WANACHAMA</div>
+                <div style="font-size: 16px; font-weight: 800; color: #fff; margin-top: 4px;">1</div>
+            </div>
+            <div class="card-mini">
+                <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">WALIOLIPA</div>
+                <div style="font-size: 16px; font-weight: 800; color: var(--accent); margin-top: 4px;">1</div>
+            </div>
+            <div class="card-mini">
+                <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">HAWAJALIPA</div>
+                <div style="font-size: 16px; font-weight: 800; color: #f87171; margin-top: 4px;">0</div>
+            </div>
+        </div>
     </div>
 
-    <!-- CARD 1: MCHANGO WANGU LEO -->
-    <div class="card-main">
-        <div class="card-header-flex">
-            <span style="font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 0.5px;">👤 MCHANGO WANGU LEO</span>
-            <span class="badge-tag badge-success">✓ UMELIPA LEO</span>
+    <!-- PROFILE VIEW -->
+    <div id="profileView" style="display: none;">
+        <div class="card-main" style="text-align: center; padding: 30px 20px;">
+            <div id="profileAvatar" class="avatar" style="width: 70px; height: 70px; font-size: 26px; margin: 0 auto 14px auto;">J</div>
+            <h2 id="profileName" style="font-size: 18px; margin: 0 0 4px 0; color: #fff;">Inapakia...</h2>
+            <div id="profileMemberNum" style="font-size: 13px; color: #60a5fa; font-weight: 700; margin-bottom: 16px;">MW-2026-XXXX</div>
+            <span class="badge-tag badge-success">✓ Mwanachama Aliyethibitishwa</span>
         </div>
-        <div class="stats-row">
-            <div class="stat-box">
-                <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">ULICHOLIPA LEO</div>
-                <div style="font-size: 16px; font-weight: 800; color: #fff; margin-top: 4px;">TSh 2,000</div>
-            </div>
-            <div class="stat-box">
-                <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">JUMLA YA MICHANGO YAKO</div>
-                <div style="font-size: 16px; font-weight: 800; color: #fff; margin-top: 4px;">TSh 60,000</div>
-            </div>
-        </div>
-    </div>
 
-    <!-- CARD 2: LENGO LA LEO -->
-    <div class="card-main" style="background: linear-gradient(135deg, #0f172a 0%, #090d16 100%);">
-        <div class="card-header-flex">
-            <span class="badge-tag badge-success" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);">🟢 LENGO LA LEO</span>
-            <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">Kiwango / Siku: <strong style="color: #fff;">TSh 2,000</strong></span>
-        </div>
-        
-        <div style="font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 12px;">Mchezo Wetu</div>
-
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 16px; padding: 14px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">JUMLA ILIYOKUSANYWA LEO</span>
-                <span style="font-size: 13px; font-weight: 800; color: var(--accent);">67% ya Lengo</span>
-            </div>
-            <div style="font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px;">TSh 4,000</div>
-            <div class="progress-container">
-                <div class="progress-bar"></div>
+        <div class="card-main">
+            <div style="font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;">Taarifa za Kibinafsi</div>
+            <div style="font-size: 13px; line-height: 2.2; color: var(--text-muted);">
+                <strong>Namba ya Simu:</strong> <span id="profilePhone" style="color: #fff; float: right;">-</span><br>
+                <strong>Barua Pepe:</strong> <span id="profileEmail" style="color: #fff; float: right;">-</span><br>
+                <strong>Hali ya Akaunti:</strong> <span style="color: #34d399; font-weight: bold; float: right;">Active</span>
             </div>
         </div>
 
-        <button class="btn-action" onclick="showToast('Tayari umeshatimiza mchango wako wa leo!')">
-            ⚡ LIPA TSH 2,000 YA LEO SASA
+        <button onclick="handleLogout()" style="width: 100%; padding: 14px; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px; font-size: 14px; font-weight: 800; cursor: pointer; margin-top: 10px;">
+            🚪 Toka Kwenye Akaunti (Logout)
         </button>
-    </div>
-
-    <!-- 3 STATS MINI GRID -->
-    <div class="grid-3">
-        <div class="card-mini">
-            <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">WANACHAMA</div>
-            <div style="font-size: 16px; font-weight: 800; color: #fff; margin-top: 4px;">1</div>
-        </div>
-        <div class="card-mini">
-            <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">WALIOLIPA</div>
-            <div style="font-size: 16px; font-weight: 800; color: var(--accent); margin-top: 4px;">1</div>
-        </div>
-        <div class="card-mini">
-            <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">HAWAJALIPA</div>
-            <div style="font-size: 16px; font-weight: 800; color: #f87171; margin-top: 4px;">0</div>
-        </div>
     </div>
 
     <!-- BOTTOM NAVIGATION -->
     <div class="bottom-nav">
-        <a href="/dashboard.html" class="nav-item active">
+        <button onclick="switchTab('home')" id="navHome" class="nav-item active">
             <span style="font-size: 18px;">🏠</span> Nyumbani
-        </a>
-        <a href="#" onclick="showToast('Sehemu ya Michango inapakia...'); return false;" class="nav-item">
+        </button>
+        <button onclick="showToast('Sehemu ya Michango inapakia...')" class="nav-item">
             <span style="font-size: 18px;">💳</span> Michango
-        </a>
-        <a href="#" onclick="showToast('Sehemu ya Risiti inapakia...'); return false;" class="nav-item">
+        </button>
+        <button onclick="showToast('Sehemu ya Risiti inapakia...')" class="nav-item">
             <span style="font-size: 18px;">🧾</span> Risiti
-        </a>
-        <a href="/" class="nav-item" onclick="localStorage.removeItem('mchezo_user')">
-            <span style="font-size: 18px;">👤</span> Toka (Logout)
-        </a>
+        </button>
+        <button onclick="switchTab('profile')" id="navProfile" class="nav-item">
+            <span style="font-size: 18px;">👤</span> Profile
+        </button>
     </div>
 
     <script>
@@ -339,20 +335,50 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // Soma taarifa za mtumiaji aliyelogin
+        function switchTab(tab) {
+            const homeView = document.getElementById('homeView');
+            const profileView = document.getElementById('profileView');
+            const navHome = document.getElementById('navHome');
+            const navProfile = document.getElementById('navProfile');
+
+            if (tab === 'profile') {
+                homeView.style.display = 'none';
+                profileView.style.display = 'block';
+                navProfile.classList.add('active');
+                navHome.classList.remove('active');
+
+                const user = JSON.parse(localStorage.getItem('mchezo_user'));
+                if (user) {
+                    document.getElementById('profileName').innerText = user.fullName;
+                    document.getElementById('profilePhone').innerText = user.phone;
+                    document.getElementById('profileEmail').innerText = user.email || 'Hakuna';
+                    document.getElementById('profileMemberNum').innerText = user.memberNumber || 'MW-2026-PRO';
+                    document.getElementById('profileAvatar').innerText = user.fullName.charAt(0).toUpperCase();
+                }
+            } else {
+                homeView.style.display = 'block';
+                profileView.style.display = 'none';
+                navHome.classList.add('active');
+                navProfile.classList.remove('active');
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('mchezo_user');
+            window.location.href = '/';
+        }
+
         const userData = JSON.parse(localStorage.getItem('mchezo_user'));
         if (userData) {
             document.getElementById('userNameDisplay').innerText = userData.fullName;
             document.getElementById('userAvatar').innerText = userData.fullName.charAt(0).toUpperCase();
             
-            // Weka salamu kulingana na muda
             const hour = new Date().getHours();
             let greeting = "Habari za asubuhi";
             if (hour >= 12 && hour < 16) greeting = "Habari za mchana";
             else if (hour >= 16) greeting = "Habari za jioni/usiku";
             document.getElementById('userGreeting').innerText = `${greeting} 👋`;
         } else {
-            // Kama hakuna user, rudi login
             window.location.href = '/';
         }
     </script>
