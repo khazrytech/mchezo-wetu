@@ -7,7 +7,7 @@
     <style>
         :root {
             --bg-deep: #060913;
-            --card-bg: #0f172a;
+            --card-glass: rgba(15, 23, 42, 0.85);
             --border-glass: rgba(255, 255, 255, 0.1);
             --primary: #3b82f6;
             --accent: #10b981;
@@ -30,101 +30,67 @@
             align-items: center;
             margin-bottom: 20px;
         }
-        .admin-badge-box {
+        .admin-box {
+            background: var(--card-glass);
+            border: 1px solid var(--border-glass);
+            padding: 10px 16px;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             gap: 12px;
-            background: var(--card-bg);
-            padding: 10px 16px;
-            border-radius: 16px;
-            border: 1px solid var(--border-glass);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
-        .shield-icon {
+        .admin-icon {
             width: 38px;
             height: 38px;
-            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 16px;
+            font-size: 18px;
         }
-        .home-btn {
-            background: var(--card-bg);
+        .card-main {
+            background: var(--card-glass);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--border-glass);
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            text-decoration: none;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-        }
-        .balance-card {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 1px solid var(--border-glass);
-            border-radius: 22px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
         .action-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-top: 20px;
+            gap: 8px;
+            margin-top: 16px;
         }
-        .action-btn {
-            background: rgba(255, 255, 255, 0.05);
+        .btn-mini-action {
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-glass);
-            padding: 12px 4px;
+            color: #fff;
+            padding: 10px 4px;
             border-radius: 14px;
-            text-align: center;
-            color: var(--text-main);
             font-size: 10px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-        .action-btn:hover {
-            background: rgba(59, 130, 246, 0.25);
-            border-color: var(--primary);
-        }
-        .section-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 22px 0 12px 0;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
         }
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .stat-card {
-            background: var(--card-bg);
+            background: var(--card-glass);
             border: 1px solid var(--border-glass);
-            padding: 18px;
-            border-radius: 18px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            padding: 16px;
+            border-radius: 20px;
         }
-        .chart-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border-glass);
-            padding: 18px;
-            border-radius: 18px;
-            margin-bottom: 24px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-        /* Bottom Navigation Pro */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -137,7 +103,6 @@
             padding: 12px 0;
             box-sizing: border-box;
             z-index: 100;
-            box-shadow: 0 -10px 25px rgba(0,0,0,0.6);
         }
         .nav-item {
             background: none;
@@ -151,568 +116,266 @@
             flex-direction: column;
             align-items: center;
             gap: 4px;
-            transition: color 0.2s;
         }
-        .nav-item.active {
-            color: var(--primary);
-        }
-        /* Cards */
-        .user-request-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-glass);
-            padding: 16px;
-            border-radius: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-        .btn-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 14px;
-        }
-        .btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .btn-approve { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
-        .btn-reject { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
-        .btn-suspend { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
-        .badge-verified {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            margin-top: 6px;
-        }
-        .badge-suspended {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: rgba(245, 158, 11, 0.15);
-            color: #fbbf24;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            margin-top: 6px;
-        }
-        /* Modals Pro */
+        .nav-item.active { color: var(--primary); }
+
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(3, 7, 18, 0.85);
-            backdrop-filter: blur(10px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 16px;
-            box-sizing: border-box;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(6, 9, 19, 0.85); backdrop-filter: blur(10px);
+            display: none; align-items: center; justify-content: center; z-index: 1000;
+            padding: 20px; box-sizing: border-box;
         }
         .modal-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-glass);
-            width: 100%;
-            max-width: 380px;
-            padding: 24px;
-            border-radius: 22px;
+            background: #0f172a; border: 1px solid var(--border-glass);
+            width: 100%; max-width: 380px; border-radius: 24px; padding: 24px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.7);
         }
-        .form-group { margin-bottom: 14px; }
-        label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
-        input, select, textarea {
+        .input-field {
             width: 100%; padding: 12px; background: rgba(255,255,255,0.04);
-            border: 1.5px solid var(--border-glass); border-radius: 12px;
-            color: var(--text-main); font-size: 14px; box-sizing: border-box;
+            border: 1px solid var(--border-glass); border-radius: 12px;
+            color: #fff; font-size: 13px; margin-bottom: 12px; box-sizing: border-box;
         }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); }
-        .btn-submit { width: 100%; padding: 13px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
-        .btn-close { background: rgba(255,255,255,0.05); color: var(--text-muted); margin-top: 8px; }
-        
-        /* Toast Notification Pro (Imepandishwa juu na haina ugandaji) */
         #toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: #1e293b;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.2);
-            font-size: 13px;
-            font-weight: 600;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-            z-index: 3000;
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: #1e293b; color: #fff; padding: 12px 24px; border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.2); font-size: 13px; font-weight: 600;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 3000;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
-        #toast.show {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* Setting Modern Styles */
-        .setting-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-glass);
-            border-radius: 18px;
-            padding: 18px;
-            margin-bottom: 14px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-        .setting-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            font-size: 13px;
-        }
-        .setting-row:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
+        #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
-    <div id="toast">✅ Taarifa imehifadhiwa</div>
+    <div id="toast">✅ Taarifa</div>
 
+    <!-- HEADER -->
     <div class="top-header">
-        <div class="admin-badge-box">
-            <div class="shield-icon">🛡️</div>
+        <div class="admin-box">
+            <div class="admin-icon">🛡️</div>
             <div>
-                <div style="font-size: 13px; font-weight: 800;">JOPO LA UTAWALA PRO</div>
+                <div style="font-size: 13px; font-weight: 800; color: #fff;">JOPO LA UTAWALA PRO</div>
                 <div style="font-size: 10px; color: #ec4899; font-weight: 700;">Super Admin</div>
             </div>
         </div>
-        <a href="/" class="home-btn" title="Rudi Nyumbani">🚪</a>
+        <button onclick="handleLogout()" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); color: #fff; padding: 10px; border-radius: 14px; cursor: pointer;">🚪</button>
     </div>
 
-    <!-- TAB 1: DASHIBODI -->
-    <div id="tabDashibodi" class="tab-content">
-        <div class="balance-card">
-            <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">SALIO KUU LA KIKUNDI</div>
-            <div id="mainBalance" style="font-size: 30px; font-weight: 800; margin: 8px 0; color: #fff;">TSh 245,000</div>
+    <!-- DASHBOARD TAB -->
+    <div id="dashibodiView" class="tab-view">
+        <div class="card-main">
+            <div style="font-size: 10px; font-weight: 800; color: var(--text-muted); letter-spacing: 0.5px;">SALIO KUU LA KIKUNDI</div>
+            <div style="font-size: 28px; font-weight: 900; color: #fff; margin: 8px 0 14px 0;">TSh 245,000</div>
+            
             <div class="action-grid">
-                <div class="action-btn" onclick="openModal('sajiliModal')">👤 SAJILI</div>
-                <div class="action-btn" onclick="openModal('rekodiModal')">💰 REKODI</div>
-                <div class="action-btn" onclick="openModal('tangazoModal')">📢 TANGAZO</div>
-                <div class="action-btn" onclick="openModal('ripotiModal')">📊 RIPOTI</div>
+                <button class="btn-mini-action" onclick="switchTab('watu')">👤 SAJILI</button>
+                <button class="btn-mini-action" onclick="showToast('Sehemu ya Rekodi ipo tayari')">💰 REKODI</button>
+                <button class="btn-mini-action" onclick="openTangazoModal()">📢 TANGAZO</button>
+                <button class="btn-mini-action" onclick="showToast('Ripoti inatengenezwa...')">📊 RIPOTI</button>
             </div>
         </div>
 
-        <div class="section-title">TAKWIMU ZA KIFEDHA</div>
+        <div style="font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 10px;">TAKWIMU ZA KIFEDHA</div>
         <div class="stats-grid">
             <div class="stat-card">
-                <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">JUMLA ZOTE</div>
-                <div id="statTotal" style="font-size: 16px; font-weight: 800; margin-top: 6px; color: #fff;">TSh 1,250,000</div>
+                <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">JUMLA ZOTE</div>
+                <div style="font-size: 15px; font-weight: 800; color: #fff; margin-top: 4px;">TSh 1,250,000</div>
             </div>
             <div class="stat-card">
-                <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">MWEZI HUU</div>
-                <div id="statMonth" style="font-size: 16px; font-weight: 800; margin-top: 6px; color: #fff;">TSh 340,000</div>
+                <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">MWEZI HUU</div>
+                <div style="font-size: 15px; font-weight: 800; color: #fff; margin-top: 4px;">TSh 340,000</div>
             </div>
             <div class="stat-card">
-                <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">MIKOPO / MADENI</div>
-                <div id="statLoans" style="font-size: 16px; font-weight: 800; margin-top: 6px; color: #f87171;">TSh 45,000</div>
+                <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">MIKOPO / MADENI</div>
+                <div style="font-size: 15px; font-weight: 800; color: var(--danger); margin-top: 4px;">TSh 45,000</div>
             </div>
-            <div class="stat-card" onclick="switchTab('watu')" style="cursor: pointer;">
-                <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">YANAYOSUBIRI</div>
-                <div id="pendingStatCount" style="font-size: 16px; font-weight: 800; margin-top: 6px; color: #fbbf24;">0</div>
+            <div class="stat-card" onclick="switchTab('watu')" style="cursor: pointer; border-color: rgba(245, 158, 11, 0.4);">
+                <div style="font-size: 10px; color: var(--warning); font-weight: 700;">YANAYOSUBIRI</div>
+                <div id="pendingCount" style="font-size: 20px; font-weight: 900; color: var(--warning); margin-top: 2px;">0</div>
             </div>
-        </div>
-
-        <div class="section-title">MWENENDO WA FEDHA</div>
-        <div class="chart-box">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span style="font-size: 12px; color: var(--text-muted);">Mienendo ya fedha</span>
-                <span style="font-size: 11px; color: var(--primary); font-weight: 700;">Wiki Hii ▼</span>
-            </div>
-            <svg viewBox="0 0 300 100" width="100%" height="80">
-                <path d="M 0,70 Q 75,90 150,50 T 300,15" fill="none" stroke="#3b82f6" stroke-width="3"/>
-                <circle cx="75" cy="70" r="4" fill="#3b82f6"/>
-                <circle cx="150" cy="50" r="4" fill="#3b82f6"/>
-                <circle cx="225" cy="40" r="4" fill="#3b82f6"/>
-                <circle cx="300" cy="15" r="4" fill="#3b82f6"/>
-            </svg>
         </div>
     </div>
 
-    <!-- TAB 2: WATU (Maombi na Wanachama) -->
-    <div id="tabWatu" class="tab-content" style="display: none;">
-        <div class="section-title">⏳ Maombi Mapya Yanayosubiri Idhini (<span id="pendingCount">0</span>)</div>
-        <div id="pendingList">
-            <div style="text-align: center; color: var(--text-muted); padding: 30px; font-size: 13px;">Inapakia maombi...</div>
+    <!-- WATU TAB (MAOMBI YA MICHANGO NA USAJILI) -->
+    <div id="watuView" class="tab-view" style="display: none;">
+        <h2 style="font-size: 16px; margin-bottom: 14px;">Maombi Yanayosubiri Ithibati</h2>
+        <div id="pendingList" class="card-main">
+            <p style="font-size: 12px; color: var(--text-muted); text-align: center;">Inapakia maombi...</p>
         </div>
 
-        <div class="section-title" style="margin-top: 28px;">👥 Wanachama wa Mfumo (<span id="approvedCount">0</span>)</div>
-        <div id="approvedList">
-            <div style="text-align: center; color: var(--text-muted); padding: 30px; font-size: 13px;">Hakuna wanachama bado.</div>
+        <h2 style="font-size: 16px; margin: 20px 0 14px 0;">Wanachama Waliothibitishwa</h2>
+        <div id="approvedList" class="card-main">
+            <p style="font-size: 12px; color: var(--text-muted); text-align: center;">Inapakia wanachama...</p>
         </div>
     </div>
 
-    <!-- TAB 3: SETINGI (Mipangilio ya Kisasa na ya Kibenki) -->
-    <div id="tabSetingi" class="tab-content" style="display: none;">
-        <div class="section-title">Mipangilio na Utawala</div>
-        
-        <div class="setting-card">
-            <div style="font-weight: 700; margin-bottom: 12px; font-size: 14px; color: #fff; display: flex; align-items: center; gap: 8px;">
-                🏢 Taarifa za Kikundi
-            </div>
-            <div class="setting-row">
-                <span style="color: var(--text-muted);">Jina la Mfuko:</span>
-                <strong style="color: #fff;">Mchezo Wetu Fintech</strong>
-            </div>
-            <div class="setting-row">
-                <span style="color: var(--text-muted);">Aina ya Akaunti:</span>
-                <strong style="color: #ec4899;">Super Admin Pro</strong>
-            </div>
-            <div class="setting-row">
-                <span style="color: var(--text-muted);">Hali ya Server:</span>
-                <strong style="color: #34d399;">Inafanya Kazi (Active Pro)</strong>
-            </div>
+    <!-- SETINGI TAB -->
+    <div id="setingiView" class="tab-view" style="display: none;">
+        <div class="card-main">
+            <h3 style="font-size: 15px; margin-top: 0;">Mipangilio ya Mfumo</h3>
+            <p style="font-size: 12px; color: var(--text-muted);">Akaunti ya Utawala Mkuu (Super Admin). Mfumo umeunganishwa na Supabase Database ya Kudumu.</p>
         </div>
+    </div>
 
-        <div class="setting-card">
-            <div style="font-weight: 700; margin-bottom: 12px; font-size: 14px; color: #fff; display: flex; align-items: center; gap: 8px;">
-                🔒 Usalama na Udhibiti
+    <!-- TANGAZO MODAL -->
+    <div id="tangazoModal" class="modal-overlay">
+        <div class="modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="font-size: 16px; margin: 0; color: #fff;">Tuma Tangazo Mpya</h3>
+                <button onclick="closeTangazoModal()" style="background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer;">✕</button>
             </div>
-            <div class="setting-row">
-                <span style="color: var(--text-muted);">Uwezo wa Ban / Suspend:</span>
-                <strong style="color: #34d399;">Umekamilika & Umeamilishwa</strong>
-            </div>
-            <div class="setting-row">
-                <span style="color: var(--text-muted);">Ulinzi wa Data (SSL):</span>
-                <strong style="color: #34d399;">Salama (Encrypted)</strong>
-            </div>
-        </div>
-
-        <div style="margin-top: 20px;">
-            <a href="/" class="btn" style="display: block; text-align: center; text-decoration: none; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 14px; border-radius: 14px; font-weight: 700;">
-                🚪 Toka Kwenye Jopo la Utawala (Logout)
-            </a>
+            <input type="text" id="annTitle" placeholder="Kichwa cha Habari" class="input-field">
+            <textarea id="annMessage" placeholder="Ujumbe wa tangazo kwa wanachama wote..." class="input-field" style="height: 90px; resize: none;"></textarea>
+            <button onclick="submitTangazo()" style="width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer;">Tuma Tangazo</button>
         </div>
     </div>
 
     <!-- BOTTOM NAVIGATION -->
     <div class="bottom-nav">
-        <button class="nav-item active" id="navDash" onclick="switchTab('dashibodi')">
+        <button onclick="switchTab('dashibodi')" id="navDashibodi" class="nav-item active">
             <span style="font-size: 18px;">📊</span> Dashibodi
         </button>
-        <button class="nav-item" id="navWatu" onclick="switchTab('watu')">
+        <button onclick="switchTab('watu')" id="navWatu" class="nav-item">
             <span style="font-size: 18px;">👥</span> Watu
         </button>
-        <button class="nav-item" id="navSet" onclick="switchTab('setingi')">
+        <button onclick="switchTab('setingi')" id="navSetingi" class="nav-item">
             <span style="font-size: 18px;">⚙️</span> Setingi
         </button>
-    </div>
-
-    <!-- CUSTOM CONFIRMATION MODAL -->
-    <div id="confirmModal" class="modal-overlay">
-        <div class="modal-card" style="text-align: center;">
-            <div style="font-size: 32px; margin-bottom: 10px;">⚠️</div>
-            <h3 id="confirmTitle" style="margin: 0 0 8px 0; font-size: 18px;">Thibitisha Kitendo</h3>
-            <p id="confirmDesc" style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Una hakika unataka kuendelea na kitendo hiki?</p>
-            <div style="display: flex; gap: 10px;">
-                <button type="button" class="btn btn-close" onclick="closeConfirmModal()" style="margin-top:0;">Ghairi</button>
-                <button type="button" id="confirmOkBtn" class="btn btn-approve" style="margin-top:0; background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4);">Ndiyo, Endelea</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODALS PRO -->
-    <div id="sajiliModal" class="modal-overlay">
-        <div class="modal-card">
-            <h3 style="margin-top:0; font-size: 18px;">Sajili Mwanachama Mpya</h3>
-            <form onsubmit="handleAdminRegister(event)">
-                <div class="form-group"><label>Jina Kamili</label><input type="text" id="adminRegName" required placeholder="Jina la mwanachama"></div>
-                <div class="form-group"><label>Namba ya Simu</label><input type="tel" id="adminRegPhone" required placeholder="07xxxxxxxx"></div>
-                <div class="form-group"><label>Password</label><input type="password" id="adminRegPass" required placeholder="Neno la siri"></div>
-                <button type="submit" class="btn-submit">Sajili Mwanachama</button>
-                <button type="button" class="btn-submit btn-close" onclick="closeModal('sajiliModal')">Funga</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="rekodiModal" class="modal-overlay">
-        <div class="modal-card">
-            <h3 style="margin-top:0; font-size: 18px;">Rekodi Muamala / Mchango</h3>
-            <form onsubmit="handleRecordTransaction(event)">
-                <div class="form-group">
-                    <label>Aina ya Muamala</label>
-                    <select id="recType"><option value="Mchango">Mchango</option><option value="Malipo ya Mkopo">Malipo ya Mkopo</option><option value="Mapato Mengine">Mapato Mengine</option></select>
-                </div>
-                <div class="form-group"><label>Kiasi (TSh)</label><input type="number" id="recAmount" required placeholder="Mf. 50000"></div>
-                <div class="form-group"><label>Jina la Mwanachama</label><input type="text" id="recMember" required placeholder="Jina la aliyetoa"></div>
-                <button type="submit" class="btn-submit">Hifadhi Muamala</button>
-                <button type="button" class="btn-submit btn-close" onclick="closeModal('rekodiModal')">Funga</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="tangazoModal" class="modal-overlay">
-        <div class="modal-card">
-            <h3 style="margin-top:0; font-size: 18px;">Tuma Tangazo</h3>
-            <form onsubmit="handlePostAnnouncement(event)">
-                <div class="form-group"><label>Kichwa cha Habari</label><input type="text" id="annTitle" required placeholder="Kichwa cha tangazo"></div>
-                <div class="form-group"><label>Ujumbe</label><textarea id="annMsg" rows="3" required placeholder="Andika ujumbe hapa..."></textarea></div>
-                <button type="submit" class="btn-submit">Tuma Tangazo</button>
-                <button type="button" class="btn-submit btn-close" onclick="closeModal('tangazoModal')">Funga</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="ripotiModal" class="modal-overlay">
-        <div class="modal-card">
-            <h3 style="margin-top:0; font-size: 18px;">Ripoti Fupi ya Kikundi</h3>
-            <div id="reportContent" style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px;">
-                Inapakia takwimu...
-            </div>
-            <button type="button" class="btn-submit btn-close" onclick="closeModal('ripotiModal')">Funga</button>
-        </div>
     </div>
 
     <script>
         function showToast(message) {
             const toast = document.getElementById('toast');
-            toast.innerHTML = `✅ ${message}`;
+            toast.innerText = message;
             toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        let confirmCallback = null;
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-view').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
-        function showConfirm(title, desc, callback) {
-            document.getElementById('confirmTitle').innerText = title;
-            document.getElementById('confirmDesc').innerText = desc;
-            confirmCallback = callback;
-            document.getElementById('confirmModal').style.display = 'flex';
+            if (tabName === 'dashibodi') {
+                document.getElementById('dashibodiView').style.display = 'block';
+                document.getElementById('navDashibodi').classList.add('active');
+            } else if (tabName === 'watu') {
+                document.getElementById('watuView').style.display = 'block';
+                document.getElementById('navWatu').classList.add('active');
+            } else if (tabName === 'setingi') {
+                document.getElementById('setingiView').style.display = 'block';
+                document.getElementById('navSetingi').classList.add('active');
+            }
         }
 
-        function closeConfirmModal() {
-            document.getElementById('confirmModal').style.display = 'none';
-            confirmCallback = null;
-        }
-
-        document.getElementById('confirmOkBtn').onclick = () => {
-            if (confirmCallback) confirmCallback();
-            closeConfirmModal();
-        };
-
-        function switchTab(tab) {
-            document.getElementById('tabDashibodi').style.display = tab === 'dashibodi' ? 'block' : 'none';
-            document.getElementById('tabWatu').style.display = tab === 'watu' ? 'block' : 'none';
-            document.getElementById('tabSetingi').style.display = tab === 'setingi' ? 'block' : 'none';
-
-            document.getElementById('navDash').className = tab === 'dashibodi' ? 'nav-item active' : 'nav-item';
-            document.getElementById('navWatu').className = tab === 'watu' ? 'nav-item active' : 'nav-item';
-            document.getElementById('navSet').className = tab === 'setingi' ? 'nav-item active' : 'nav-item';
-        }
-
-        function openModal(id) {
-            document.getElementById(id).style.display = 'flex';
-            if(id === 'ripotiModal') generateReport();
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-
-        async function loadAdminData() {
+        async function fetchAdminUsers() {
             try {
-                const res = await fetch('/api/admin/data');
+                const res = await fetch('/api/admin/users');
                 const data = await res.json();
+                if (data.success) {
+                    const pendingUsers = data.users.filter(u => u.status === 'pending');
+                    const approvedUsers = data.users.filter(u => u.status === 'approved');
 
-                document.getElementById('mainBalance').innerText = `TSh ${data.groupStats.balance.toLocaleString()}`;
-                document.getElementById('statTotal').innerText = `TSh ${data.groupStats.total.toLocaleString()}`;
-                document.getElementById('statMonth').innerText = `TSh ${data.groupStats.thisMonth.toLocaleString()}`;
-                document.getElementById('statLoans').innerText = `TSh ${data.groupStats.loans.toLocaleString()}`;
+                    // Sasisha tarakimu ya YANAYOSUBIRI
+                    document.getElementById('pendingCount').innerText = pendingUsers.length;
 
-                const pendingList = document.getElementById('pendingList');
-                const approvedList = document.getElementById('approvedList');
-
-                const pendingUsers = data.users.filter(u => u.status === 'pending');
-                const approvedUsers = data.users.filter(u => u.status === 'approved' || u.status === 'suspended');
-
-                document.getElementById('pendingCount').innerText = pendingUsers.length;
-                document.getElementById('pendingStatCount').innerText = pendingUsers.length;
-                document.getElementById('approvedCount').innerText = approvedUsers.length;
-
-                // Pending List
-                if (pendingUsers.length === 0) {
-                    pendingList.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 25px; font-size: 13px;">Hakuna maombi mapya yanayosubiri.</div>`;
-                } else {
-                    pendingList.innerHTML = '';
-                    pendingUsers.forEach(u => {
-                        const card = document.createElement('div');
-                        card.className = 'user-request-card';
-                        card.innerHTML = `
-                            <div style="font-size: 13px; line-height: 1.6;">
-                                <strong>Jina Kamili:</strong> ${u.fullName}<br>
-                                <strong>Namba ya Simu:</strong> ${u.phone}<br>
-                                <strong>Barua Pepe:</strong> ${u.email}<br>
-                                <strong>Tarehe:</strong> ${u.createdAt}
-                            </div>
-                            <div class="btn-group">
-                                <button class="btn btn-approve" onclick="approveUser('${u.id}')">Kubali</button>
-                                <button class="btn btn-reject" onclick="confirmRejectUser('${u.id}')">Kataa</button>
-                            </div>
-                        `;
-                        pendingList.appendChild(card);
-                    });
-                }
-
-                // Approved / Suspended List
-                if (approvedUsers.length === 0) {
-                    approvedList.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 25px; font-size: 13px;">Hakuna wanachama bado.</div>`;
-                } else {
-                    approvedList.innerHTML = '';
-                    approvedUsers.forEach(u => {
-                        const isSuspended = u.status === 'suspended';
-                        const card = document.createElement('div');
-                        card.className = 'user-request-card';
-                        card.innerHTML = `
-                            <div style="font-size: 13px; line-height: 1.6;">
-                                <strong>Jina:</strong> ${u.fullName}<br>
-                                <strong>Simu:</strong> ${u.phone}<br>
-                                <strong>Namba ya Mwanachama:</strong> <span style="color: #60a5fa; font-weight: bold;">${u.memberNumber || 'N/A'}</span><br>
+                    // Orodha ya Maombi Yanayosubiri
+                    const pendingContainer = document.getElementById('pendingList');
+                    if (pendingUsers.length === 0) {
+                        pendingContainer.innerHTML = '<p style="font-size: 12px; color: var(--text-muted); text-align: center; margin: 0;">Hakuna ombi linalosubiri kwa sasa.</p>';
+                    } else {
+                        pendingContainer.innerHTML = pendingUsers.map(u => `
+                            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); padding: 12px; border-radius: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    ${isSuspended ? '<span class="badge-suspended">⚠️ Imesimamishwa (Suspended)</span>' : '<span class="badge-verified">✓ Verified Member</span>'}
+                                    <div style="font-size: 13px; font-weight: 800; color: #fff;">${u.fullName}</div>
+                                    <div style="font-size: 11px; color: var(--text-muted);">${u.phone} | ${u.memberNumber || 'N/A'}</div>
+                                    <div style="font-size: 10px; color: #60a5fa; margin-top: 2px;">Tarehe: ${u.dateRegistered || 'Leo'}</div>
                                 </div>
+                                <button onclick="approveUser('${u.phone}')" style="background: linear-gradient(135deg, #059669, #10b981); color: #fff; border: none; padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: 800; cursor: pointer;">
+                                    ✓ Idhinisha
+                                </button>
                             </div>
-                            <div class="btn-group">
-                                <button class="btn btn-suspend" onclick="suspendUser('${u.id}')">${isSuspended ? 'Ruhusu (Unsuspend)' : 'Simamisha (Suspend)'}</button>
-                                <button class="btn btn-reject" onclick="confirmRejectUser('${u.id}')">Futa</button>
+                        `).join('');
+                    }
+
+                    // Orodha ya Wanachama Waliothibitishwa
+                    const approvedContainer = document.getElementById('approvedList');
+                    if (approvedUsers.length === 0) {
+                        approvedContainer.innerHTML = '<p style="font-size: 12px; color: var(--text-muted); text-align: center; margin: 0;">Hakuna mwanachama aliyethibitishwa bado.</p>';
+                    } else {
+                        approvedContainer.innerHTML = approvedUsers.map(u => `
+                            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 12px; border-radius: 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-size: 13px; font-weight: 700; color: #fff;">${u.fullName}</div>
+                                    <div style="font-size: 11px; color: var(--text-muted);">${u.phone}</div>
+                                </div>
+                                <span style="font-size: 10px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 4px 8px; border-radius: 12px; font-weight: 800;">✓ Active</span>
                             </div>
-                        `;
-                        approvedList.appendChild(card);
-                    });
-                }
-            } catch (err) {
-                console.error("Hitilafu:", err);
-            }
-        }
-
-        async function approveUser(id) {
-            const res = await fetch(`/api/admin/approve/${id}`, { method: 'POST' });
-            const data = await res.json();
-            if (data.success) {
-                showToast(data.message);
-                loadAdminData();
-            }
-        }
-
-        function confirmRejectUser(id) {
-            showConfirm(
-                "Futa / Kataa Mwanachama", 
-                "Una hakika unataka kufuta ombi au mwanachama huyu kwenye mfumo?", 
-                async () => {
-                    const res = await fetch(`/api/admin/reject/${id}`, { method: 'POST' });
-                    const data = await res.json();
-                    if (data.success) {
-                        showToast("Ombi limefutwa kwa mafanikio");
-                        loadAdminData();
+                        `).join('');
                     }
                 }
-            );
-        }
-
-        async function suspendUser(id) {
-            const res = await fetch(`/api/admin/suspend/${id}`, { method: 'POST' });
-            const data = await res.json();
-            if (data.success) {
-                showToast(data.message);
-                loadAdminData();
+            } catch (err) {
+                console.error('Hitilafu ya kupata users:', err);
             }
         }
 
-        async function handleAdminRegister(e) {
-            e.preventDefault();
-            const fullName = document.getElementById('adminRegName').value;
-            const phone = document.getElementById('adminRegPhone').value;
-            const password = document.getElementById('adminRegPass').value;
-
-            const res = await fetch('/api/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ fullName, phone, password })
-            });
-            const data = await res.json();
-            if (data.success) {
-                showToast(data.message);
-                closeModal('sajiliModal');
-                loadAdminData();
-            } else {
-                showToast(data.message);
+        async function approveUser(phone) {
+            try {
+                const res = await fetch('/api/admin/approve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('✅ Mwanachama amethibitishwa rasmi!');
+                    fetchAdminUsers();
+                } else {
+                    showToast('⚠️ ' + data.message);
+                }
+            } catch (err) {
+                showToast('⚠️ Imeshindikana kuidhinisha.');
             }
         }
 
-        async function handleRecordTransaction(e) {
-            e.preventDefault();
-            const type = document.getElementById('recType').value;
-            const amount = document.getElementById('recAmount').value;
-            const member = document.getElementById('recMember').value;
+        function openTangazoModal() {
+            document.getElementById('tangazoModal').style.display = 'flex';
+        }
+        function closeTangazoModal() {
+            document.getElementById('tangazoModal').style.display = 'none';
+        }
 
-            const res = await fetch('/api/admin/transaction', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ type, amount, member })
-            });
-            const data = await res.json();
-            if (data.success) {
-                showToast(data.message);
-                closeModal('rekodiModal');
-                loadAdminData();
+        async function submitTangazo() {
+            const title = document.getElementById('annTitle').value.trim();
+            const message = document.getElementById('annMessage').value.trim();
+            if (!title || !message) {
+                showToast('⚠️ Tafadhali jaza kichwa na ujumbe!');
+                return;
+            }
+            try {
+                const res = await fetch('/api/announcements', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, message })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('📢 Tangazo limetumwa kwa wanachama!');
+                    closeTangazoModal();
+                    document.getElementById('annTitle').value = '';
+                    document.getElementById('annMessage').value = '';
+                }
+            } catch (err) {
+                showToast('⚠️ Imeshindikana kutuma tangazo.');
             }
         }
 
-        async function handlePostAnnouncement(e) {
-            e.preventDefault();
-            const title = document.getElementById('annTitle').value;
-            const message = document.getElementById('annMsg').value;
-
-            const res = await fetch('/api/admin/announcement', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, message })
-            });
-            const data = await res.json();
-            if (data.success) {
-                showToast(data.message);
-                closeModal('tangazoModal');
-            }
+        function handleLogout() {
+            window.location.href = '/';
         }
 
-        async function generateReport() {
-            const res = await fetch('/api/admin/data');
-            const data = await res.json();
-            document.getElementById('reportContent').innerHTML = `
-                <strong>Salio la Sasa:</strong> TSh ${data.groupStats.balance.toLocaleString()}<br>
-                <strong>Jumla ya Fedha:</strong> TSh ${data.groupStats.total.toLocaleString()}<br>
-                <strong>Wanachama Hai:</strong> ${data.users.filter(u => u.status === 'approved').length}<br>
-                <strong>Waliosimamishwa:</strong> ${data.users.filter(u => u.status === 'suspended').length}<br>
-                <strong>Maombi Yanayosubiri:</strong> ${data.users.filter(u => u.status === 'pending').length}
-            `;
-        }
-
-        loadAdminData();
-        setInterval(loadAdminData, 5000);
+        // Pakia data pindi tu ukurasa unapofunguka na kila baada ya sekunde 10
+        fetchAdminUsers();
+        setInterval(fetchAdminUsers, 10000);
     </script>
 </body>
 </html>
