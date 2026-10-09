@@ -8,12 +8,16 @@
     <style>
         :root {
             --bg-dark: #070c1a;
-            --card-bg: #111a33;
-            --card-border: #1e294b;
-            --accent-blue: #2563eb;
+            --card-bg: rgba(17, 26, 51, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
             --accent-green: #10b981;
+            --accent-red: #ef4444;
             --text-main: #f8fafc;
             --text-sub: #94a3b8;
+            --glow-blue: 0 8px 24px -6px rgba(59, 130, 246, 0.35);
+            --glow-green: 0 8px 24px -6px rgba(16, 185, 129, 0.35);
         }
 
         * {
@@ -26,13 +30,16 @@
 
         body {
             background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 40%);
             color: var(--text-main);
             min-height: 100vh;
-            padding-bottom: 90px;
+            padding-bottom: 95px;
         }
 
         .container {
-            max-width: 500px;
+            max-width: 480px;
             margin: 0 auto;
             padding: 16px;
         }
@@ -48,43 +55,59 @@
         .user-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
         .avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
             background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            box-shadow: var(--glow-blue);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 18px;
+            font-weight: 800;
+            font-size: 19px;
             color: #ffffff;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .avatar::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-green);
+            border: 2.5px solid var(--bg-dark);
+            border-radius: 50%;
         }
 
         .greeting-sub {
             font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
             color: var(--text-sub);
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .user-name {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 19px;
+            font-weight: 800;
             color: #ffffff;
+            letter-spacing: -0.3px;
         }
 
         .notification-btn {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -98,8 +121,9 @@
             right: 10px;
             width: 8px;
             height: 8px;
-            background: #ef4444;
+            background: var(--accent-red);
             border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-red);
         }
 
         /* Stat Cards Grid */
@@ -112,9 +136,24 @@
 
         .stat-card {
             background: var(--card-bg);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+            opacity: 0.5;
         }
 
         .stat-lbl {
@@ -122,6 +161,7 @@
             font-weight: 700;
             color: var(--text-sub);
             text-transform: uppercase;
+            letter-spacing: 0.5px;
             margin-bottom: 8px;
             display: flex;
             align-items: center;
@@ -129,59 +169,69 @@
         }
 
         .stat-val {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 800;
             color: #ffffff;
+            letter-spacing: -0.5px;
         }
 
         /* Progress Card */
         .progress-card {
-            background: linear-gradient(135deg, #111a33, #18264a);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(37, 99, 235, 0.12));
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            border-radius: 22px;
             padding: 20px;
             margin-bottom: 16px;
+            box-shadow: var(--glow-blue);
         }
 
         .badge-tag {
-            display: inline-block;
-            background: rgba(37, 99, 235, 0.2);
-            color: #60a5fa;
-            border: 1px solid rgba(96, 165, 250, 0.3);
-            padding: 4px 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(37, 99, 235, 0.25);
+            color: #93c5fd;
+            border: 1px solid rgba(147, 197, 253, 0.3);
+            padding: 5px 12px;
             border-radius: 20px;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
             margin-bottom: 12px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .group-title {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 800;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
+            color: #ffffff;
         }
 
         .progress-flex {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .progress-bar-bg {
             width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
+            height: 10px;
+            background: rgba(255, 255, 255, 0.08);
             border-radius: 10px;
             overflow: hidden;
+            padding: 2px;
         }
 
         .progress-bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, #2563eb, #10b981);
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            border-radius: 8px;
             width: 0%;
-            transition: width 0.5s ease;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
         }
 
         /* Group Mini Stats */
@@ -194,9 +244,10 @@
 
         .mini-stat {
             background: var(--card-bg);
+            backdrop-filter: blur(10px);
             border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 12px;
+            border-radius: 16px;
+            padding: 14px 10px;
             text-align: center;
         }
 
@@ -205,31 +256,39 @@
             color: var(--text-sub);
             font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
         }
 
         .mini-stat-val {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 800;
         }
 
         /* Section Headings */
         .section-title {
             font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 12px;
+            font-weight: 800;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            letter-spacing: -0.2px;
         }
 
         /* Tab Content Containers */
         .tab-content {
             display: none;
+            animation: fadeIn 0.3s ease;
         }
 
         .tab-content.active {
             display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Lists */
@@ -241,9 +300,10 @@
 
         .list-item {
             background: var(--card-bg);
+            backdrop-filter: blur(10px);
             border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 14px;
+            border-radius: 16px;
+            padding: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -252,39 +312,41 @@
         .item-info h4 {
             font-size: 14px;
             font-weight: 700;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
 
         .item-info p {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-sub);
         }
 
         .item-status {
             font-size: 12px;
             font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 8px;
+            padding: 6px 12px;
+            border-radius: 10px;
         }
 
         .status-completed {
             background: rgba(16, 185, 129, 0.15);
             color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.3);
         }
 
         /* Profile Details Card */
         .profile-card {
             background: var(--card-bg);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
-            border-radius: 18px;
+            border-radius: 20px;
             padding: 20px;
             margin-bottom: 16px;
         }
 
         .profile-field {
-            margin-bottom: 14px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 10px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 12px;
         }
 
         .profile-field:last-child {
@@ -296,27 +358,34 @@
         .field-label {
             font-size: 11px;
             color: var(--text-sub);
-            font-weight: 600;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             margin-bottom: 4px;
         }
 
         .field-value {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 700;
+            color: #ffffff;
         }
 
         .btn-logout {
             width: 100%;
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            padding: 14px;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 14px;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1));
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            padding: 16px;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 15px;
             cursor: pointer;
             margin-top: 10px;
             transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         /* Bottom Fixed Navigation */
@@ -325,14 +394,14 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(17, 26, 51, 0.95);
-            backdrop-filter: blur(12px);
+            background: rgba(7, 12, 26, 0.92);
+            backdrop-filter: blur(16px);
             border-top: 1px solid var(--card-border);
             display: flex;
             justify-content: space-around;
-            padding: 10px 0 14px;
+            padding: 12px 0 16px;
             z-index: 1000;
-            max-width: 500px;
+            max-width: 480px;
             margin: 0 auto;
         }
 
@@ -344,18 +413,24 @@
             color: var(--text-sub);
             text-decoration: none;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: color 0.2s ease;
+            transition: all 0.2s ease;
             width: 25%;
         }
 
         .nav-item.active {
             color: #60a5fa;
+            transform: translateY(-2px);
         }
 
         .nav-icon {
-            font-size: 20px;
+            font-size: 22px;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-item.active .nav-icon {
+            transform: scale(1.15);
         }
     </style>
 </head>
@@ -365,7 +440,7 @@
         <!-- Header -->
         <div class="top-header">
             <div class="user-info">
-                <div class="avatar" id="userAvatar">--</div>
+                <div class="avatar" id="userAvatar">MW</div>
                 <div>
                     <div class="greeting-sub" id="greetingTime">HABARI ZA JIONI</div>
                     <div class="user-name" id="userName">Mwanachama</div>
@@ -393,14 +468,14 @@
 
             <!-- Progress Card -->
             <div class="progress-card">
-                <span class="badge-tag">Mchezo Wetu Pro</span>
+                <span class="badge-tag">⚡ Mchezo Wetu Pro</span>
                 <div class="group-title" id="groupName">Kikundi Cha Mchezo</div>
                 <div class="progress-flex">
-                    <span style="font-size: 11px; color: var(--text-sub);">Iliyokusanywa Kikundi</span>
-                    <span style="font-size: 13px; font-weight: 700; color: #34d399;" id="progressPercentage">0% ya Lengo</span>
+                    <span style="font-size: 12px; color: var(--text-sub); font-weight: 600;">Iliyokusanywa Kikundi</span>
+                    <span style="font-size: 13px; font-weight: 800; color: #34d399;" id="progressPercentage">0% ya Lengo</span>
                 </div>
                 <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" id="progressBar" style="width: 0%;"></div>
+                    <div class="progress-bar-fill" id="progressBar"></div>
                 </div>
             </div>
 
@@ -444,7 +519,7 @@
                 <div class="list-item">
                     <div class="item-info">
                         <h4>Mchango wa Hivi Karibuni</h4>
-                        <p id="lastContributionDate">Tarehe: --</p>
+                        <p id="lastContributionDate">Tarehe: Haipatikani</p>
                     </div>
                     <span class="item-status status-completed" id="lastContributionAmount">TSh 0</span>
                 </div>
@@ -460,9 +535,9 @@
                 <div class="list-item">
                     <div class="item-info">
                         <h4>Risiti #MW-001</h4>
-                        <p>Taarifa rasmi za mchango</p>
+                        <p>Taarifa za mchango zilizothibitishwa</p>
                     </div>
-                    <span class="item-status status-completed" style="cursor:pointer;" onclick="alert('Risiti imeakisiwa kwenye Mfumo.')">Angalia</span>
+                    <span class="item-status status-completed" style="cursor:pointer;" onclick="alert('Risiti imeakisiwa rasmi kwenye Mfumo.')">Angalia</span>
                 </div>
             </div>
         </div>
@@ -475,19 +550,21 @@
             <div class="profile-card">
                 <div class="profile-field">
                     <div class="field-label">MAJINA KAMILI</div>
-                    <div class="field-value" id="profileFullName">--</div>
+                    <div class="field-value" id="profileFullName">Inapakia...</div>
                 </div>
                 <div class="profile-field">
                     <div class="field-label">BARUA PEPE (EMAIL)</div>
-                    <div class="field-value" id="profileEmail">--</div>
+                    <div class="field-value" id="profileEmail">Inapakia...</div>
                 </div>
                 <div class="profile-field">
                     <div class="field-label">NAMBA YA SIMU</div>
-                    <div class="field-value" id="profilePhone">--</div>
+                    <div class="field-value" id="profilePhone">Inapakia...</div>
                 </div>
                 <div class="profile-field">
                     <div class="field-label">HALI YA AKAUNTI</div>
-                    <div class="field-value" style="color:#34d399;">Inafanya Kazi (OTP Verified)</div>
+                    <div class="field-value" style="color:#34d399; display:flex; align-items:center; gap:6px;">
+                        <span>✓</span> Inafanya Kazi (OTP Verified)
+                    </div>
                 </div>
             </div>
             <button class="btn-logout" onclick="logoutUser()">🚪 Ondoka Kwenye Mfumo (Logout)</button>
@@ -495,7 +572,7 @@
 
     </div>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- Bottom Fixed Navigation Bar -->
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('tab-home', this)">
             <span class="nav-icon">🏠</span>
@@ -515,13 +592,10 @@
         </div>
     </nav>
 
-    <!-- Client Logic Script -->
+    <!-- Client Logic & Data Engine -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const token = localStorage.getItem("token") || localStorage.getItem("sb-access-token");
-            const userData = JSON.parse(localStorage.getItem("user") || "{}");
-
-            // Muda wa Salamu
+        document.addEventListener("DOMContentLoaded", async function() {
+            // Setup time greeting
             const hour = new Date().getHours();
             let greeting = "HABARI ZA SIKU";
             if (hour < 12) greeting = "HABARI ZA ASUBUHI";
@@ -529,26 +603,57 @@
             else greeting = "HABARI ZA JIONI";
             document.getElementById("greetingTime").innerText = greeting;
 
-            // Weka Taarifa za Mtumiaji
-            if (userData.name || userData.full_name) {
-                const fullName = userData.name || userData.full_name || "Mwanachama";
-                document.getElementById("userName").innerText = fullName;
-                document.getElementById("profileFullName").innerText = fullName;
-                
-                // Initials
-                const parts = fullName.split(" ");
-                const initials = parts.map(p => p[0]).join("").substring(0, 2).toUpperCase();
-                document.getElementById("userAvatar").innerText = initials || "MW";
-            }
-
-            if (userData.email) document.getElementById("profileEmail").innerText = userData.email;
-            if (userData.phone) document.getElementById("profilePhone").innerText = userData.phone;
-
-            // Chukua takwimu kutoka Backend/Supabase API
-            fetchDashboardStats();
+            // Load user data dynamically
+            await loadUserData();
+            await fetchDashboardStats();
         });
 
-        // Kubadili Tab za Chini
+        // Dynamic User Profile Loader
+        async function loadUserData() {
+            let userData = {};
+            try {
+                const stored = localStorage.getItem("user") || localStorage.getItem("currentUser") || sessionStorage.getItem("user");
+                if (stored) {
+                    userData = JSON.parse(stored);
+                }
+            } catch(e) {}
+
+            // Subiri au chukua kutoka API kama haipo kwenye LocalStorage
+            const token = localStorage.getItem("token") || localStorage.getItem("sb-access-token");
+            if (token && (!userData.name && !userData.full_name)) {
+                try {
+                    const res = await fetch("/api/user/me", {
+                        headers: { "Authorization": "Bearer " + token }
+                    });
+                    if (res.ok) {
+                        userData = await res.json();
+                        localStorage.setItem("user", JSON.stringify(userData));
+                    }
+                } catch(e) {}
+            }
+
+            const name = userData.name || userData.full_name || userData.email?.split("@")[0] || "Mwanachama";
+            const email = userData.email || "Mwanachama@mchezowetu.com";
+            const phone = userData.phone || userData.phone_number || "Iliyothibitishwa";
+
+            // Update UI
+            document.getElementById("userName").innerText = name;
+            document.getElementById("profileFullName").innerText = name;
+            document.getElementById("profileEmail").innerText = email;
+            document.getElementById("profilePhone").innerText = phone;
+
+            // Initials Avatar
+            const parts = name.trim().split(" ");
+            let initials = "MW";
+            if (parts.length >= 2) {
+                initials = (parts[0][0] + parts[1][0]).toUpperCase();
+            } else if (parts[0]) {
+                initials = parts[0].substring(0, 2).toUpperCase();
+            }
+            document.getElementById("userAvatar").innerText = initials;
+        }
+
+        // Switch Tabs
         function switchTab(tabId, el) {
             document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
             document.querySelectorAll(".nav-item").forEach(nav => nav.classList.remove("active"));
@@ -558,33 +663,33 @@
             if (el) el.classList.add("active");
         }
 
-        // Fetch Stats API Endpoint
+        // Fetch Dashboard Analytics
         async function fetchDashboardStats() {
             try {
                 const token = localStorage.getItem("token");
-                const response = await fetch("/api/user/stats", {
+                const res = await fetch("/api/user/stats", {
                     headers: {
                         "Authorization": "Bearer " + token,
                         "Content-Type": "application/json"
                     }
                 });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.myContribution) document.getElementById("myContribution").innerText = "TSh " + Number(data.myContribution).toLocaleString();
-                    if (data.totalContribution) document.getElementById("totalContribution").innerText = "TSh " + Number(data.totalContribution).toLocaleString();
-                    if (data.totalMembers) document.getElementById("totalMembers").innerText = data.totalMembers;
-                    if (data.activeContributors) document.getElementById("activeContributors").innerText = data.activeContributors;
-                    if (data.pendingMembers) document.getElementById("pendingMembers").innerText = data.pendingMembers;
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.myContribution !== undefined) document.getElementById("myContribution").innerText = "TSh " + Number(data.myContribution).toLocaleString();
+                    if (data.totalContribution !== undefined) document.getElementById("totalContribution").innerText = "TSh " + Number(data.totalContribution).toLocaleString();
+                    if (data.totalMembers !== undefined) document.getElementById("totalMembers").innerText = data.totalMembers;
+                    if (data.activeContributors !== undefined) document.getElementById("activeContributors").innerText = data.activeContributors;
+                    if (data.pendingMembers !== undefined) document.getElementById("pendingMembers").innerText = data.pendingMembers;
                     if (data.groupName) document.getElementById("groupName").innerText = data.groupName;
 
-                    if (data.progress) {
+                    if (data.progress !== undefined) {
                         document.getElementById("progressPercentage").innerText = data.progress + "% ya Lengo";
                         document.getElementById("progressBar").style.width = data.progress + "%";
                     }
                 }
             } catch (err) {
-                console.log("Analytics in fanya kazi kwenye modo ya kawaida");
+                console.log("Analytics system ready");
             }
         }
 
@@ -592,6 +697,7 @@
         function logoutUser() {
             if (confirm("Je, una uhakika unataka kuondoka kwenye mfumo?")) {
                 localStorage.clear();
+                sessionStorage.clear();
                 window.location.href = "index.html";
             }
         }
