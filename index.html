@@ -7,7 +7,7 @@
     <style>
         :root {
             --bg-deep: #020617;
-            --card-glass: rgba(15, 23, 42, 0.82);
+            --card-glass: rgba(15, 23, 42, 0.85);
             --border-glass: rgba(255, 255, 255, 0.1);
             --primary: #2563eb;
             --primary-glow: rgba(37, 99, 235, 0.4);
@@ -35,16 +35,16 @@
             padding: 36px 28px;
             width: 100%; max-width: 420px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
+            position: relative;
         }
 
-        /* Pro Fintech Chip Emblem (Kufuta ngao) */
         .pro-emblem {
-            width: 60px; height: 60px; margin: 0 auto 16px auto;
-            border-radius: 18px;
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(16, 185, 129, 0.2));
-            border: 1px solid rgba(59, 130, 246, 0.35);
+            width: 64px; height: 64px; margin: 0 auto 16px auto;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(16, 185, 129, 0.25));
+            border: 1px solid rgba(59, 130, 246, 0.4);
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 25px rgba(37, 99, 235, 0.25);
+            box-shadow: 0 0 30px rgba(37, 99, 235, 0.3);
         }
 
         .input-group { margin-bottom: 18px; }
@@ -90,24 +90,29 @@
         }
         .link-toggle a { color: #60a5fa; text-decoration: none; font-weight: 800; }
 
-        #toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
-            background: rgba(15, 23, 42, 0.95); color: #fff; padding: 14px 28px; border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.15); font-size: 13px; font-weight: 700;
-            z-index: 3000; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none; backdrop-filter: blur(12px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        /* Modern Bottom Notification Sheet (Badala ya Kizamani cha Juu) */
+        #notificationSheet {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120px);
+            background: rgba(15, 23, 42, 0.92); color: #fff; padding: 14px 22px; border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15); font-size: 13px; font-weight: 700;
+            z-index: 3000; transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            display: flex; align-items: center; gap: 10px; pointer-events: none;
+            max-width: 90%; width: max-content;
         }
-        #toast.show { transform: translateX(-50%) translateY(0); }
+        #notificationSheet.active { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
-    <div id="toast">✅ Taarifa</div>
+    <div id="notificationSheet">
+        <span id="notifIcon">ℹ️</span>
+        <span id="notifText">Taarifa</span>
+    </div>
 
     <div class="portal-card">
-        <!-- PRO FINTECH EMBLEM (NO SHIELD) -->
         <div class="pro-emblem">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="2" y="5" width="20" height="14" rx="3"></rect>
                 <line x1="2" y1="10" x2="22" y2="10"></line>
                 <line x1="6" y1="15" x2="10" y2="15"></line>
@@ -165,11 +170,16 @@
     </div>
 
     <script>
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 4000);
+        function showNotification(msg, type = 'info') {
+            const sheet = document.getElementById('notificationSheet');
+            const icon = document.getElementById('notifIcon');
+            const text = document.getElementById('notifText');
+
+            icon.innerText = type === 'success' ? '✅' : (type === 'error' ? '⚠️' : 'ℹ️');
+            text.innerText = msg;
+
+            sheet.classList.add('active');
+            setTimeout(() => sheet.classList.remove('active'), 3200);
         }
 
         function toggleMode(mode) {
@@ -206,17 +216,17 @@
 
                 if (data.success) {
                     localStorage.setItem('userSession', JSON.stringify(data.user));
-                    showToast('✅ ' + data.message);
+                    showNotification(data.message, 'success');
                     setTimeout(() => {
                         window.location.href = '/dashboard.html';
-                    }, 1000);
+                    }, 800);
                 } else {
-                    showToast('⚠️ ' + data.message);
+                    showNotification(data.message, 'error');
                     btn.disabled = false;
                     btn.innerHTML = `<span>Ingia Kwenye Akaunti ➔</span>`;
                 }
             } catch (err) {
-                showToast('⚠️ Hitilafu kwenye muunganisho wa Seva.');
+                showNotification('Hitilafu kwenye muunganisho wa Seva.', 'error');
                 btn.disabled = false;
                 btn.innerHTML = `<span>Ingia Kwenye Akaunti ➔</span>`;
             }
@@ -243,15 +253,15 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    showToast('✅ ' + data.message);
+                    showNotification(data.message, 'success');
                     setTimeout(() => toggleMode('login'), 2000);
                 } else {
-                    showToast('⚠️ ' + data.message);
+                    showNotification(data.message, 'error');
                     btn.disabled = false;
                     btn.innerHTML = `<span>Tuma Ombi la Usajili ➔</span>`;
                 }
             } catch (err) {
-                showToast('⚠️ Imeshindikana kukamilisha usajili.');
+                showNotification('Imeshindikana kukamilisha usajili.', 'error');
                 btn.disabled = false;
                 btn.innerHTML = `<span>Tuma Ombi la Usajili ➔</span>`;
             }
