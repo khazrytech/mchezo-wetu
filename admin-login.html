@@ -11,7 +11,6 @@
             --border-glass: rgba(255, 255, 255, 0.12);
             --primary: #3b82f6;
             --primary-glow: rgba(59, 130, 246, 0.4);
-            --danger: #f43f5e;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
@@ -35,7 +34,6 @@
             width: 100%; max-width: 380px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.6);
             text-align: center;
-            position: relative;
         }
         .shield-icon {
             width: 64px; height: 64px;
@@ -45,9 +43,7 @@
             font-size: 30px; margin: 0 auto 16px auto;
             box-shadow: 0 10px 25px rgba(236, 72, 153, 0.4);
         }
-        .input-group {
-            margin-bottom: 16px; text-align: left;
-        }
+        .input-group { margin-bottom: 16px; text-align: left; }
         .input-label {
             font-size: 11px; font-weight: 800; color: var(--text-muted);
             letter-spacing: 0.5px; margin-bottom: 6px; display: block;
@@ -58,29 +54,19 @@
             border: 1px solid var(--border-glass);
             border-radius: 14px; color: #fff;
             font-size: 14px; outline: none;
-            transition: all 0.2s;
-        }
-        .input-field:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px var(--primary-glow);
         }
         .btn-login {
             width: 100%; padding: 14px;
             background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: white; border: none; border-radius: 14px;
             font-size: 14px; font-weight: 800; cursor: pointer;
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
-            transition: transform 0.2s;
             margin-top: 8px;
         }
-        .btn-login:active { transform: scale(0.97); }
         #toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
             background: rgba(30, 41, 59, 0.95); color: #fff; padding: 12px 24px; border-radius: 30px;
             border: 1px solid rgba(255,255,255,0.2); font-size: 13px; font-weight: 700;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 3000;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none; backdrop-filter: blur(10px);
+            z-index: 3000; transition: transform 0.4s; pointer-events: none;
         }
         #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
@@ -90,10 +76,11 @@
 
     <div class="login-card">
         <div class="shield-icon">🛡️</div>
-        <h2 style="font-size: 20px; font-weight: 900; margin: 0 0 4px 0; color: #fff;">JOPO LA UTAWALA</h2>
-        <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 24px 0;">Ingiza taarifa za utawala mkuu kupata ufikiaji</p>
+        <h2 style="font-size: 20px; font-weight: 900; margin: 0 0 4px 0; color: #fff;">ADMIN PORTAL</h2>
+        <p id="subTitle" style="font-size: 12px; color: var(--text-muted); margin: 0 0 24px 0;">Ingiza taarifa za utawala mkuu</p>
 
-        <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+        <!-- STEP 1: CREDENTIALS -->
+        <form id="step1Form" onsubmit="handleSendAdminOtp(event)">
             <div class="input-group">
                 <label class="input-label">ADMIN USERNAME AU SIMU</label>
                 <input type="text" id="adminIdentifier" class="input-field" placeholder="Kutano: admin" required>
@@ -102,41 +89,75 @@
                 <label class="input-label">NENOSIRI (PASSWORD)</label>
                 <input type="password" id="adminPassword" class="input-field" placeholder="••••••••" required>
             </div>
-            <button type="submit" class="btn-login">Ingia Kwenye Admin Portal ➔</button>
+            <button type="submit" class="btn-login">Tuma OTP ya Admin ➔</button>
+        </form>
+
+        <!-- STEP 2: OTP VERIFICATION -->
+        <form id="step2Form" onsubmit="handleVerifyAdminOtp(event)" style="display: none;">
+            <div class="input-group">
+                <label class="input-label">INGIZA TARAKIMU 6 ZA OTP</label>
+                <input type="number" id="adminOtp" class="input-field" placeholder="123456" style="text-align: center; font-size: 20px; letter-spacing: 4px;" required>
+            </div>
+            <button type="submit" class="btn-login" style="background: linear-gradient(135deg, #10b981, #059669);">Thibitisha & Ingia ➔</button>
         </form>
     </div>
 
     <script>
+        let currentAdminIdentifier = '';
+
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.innerText = msg;
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+            setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
-        async function handleAdminLogin(e) {
+        async function handleSendAdminOtp(e) {
             e.preventDefault();
             const identifier = document.getElementById('adminIdentifier').value.trim();
             const password = document.getElementById('adminPassword').value.trim();
 
             try {
-                const res = await fetch('/api/admin/login', {
+                const res = await fetch('/api/admin/send-otp', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ identifier, password })
                 });
                 const data = await res.json();
                 if (data.success) {
-                    localStorage.setItem('adminToken', 'MW-ADMIN-AUTHENTICATED');
-                    showToast('✅ Umefanikiwa kuingia!');
-                    setTimeout(() => {
-                        window.location.href = '/admin.html';
-                    }, 1000);
+                    currentAdminIdentifier = identifier;
+                    document.getElementById('step1Form').style.display = 'none';
+                    document.getElementById('step2Form').style.display = 'block';
+                    document.getElementById('subTitle').innerText = 'Ingiza OTP iliyotumwa (Demo OTP: ' + data.demoOtp + ')';
+                    showToast('🔑 OTP imetumwa: ' + data.demoOtp);
                 } else {
                     showToast('⚠️ ' + data.message);
                 }
             } catch (err) {
                 showToast('⚠️ Imeshindikana kuunganisha na seva.');
+            }
+        }
+
+        async function handleVerifyAdminOtp(e) {
+            e.preventDefault();
+            const otp = document.getElementById('adminOtp').value.trim();
+
+            try {
+                const res = await fetch('/api/admin/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier: currentAdminIdentifier, otp })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    localStorage.setItem('adminToken', 'MW-ADMIN-AUTHENTICATED');
+                    showToast('✅ Umethibitishwa kikamilifu!');
+                    setTimeout(() => { window.location.href = '/admin.html'; }, 1000);
+                } else {
+                    showToast('⚠️ ' + data.message);
+                }
+            } catch (err) {
+                showToast('⚠️ Imeshindikana kuthibitisha OTP.');
             }
         }
     </script>
