@@ -1,425 +1,270 @@
 <!DOCTYPE html>
-<html lang="sw" class="dark">
+<html lang="sw">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Admin - Mchezo Wetu</title>
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    * { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-    .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }
-    .admin-gradient { background: linear-gradient(135deg, #020617 0%, #0f172a 100%); }
-    .light .admin-gradient { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
-    ::-webkit-scrollbar { display: none; }
-  </style>
-</head>
-<body class="admin-gradient text-slate-100 dark:text-slate-100 light:text-slate-900 min-h-screen pb-24 select-none transition-colors duration-300">
-
-  <!-- TOP BAR -->
-  <header class="sticky top-0 z-40 glass-panel border-b border-slate-800 dark:border-slate-800 light:border-slate-200 px-5 py-4 flex justify-between items-center shadow-2xl">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 to-indigo-600 flex items-center justify-center text-white shadow-lg">
-        <i class="fa-solid fa-shield-halved text-lg"></i>
-      </div>
-      <div>
-        <h1 class="text-sm font-black tracking-wide">JOPO LA UTAWALA</h1>
-        <span class="text-[10px] font-bold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/20">Super Admin</span>
-      </div>
-    </div>
-    <a href="/" class="w-10 h-10 rounded-xl bg-slate-800 dark:bg-slate-800 light:bg-slate-200 border border-slate-700 light:border-slate-300 flex items-center justify-center text-slate-300 dark:text-slate-300 light:text-slate-700 hover:text-white transition-all" title="Rudi App Kuu">
-      <i class="fa-solid fa-house"></i>
-    </a>
-  </header>
-
-  <main class="max-w-md mx-auto px-4 pt-5 space-y-6">
-
-    <!-- ================= DASHBOARD VIEW ================= -->
-    <div id="view-admin-dash" class="space-y-6">
-      <div class="p-6 rounded-3xl bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 border border-indigo-500/30 shadow-2xl relative overflow-hidden">
-        <p class="text-[11px] font-bold text-indigo-300 uppercase tracking-widest mb-1 flex items-center gap-2">
-          <i class="fa-solid fa-vault"></i> Salio Kuu la Kikundi
-        </p>
-        <h2 class="text-4xl font-black text-white tracking-tight">TSh 245,000</h2>
-        
-        <div class="grid grid-cols-4 gap-2 mt-6">
-          <button onclick="openModal('modal-sajili')" class="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-95">
-            <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-user-plus text-xs"></i></div>
-            <span class="text-[9px] font-bold text-slate-300 uppercase">Sajili</span>
-          </button>
-          <button onclick="openModal('modal-rekodi')" class="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-95">
-            <div class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center"><i class="fa-solid fa-hand-holding-dollar text-xs"></i></div>
-            <span class="text-[9px] font-bold text-slate-300 uppercase">Rekodi</span>
-          </button>
-          <button onclick="openModal('modal-tangazo')" class="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-95">
-            <div class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-bullhorn text-xs"></i></div>
-            <span class="text-[9px] font-bold text-slate-300 uppercase">Tangazo</span>
-          </button>
-          <button onclick="openModal('modal-ripoti')" class="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-95">
-            <div class="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center"><i class="fa-solid fa-file-invoice text-xs"></i></div>
-            <span class="text-[9px] font-bold text-slate-300 uppercase">Ripoti</span>
-          </button>
-        </div>
-      </div>
-
-      <div>
-        <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3 pl-1">Takwimu za Kifedha</h3>
-        <div class="grid grid-cols-2 gap-3">
-          <div class="p-4 rounded-2xl glass-panel">
-            <i class="fa-solid fa-sack-dollar text-emerald-400 text-lg mb-1"></i>
-            <p class="text-[10px] text-slate-400 font-bold uppercase mt-1">Jumla Zote</p>
-            <p class="text-sm font-black text-white">TSh 1,250,000</p>
-          </div>
-          <div class="p-4 rounded-2xl glass-panel">
-            <i class="fa-solid fa-calendar-check text-blue-400 text-lg mb-1"></i>
-            <p class="text-[10px] text-slate-400 font-bold uppercase mt-1">Mwezi Huu</p>
-            <p class="text-sm font-black text-white">TSh 340,000</p>
-          </div>
-          <div class="p-4 rounded-2xl glass-panel">
-            <i class="fa-solid fa-handshake-angle text-rose-400 text-lg mb-1"></i>
-            <p class="text-[10px] text-slate-400 font-bold uppercase mt-1">Mikopo / Madeni</p>
-            <p class="text-sm font-black text-rose-400">TSh 45,000</p>
-          </div>
-          <div class="p-4 rounded-2xl glass-panel">
-            <i class="fa-solid fa-clock-rotate-left text-amber-400 text-lg mb-1"></i>
-            <p class="text-[10px] text-slate-400 font-bold uppercase mt-1">Yanayosubiri</p>
-            <p class="text-sm font-black text-amber-400">TSh 15,000</p>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3 pl-1">Mwenendo wa Fedha</h3>
-        <div class="p-4 rounded-2xl glass-panel">
-          <canvas id="financeChart" height="150"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- ================= WANACHAMA VIEW (FULL TOGGLES: FINE, SUSPEND, BAN) ================= -->
-    <div id="view-admin-members" class="hidden space-y-4">
-      <div class="flex justify-between items-center">
-        <h2 class="text-sm font-black uppercase tracking-wider">Dhibiti Wanachama</h2>
-        <span class="text-xs bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-lg border border-emerald-500/20 font-bold">Total: 42</span>
-      </div>
-
-      <div class="space-y-3" id="members-admin-list">
-        
-        <!-- Mwanachama 1 -->
-        <div class="p-4 rounded-2xl glass-panel space-y-3" id="member-row-1">
-          <div class="flex justify-between items-center">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-white font-bold text-sm">AS</div>
-              <div>
-                <p class="font-bold text-sm text-white">Asha Selemani</p>
-                <p class="text-[10px] text-slate-400">0711122233 • Hajalipa Leo</p>
-              </div>
-            </div>
-          </div>
-          <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-800">
-            <!-- Faini / Ondoa Faini Toggle -->
-            <button id="fine-btn-1" onclick="toggleFine(1, 'Asha Selemani')" class="py-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-black uppercase hover:bg-amber-500 hover:text-slate-950 transition-all">
-              <i class="fa-solid fa-file-invoice-dollar mb-1 block text-sm" id="fine-icon-1"></i> <span id="fine-text-1">Faini</span>
-            </button>
-            <!-- Simamisha / Rudisha Toggle -->
-            <button id="suspend-btn-1" onclick="toggleSuspend(1, 'Asha Selemani')" class="py-2 rounded-xl bg-slate-800 text-slate-300 border border-slate-700 text-[10px] font-black uppercase hover:bg-slate-700 transition-all">
-              <i class="fa-solid fa-pause mb-1 block text-sm" id="suspend-icon-1"></i> <span id="suspend-text-1">Simamisha</span>
-            </button>
-            <!-- Ban / Unban Toggle -->
-            <button id="ban-btn-1" onclick="toggleBan(1, 'Asha Selemani')" class="py-2 rounded-xl bg-rose-500/10 text-rose-500 border border-rose-500/20 text-[10px] font-black uppercase hover:bg-rose-600 hover:text-white transition-all">
-              <i class="fa-solid fa-ban mb-1 block text-sm" id="ban-icon-1"></i> <span id="ban-text-1">Ban</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Mwanachama 2 -->
-        <div class="p-4 rounded-2xl glass-panel space-y-3" id="member-row-2">
-          <div class="flex justify-between items-center">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-white font-bold text-sm">JM</div>
-              <div>
-                <p class="font-bold text-sm text-white">Juma Mtambo</p>
-                <p class="text-[10px] text-slate-400">0755566677 • Kalipa Leo</p>
-              </div>
-            </div>
-            <span class="text-emerald-400 text-xs font-bold"><i class="fa-solid fa-circle-check"></i> Imelipwa</span>
-          </div>
-          <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-800">
-            <button id="fine-btn-2" onclick="toggleFine(2, 'Juma Mtambo')" class="py-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-black uppercase hover:bg-amber-500 hover:text-slate-950 transition-all">
-              <i class="fa-solid fa-file-invoice-dollar mb-1 block text-sm" id="fine-icon-2"></i> <span id="fine-text-2">Faini</span>
-            </button>
-            <button id="suspend-btn-2" onclick="toggleSuspend(2, 'Juma Mtambo')" class="py-2 rounded-xl bg-slate-800 text-slate-300 border border-slate-700 text-[10px] font-black uppercase hover:bg-slate-700 transition-all">
-              <i class="fa-solid fa-pause mb-1 block text-sm" id="suspend-icon-2"></i> <span id="suspend-text-2">Simamisha</span>
-            </button>
-            <button id="ban-btn-2" onclick="toggleBan(2, 'Juma Mtambo')" class="py-2 rounded-xl bg-rose-500/10 text-rose-500 border border-rose-500/20 text-[10px] font-black uppercase hover:bg-rose-600 hover:text-white transition-all">
-              <i class="fa-solid fa-ban mb-1 block text-sm" id="ban-icon-2"></i> <span id="ban-text-2">Ban</span>
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ================= SETTINGS VIEW ================= -->
-    <div id="view-admin-settings" class="hidden space-y-4">
-      <h2 class="text-sm font-black uppercase tracking-wider">Mipangilio ya Mfumo</h2>
-      
-      <div class="space-y-3">
-        <div class="p-4 rounded-2xl glass-panel flex justify-between items-center">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
-              <i class="fa-solid fa-moon"></i>
-            </div>
-            <div>
-              <p class="text-xs font-bold text-white">Muonekano wa Giza (Dark Mode)</p>
-              <p class="text-[10px] text-slate-400">Badili mandhari ya admin panel</p>
-            </div>
-          </div>
-          <button id="theme-toggle-btn" onclick="toggleTheme()" class="relative inline-flex h-6 w-11 items-center rounded-full bg-emerald-500 transition-colors">
-            <span id="theme-toggle-circle" class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-6"></span>
-          </button>
-        </div>
-
-        <div class="p-5 rounded-2xl glass-panel space-y-4">
-          <h3 class="text-xs font-bold text-emerald-400 uppercase">Vigezo vya Mchango</h3>
-          <div>
-            <label class="block text-[11px] font-bold text-slate-400 mb-1">Kiwango cha Siku (TSh)</label>
-            <input type="number" value="2000" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-bold text-xs outline-none focus:border-emerald-500">
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-slate-400 mb-1">Faini ya Kuchelewa (TSh)</label>
-            <input type="number" value="500" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-bold text-xs outline-none focus:border-emerald-500">
-          </div>
-          <button onclick="showToast('Mabadiliko yamehifadhiwa mafanikio!')" class="w-full py-3 rounded-xl bg-emerald-500 text-slate-950 font-black text-xs shadow-lg active:scale-95 transition-all">
-            HIFADHI MABADILIKO
-          </button>
-        </div>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- ================= MODALS ZA KISASA ================= -->
-  <div id="modal-sajili" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex justify-center items-center p-4">
-    <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl border border-slate-700">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="text-sm font-black text-white flex items-center gap-2"><i class="fa-solid fa-user-plus text-emerald-400"></i> Sajili Mwanachama Mpya</h3>
-        <button onclick="closeModal('modal-sajili')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <div class="space-y-3 text-xs">
-        <div><label class="block text-slate-400 font-bold mb-1">Jina Kamili</label><input type="text" placeholder="Mf. Juma Ally" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none"></div>
-        <div><label class="block text-slate-400 font-bold mb-1">Namba ya Simu</label><input type="text" placeholder="07xxxxxxxx" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none"></div>
-      </div>
-      <button onclick="closeModal('modal-sajili'); showToast('Mwanachama amesajiliwa kikamilifu!');" class="w-full py-3 rounded-xl bg-emerald-500 text-slate-950 font-black text-xs shadow-lg">KAMILISHA USAJILI</button>
-    </div>
-  </div>
-
-  <div id="modal-rekodi" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex justify-center items-center p-4">
-    <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl border border-slate-700">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="text-sm font-black text-white flex items-center gap-2"><i class="fa-solid fa-hand-holding-dollar text-blue-400"></i> Rekodi Mchango Manual</h3>
-        <button onclick="closeModal('modal-rekodi')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <div class="space-y-3 text-xs">
-        <div><label class="block text-slate-400 font-bold mb-1">Namba ya Simu / Jina</label><input type="text" placeholder="Chagua mwanachama..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none"></div>
-        <div><label class="block text-slate-400 font-bold mb-1">Kiasi (TSh)</label><input type="number" value="2000" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none"></div>
-      </div>
-      <button onclick="closeModal('modal-rekodi'); showToast('Mchango umerekodiwa!');" class="w-full py-3 rounded-xl bg-blue-500 text-white font-black text-xs shadow-lg">WEKA KUMBUKUMBU</button>
-    </div>
-  </div>
-
-  <div id="modal-tangazo" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex justify-center items-center p-4">
-    <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl border border-slate-700">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="text-sm font-black text-white flex items-center gap-2"><i class="fa-solid fa-bullhorn text-amber-400"></i> Tuma Tangazo la Kikundi</h3>
-        <button onclick="closeModal('modal-tangazo')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <div class="space-y-3 text-xs">
-        <div><label class="block text-slate-400 font-bold mb-1">Kichwa cha Habari</label><input type="text" placeholder="Mf. Kikao cha dharura..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none"></div>
-        <div><label class="block text-slate-400 font-bold mb-1">Ujumbe Kamili</label><textarea rows="3" placeholder="Andika hapa..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none"></textarea></div>
-      </div>
-      <button onclick="closeModal('modal-tangazo'); showToast('Tangazo limetumwa kwa wanachama wote!');" class="w-full py-3 rounded-xl bg-amber-500 text-slate-950 font-black text-xs shadow-lg">TUMA SASA</button>
-    </div>
-  </div>
-
-  <div id="modal-ripoti" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex justify-center items-center p-4">
-    <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl border border-slate-700">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="text-sm font-black text-white flex items-center gap-2"><i class="fa-solid fa-file-invoice text-indigo-400"></i> Ripoti ya Kifedha</h3>
-        <button onclick="closeModal('modal-ripoti')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-      </div>
-      <p class="text-xs text-slate-300">Ripoti ya leo inaonyesha jumla ya TSh 245,000 imekusanywa salama.</p>
-      <button onclick="closeModal('modal-ripoti'); showToast('Ripoti imepakuliwa kwenye PDF!');" class="w-full py-3 rounded-xl bg-indigo-500 text-white font-black text-xs shadow-lg">PAKUA RIPOTI (PDF)</button>
-    </div>
-  </div>
-
-  <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 hidden bg-slate-900 text-emerald-400 border border-emerald-500/30 px-4 py-2.5 rounded-2xl text-xs font-bold shadow-2xl z-50 flex items-center gap-2">
-    <i class="fa-solid fa-circle-check"></i> <span id="toast-msg">Ujumbe hapa</span>
-  </div>
-
-  <!-- NAVIGATION YA ADMIN (CHINI) -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 glass-panel border-t border-slate-800 dark:border-slate-800 light:border-slate-200 px-6 py-3">
-    <div class="max-w-md mx-auto flex justify-between items-center text-slate-400">
-      <button onclick="switchAdminTab('dash')" id="nav-dash" class="w-16 flex flex-col items-center gap-1 text-indigo-400 font-bold">
-        <i class="fa-solid fa-chart-pie text-xl"></i>
-        <span class="text-[9px] uppercase tracking-wider mt-1">Dashibodi</span>
-      </button>
-      <button onclick="switchAdminTab('members')" id="nav-members" class="w-16 flex flex-col items-center gap-1 hover:text-slate-200 transition-colors">
-        <i class="fa-solid fa-users-gear text-xl"></i>
-        <span class="text-[9px] uppercase tracking-wider mt-1">Watu</span>
-      </button>
-      <button onclick="switchAdminTab('settings')" id="nav-settings" class="w-16 flex flex-col items-center gap-1 hover:text-slate-200 transition-colors">
-        <i class="fa-solid fa-sliders text-xl"></i>
-        <span class="text-[9px] uppercase tracking-wider mt-1">Setingi</span>
-      </button>
-    </div>
-  </nav>
-
-  <script>
-    const fineStatus = {};
-    const suspendStatus = {};
-    const bannedStatus = {};
-
-    function switchAdminTab(tab) {
-      ['dash', 'members', 'settings'].forEach(t => {
-        document.getElementById(`view-admin-${t}`).classList.add('hidden');
-        document.getElementById(`nav-${t}`).className = "w-16 flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors";
-      });
-      document.getElementById(`view-admin-${tab}`).classList.remove('hidden');
-      document.getElementById(`nav-${tab}`).className = "w-16 flex flex-col items-center gap-1 text-indigo-400 font-bold";
-    }
-
-    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toast-msg').innerText = msg;
-      toast.classList.remove('hidden');
-      setTimeout(() => { toast.classList.add('hidden'); }, 3000);
-    }
-
-    // Toggle Fine / Remove Fine Logic
-    function toggleFine(id, name) {
-      const btn = document.getElementById(`fine-btn-${id}`);
-      const icon = document.getElementById(`fine-icon-${id}`);
-      const text = document.getElementById(`fine-text-${id}`);
-
-      if (!fineStatus[id]) {
-        fineStatus[id] = true;
-        btn.className = "py-2 rounded-xl bg-amber-500 text-slate-950 border border-amber-600 text-[10px] font-black uppercase transition-all";
-        icon.className = "fa-solid fa-file-circle-check mb-1 block text-sm";
-        text.innerText = "Ondoa Faini";
-        showToast(`Faini imewekwa kwa ${name}`);
-      } else {
-        fineStatus[id] = false;
-        btn.className = "py-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-black uppercase hover:bg-amber-500 hover:text-slate-950 transition-all";
-        icon.className = "fa-solid fa-file-invoice-dollar mb-1 block text-sm";
-        text.innerText = "Faini";
-        showToast(`Faini imeondolewa kwa ${name}`);
-      }
-    }
-
-    // Toggle Suspend / Unsuspend Logic
-    function toggleSuspend(id, name) {
-      const btn = document.getElementById(`suspend-btn-${id}`);
-      const icon = document.getElementById(`suspend-icon-${id}`);
-      const text = document.getElementById(`suspend-text-${id}`);
-
-      if (!suspendStatus[id]) {
-        suspendStatus[id] = true;
-        btn.className = "py-2 rounded-xl bg-blue-500 text-white border border-blue-600 text-[10px] font-black uppercase transition-all";
-        icon.className = "fa-solid fa-play mb-1 block text-sm";
-        text.innerText = "Rudisha";
-        showToast(`${name} amesimamishwa kwa muda.`);
-      } else {
-        suspendStatus[id] = false;
-        btn.className = "py-2 rounded-xl bg-slate-800 text-slate-300 border border-slate-700 text-[10px] font-black uppercase hover:bg-slate-700 transition-all";
-        icon.className = "fa-solid fa-pause mb-1 block text-sm";
-        text.innerText = "Simamisha";
-        showToast(`${name} amerudishwa rasmi.`);
-      }
-    }
-
-    // Toggle Ban / Unban Logic
-    function toggleBan(id, name) {
-      const btn = document.getElementById(`ban-btn-${id}`);
-      const icon = document.getElementById(`ban-icon-${id}`);
-      const text = document.getElementById(`ban-text-${id}`);
-      const row = document.getElementById(`member-row-${id}`);
-
-      if (!bannedStatus[id]) {
-        bannedStatus[id] = true;
-        btn.className = "py-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-black uppercase hover:bg-emerald-600 hover:text-white transition-all";
-        icon.className = "fa-solid fa-user-check mb-1 block text-sm";
-        text.innerText = "Unban";
-        row.style.opacity = "0.6";
-        showToast(`${name} amefungiwa (Banned).`);
-      } else {
-        bannedStatus[id] = false;
-        btn.className = "py-2 rounded-xl bg-rose-500/10 text-rose-500 border border-rose-500/20 text-[10px] font-black uppercase hover:bg-rose-600 hover:text-white transition-all";
-        icon.className = "fa-solid fa-ban mb-1 block text-sm";
-        text.innerText = "Ban";
-        row.style.opacity = "1";
-        showToast(`${name} amerudishwa (Unbanned).`);
-      }
-    }
-
-    function toggleTheme() {
-      const html = document.documentElement;
-      const toggleBtn = document.getElementById('theme-toggle-btn');
-      const toggleCircle = document.getElementById('theme-toggle-circle');
-
-      if (html.classList.contains('dark')) {
-        html.classList.remove('dark');
-        html.classList.add('light');
-        toggleBtn.className = "relative inline-flex h-6 w-11 items-center rounded-full bg-slate-300 transition-colors";
-        toggleCircle.className = "inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-1 shadow-sm";
-      } else {
-        html.classList.remove('light');
-        html.classList.add('dark');
-        toggleBtn.className = "relative inline-flex h-6 w-11 items-center rounded-full bg-emerald-500 transition-colors";
-        toggleCircle.className = "inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-6 shadow-sm";
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-      const ctx = document.getElementById('financeChart').getContext('2d');
-      let gradient = ctx.createLinearGradient(0, 0, 0, 300);
-      gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)');
-      gradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
-
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ['J3', 'J4', 'J5', 'Alh', 'Ij', 'Jm', 'Jp'],
-          datasets: [{
-            label: 'Mapato (TSh)',
-            data: [45000, 52000, 38000, 65000, 48000, 70000, 84000],
-            borderColor: '#818cf8',
-            backgroundColor: gradient,
-            borderWidth: 3,
-            pointRadius: 3,
-            fill: true,
-            tension: 0.4
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
-            x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } }
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mchezo Wetu - Jopo la Utawala (Admin Panel)</title>
+    <style>
+        :root {
+            --bg-deep: #030712;
+            --card-glass: rgba(15, 23, 42, 0.85);
+            --border-glass: rgba(255, 255, 255, 0.12);
+            --primary: #3b82f6;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
-      });
-    });
-  </script>
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at 50% -20%, #1e3a8a 0%, var(--bg-deep) 70%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .header {
+            background: var(--card-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            padding: 24px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 0 0 6px 0;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 24px 0 12px 0;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .user-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border-glass);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .user-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .user-info {
+            font-size: 13px;
+            margin-bottom: 14px;
+            line-height: 1.6;
+        }
+
+        .user-info strong {
+            color: var(--text-muted);
+            display: inline-block;
+            width: 80px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-approve {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-approve:hover {
+            background: rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-reject {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-reject:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .badge-approved {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            background: var(--card-glass);
+            border-radius: 16px;
+            border: 1px solid var(--border-glass);
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Jopo la Utawala</h1>
+            <p>Simamia Maombi na Wanachama wa Mchezo Wetu</p>
+        </div>
+
+        <!-- MAOMBI YANAYOSUBIRI (PENDING REQUESTS) -->
+        <div class="section-title">⏳ Maombi Mapya Yanayosubiri Idhini (<span id="pendingCount">0</span>)</div>
+        <div id="pendingList" class="card-grid">
+            <div class="empty-state">Inapakia maombi...</div>
+        </div>
+
+        <!-- WANACHAMA WALIOTHIBITISHWA (APPROVED MEMBERS) -->
+        <div class="section-title" style="margin-top: 36px;">✅ Wanachama Waliothibitishwa (<span id="approvedCount">0</span>)</div>
+        <div id="approvedList" class="card-grid">
+            <div class="empty-state">Hakuna wanachama waliothibitishwa bado.</div>
+        </div>
+    </div>
+
+    <script>
+        async function loadAdminData() {
+            try {
+                const res = await fetch('/api/admin/users');
+                const users = await res.json();
+
+                const pendingContainer = document.getElementById('pendingList');
+                const approvedContainer = document.getElementById('approvedList');
+
+                const pendingUsers = users.filter(u => u.status === 'pending');
+                const approvedUsers = users.filter(u => u.status === 'approved');
+
+                document.getElementById('pendingCount').innerText = pendingUsers.length;
+                document.getElementById('approvedCount').innerText = approvedUsers.length;
+
+                // Render Pending Requests
+                if (pendingUsers.length === 0) {
+                    pendingContainer.innerHTML = `<div class="empty-state">Hakuna maombi mapya yanayosubiri kwa sasa.</div>`;
+                } else {
+                    pendingContainer.innerHTML = '';
+                    pendingUsers.forEach(u => {
+                        const card = document.createElement('div');
+                        card.className = 'user-card';
+                        card.innerHTML = `
+                            <div class="user-info">
+                                <strong>Jina:</strong> ${u.fullName}<br>
+                                <strong>Simu:</strong> ${u.phone}<br>
+                                <strong>Barua Pepe:</strong> ${u.email}<br>
+                                <strong>Tarehe:</strong> ${u.createdAt}
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn-approve" onclick="approveUser('${u.id}')">Kubali (Approve)</button>
+                                <button class="btn btn-reject" onclick="rejectUser('${u.id}')">Kataa</button>
+                            </div>
+                        `;
+                        pendingContainer.appendChild(card);
+                    });
+                }
+
+                // Render Approved Members
+                if (approvedUsers.length === 0) {
+                    approvedContainer.innerHTML = `<div class="empty-state">Hakuna wanachama waliothibitishwa bado.</div>`;
+                } else {
+                    approvedContainer.innerHTML = '';
+                    approvedUsers.forEach(u => {
+                        const card = document.createElement('div');
+                        card.className = 'user-card';
+                        card.innerHTML = `
+                            <div class="user-info">
+                                <strong>Jina:</strong> ${u.fullName}<br>
+                                <strong>Simu:</strong> ${u.phone}<br>
+                                <strong>Namba:</strong> <span style="color: #60a5fa; font-weight: bold;">${u.memberNumber}</span><br>
+                                <div style="margin-top: 8px;"><span class="badge-approved">Verified Member</span></div>
+                            </div>
+                        `;
+                        approvedContainer.appendChild(card);
+                    });
+                }
+            } catch (err) {
+                console.error("Hitilafu ya kupakia taarifa za admin:", err);
+            }
+        }
+
+        async function approveUser(id) {
+            const res = await fetch(`/api/admin/approve/${id}`, { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                alert(data.message);
+                loadAdminData();
+            } else {
+                alert(data.message);
+            }
+        }
+
+        async function rejectUser(id) {
+            if (confirm("Una hakika unataka kukataa na kufuta ombi hili?")) {
+                const res = await fetch(`/api/admin/reject/${id}`, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    alert(data.message);
+                    loadAdminData();
+                } else {
+                    alert(data.message);
+                }
+            }
+        }
+
+        loadAdminData();
+        // Refresh kila baada ya sekunde 5 ili uweze kuona maombi mapya moja kwa moja
+        setInterval(loadAdminData, 5000);
+    </script>
 </body>
 </html>

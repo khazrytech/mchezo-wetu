@@ -25,11 +25,11 @@ app.post('/api/register', (req, res) => {
         id: Date.now().toString(),
         fullName: fullName.trim(),
         phone: phone.trim(),
-        email: email ? email.trim() : '',
+        email: email ? email.trim() : 'Hakuna',
         password,
         status: 'pending',
         memberNumber: null,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toLocaleString()
     };
 
     users.push(newUser);
@@ -57,7 +57,20 @@ app.post('/api/admin/approve/:id', (req, res) => {
     res.json({ success: true, message: 'Mwanachama amekubaliwa kikamilifu!', user });
 });
 
-// 4. Kuingia kwenye mfumo (Inaruhusu Simu, Jina, au Namba ya Mwanachama + Password)
+// 4. Admin ku-reject / kufuta ombi la mwanachama
+app.post('/api/admin/reject/:id', (req, res) => {
+    const userId = req.params.id;
+    const index = users.findIndex(u => u.id === userId);
+
+    if (index === -1) {
+        return res.status(404).json({ success: false, message: 'Ombi halijapatikana.' });
+    }
+
+    users.splice(index, 1);
+    res.json({ success: true, message: 'Ombi limekataliwa na kufutwa.' });
+});
+
+// 5. Kuingia kwenye mfumo (Sign In)
 app.post('/api/login', (req, res) => {
     const { identifier, password } = req.body;
 
