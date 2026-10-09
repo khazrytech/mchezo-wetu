@@ -240,9 +240,36 @@
         input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); }
         .btn-submit { width: 100%; padding: 13px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
         .btn-close { background: rgba(255,255,255,0.05); color: var(--text-muted); margin-top: 8px; }
+        
+        /* Toast Notification Pro */
+        #toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e293b;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.15);
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 2000;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 </head>
 <body>
+    <div id="toast">✅ Taarifa imehifadhiwa</div>
+
     <div class="top-header">
         <div class="admin-badge-box">
             <div class="shield-icon">🛡️</div>
@@ -340,6 +367,19 @@
         </button>
     </div>
 
+    <!-- CUSTOM CONFIRMATION MODAL -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-card" style="text-align: center;">
+            <div style="font-size: 32px; margin-bottom: 10px;">⚠️</div>
+            <h3 id="confirmTitle" style="margin: 0 0 8px 0; font-size: 18px;">Thibitisha Kitendo</h3>
+            <p id="confirmDesc" style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Una hakika unataka kuendelea na kitendo hiki?</p>
+            <div style="display: flex; gap: 10px;">
+                <button type="button" class="btn btn-close" onclick="closeConfirmModal()" style="margin-top:0;">Ghairi</button>
+                <button type="button" id="confirmOkBtn" class="btn btn-approve" style="margin-top:0; background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4);">Ndiyo, Endelea</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODALS PRO -->
     <div id="sajiliModal" class="modal-overlay">
         <div class="modal-card">
@@ -393,6 +433,34 @@
     </div>
 
     <script>
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = `✅ ${message}`;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        let confirmCallback = null;
+
+        function showConfirm(title, desc, callback) {
+            document.getElementById('confirmTitle').innerText = title;
+            document.getElementById('confirmDesc').innerText = desc;
+            confirmCallback = callback;
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+            confirmCallback = null;
+        }
+
+        document.getElementById('confirmOkBtn').onclick = () => {
+            if (confirmCallback) confirmCallback();
+            closeConfirmModal();
+        };
+
         function switchTab(tab) {
             document.getElementById('tabDashibodi').style.display = tab === 'dashibodi' ? 'block' : 'none';
             document.getElementById('tabWatu').style.display = tab === 'watu' ? 'block' : 'none';
@@ -449,7 +517,7 @@
                             </div>
                             <div class="btn-group">
                                 <button class="btn btn-approve" onclick="approveUser('${u.id}')">Kubali</button>
-                                <button class="btn btn-reject" onclick="rejectUser('${u.id}')">Kataa</button>
+                                <button class="btn btn-reject" onclick="confirmRejectUser('${u.id}')">Kataa</button>
                             </div>
                         `;
                         pendingList.appendChild(card);
@@ -476,7 +544,7 @@
                             </div>
                             <div class="btn-group">
                                 <button class="btn btn-suspend" onclick="suspendUser('${u.id}')">${isSuspended ? 'Ruhusu (Unsuspend)' : 'Simamisha (Suspend)'}</button>
-                                <button class="btn btn-reject" onclick="rejectUser('${u.id}')">Futa</button>
+                                <button class="btn btn-reject" onclick="confirmRejectUser('${u.id}')">Futa</button>
                             </div>
                         `;
                         approvedList.appendChild(card);
@@ -490,22 +558,32 @@
         async function approveUser(id) {
             const res = await fetch(`/api/admin/approve/${id}`, { method: 'POST' });
             const data = await res.json();
-            if (data.success) loadAdminData();
+            if (data.success) {
+                showToast(data.message);
+                loadAdminData();
+            }
         }
 
-        async function rejectUser(id) {
-            if (confirm("Una hakika unataka kufuta ombi au mwanachama huyu?")) {
-                const res = await fetch(`/api/admin/reject/${id}`, { method: 'POST' });
-                const data = await res.json();
-                if (data.success) loadAdminData();
-            }
+        function confirmRejectUser(id) {
+            showConfirm(
+                "Futa / Kataa Mwanachama", 
+                "Una hakika unataka kufuta ombi au mwanachama huyu kwenye mfumo?", 
+                async () => {
+                    const res = await fetch(`/api/admin/reject/${id}`, { method: 'POST' });
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast("Ombi limefutwa kwa mafanikio");
+                        loadAdminData();
+                    }
+                }
+            );
         }
 
         async function suspendUser(id) {
             const res = await fetch(`/api/admin/suspend/${id}`, { method: 'POST' });
             const data = await res.json();
             if (data.success) {
-                alert(data.message);
+                showToast(data.message);
                 loadAdminData();
             }
         }
@@ -523,11 +601,11 @@
             });
             const data = await res.json();
             if (data.success) {
-                alert(data.message);
+                showToast(data.message);
                 closeModal('sajiliModal');
                 loadAdminData();
             } else {
-                alert(data.message);
+                showToast(data.message);
             }
         }
 
@@ -544,7 +622,7 @@
             });
             const data = await res.json();
             if (data.success) {
-                alert(data.message);
+                showToast(data.message);
                 closeModal('rekodiModal');
                 loadAdminData();
             }
@@ -562,7 +640,7 @@
             });
             const data = await res.json();
             if (data.success) {
-                alert(data.message);
+                showToast(data.message);
                 closeModal('tangazoModal');
             }
         }
