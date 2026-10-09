@@ -3,235 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mchezo Wetu - Digital Micro-Group</title>
+    <title>Mchezo Wetu - User Dashboard</title>
     <style>
         :root {
-            --bg-deep: #060913;
-            --card-glass: rgba(15, 23, 42, 0.85);
-            --border-glass: rgba(255, 255, 255, 0.1);
-            --primary: #3b82f6;
+            --bg-deep: #020617;
+            --card-glass: rgba(15, 23, 42, 0.78);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --primary: #2563eb;
+            --primary-glow: rgba(37, 99, 235, 0.35);
             --accent: #10b981;
-            --warning: #f59e0b;
+            --accent-glow: rgba(16, 185, 129, 0.35);
             --danger: #ef4444;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.18) 0%, transparent 65%),
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.12) 0%, transparent 55%);
             color: var(--text-main);
-            margin: 0;
-            padding: 16px 16px 100px 16px;
-            box-sizing: border-box;
+            margin: 0; padding: 0 0 90px 0;
+            min-height: 100vh;
         }
-        .top-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+        .container { max-width: 500px; margin: 0 auto; padding: 20px 16px; }
+
+        /* Top Header */
+        .top-brand {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 20px; padding: 4px 0;
         }
-        .user-profile-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .brand-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(37, 99, 235, 0.12); border: 1px solid rgba(37, 99, 235, 0.3);
+            color: #60a5fa; padding: 6px 14px; border-radius: 20px;
+            font-size: 11px; font-weight: 800; letter-spacing: 0.8px;
         }
-        .avatar {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 16px;
-            color: white;
-            position: relative;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-        }
-        .avatar::after {
-            content: '';
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            width: 10px;
-            height: 10px;
-            background: #10b981;
-            border: 2px solid var(--bg-deep);
-            border-radius: 50%;
-        }
-        .notification-btn {
+
+        /* Glass Card Base */
+        .glass-card {
             background: var(--card-glass);
-            border: 1px solid var(--border-glass);
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            position: relative;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-        }
-        .notification-btn::after {
-            content: '';
-            position: absolute;
-            top: 10px;
-            right: 12px;
-            width: 8px;
-            height: 8px;
-            background: #ef4444;
-            border-radius: 50%;
-        }
-        .card-main {
-            background: var(--card-glass);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--border-glass);
             border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            padding: 24px;
+            margin-bottom: 18px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
         }
-        .card-header-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
+
+        /* Profile Header Hero Card */
+        .profile-hero { text-align: center; position: relative; }
+        .avatar-box {
+            width: 72px; height: 72px; margin: 0 auto 14px auto;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(16, 185, 129, 0.25));
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px; font-weight: 900; color: #60a5fa;
+            box-shadow: 0 0 30px rgba(37, 99, 235, 0.2);
+            position: relative;
         }
-        .badge-tag {
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 4px 10px;
-            border-radius: 20px;
+        .avatar-online-dot {
+            width: 12px; height: 12px; border-radius: 50%;
+            background: var(--accent); border: 2.5px solid var(--bg-deep);
+            position: absolute; bottom: -2px; right: -2px;
+            box-shadow: 0 0 8px var(--accent);
         }
-        .badge-success {
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+        .user-name { font-size: 20px; font-weight: 900; color: #fff; margin: 0 0 4px 0; }
+        .user-id { font-size: 12px; font-weight: 800; color: #60a5fa; font-family: monospace; letter-spacing: 1px; margin-bottom: 12px; }
+        .verified-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--accent); padding: 5px 14px; border-radius: 20px;
+            font-size: 11px; font-weight: 800;
         }
-        .stats-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 12px;
+
+        /* Section Titles */
+        .card-title {
+            font-size: 12px; font-weight: 800; letter-spacing: 0.6px;
+            color: var(--text-muted); text-transform: uppercase;
+            margin: 0 0 14px 0;
         }
-        .stat-box {
-            background: rgba(255, 255, 255, 0.02);
-            padding: 12px;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+
+        /* Referral Link Box */
+        .referral-box {
+            display: flex; gap: 10px; background: rgba(0, 0, 0, 0.3);
+            padding: 8px 8px 8px 14px; border-radius: 16px;
+            border: 1px solid var(--border-glass); align-items: center;
         }
-        .progress-container {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            height: 8px;
-            width: 100%;
-            margin: 12px 0 6px 0;
-            overflow: hidden;
+        .referral-input {
+            background: transparent; border: none; color: #fff;
+            font-size: 12px; font-weight: 600; width: 100%; outline: none;
         }
-        .progress-bar {
-            background: linear-gradient(90deg, #3b82f6 0%, #10b981 100%);
-            height: 100%;
-            border-radius: 10px;
-            width: 67%;
+        .btn-copy {
+            background: var(--primary); color: #fff; border: none;
+            padding: 10px 18px; border-radius: 12px; font-size: 12px;
+            font-weight: 800; cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 4px 12px var(--primary-glow); flex-shrink: 0;
         }
-        .btn-action {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            font-size: 13px;
-            font-weight: 800;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 16px;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+
+        /* Profile Data List */
+        .data-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
+        .data-row:last-child { border-bottom: none; }
+        .data-label { font-size: 13px; font-weight: 700; color: var(--text-muted); }
+        .data-value { font-size: 13px; font-weight: 800; color: #fff; }
+
+        /* Logout Button */
+        .btn-logout {
+            width: 100%; padding: 16px; border-radius: 18px;
+            background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25);
+            color: #f87171; font-size: 13px; font-weight: 800;
+            cursor: pointer; transition: all 0.2s; display: flex;
+            align-items: center; justify-content: center; gap: 8px;
         }
-        .card-mini {
-            background: var(--card-glass);
-            border: 1px solid var(--border-glass);
-            padding: 14px 8px;
-            border-radius: 16px;
-            text-align: center;
-        }
+        .btn-logout:hover { background: rgba(239, 68, 68, 0.15); }
+
+        /* Bottom Nav */
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: #090d16;
-            border-top: 1px solid var(--border-glass);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            box-sizing: border-box;
-            z-index: 100;
-            box-shadow: 0 -10px 25px rgba(0,0,0,0.6);
+            position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+            width: calc(100% - 32px); max-width: 460px;
+            background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 28px; padding: 8px;
+            display: flex; justify-content: space-around;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8); z-index: 1000;
         }
         .nav-item {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 11px;
-            font-weight: 600;
+            flex: 1; text-align: center; padding: 10px 0; color: var(--text-muted);
+            text-decoration: none; font-size: 11px; font-weight: 800;
+            border-radius: 20px; transition: all 0.25s;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
             cursor: pointer;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            text-decoration: none;
         }
-        .nav-item.active { color: var(--accent); }
-
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(6, 9, 19, 0.85); backdrop-filter: blur(10px);
-            display: none; align-items: center; justify-content: center; z-index: 1000;
-            padding: 20px; box-sizing: border-box;
-        }
-        .modal-card {
-            background: #0f172a; border: 1px solid var(--border-glass);
-            width: 100%; max-width: 380px; border-radius: 24px; padding: 24px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.7); animation: modalPop 0.3s ease;
-        }
-        @keyframes modalPop {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        .network-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0;
-        }
-        .network-option {
-            background: rgba(255,255,255,0.03); border: 1.5px solid var(--border-glass);
-            border-radius: 16px; padding: 14px; text-align: center; cursor: pointer;
-            transition: all 0.2s;
-        }
-        .network-option:hover, .network-option.selected {
-            border-color: var(--primary); background: rgba(59, 130, 246, 0.1);
+        .nav-item.active {
+            color: #fff; background: rgba(37, 99, 235, 0.2);
+            border: 1px solid rgba(37, 99, 235, 0.3);
         }
 
         #toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
-            background: #1e293b; color: #fff; padding: 12px 24px; border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.2); font-size: 13px; font-weight: 600;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 3000;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none; display: flex; align-items: center; gap: 10px;
+            background: rgba(15, 23, 42, 0.95); color: #fff; padding: 12px 24px; border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.15); font-size: 13px; font-weight: 700;
+            z-index: 3000; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none; backdrop-filter: blur(10px);
         }
         #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
@@ -239,326 +159,205 @@
 <body>
     <div id="toast">✅ Taarifa</div>
 
-    <!-- HOME VIEW -->
-    <div id="homeView" class="tab-view">
-        <div class="top-header">
-            <div class="user-profile-box">
-                <div id="userAvatar" class="avatar">J</div>
-                <div>
-                    <div id="userGreeting" style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Habari za leo 👋</div>
-                    <div id="userNameDisplay" style="font-size: 14px; font-weight: 800; color: #fff;">Inapakia...</div>
-                </div>
-            </div>
-            <div class="notification-btn" onclick="openNotifications()">🔔</div>
+    <div class="container">
+        <!-- TOP BRANDING -->
+        <div class="top-brand">
+            <div class="brand-badge">● MCHEZO WETU FINTECH</div>
         </div>
 
-        <div class="card-main">
-            <div class="card-header-flex">
-                <span style="font-size: 11px; font-weight: 800; color: var(--text-muted); letter-spacing: 0.5px;">👤 MCHANGO WANGU LEO</span>
-                <span class="badge-tag badge-success">✓ UMELIPA LEO</span>
+        <!-- TAB 1: NYUMBANI (HOME) -->
+        <div id="tab-home">
+            <div class="glass-card" style="text-align: center; padding: 32px 20px;">
+                <div style="font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Salio la Akaunti</div>
+                <div style="font-size: 32px; font-weight: 900; color: #fff; margin: 8px 0;">TZS 0.00</div>
+                <span style="font-size: 11px; color: var(--accent); font-weight: 700; background: rgba(16,185,129,0.1); padding: 4px 12px; border-radius: 12px; border: 1px solid rgba(16,185,129,0.2);">● Mwanachama Imara</span>
             </div>
-            <div class="stats-row">
-                <div class="stat-box">
-                    <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">ULICHOLIPA LEO</div>
-                    <div style="font-size: 16px; font-weight: 800; color: #fff; margin-top: 4px;">TSh 2,000</div>
-                </div>
-                <div class="stat-box">
-                    <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">JUMLA YA MICHANGO YAKO</div>
-                    <div style="font-size: 16px; font-weight: 800; color: #fff; margin-top: 4px;">TSh 60,000</div>
+
+            <div class="glass-card">
+                <h2 class="card-title">Matangazo ya Kikundi</h2>
+                <div id="announcementsList" style="font-size: 13px; color: var(--text-muted);">
+                    Hakuna matangazo kwa sasa.
                 </div>
             </div>
         </div>
 
-        <div class="card-main" style="background: linear-gradient(135deg, #0f172a 0%, #090d16 100%);">
-            <div class="card-header-flex">
-                <span class="badge-tag badge-success" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2);">🟢 LENGO LA LEO</span>
-                <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">Kiwango / Siku: <strong style="color: #fff;">TSh 2,000</strong></span>
+        <!-- TAB 2: MICHANGO -->
+        <div id="tab-contributions" style="display: none;">
+            <div class="glass-card">
+                <h2 class="card-title">Historia ya Michango</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Bado hujafanya mchango wowote.</p>
             </div>
-            <div style="font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 12px;">Mchezo Wetu</div>
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 16px; padding: 14px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span style="font-size: 11px; color: var(--text-muted); font-weight: 700;">JUMLA ILIYOKUSANYWA LEO</span>
-                    <span style="font-size: 13px; font-weight: 800; color: var(--accent);">67% ya Lengo</span>
-                </div>
-                <div style="font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px;">TSh 4,000</div>
-                <div class="progress-container"><div class="progress-bar"></div></div>
-            </div>
-            <button class="btn-action" onclick="openPaymentModal()">
-                ⚡ LIPA TSH 2,000 YA LEO SASA
-            </button>
         </div>
 
-        <div class="grid-3">
-            <div class="card-mini">
-                <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">WANACHAMA</div>
-                <div style="font-size: 16px; font-weight: 800; color: #fff; margin-top: 4px;">1</div>
+        <!-- TAB 3: RISITI -->
+        <div id="tab-receipts" style="display: none;">
+            <div class="glass-card">
+                <h2 class="card-title">Risiti za Mfumo</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Hakuna risiti zinazopatikana.</p>
             </div>
-            <div class="card-mini">
-                <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">WALIOLIPA</div>
-                <div style="font-size: 16px; font-weight: 800; color: var(--accent); margin-top: 4px;">1</div>
+        </div>
+
+        <!-- TAB 4: PRO FINTECH PROFILE SECTION -->
+        <div id="tab-profile" style="display: none;">
+            <!-- HERO PROFILE CARD -->
+            <div class="glass-card profile-hero">
+                <div class="avatar-box">
+                    <span id="pInitials">--</span>
+                    <div class="avatar-online-dot"></div>
+                </div>
+                <h1 class="user-name" id="pName">Mwanachama</h1>
+                <div class="user-id" id="pMemberNo">MW-0000</div>
+                <div class="verified-badge">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Mwanachama Aliyethibitishwa
+                </div>
             </div>
-            <div class="card-mini">
-                <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">HAWAJALIPA</div>
-                <div style="font-size: 16px; font-weight: 800; color: #f87171; margin-top: 4px;">0</div>
+
+            <!-- REFERRAL CARD -->
+            <div class="glass-card">
+                <h2 class="card-title">Link Yako ya Kipekee ya Mwaliko</h2>
+                <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 12px 0;">Mtumie mtu link hii ajiunge moja kwa moja chini ya akaunti yako:</p>
+                <div class="referral-box">
+                    <input type="text" id="refLinkInput" class="referral-input" readonly value="https://mchezo-wetu.onrender.com/?ref=MW">
+                    <button class="btn-copy" onclick="copyReferralLink()">Copy</button>
+                </div>
+            </div>
+
+            <!-- PERSONAL INFO CARD -->
+            <div class="glass-card">
+                <h2 class="card-title">Taarifa za Kibinafsi</h2>
+                <div class="data-row">
+                    <span class="data-label">Namba ya Simu</span>
+                    <span class="data-value" id="pPhone">07XXXXXXXX</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Barua Pepe</span>
+                    <span class="data-value" id="pEmail">Haijawekwa</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Hali ya Akaunti</span>
+                    <span class="data-value" style="color: var(--accent);">Active ●</span>
+                </div>
+            </div>
+
+            <!-- LOGOUT ACTION -->
+            <div class="glass-card" style="padding: 16px;">
+                <button class="btn-logout" onclick="handleUserLogout()">
+                    🚪 Toka Kwenye Akaunti (Logout)
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- MICHANGO VIEW -->
-    <div id="michangoView" class="tab-view" style="display: none;">
-        <h2 style="font-size: 18px; margin-bottom: 16px;">Historia ya Michango Yako</h2>
-        <div class="card-main">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border-glass); padding-bottom: 8px;">
-                <div>
-                    <div style="font-size: 13px; font-weight: 700;">Mchango wa Leo</div>
-                    <div style="font-size: 11px; color: var(--text-muted);">09 Oktoba 2026</div>
-                </div>
-                <div style="text-align: right;">
-                    <div style="font-size: 14px; font-weight: 800; color: var(--accent);">+TSh 2,000</div>
-                    <span class="badge-tag badge-success">Imefanikiwa</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- RISITI VIEW -->
-    <div id="risitiView" class="tab-view" style="display: none;">
-        <h2 style="font-size: 18px; margin-bottom: 16px;">Risiti za Kidijitali</h2>
-        <div class="card-main" style="text-align: center; padding: 24px;">
-            <div style="font-size: 36px; margin-bottom: 10px;">🧾</div>
-            <h3 style="font-size: 15px; margin: 0 0 6px 0;">Risiti #MW-REC-2026-09</h3>
-            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Umelipa TSh 2,000 kupitia M-Pesa. Hali: Imethibitishwa na Mfumo.</p>
-            <button class="btn-action" style="margin-top: 0;" onclick="showToast('Risiti imepakuliwa kwenye simu yako!')">Pakua Risiti (PDF)</button>
-        </div>
-    </div>
-
-    <!-- PROFILE VIEW -->
-    <div id="profileView" class="tab-view" style="display: none;">
-        <div class="card-main" style="text-align: center; padding: 24px 20px;">
-            <div id="profileAvatar" class="avatar" style="width: 70px; height: 70px; font-size: 26px; margin: 0 auto 14px auto;">J</div>
-            <h2 id="profileName" style="font-size: 18px; margin: 0 0 4px 0; color: #fff;">Inapakia...</h2>
-            <div id="profileMemberNum" style="font-size: 13px; color: #60a5fa; font-weight: 700; margin-bottom: 16px;">MW-2026-XXXX</div>
-            <span class="badge-tag badge-success">✓ Mwanachama Aliyethibitishwa</span>
-        </div>
-
-        <div class="card-main">
-            <div style="font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;">Link Yako ya Kipekee ya Mwaliko</div>
-            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Mtumie mtu link hii ili ajiunge moja kwa moja chini ya akaunti yako:</p>
-            <div style="display: flex; gap: 8px;">
-                <input type="text" id="inviteLinkInput" readonly style="width: 100%; padding: 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass); border-radius: 10px; color: #60a5fa; font-size: 12px;" value="https://mchezo-wetu.onrender.com/?ref=MW">
-                <button onclick="copyInviteLink()" style="background: var(--primary); color: white; border: none; padding: 0 14px; border-radius: 10px; font-weight: 700; cursor: pointer;">Copy</button>
-            </div>
-        </div>
-
-        <div class="card-main">
-            <div style="font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;">Taarifa za Kibinafsi</div>
-            <div style="font-size: 13px; line-height: 2.2; color: var(--text-muted);">
-                <strong>Namba ya Simu:</strong> <span id="profilePhone" style="color: #fff; float: right;">-</span><br>
-                <strong>Barua Pepe:</strong> <span id="profileEmail" style="color: #fff; float: right;">-</span><br>
-                <strong>Hali ya Akaunti:</strong> <span style="color: #34d399; font-weight: bold; float: right;">Active</span>
-            </div>
-        </div>
-
-        <button onclick="handleLogout()" style="width: 100%; padding: 14px; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px; font-size: 14px; font-weight: 800; cursor: pointer; margin-top: 10px;">
-            🚪 Toka Kwenye Akaunti (Logout)
-        </button>
-    </div>
-
-    <!-- PAYMENT MODAL -->
-    <div id="paymentModal" class="modal-overlay">
-        <div class="modal-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                <h3 style="font-size: 16px; margin: 0; color: #fff;">Chagua Mtandao wa Malipo</h3>
-                <button onclick="closePaymentModal()" style="background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer;">✕</button>
-            </div>
-            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Kiasi cha kulipa leo: <strong style="color: #fff;">TSh 2,000</strong></p>
-            
-            <div class="network-grid">
-                <div class="network-option" onclick="selectNetwork('M-Pesa', 'Vodacom M-Pesa')">
-                    <div style="background: rgba(239, 68, 68, 0.2); color: #ef4444; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; margin: 0 auto 6px auto;">M</div>
-                    <div style="font-size: 12px; font-weight: 700; color: #fff;">M-Pesa</div>
-                </div>
-                <div class="network-option" onclick="selectNetwork('Tigo Pesa', 'Tigo Pesa')">
-                    <div style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; margin: 0 auto 6px auto;">T</div>
-                    <div style="font-size: 12px; font-weight: 700; color: #fff;">Tigo Pesa</div>
-                </div>
-                <div class="network-option" onclick="selectNetwork('Airtel Money', 'Airtel Money')">
-                    <div style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; margin: 0 auto 6px auto;">A</div>
-                    <div style="font-size: 12px; font-weight: 700; color: #fff;">Airtel Money</div>
-                </div>
-                <div class="network-option" onclick="selectNetwork('HaloPesa', 'HaloPesa')">
-                    <div style="background: rgba(16, 185, 129, 0.2); color: #10b981; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; margin: 0 auto 6px auto;">H</div>
-                    <div style="font-size: 12px; font-weight: 700; color: #fff;">HaloPesa</div>
-                </div>
-            </div>
-
-            <!-- SEHEMU YA KWEKA NAMBA YA SIMU BAADA YA KUCHAGUA MTANDAO -->
-            <div id="phoneInputContainer" style="display: none; margin-top: 14px; text-align: left;">
-                <label id="phoneInputLabel" style="display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">Weka Namba ya Simu</label>
-                <input type="tel" id="paymentPhone" placeholder="07xxxxxxxx" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.04); border: 1.5px solid var(--border-glass); border-radius: 12px; color: #fff; font-size: 14px; box-sizing: border-box;">
-            </div>
-
-            <button class="btn-action" onclick="processPayment()" style="margin-top: 16px;">Thibitisha Malipo</button>
-        </div>
-    </div>
-
-    <!-- NOTIFICATIONS MODAL -->
-    <div id="notifModal" class="modal-overlay">
-        <div class="modal-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                <h3 style="font-size: 16px; margin: 0; color: #fff;">Arifa na Matangazo</h3>
-                <button onclick="closeNotifModal()" style="background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer;">✕</button>
-            </div>
-            <div id="notifList" style="max-height: 280px; overflow-y: auto;">
-                <p style="font-size: 12px; color: var(--text-muted); text-align: center;">Inapakia arifa...</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- BOTTOM NAVIGATION -->
+    <!-- BOTTOM NAVIGATION BAR -->
     <div class="bottom-nav">
-        <button onclick="switchTab('home')" id="navHome" class="nav-item active">
-            <span style="font-size: 18px;">🏠</span> Nyumbani
-        </button>
-        <button onclick="switchTab('michango')" id="navMichango" class="nav-item">
-            <span style="font-size: 18px;">💳</span> Michango
-        </button>
-        <button onclick="switchTab('risiti')" id="navRisiti" class="nav-item">
-            <span style="font-size: 18px;">🧾</span> Risiti
-        </button>
-        <button onclick="switchTab('profile')" id="navProfile" class="nav-item">
-            <span style="font-size: 18px;">👤</span> Profile
-        </button>
+        <div class="nav-item active" onclick="switchTab('home', this)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            <span>Nyumbani</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('contributions', this)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            <span>Michango</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('receipts', this)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <span>Risiti</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('profile', this)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Profile</span>
+        </div>
     </div>
 
     <script>
-        function showToast(message, isError = false) {
+        function showToast(msg) {
             const toast = document.getElementById('toast');
-            toast.style.borderColor = isError ? 'rgba(239, 68, 68, 0.4)' : 'rgba(255, 255, 255, 0.2)';
-            toast.innerHTML = `${isError ? '⚠️' : '✅'} ${message}`;
+            toast.innerText = msg;
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+            setTimeout(() => toast.classList.remove('show'), 3500);
         }
 
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-view').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        function switchTab(tabName, el) {
+            document.getElementById('tab-home').style.display = 'none';
+            document.getElementById('tab-contributions').style.display = 'none';
+            document.getElementById('tab-receipts').style.display = 'none';
+            document.getElementById('tab-profile').style.display = 'none';
 
-            if (tabName === 'home') {
-                document.getElementById('homeView').style.display = 'block';
-                document.getElementById('navHome').classList.add('active');
-            } else if (tabName === 'michango') {
-                document.getElementById('michangoView').style.display = 'block';
-                document.getElementById('navMichango').classList.add('active');
-            } else if (tabName === 'risiti') {
-                document.getElementById('risitiView').style.display = 'block';
-                document.getElementById('navRisiti').classList.add('active');
-            } else if (tabName === 'profile') {
-                document.getElementById('profileView').style.display = 'block';
-                document.getElementById('navProfile').classList.add('active');
-            }
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+
+            document.getElementById('tab-' + tabName).style.display = 'block';
+            el.classList.add('active');
         }
 
-        let selectedNet = '';
-        let selectedNetName = '';
-
-        function openPaymentModal() {
-            selectedNet = '';
-            selectedNetName = '';
-            document.getElementById('paymentModal').style.display = 'flex';
-            document.getElementById('phoneInputContainer').style.display = 'none';
-            document.getElementById('paymentPhone').value = '';
-            document.querySelectorAll('.network-option').forEach(el => el.classList.remove('selected'));
-        }
-
-        function closePaymentModal() {
-            document.getElementById('paymentModal').style.display = 'none';
-        }
-
-        function selectNetwork(netCode, netName) {
-            selectedNet = netCode;
-            selectedNetName = netName;
-            document.querySelectorAll('.network-option').forEach(el => el.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
-            
-            const phoneContainer = document.getElementById('phoneInputContainer');
-            const phoneLabel = document.getElementById('phoneInputLabel');
-            phoneContainer.style.display = 'block';
-            phoneLabel.innerText = `Weka Namba ya ${netName} (07xxxxxxxx)`;
-            document.getElementById('paymentPhone').focus();
-        }
-
-        function processPayment() {
-            if (!selectedNet) {
-                showToast('Tafadhali chagua mtandao wa malipo kwanza!', true);
+        function loadUserProfile() {
+            const rawSession = localStorage.getItem('userSession');
+            if (!rawSession) {
+                window.location.href = '/index.html';
                 return;
             }
-            const phoneVal = document.getElementById('paymentPhone').value.trim();
-            if (!phoneVal || phoneVal.length < 10) {
-                showToast(`Weka namba sahihi ya simu ya ${selectedNetName}!`, true);
-                return;
+
+            try {
+                const user = JSON.parse(rawSession);
+                
+                // Set Name & Initials
+                const fullName = user.fullName || 'Mwanachama';
+                document.getElementById('pName').innerText = fullName;
+
+                const nameParts = fullName.trim().split(' ');
+                let initials = nameParts[0] ? nameParts[0][0].toUpperCase() : 'M';
+                if (nameParts.length > 1) {
+                    initials += nameParts[nameParts.length - 1][0].toUpperCase();
+                }
+                document.getElementById('pInitials').innerText = initials;
+
+                // Member No & Phone & Email
+                const memberNo = user.memberNumber || 'MW-' + Math.floor(1000 + Math.random() * 9000);
+                document.getElementById('pMemberNo').innerText = memberNo;
+                document.getElementById('pPhone').innerText = user.phone || '07XXXXXXXX';
+                document.getElementById('pEmail').innerText = user.email || 'Haijawekwa';
+
+                // Referral Link
+                document.getElementById('refLinkInput').value = `https://mchezo-wetu.onrender.com/?ref=${memberNo}`;
+            } catch (err) {
+                console.error(err);
             }
-            closePaymentModal();
-            showToast(`Ombi la TSh 2,000 limetumwa kwenye namba ${phoneVal} kupitia ${selectedNetName}. Weka neno la siri.`);
         }
 
-        async function openNotifications() {
-            document.getElementById('notifModal').style.display = 'flex';
+        function copyReferralLink() {
+            const copyText = document.getElementById('refLinkInput');
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            showToast('📋 Referral Link imekopiwa kikamilifu!');
+        }
+
+        function handleUserLogout() {
+            localStorage.removeItem('userSession');
+            showToast('👋 Umefanikiwa kutoka.');
+            setTimeout(() => { window.location.href = '/index.html'; }, 800);
+        }
+
+        async function fetchAnnouncements() {
             try {
                 const res = await fetch('/api/announcements');
                 const data = await res.json();
-                if (data.success) {
-                    const list = document.getElementById('notifList');
-                    if (data.announcements.length === 0) {
-                        list.innerHTML = '<p style="font-size: 12px; color: var(--text-muted); text-align: center;">Hakuna arifa mpya.</p>';
-                        return;
-                    }
-                    list.innerHTML = data.announcements.map(n => `
-                        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); border-radius: 12px; padding: 12px; margin-bottom: 10px;">
-                            <div style="font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 4px;">📢 ${n.title}</div>
-                            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px; line-height: 1.5;">${n.message}</div>
-                            <div style="font-size: 10px; color: #60a5fa; text-align: right;">${n.date}</div>
+                if (data.success && data.announcements.length > 0) {
+                    const list = document.getElementById('announcementsList');
+                    list.innerHTML = data.announcements.map(a => `
+                        <div style="background:rgba(255,255,255,0.02); padding:12px; border-radius:12px; border:1px solid var(--border-glass); margin-bottom:8px;">
+                            <div style="font-weight:800; color:#60a5fa; margin-bottom:4px;">${a.title}</div>
+                            <div style="color:#fff;">${a.message}</div>
+                            <div style="font-size:10px; color:var(--text-muted); margin-top:6px;">${a.date}</div>
                         </div>
                     `).join('');
                 }
             } catch (err) {
-                console.error('Hitilafu:', err);
+                console.error(err);
             }
         }
 
-        function closeNotifModal() {
-            document.getElementById('notifModal').style.display = 'none';
-        }
-
-        function copyInviteLink() {
-            const input = document.getElementById('inviteLinkInput');
-            input.select();
-            navigator.clipboard.writeText(input.value);
-            showToast('Link ya mwaliko imenakiliwa!');
-        }
-
-        function handleLogout() {
-            localStorage.removeItem('mchezo_user');
-            window.location.href = '/';
-        }
-
-        const userData = JSON.parse(localStorage.getItem('mchezo_user'));
-        if (userData) {
-            document.getElementById('userNameDisplay').innerText = userData.fullName;
-            document.getElementById('userAvatar').innerText = userData.fullName.charAt(0).toUpperCase();
-            
-            if (userData.memberNumber) {
-                document.getElementById('inviteLinkInput').value = `https://mchezo-wetu.onrender.com/?ref=${userData.memberNumber}`;
-            }
-
-            const hour = new Date().getHours();
-            let greeting = "Habari za asubuhi";
-            if (hour >= 12 && hour < 16) greeting = "Habari za mchana";
-            else if (hour >= 16) greeting = "Habari za jioni/usiku";
-            document.getElementById('userGreeting').innerText = `${greeting} 👋`;
-        } else {
-            window.location.href = '/';
-        }
+        loadUserProfile();
+        fetchAnnouncements();
     </script>
 </body>
 </html>
