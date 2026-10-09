@@ -73,7 +73,7 @@ app.post('/api/login', async (req, res) => {
                 
             }
         });
-    } catch (err) {
+    
         return res.json({ success: false, message: 'Hitilafu ya Seva: ' + err.message });
     }
 });
@@ -111,7 +111,7 @@ app.post('/api/register', async (req, res) => {
         if (error) throw error;
 
         return res.json({ success: true, message: 'Usajili umefanikiwa! Subiri idhini ya Admin.' });
-    } catch (err) {
+    
         return res.json({ success: false, message: 'Imeshindikana kusajili: ' + err.message });
     }
 });
@@ -233,7 +233,7 @@ app.listen(PORT, () => {
             transactionRef: payload.reference
         });
 
-    } catch (err) {
+    
         console.error('Hitilafu ya FimiPay:', err);
         res.status(500).json({ success: false, message: 'Imeshindwa kuwasiliana na FimiPay Gateway.' });
     }
