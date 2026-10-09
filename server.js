@@ -14,7 +14,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Helper: Log Admin Activity
 async function logActivity(adminName, action, details) {
-    try {
+//     try {
         await supabase.from('activity_logs').insert([{
             admin_name: adminName,
             action: action,
@@ -28,7 +28,7 @@ async function logActivity(adminName, action, details) {
 
 // LOGIN API
 app.post('/api/login', async (req, res) => {
-    try {
+//     try {
         const { identifier, password } = req.body;
         if (!identifier || !password) {
             return res.json({ success: false, message: 'Ingiza namba ya simu, jina au namba ya mwanachama na nenosiri.' });
@@ -80,7 +80,7 @@ app.post('/api/login', async (req, res) => {
 
 // REGISTER API
 app.post('/api/register', async (req, res) => {
-    try {
+//     try {
         const { fullName, phone, email, password } = req.body;
         if (!fullName || !phone || !password) {
             return res.json({ success: false, message: 'Tafadhali jaza taarifa zote.' });
