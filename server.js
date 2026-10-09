@@ -23,11 +23,11 @@ app.post('/api/register', (req, res) => {
 
     const newUser = {
         id: Date.now().toString(),
-        fullName,
-        phone,
-        email: email || '',
+        fullName: fullName.trim(),
+        phone: phone.trim(),
+        email: email ? email.trim() : '',
         password,
-        status: 'pending', // inaanza ikiwa pending
+        status: 'pending',
         memberNumber: null,
         createdAt: new Date().toISOString()
     };
@@ -57,19 +57,33 @@ app.post('/api/admin/approve/:id', (req, res) => {
     res.json({ success: true, message: 'Mwanachama amekubaliwa kikamilifu!', user });
 });
 
-// 4. Kuingia kwenye mfumo (Sign In)
+// 4. Kuingia kwenye mfumo (Inaruhusu Simu, Jina, au Namba ya Mwanachama + Password)
 app.post('/api/login', (req, res) => {
-    const { phone, password } = req.body;
-    const user = users.find(u => u.phone === phone && u.password === password);
+    const { identifier, password } = req.body;
+
+    if (!identifier || !password) {
+        return res.status(400).json({ success: false, message: 'Tafadhali jaza taarifa zako zote.' });
+    }
+
+    const cleanInput = identifier.trim().toLowerCase();
+
+    const user = users.find(u => {
+        const matchIdentifier = 
+            u.phone.toLowerCase() === cleanInput || 
+            u.fullName.toLowerCase() === cleanInput || 
+            (u.memberNumber && u.memberNumber.toLowerCase() === cleanInput);
+            
+        return matchIdentifier && u.password === password;
+    });
 
     if (!user) {
-        return res.status(400).json({ success: false, message: 'Namba ya simu au neno la siri si sahihi.' });
+        return res.status(400).json({ success: false, message: 'Taarifa si sahihi. Tumia Namba ya Simu, Jina, au Namba ya Mwanachama na Password.' });
     }
 
     if (user.status !== 'approved') {
         return res.status(403).json({ 
             success: false, 
-            message: 'Akaunti yako bado haijaidhinishwa na Msimamizi. Tafadhali subiri approval.' 
+            message: 'Akaunti yako bado haijaidhinishwa na Msimamizi (Pending Approval).' 
         });
     }
 

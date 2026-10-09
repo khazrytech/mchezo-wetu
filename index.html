@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mchezo Wetu - Fintech Platform</title>
+    <title>Mchezo Wetu - Mfumo wa Kikundi</title>
     <style>
         :root {
-            --primary: #0f172a;
-            --accent: #10b981;
-            --accent-hover: #059669;
-            --bg: #f8fafc;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             --card-bg: #ffffff;
-            --text: #334155;
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --accent: #10b981;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
             margin: 0;
             padding: 0;
             display: flex;
@@ -24,21 +26,31 @@
             align-items: center;
             min-height: 100vh;
         }
-        .container {
+        .app-card {
             width: 100%;
-            max-width: 420px;
+            max-width: 380px;
             background: var(--card-bg);
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            padding: 30px 24px;
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
             margin: 16px;
             box-sizing: border-box;
         }
-        h2 {
+        .logo-area {
             text-align: center;
-            color: var(--primary);
             margin-bottom: 24px;
-            font-size: 24px;
+        }
+        .logo-area h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0 0 4px 0;
+            letter-spacing: -0.5px;
+        }
+        .logo-area p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 0;
         }
         .form-group {
             margin-bottom: 16px;
@@ -47,110 +59,128 @@
             display: block;
             margin-bottom: 6px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
+            color: var(--text-main);
         }
         input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
+            padding: 12px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
             font-size: 14px;
             box-sizing: border-box;
+            background: #f8fafc;
+            transition: all 0.2s ease;
         }
         input:focus {
             outline: none;
-            border-color: var(--accent);
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
         }
-        button {
+        .btn-main {
             width: 100%;
             padding: 12px;
-            background-color: var(--accent);
+            background-color: var(--primary);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
-            margin-top: 8px;
+            transition: background 0.2s;
+            margin-top: 6px;
         }
-        button:hover {
-            background-color: var(--accent-hover);
+        .btn-main:hover {
+            background-color: var(--primary-dark);
         }
-        .switch-btn {
+        .switch-link {
+            text-align: center;
+            margin-top: 18px;
+        }
+        .switch-link button {
             background: none;
-            color: var(--accent);
+            color: var(--primary);
             border: none;
-            margin-top: 12px;
             cursor: pointer;
-            width: 100%;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
         }
-        .message {
-            padding: 12px;
+        .switch-link button:hover {
+            text-decoration: underline;
+        }
+        .alert-box {
+            padding: 10px 14px;
             border-radius: 8px;
             margin-bottom: 16px;
-            font-size: 14px;
+            font-size: 13px;
             text-align: center;
+            font-weight: 500;
         }
-        .message.error { background: #fee2e2; color: #991b1b; }
-        .message.success { background: #d1fae5; color: #065f46; }
+        .alert-error { background: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; }
+        .alert-success { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
         
-        .profile-card {
+        /* Profile Design */
+        .profile-view {
             text-align: center;
         }
-        .avatar-container {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 16px auto;
-            background: #e2e8f0;
+        .user-avatar {
+            width: 64px;
+            height: 64px;
+            background: #e0f2fe;
+            color: var(--primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--primary);
+            font-size: 20px;
+            font-weight: 800;
+            margin: 0 auto 12px auto;
         }
         .verified-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background: #eff6ff;
-            color: #2563eb;
-            padding: 6px 12px;
+            gap: 4px;
+            background: #f0fdf4;
+            color: #16a34a;
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
-            margin-top: 8px;
-            border: 1px solid #bfdbfe;
+            border: 1px solid #bbf7d0;
+            margin-top: 6px;
         }
-        .member-number-box {
-            background: #f1f5f9;
-            padding: 14px;
-            border-radius: 8px;
+        .member-number-card {
+            background: #f8fafc;
+            border: 1px dashed var(--border);
+            padding: 12px;
+            border-radius: 10px;
             margin: 16px 0;
-            font-size: 15px;
         }
-        .logout-btn {
-            background-color: #ef4444;
-            margin-top: 16px;
+        .btn-logout {
+            background-color: #fee2e2;
+            color: #dc2626;
+            margin-top: 12px;
         }
-        .logout-btn:hover {
-            background-color: #dc2626;
+        .btn-logout:hover {
+            background-color: #fecaca;
         }
     </style>
 </head>
 <body>
-    <div class="container" id="appContainer">
-        <!-- Fomu ya Usajili (Sign Up) -->
+    <div class="app-card">
+        
+        <!-- SIGNUP SECTION -->
         <div id="signupSection">
-            <h2>Jiunge na Mchezo Wetu</h2>
+            <div class="logo-area">
+                <h1>Mchezo Wetu</h1>
+                <p>Unda akaunti yako ya mfumo</p>
+            </div>
             <div id="signupMsg"></div>
-            <form id="signupForm" onsubmit="handleRegister(event)">
+            <form onsubmit="handleRegister(event)">
                 <div class="form-group">
                     <label>Jina Kamili</label>
-                    <input type="text" id="regName" required placeholder="Weka jina lako kamili">
+                    <input type="text" id="regName" required placeholder="Mf. Juma Ally">
                 </div>
                 <div class="form-group">
                     <label>Namba ya Simu</label>
@@ -158,73 +188,78 @@
                 </div>
                 <div class="form-group">
                     <label>Barua Pepe (Hiari)</label>
-                    <input type="email" id="regEmail" placeholder="mkononi@example.com">
+                    <input type="email" id="regEmail" placeholder="juma@example.com">
                 </div>
                 <div class="form-group">
                     <label>Neno la Siri (Password)</label>
-                    <input type="password" id="regPassword" required placeholder="Weka neno la siri">
+                    <input type="password" id="regPassword" required placeholder="Weka password imara">
                 </div>
-                <button type="submit">Jisajili Sasa</button>
+                <button type="submit" class="btn-main">Jisajili Sasa</button>
             </form>
-            <button class="switch-btn" onclick="showLogin()">Una akaunti? Ingia (Sign In)</button>
+            <div class="switch-link">
+                <button onclick="showLogin()">Una akaunti tayari? Ingia (Sign In)</button>
+            </div>
         </div>
 
-        <!-- Fomu ya Kuingia (Sign In) -->
+        <!-- LOGIN SECTION (Clean & Minimalist) -->
         <div id="loginSection" style="display: none;">
-            <h2>Ingia kwenye Mfumo</h2>
+            <div class="logo-area">
+                <h1>Karibu Tena</h1>
+                <p>Ingia kwenye mfumo wako</p>
+            </div>
             <div id="loginMsg"></div>
-            <form id="loginForm" onsubmit="handleLogin(event)">
+            <form onsubmit="handleLogin(event)">
                 <div class="form-group">
-                    <label>Namba ya Simu</label>
-                    <input type="tel" id="loginPhone" required placeholder="07xxxxxxxx">
+                    <label>Simu, Jina, au Namba ya Mwanachama</label>
+                    <input type="text" id="loginIdentifier" required placeholder="Ingiza simu, jina au MW-xxxx">
                 </div>
                 <div class="form-group">
                     <label>Neno la Siri (Password)</label>
-                    <input type="password" id="loginPassword" required placeholder="Weka neno la siri">
+                    <input type="password" id="loginPassword" required placeholder="Weka password yako">
                 </div>
-                <button type="submit">Ingia (Sign In)</button>
+                <button type="submit" class="btn-main">Ingia (Sign In)</button>
             </form>
-            <button class="switch-btn" id="switchToSignupBtn" onclick="showSignup()">Haujasajiliwa? Jisajili</button>
+            <div class="switch-link" id="switchSignupContainer">
+                <button onclick="showSignup()" id="toSignupBtn">Haujasajiliwa? Jisajili</button>
+            </div>
         </div>
 
-        <!-- Profaili ya Mwanachama aliyekubaliwa (Approved) -->
-        <div id="profileSection" style="display: none;" class="profile-card">
-            <div class="avatar-container" id="userAvatar">MW</div>
-            <h2 id="profName" style="margin-bottom: 4px;">Jina la Mwanachama</h2>
-            
+        <!-- PROFILE SECTION (Verified Member) -->
+        <div id="profileSection" style="display: none;" class="profile-view">
+            <div class="user-avatar" id="userAvatar">MW</div>
+            <h2 id="profName" style="margin: 0 0 2px 0; font-size: 18px;">Jina</h2>
             <div>
                 <span class="verified-badge">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="#2563eb"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#16a34a"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
                     Verified Member
                 </span>
             </div>
 
-            <div class="member-number-box">
-                Namba ya Uanachama: <br>
-                <span id="profMemberNumber" style="font-size: 18px; color: var(--accent); font-weight: bold;"></span>
+            <div class="member-number-card">
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Namba ya Uanachama</span><br>
+                <span id="profMemberNumber" style="font-size: 18px; color: var(--primary); font-weight: 800;"></span>
             </div>
 
-            <div style="text-align: left; background: #f8fafc; padding: 12px; border-radius: 8px; font-size: 14px; margin-bottom: 16px;">
-                <p style="margin: 6px 0;"><strong>Simu:</strong> <span id="profPhone"></span></p>
-                <p style="margin: 6px 0;"><strong>Hali:</strong> <span style="color: var(--accent); font-weight: bold;">Imethibitishwa (Active)</span></p>
+            <div style="text-align: left; font-size: 13px; background: #f8fafc; padding: 10px 14px; border-radius: 8px; margin-bottom: 14px;">
+                <p style="margin: 4px 0; color: var(--text-muted);">Simu: <strong id="profPhone" style="color: var(--text-main);"></strong></p>
+                <p style="margin: 4px 0; color: var(--text-muted);">Hali: <strong style="color: #16a34a;">Imethibitishwa</strong></p>
             </div>
 
-            <button class="logout-btn" onclick="handleLogout()">Ondoka (Logout)</button>
+            <button class="btn-main btn-logout" onclick="handleLogout()">Ondoka (Logout)</button>
         </div>
+
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // Kama mtumiaji alishajisajili kwenye kifaa hiki, fichua sehemu ya kujisajili iwe Sign In pekee
             const isRegistered = localStorage.getItem('mchezo_registered');
             if (isRegistered) {
                 document.getElementById('signupSection').style.display = 'none';
                 document.getElementById('loginSection').style.display = 'block';
-                const switchBtn = document.getElementById('switchToSignupBtn');
-                if(switchBtn) switchBtn.style.display = 'none';
+                const sBtn = document.getElementById('toSignupBtn');
+                if(sBtn) sBtn.style.display = 'none';
             }
 
-            // Kama yupo tayari ndani ya session
             const savedUser = localStorage.getItem('mchezo_user');
             if (savedUser) {
                 showProfile(JSON.parse(savedUser));
@@ -258,27 +293,27 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    msgBox.className = 'message success';
+                    msgBox.className = 'alert-box alert-success';
                     msgBox.innerText = data.message;
                     localStorage.setItem('mchezo_registered', 'true');
                     setTimeout(() => {
                         showLogin();
-                        const switchBtn = document.getElementById('switchToSignupBtn');
-                        if(switchBtn) switchBtn.style.display = 'none';
+                        const sBtn = document.getElementById('toSignupBtn');
+                        if(sBtn) sBtn.style.display = 'none';
                     }, 2000);
                 } else {
-                    msgBox.className = 'message error';
+                    msgBox.className = 'alert-box alert-error';
                     msgBox.innerText = data.message;
                 }
             } catch (err) {
-                msgBox.className = 'message error';
-                msgBox.innerText = 'Hitilafu imetokea. Jaribu tena.';
+                msgBox.className = 'alert-box alert-error';
+                msgBox.innerText = 'Hitilafu ya mtandao.';
             }
         }
 
         async function handleLogin(e) {
             e.preventDefault();
-            const phone = document.getElementById('loginPhone').value;
+            const identifier = document.getElementById('loginIdentifier').value;
             const password = document.getElementById('loginPassword').value;
             const msgBox = document.getElementById('loginMsg');
 
@@ -286,7 +321,7 @@
                 const res = await fetch('/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone, password })
+                    body: JSON.stringify({ identifier, password })
                 });
                 const data = await res.json();
 
@@ -294,11 +329,11 @@
                     localStorage.setItem('mchezo_user', JSON.stringify(data.user));
                     showProfile(data.user);
                 } else {
-                    msgBox.className = 'message error';
+                    msgBox.className = 'alert-box alert-error';
                     msgBox.innerText = data.message;
                 }
             } catch (err) {
-                msgBox.className = 'message error';
+                msgBox.className = 'alert-box alert-error';
                 msgBox.innerText = 'Hitilafu imetokea wakati wa kuingia.';
             }
         }
