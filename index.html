@@ -102,9 +102,6 @@
             <div style="margin-top: 16px; font-size: 13px;">
                 Huna akaunti? <a href="#" onclick="showView('registerView')" style="color: var(--primary); text-decoration: none; font-weight: 700;">Jisajili Hapa</a>
             </div>
-            <div style="margin-top: 12px; font-size: 12px;">
-                <a href="/admin.html" style="color: var(--text-muted); text-decoration: none;">Jopo la Utawala (Admin)</a>
-            </div>
         </div>
 
         <!-- 2. REGISTER VIEW -->
@@ -207,7 +204,6 @@
                     if (data.success && data.status === 'approved') {
                         clearInterval(pollingInterval);
                         
-                        // Transform to Success Approved View
                         document.getElementById('noticeIcon').className = 'icon-box icon-success';
                         document.getElementById('noticeIcon').innerText = '✓';
                         document.getElementById('noticeTitle').innerText = 'Umekubaliwa!';
@@ -226,7 +222,7 @@
                 } catch (err) {
                     console.error('Polling error:', err);
                 }
-            }, 3000); // Check kila baada ya sekunde 3
+            }, 3000);
         }
 
         async function handleLogin(e) {
@@ -244,7 +240,6 @@
                 
                 if (data.success) {
                     alert(data.message);
-                    // Hapa utaelekezwa kwenye dashboard ya mwanachama
                     window.location.href = '/dashboard.html'; 
                 } else if (data.pending) {
                     alert(data.message);
