@@ -18,7 +18,7 @@ function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Resend HTTP API Email Engine (Port 443 HTTPS - Works 100% on Render Free Tier)
+// Resend HTTP API Email Engine
 async function sendEmailViaHTTP(toEmail, otpCode, title = "Admin Verification") {
     const resendApiKey = process.env.RESEND_API_KEY ? process.env.RESEND_API_KEY.trim() : null;
 
@@ -35,7 +35,7 @@ async function sendEmailViaHTTP(toEmail, otpCode, title = "Admin Verification") 
                     to: [toEmail],
                     subject: `🔑 ${otpCode} - Kodi yako ya ${title}`,
                     html: `
-                        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 32px; background-color: #030712; color: #ffffff; border-radius: 20px; max-width: 480px; margin: auto; border: 1px solid rgba(255,255,255,0.1);">
+                        <div style="font-family: sans-serif; padding: 32px; background-color: #030712; color: #ffffff; border-radius: 20px; max-width: 480px; margin: auto; border: 1px solid rgba(255,255,255,0.1);">
                             <div style="text-align: center; margin-bottom: 24px;">
                                 <span style="background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37, 99, 235, 0.3); color: #60a5fa; padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: 1px;">● MCHEZO WETU FINTECH</span>
                                 <h2 style="color: #ffffff; font-size: 20px; font-weight: 800; margin-top: 16px;">Uhakiki wa Utawala (Admin)</h2>
@@ -44,7 +44,7 @@ async function sendEmailViaHTTP(toEmail, otpCode, title = "Admin Verification") 
                             <div style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(16, 185, 129, 0.1)); border: 1px solid rgba(59, 130, 246, 0.3); padding: 20px; border-radius: 16px; text-align: center; margin: 24px 0;">
                                 <span style="font-size: 36px; font-weight: 900; color: #10b981; letter-spacing: 8px; font-family: monospace;">${otpCode}</span>
                             </div>
-                            <p style="color: #6b7280; font-size: 12px; text-align: center;">Muda wa matumizi ni dakika 5. Usiigawie mtu yeyote kwa sababu za kiusalama.</p>
+                            <p style="color: #6b7280; font-size: 12px; text-align: center;">Muda wa matumizi ni dakika 5.</p>
                         </div>
                     `
                 })
@@ -64,7 +64,92 @@ async function sendEmailViaHTTP(toEmail, otpCode, title = "Admin Verification") 
     }
 }
 
-// 1. ANGALIA KAMA KUNA ADMIN TAYARI KWENYE SUPABASE
+// 1. LOGIN YA MWANACHAMA (USER LOGIN)
+app.post('/api/login', async (req, res) => {
+    try {
+        const { identifier, password } = req.body;
+        if (!identifier || !password) {
+            return res.json({ success: false, message: 'Tafadhali ingiza namba ya simu, jina au no. ya mwanachama na nenosiri.' });
+        }
+
+        const cleanId = identifier.trim().toLowerCase();
+
+        const { data: users, error } = await supabase.from('users').select('*');
+        if (error) {
+            return res.json({ success: false, message: 'Hitilafu ya Supabase Database: ' + error.message });
+        }
+
+        const user = users.find(u => 
+            (u.phone && u.phone.trim().toLowerCase() === cleanId) ||
+            (u.email && u.email.trim().toLowerCase() === cleanId) ||
+            (u.full_name && u.full_name.trim().toLowerCase() === cleanId) ||
+            (u.member_number && u.member_number.trim().toLowerCase() === cleanId)
+        );
+
+        if (!user) {
+            return res.json({ success: false, message: 'Akaunti hii haijapatikana. Tafadhali jisajili kwanza.' });
+        }
+
+        if (user.password !== password) {
+            return res.json({ success: false, message: 'Nenosiri (password) uliloingiza si sahihi.' });
+        }
+
+        if (user.status !== 'approved') {
+            return res.json({ success: false, message: 'Akaunti yako bado inasubiri kuidhinishwa na Admin.' });
+        }
+
+        return res.json({ 
+            success: true, 
+            message: 'Umekaribishwa!',
+            user: {
+                fullName: user.full_name,
+                phone: user.phone,
+                email: user.email,
+                memberNumber: user.member_number,
+                role: user.role,
+                status: user.status
+            }
+        });
+    } catch (err) {
+        return res.json({ success: false, message: 'Hitilafu ya Seva: ' + err.message });
+    }
+});
+
+// 2. USAJILI WA MWANACHAMA MPYA (USER REGISTER)
+app.post('/api/register', async (req, res) => {
+    try {
+        const { fullName, phone, email, password } = req.body;
+        if (!fullName || !phone || !password) {
+            return res.json({ success: false, message: 'Tafadhali jaza majina, namba ya simu na nenosiri.' });
+        }
+
+        const { data: existing } = await supabase.from('users').select('*').eq('phone', phone.trim());
+        if (existing && existing.length > 0) {
+            return res.json({ success: false, message: 'Namba hii ya simu imeshasajiliwa tayari.' });
+        }
+
+        const memberNumber = 'MW-' + Math.floor(1000 + Math.random() * 9000);
+        const newUser = {
+            full_name: fullName.trim(),
+            phone: phone.trim(),
+            email: email ? email.trim() : '',
+            password: password,
+            member_number: memberNumber,
+            role: 'member',
+            status: 'pending',
+            date_registered: new Date().toLocaleDateString('sw-TZ')
+        };
+
+        const { error } = await supabase.from('users').insert([newUser]);
+        if (error) throw error;
+
+        return res.json({ success: true, message: 'Usajili umefanikiwa! Subiri idhini ya Admin ili kuingia.' });
+    } catch (err) {
+        return res.json({ success: false, message: 'Imeshindikana kusajili: ' + err.message });
+    }
+});
+
+// ADMIN ENDPOINTS
 app.get('/api/admin/check-exists', async (req, res) => {
     try {
         const { data, error } = await supabase.from('users').select('*').eq('role', 'admin');
@@ -75,7 +160,6 @@ app.get('/api/admin/check-exists', async (req, res) => {
     }
 });
 
-// 2. USAJILI WA ADMIN - INSTANT RESPONSE
 app.post('/api/admin/register-send-otp', async (req, res) => {
     try {
         const { fullName, phone, email, password } = req.body;
@@ -100,20 +184,14 @@ app.post('/api/admin/register-send-otp', async (req, res) => {
             payload: { fullName, phone: phone || '', email: cleanEmail, password }
         });
 
-        // Tuma kupitia HTTP API
         sendEmailViaHTTP(cleanEmail, otpCode, "Usajili wa Msimamizi");
 
-        return res.json({ 
-            success: true, 
-            email: cleanEmail,
-            message: `OTP Code sent to ${cleanEmail}` 
-        });
+        return res.json({ success: true, email: cleanEmail, message: `OTP sent to ${cleanEmail}` });
     } catch (err) {
         return res.json({ success: false, message: 'Hitilafu ya Seva: ' + err.message });
     }
 });
 
-// 3. THIBITISHA EMAIL OTP NA SAAJILI ADMIN KWENYE SUPABASE
 app.post('/api/admin/register-verify-otp', async (req, res) => {
     try {
         const { email, otp } = req.body;
@@ -146,9 +224,7 @@ app.post('/api/admin/register-verify-otp', async (req, res) => {
         };
 
         const { error } = await supabase.from('users').insert([adminUser]);
-        if (error) {
-            return res.json({ success: false, message: 'Hitilafu ya Supabase: ' + error.message });
-        }
+        if (error) return res.json({ success: false, message: 'Hitilafu ya Supabase: ' + error.message });
 
         otpStore.delete(cleanEmail);
         return res.json({ success: true, message: 'Usajili wa Admin umefanikiwa!' });
@@ -157,66 +233,44 @@ app.post('/api/admin/register-verify-otp', async (req, res) => {
     }
 });
 
-// 4. LOGIN YA ADMIN - INSTANT RESPONSE
 app.post('/api/admin/login-send-otp', async (req, res) => {
     try {
         const { identifier, password } = req.body;
 
         const { data: users } = await supabase.from('users').select('*').eq('role', 'admin');
-        if (!users || users.length === 0) {
-            return res.json({ success: false, message: 'Hakuna Admin aliyesajiliwa bado.' });
-        }
+        if (!users || users.length === 0) return res.json({ success: false, message: 'Hakuna Admin aliyesajiliwa bado.' });
 
         const admin = users.find(u => 
             (u.email.toLowerCase() === identifier.toLowerCase() || u.phone === identifier || u.full_name.toLowerCase() === identifier.toLowerCase()) && 
             u.password === password
         );
 
-        if (!admin) {
-            return res.json({ success: false, message: 'Taarifa za Admin si sahihi.' });
-        }
+        if (!admin) return res.json({ success: false, message: 'Taarifa za Admin si sahihi.' });
 
         const otpCode = generateOTP();
         const expiresAt = Date.now() + 5 * 60 * 1000;
 
-        otpStore.set(admin.email, {
-            code: otpCode,
-            expiresAt,
-            type: 'ADMIN_LOGIN',
-            email: admin.email
-        });
-
+        otpStore.set(admin.email, { code: otpCode, expiresAt, type: 'ADMIN_LOGIN', email: admin.email });
         sendEmailViaHTTP(admin.email, otpCode, "Kuingia Msimamizi");
 
-        return res.json({ 
-            success: true, 
-            email: admin.email,
-            message: `OTP Code sent to ${admin.email}` 
-        });
+        return res.json({ success: true, email: admin.email, message: `OTP sent to ${admin.email}` });
     } catch (err) {
         return res.json({ success: false, message: err.message });
     }
 });
 
-// 5. THIBITISHA EMAIL OTP YA LOGIN YA ADMIN
 app.post('/api/admin/login-verify-otp', async (req, res) => {
     try {
         const { email, otp } = req.body;
         const cleanEmail = email ? email.trim().toLowerCase() : '';
         const record = otpStore.get(cleanEmail);
 
-        if (!record || record.type !== 'ADMIN_LOGIN') {
-            return res.json({ success: false, message: 'Ombi la OTP halipatikani.' });
-        }
-
+        if (!record || record.type !== 'ADMIN_LOGIN') return res.json({ success: false, message: 'Ombi la OTP halipatikani.' });
         if (Date.now() > record.expiresAt) {
             otpStore.delete(cleanEmail);
             return res.json({ success: false, message: 'Muda wa OTP umeisha.' });
         }
-
-        if (record.code !== otp.toString().trim()) {
-            return res.json({ success: false, message: 'OTP uliyoingiza si sahihi.' });
-        }
+        if (record.code !== otp.toString().trim()) return res.json({ success: false, message: 'OTP si sahihi.' });
 
         otpStore.delete(cleanEmail);
         return res.json({ success: true, message: 'Umekaribishwa Msimamizi!' });
@@ -225,7 +279,6 @@ app.post('/api/admin/login-verify-otp', async (req, res) => {
     }
 });
 
-// MANAGE USERS & ANNOUNCEMENTS
 app.get('/api/admin/users', async (req, res) => {
     const { data: users, error } = await supabase.from('users').select('*').order('id', { ascending: false });
     if (error) return res.json({ success: false, message: error.message });
@@ -262,9 +315,9 @@ app.post('/api/announcements', async (req, res) => {
     const { error } = await supabase.from('announcements').insert([newAnn]);
     if (error) return res.json({ success: false, message: 'Imeshindikana kutuma.' });
 
-    res.json({ success: true, message: 'Tangazo limetumwa kwa wanachama!' });
+    res.json({ success: true, message: 'Tangazo limetumwa!' });
 });
 
 app.listen(PORT, () => {
-    console.log(`Server inaendelea kwenye port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });

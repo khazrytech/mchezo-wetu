@@ -6,252 +6,194 @@
     <title>Mchezo Wetu - Fintech Platform</title>
     <style>
         :root {
-            --bg-deep: #060913;
-            --card-glass: rgba(15, 23, 42, 0.85);
-            --border-glass: rgba(255, 255, 255, 0.12);
-            --primary: #3b82f6;
+            --bg-deep: #020617;
+            --card-glass: rgba(15, 23, 42, 0.82);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --primary: #2563eb;
+            --primary-glow: rgba(37, 99, 235, 0.4);
             --accent: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: radial-gradient(circle at 50% -20%, #1e3a8a 0%, var(--bg-deep) 70%);
+            background: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.22) 0%, transparent 65%),
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.15) 0%, transparent 55%);
             color: var(--text-main);
-            margin: 0;
+            margin: 0; min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
             padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-sizing: border-box;
         }
-        .container {
-            width: 100%;
-            max-width: 400px;
-        }
-        .card {
+        .portal-card {
             background: var(--card-glass);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
             border: 1px solid var(--border-glass);
-            padding: 30px 24px;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
-            text-align: center;
+            border-radius: 28px;
+            padding: 36px 28px;
+            width: 100%; max-width: 420px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
         }
-        .icon-box {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 18px auto;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-        }
-        .icon-pending { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); color: #fbbf24; }
-        .icon-success { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; }
-        
-        h2 { font-size: 20px; margin: 0 0 10px 0; font-weight: 800; color: #fff; }
-        p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin: 0 0 20px 0; }
-        
-        .form-group { text-align: left; margin-bottom: 16px; }
-        label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
-        input {
-            width: 100%; padding: 12px 14px; background: rgba(255,255,255,0.04);
-            border: 1.5px solid var(--border-glass); border-radius: 12px;
-            color: var(--text-main); font-size: 14px; box-sizing: border-box;
-        }
-        input:focus { outline: none; border-color: var(--primary); }
-        
-        .btn {
-            width: 100%; padding: 13px; background: var(--primary); color: white;
-            border: none; border-radius: 12px; font-size: 14px; font-weight: 700;
-            cursor: pointer; transition: all 0.2s; margin-top: 6px;
-        }
-        .btn:hover { opacity: 0.9; }
-        .btn-secondary { background: rgba(255,255,255,0.06); color: var(--text-muted); border: 1px solid var(--border-glass); }
-        
-        .badge-status {
-            display: inline-block; padding: 6px 14px; border-radius: 20px;
-            font-size: 12px; font-weight: 700; margin-bottom: 20px;
-        }
-        .badge-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
-        .badge-approved { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
 
-        /* Toast Notification Pro (Inasimama juu badala ya browser alert) */
+        /* Pro Fintech Chip Emblem (Kufuta ngao) */
+        .pro-emblem {
+            width: 60px; height: 60px; margin: 0 auto 16px auto;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(16, 185, 129, 0.2));
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 25px rgba(37, 99, 235, 0.25);
+        }
+
+        .input-group { margin-bottom: 18px; }
+        .input-label {
+            font-size: 11px; font-weight: 800; color: var(--text-muted);
+            letter-spacing: 0.6px; margin-bottom: 8px; display: block;
+            text-transform: uppercase;
+        }
+        .input-field {
+            width: 100%; padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px; color: #fff;
+            font-size: 14px; outline: none; transition: all 0.25s ease;
+        }
+        .input-field:focus { 
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .btn-action {
+            width: 100%; padding: 16px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white; border: none; border-radius: 16px;
+            font-size: 14px; font-weight: 800; cursor: pointer;
+            margin-top: 12px; transition: all 0.2s ease;
+            box-shadow: 0 8px 20px var(--primary-glow);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-action:disabled { opacity: 0.65; cursor: not-allowed; }
+
+        .btn-spinner {
+            width: 18px; height: 18px;
+            border: 2.5px solid rgba(255,255,255,0.3);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .link-toggle {
+            color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 20px;
+        }
+        .link-toggle a { color: #60a5fa; text-decoration: none; font-weight: 800; }
+
         #toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
-            background: #1e293b; color: #fff; padding: 12px 24px; border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.2); font-size: 13px; font-weight: 600;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 3000;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none; display: flex; align-items: center; gap: 10px;
+            background: rgba(15, 23, 42, 0.95); color: #fff; padding: 14px 28px; border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.15); font-size: 13px; font-weight: 700;
+            z-index: 3000; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none; backdrop-filter: blur(12px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
         #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
-    <div id="toast">✅ Ujumbe</div>
+    <div id="toast">✅ Taarifa</div>
 
-    <div class="container">
-        <!-- 1. LOGIN VIEW -->
-        <div id="loginView" class="card">
-            <div class="icon-box icon-success">🛡️</div>
-            <h2>Mchezo Wetu</h2>
-            <p>Ingia kwenye mfumo wa kifedha wa kikundi</p>
-            <form onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label>Namba ya Simu / Jina / No. ya Mwanachama</label>
-                    <input type="text" id="loginId" required placeholder="Ingiza hapa...">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPass" required placeholder="Neno la siri">
-                </div>
-                <button type="submit" class="btn">Ingia Kwenye Akaunti</button>
-            </form>
-            <div style="margin-top: 16px; font-size: 13px;">
-                Huna akaunti? <a href="#" onclick="showView('registerView')" style="color: var(--primary); text-decoration: none; font-weight: 700;">Jisajili Hapa</a>
-            </div>
+    <div class="portal-card">
+        <!-- PRO FINTECH EMBLEM (NO SHIELD) -->
+        <div class="pro-emblem">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="5" width="20" height="14" rx="3"></rect>
+                <line x1="2" y1="10" x2="22" y2="10"></line>
+                <line x1="6" y1="15" x2="10" y2="15"></line>
+            </svg>
         </div>
 
-        <!-- 2. REGISTER VIEW -->
-        <div id="registerView" class="card" style="display: none;">
-            <div class="icon-box icon-success">📝</div>
-            <h2>Jisajili Sasa</h2>
-            <p>Jaza taarifa zako ili kujiunga na Mchezo Wetu</p>
-            <form onsubmit="handleRegister(event)">
-                <div class="form-group">
-                    <label>Jina Kamili</label>
-                    <input type="text" id="regName" required placeholder="Jina lako kamili">
-                </div>
-                <div class="form-group">
-                    <label>Namba ya Simu</label>
-                    <input type="tel" id="regPhone" required placeholder="07xxxxxxxx">
-                </div>
-                <div class="form-group">
-                    <label>Barua Pepe (Si lazima)</label>
-                    <input type="email" id="regEmail" placeholder="mfano@email.com">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="regPass" required placeholder="Neno la siri">
-                </div>
-                <button type="submit" class="btn">Wasilisha Ombi</button>
-                <button type="button" class="btn btn-secondary" onclick="showView('loginView')">Rudi Ukurasa wa Kuingia</button>
-            </form>
+        <div style="text-align: center; margin-bottom: 24px;">
+            <h2 id="portalTitle" style="font-size: 22px; font-weight: 900; margin: 0 0 6px 0; color: #fff;">Mchezo Wetu</h2>
+            <p id="portalSub" style="font-size: 12px; color: var(--text-muted); margin: 0;">Ingia kwenye mfumo wa kifedha wa kikundi</p>
         </div>
 
-        <!-- 3. PENDING / APPROVED NOTICE VIEW -->
-        <div id="pendingView" class="card" style="display: none;">
-            <div id="noticeIcon" class="icon-box icon-pending">⏳</div>
-            <h2 id="noticeTitle">Ombi Limeshapokelewa!</h2>
-            <p id="noticeDesc">Asante sana kujiunga nasi! Ombi lako limetumwa kwa Msimamizi. Tafadhali subiri kwa muda mfupi upate uthibitisho (approval) ili uanze kutumia mfumo.</p>
-            
-            <div id="statusBadgeContainer">
-                <div class="badge-status badge-pending">Hali ya Ombi: Inasubiri Idhini (Pending)</div>
+        <!-- FORM YA LOGIN -->
+        <form id="loginForm" onsubmit="handleUserLogin(event)">
+            <div class="input-group">
+                <label class="input-label">Namba ya Simu / Jina / Member No.</label>
+                <input type="text" id="loginId" class="input-field" placeholder="Ingiza Simu, Jina au No. ya Mwanachama" required>
             </div>
-
-            <div id="memberNumBox" style="display: none; margin-bottom: 16px; font-size: 14px; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid var(--border-glass);">
-                <strong>Namba ya Mwanachama:</strong> <span id="displayMemberNum" style="color: #60a5fa; font-weight: bold;"></span>
+            <div class="input-group">
+                <label class="input-label">Nenosiri (Password)</label>
+                <input type="password" id="loginPass" class="input-field" placeholder="••••••••" required>
             </div>
+            <button type="submit" id="btnLogin" class="btn-action">
+                <span>Ingia Kwenye Akaunti ➔</span>
+            </button>
+            <div class="link-toggle">
+                Huna akaunti? <a href="#" onclick="toggleMode('register')">Jisajili Hapa</a>
+            </div>
+        </form>
 
-            <button id="noticeBtn" class="btn btn-secondary" onclick="showView('loginView')">Rudi Ukurasa wa Kuingia</button>
-        </div>
+        <!-- FORM YA REGISTRATION -->
+        <form id="registerForm" style="display: none;" onsubmit="handleUserRegister(event)">
+            <div class="input-group">
+                <label class="input-label">Jina Kamili</label>
+                <input type="text" id="regName" class="input-field" placeholder="Mfano: Baraka Makoi" required>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Namba ya Simu</label>
+                <input type="tel" id="regPhone" class="input-field" placeholder="07XXXXXXXX" required>
+            </div>
+            <div class="input-group">
+                <label class="input-label">Barua Pepe (Hiari)</label>
+                <input type="email" id="regEmail" class="input-field" placeholder="mwanachama@example.com">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Nenosiri (Password)</label>
+                <input type="password" id="regPass" class="input-field" placeholder="••••••••" required>
+            </div>
+            <button type="submit" id="btnReg" class="btn-action" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <span>Tuma Ombi la Usajili ➔</span>
+            </button>
+            <div class="link-toggle">
+                Unayo akaunti? <a href="#" onclick="toggleMode('login')">Ingia Hapa</a>
+            </div>
+        </form>
     </div>
 
     <script>
-        function showToast(message, isError = false) {
+        function showToast(msg) {
             const toast = document.getElementById('toast');
-            toast.style.borderColor = isError ? 'rgba(239, 68, 68, 0.4)' : 'rgba(255, 255, 255, 0.2)';
-            toast.innerHTML = `${isError ? '⚠️' : '✅'} ${message}`;
+            toast.innerText = msg;
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3500);
+            setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
-        let pollingInterval = null;
-        let registeredPhone = '';
-
-        function showView(viewId) {
-            document.getElementById('loginView').style.display = viewId === 'loginView' ? 'block' : 'none';
-            document.getElementById('registerView').style.display = viewId === 'registerView' ? 'block' : 'none';
-            document.getElementById('pendingView').style.display = viewId === 'pendingView' ? 'block' : 'none';
-            
-            if (viewId !== 'pendingView' && pollingInterval) {
-                clearInterval(pollingInterval);
+        function toggleMode(mode) {
+            if (mode === 'register') {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('registerForm').style.display = 'block';
+                document.getElementById('portalTitle').innerText = 'Usajili wa Mwanachama';
+                document.getElementById('portalSub').innerText = 'Fungua akaunti mpya ya kikundi';
+            } else {
+                document.getElementById('registerForm').style.display = 'none';
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('portalTitle').innerText = 'Mchezo Wetu';
+                document.getElementById('portalSub').innerText = 'Ingia kwenye mfumo wa kifedha wa kikundi';
             }
         }
 
-        async function handleRegister(e) {
+        async function handleUserLogin(e) {
             e.preventDefault();
-            const fullName = document.getElementById('regName').value;
-            const phone = document.getElementById('regPhone').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPass').value;
+            const identifier = document.getElementById('loginId').value.trim();
+            const password = document.getElementById('loginPass').value.trim();
 
-            try {
-                const res = await fetch('/api/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ fullName, phone, email, password })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    registeredPhone = phone;
-                    showView('pendingView');
-                    startStatusPolling(phone);
-                    showToast(data.message);
-                } else {
-                    showToast(data.message, true);
-                }
-            } catch (err) {
-                showToast('Hitilafu ya mtandao.', true);
-            }
-        }
-
-        function startStatusPolling(phone) {
-            if (pollingInterval) clearInterval(pollingInterval);
-            
-            pollingInterval = setInterval(async () => {
-                try {
-                    const res = await fetch('/api/check-status', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ phone })
-                    });
-                    const data = await res.json();
-                    
-                    if (data.success && data.status === 'approved') {
-                        clearInterval(pollingInterval);
-                        
-                        document.getElementById('noticeIcon').className = 'icon-box icon-success';
-                        document.getElementById('noticeIcon').innerText = '✓';
-                        document.getElementById('noticeTitle').innerText = 'Umekubaliwa!';
-                        document.getElementById('noticeDesc').innerText = `Hongera sana ${data.fullName}! Ombi lako limethibitishwa na Msimamizi. Sasa unaweza kuingia kwenye akaunti yako.`;
-                        
-                        document.getElementById('statusBadgeContainer').innerHTML = `<div class="badge-status badge-approved">✓ Umekubaliwa (Approved)</div>`;
-                        
-                        document.getElementById('displayMemberNum').innerText = data.memberNumber;
-                        document.getElementById('memberNumBox').style.display = 'block';
-                        
-                        const btn = document.getElementById('noticeBtn');
-                        btn.className = 'btn';
-                        btn.innerText = 'Ingia Kwenye Akaunti Yako';
-                        btn.onclick = () => showView('loginView');
-                    }
-                } catch (err) {
-                    console.error('Polling error:', err);
-                }
-            }, 3000);
-        }
-
-        async function handleLogin(e) {
-            e.preventDefault();
-            const identifier = document.getElementById('loginId').value;
-            const password = document.getElementById('loginPass').value;
+            const btn = document.getElementById('btnLogin');
+            btn.disabled = true;
+            btn.innerHTML = `<div class="btn-spinner"></div> <span>Inathibitisha...</span>`;
 
             try {
                 const res = await fetch('/api/login', {
@@ -259,24 +201,59 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ identifier, password })
                 });
+
                 const data = await res.json();
-                
+
                 if (data.success) {
-                    localStorage.setItem('mchezo_user', JSON.stringify(data.user));
-                    showToast(data.message);
+                    localStorage.setItem('userSession', JSON.stringify(data.user));
+                    showToast('✅ ' + data.message);
                     setTimeout(() => {
                         window.location.href = '/dashboard.html';
                     }, 1000);
-                } else if (data.pending) {
-                    showToast(data.message, true);
-                    registeredPhone = identifier;
-                    showView('pendingView');
-                    startStatusPolling(identifier);
                 } else {
-                    showToast(data.message, true);
+                    showToast('⚠️ ' + data.message);
+                    btn.disabled = false;
+                    btn.innerHTML = `<span>Ingia Kwenye Akaunti ➔</span>`;
                 }
             } catch (err) {
-                showToast('Hitilafu ya mtandao.', true);
+                showToast('⚠️ Hitilafu kwenye muunganisho wa Seva.');
+                btn.disabled = false;
+                btn.innerHTML = `<span>Ingia Kwenye Akaunti ➔</span>`;
+            }
+        }
+
+        async function handleUserRegister(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('regName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPass').value.trim();
+
+            const btn = document.getElementById('btnReg');
+            btn.disabled = true;
+            btn.innerHTML = `<div class="btn-spinner"></div> <span>Inatuma Ombi...</span>`;
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullName, phone, email, password })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    showToast('✅ ' + data.message);
+                    setTimeout(() => toggleMode('login'), 2000);
+                } else {
+                    showToast('⚠️ ' + data.message);
+                    btn.disabled = false;
+                    btn.innerHTML = `<span>Tuma Ombi la Usajili ➔</span>`;
+                }
+            } catch (err) {
+                showToast('⚠️ Imeshindikana kukamilisha usajili.');
+                btn.disabled = false;
+                btn.innerHTML = `<span>Tuma Ombi la Usajili ➔</span>`;
             }
         }
     </script>
