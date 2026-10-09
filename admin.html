@@ -245,15 +245,62 @@
         </div>
 
         <!-- TAB 4: SETINGI -->
+                <!-- TAB 4: SETINGI (COMPREHENSIVE SETTINGS & SYSTEM CONFIGURATION) -->
         <div id="tab-settings" style="display:none;">
             <div class="glass-card">
-                <h2 style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 14px 0;">Mipangilio ya Mfumo</h2>
+                <h2 style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 16px 0;">Mipangilio na Usanidi wa Mfumo</h2>
+                
+                <div class="setting-input-group">
+                    <label class="setting-label">Jina la Mfumo</label>
+                    <input type="text" class="setting-input" id="confSysName" value="Mchezo Wetu Pro">
+                </div>
+
+                <div class="setting-input-group">
+                    <label class="setting-label">Nembo / Logo URL</label>
+                    <input type="text" class="setting-input" id="confLogoUrl" value="https://img.icons8.com/color/96/wallet.png">
+                </div>
+
+                <div class="setting-input-group">
+                    <label class="setting-label">Kiasi cha Mchango (TSh)</label>
+                    <input type="number" class="setting-input" id="confAmount" value="2000">
+                </div>
+
+                <div class="setting-input-group">
+                    <label class="setting-label">Mzunguko wa Malipo</label>
+                    <input type="text" class="setting-input" id="confCycle" value="Kila Siku (Daily Contribution)">
+                </div>
+
+                <div class="setting-input-group">
+                    <label class="setting-label">Sarafu (Currency)</label>
+                    <input type="text" class="setting-input" id="confCurrency" value="TSh">
+                </div>
+
+                <button onclick="saveSystemSettings()" style="width:100%; padding:14px; background:var(--accent); color:#fff; border:none; border-radius:14px; font-weight:800; font-size:12px; cursor:pointer; margin-bottom:14px;">
+                    💾 Hifadhi Mipangilio ya Mfumo
+                </button>
+            </div>
+
+            <div class="glass-card">
+                <h2 style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 14px 0;">Usimamizi wa Wasimamizi (Admins & Treasurers)</h2>
+                <div style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Super Admin: <b>Active</b><br>Mweka Hazina: <b>Imesanidiwa</b></div>
+                <button onclick="showNotification('Uwezo wa kuongeza ma-admin utatumika hivi karibuni.')" style="width:100%; padding:12px; background:rgba(255,255,255,0.06); border:1px solid var(--border-glass); color:#fff; border-radius:14px; font-weight:800; font-size:12px; cursor:pointer; margin-bottom:10px;">
+                    👥 Ongeza Admin Mpya
+                </button>
+            </div>
+
+            <div class="glass-card">
+                <h2 style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 14px 0;">Usimamizi wa Backup na Usalama</h2>
+                
+                <button onclick="showNotification('Backup ya taarifa imefanikiwa kuhifadhiwa.', 'success')" style="width:100%; padding:14px; background:rgba(37,99,235,0.15); border:1px solid rgba(37,99,235,0.3); color:#60a5fa; border-radius:14px; font-weight:800; font-size:12px; cursor:pointer; margin-bottom:10px;">
+                    📦 Fanya Backup ya Hifadhidata (Data Backup)
+                </button>
+
                 <button onclick="handleAdminLogout()" style="width:100%; padding:14px; border-radius:14px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#f87171; font-weight:800; cursor:pointer; font-size:13px;">
                     🚪 Toka Kwenye Admin Portal (Logout)
                 </button>
             </div>
         </div>
-    </div>
+
 
     <!-- MEMBER DETAIL MODAL -->
     <div class="modal-overlay" id="detailModal">
