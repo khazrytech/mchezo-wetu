@@ -74,16 +74,6 @@
             position: relative;
             box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
-        .notification-btn::after {
-            content: '';
-            position: absolute;
-            top: 10px;
-            right: 12px;
-            width: 8px;
-            height: 8px;
-            background: #ef4444;
-            border-radius: 50%;
-        }
         .card-main {
             background: var(--card-glass);
             backdrop-filter: blur(20px);
@@ -168,6 +158,7 @@
             border-radius: 16px;
             text-align: center;
         }
+        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -197,25 +188,42 @@
             text-decoration: none;
         }
         .nav-item.active { color: var(--accent); }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(6, 9, 19, 0.8); backdrop-filter: blur(10px);
+            display: none; align-items: center; justify-content: center; z-index: 1000;
+            padding: 20px; box-sizing: border-box;
+        }
+        .modal-card {
+            background: #0f172a; border: 1px solid var(--border-glass);
+            width: 100%; max-width: 380px; border-radius: 24px; padding: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.7); animation: modalPop 0.3s ease;
+        }
+        @keyframes modalPop {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .network-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0;
+        }
+        .network-option {
+            background: rgba(255,255,255,0.03); border: 1.5px solid var(--border-glass);
+            border-radius: 16px; padding: 14px; text-align: center; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .network-option:hover, .network-option.selected {
+            border-color: var(--primary); background: rgba(59, 130, 246, 0.1);
+        }
+
         #toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: #1e293b;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.2);
-            font-size: 13px;
-            font-weight: 600;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-            z-index: 3000;
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: #1e293b; color: #fff; padding: 12px 24px; border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.2); font-size: 13px; font-weight: 600;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6); z-index: 3000;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            pointer-events: none; display: flex; align-items: center; gap: 10px;
         }
         #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
@@ -223,8 +231,8 @@
 <body>
     <div id="toast">✅ Taarifa</div>
 
-    <!-- HOME VIEW -->
-    <div id="homeView">
+    <!-- 1. HOME VIEW -->
+    <div id="homeView" class="tab-view">
         <div class="top-header">
             <div class="user-profile-box">
                 <div id="userAvatar" class="avatar">J</div>
@@ -267,7 +275,7 @@
                 <div style="font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px;">TSh 4,000</div>
                 <div class="progress-container"><div class="progress-bar"></div></div>
             </div>
-            <button class="btn-action" onclick="showToast('Tayari umeshatimiza mchango wako wa leo!')">
+            <button class="btn-action" onclick="openPaymentModal()">
                 ⚡ LIPA TSH 2,000 YA LEO SASA
             </button>
         </div>
@@ -288,13 +296,60 @@
         </div>
     </div>
 
-    <!-- PROFILE VIEW -->
-    <div id="profileView" style="display: none;">
-        <div class="card-main" style="text-align: center; padding: 30px 20px;">
+    <!-- 2. MICHANGO VIEW -->
+    <div id="michangoView" class="tab-view" style="display: none;">
+        <h2 style="font-size: 18px; margin-bottom: 16px;">Historia ya Michango Yako</h2>
+        <div class="card-main">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border-glass); padding-bottom: 8px;">
+                <div>
+                    <div style="font-size: 13px; font-weight: 700;">Mchango wa Leo</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">09 Oktoba 2026</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 14px; font-weight: 800; color: var(--accent);">+TSh 2,000</div>
+                    <span class="badge-tag badge-success">Imefanikiwa</span>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px;">
+                <div>
+                    <div style="font-size: 13px; font-weight: 700;">Mchango wa Jana</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">08 Oktoba 2026</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 14px; font-weight: 800; color: var(--accent);">+TSh 2,000</div>
+                    <span class="badge-tag badge-success">Imefanikiwa</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. RISITI VIEW -->
+    <div id="risitiView" class="tab-view" style="display: none;">
+        <h2 style="font-size: 18px; margin-bottom: 16px;">Risiti za Kidijitali</h2>
+        <div class="card-main" style="text-align: center; padding: 24px;">
+            <div style="font-size: 36px; margin-bottom: 10px;">🧾</div>
+            <h3 style="font-size: 15px; margin: 0 0 6px 0;">Risiti #MW-REC-2026-09</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Umelipa TSh 2,000 kupitia M-Pesa. Hali: Imethibitishwa na Mfumo.</p>
+            <button class="btn-action" style="margin-top: 0;" onclick="showToast('Risiti imepakuliwa kwenye simu yako!')">Pakua Risiti (PDF)</button>
+        </div>
+    </div>
+
+    <!-- 4. PROFILE VIEW & UNIQUE INVITE LINK -->
+    <div id="profileView" class="tab-view" style="display: none;">
+        <div class="card-main" style="text-align: center; padding: 24px 20px;">
             <div id="profileAvatar" class="avatar" style="width: 70px; height: 70px; font-size: 26px; margin: 0 auto 14px auto;">J</div>
             <h2 id="profileName" style="font-size: 18px; margin: 0 0 4px 0; color: #fff;">Inapakia...</h2>
             <div id="profileMemberNum" style="font-size: 13px; color: #60a5fa; font-weight: 700; margin-bottom: 16px;">MW-2026-XXXX</div>
             <span class="badge-tag badge-success">✓ Mwanachama Aliyethibitishwa</span>
+        </div>
+
+        <div class="card-main">
+            <div style="font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px;">Link Yako ya Kipekee ya Mwaliko</div>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Mtumie mtu link hii ili ajiunge moja kwa moja chini ya akaunti yako:</p>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="inviteLinkInput" readonly style="width: 100%; padding: 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass); border-radius: 10px; color: #60a5fa; font-size: 12px;" value="https://mchezo-wetu.onrender.com/?ref=MW">
+                <button onclick="copyInviteLink()" style="background: var(--primary); color: white; border: none; padding: 0 14px; border-radius: 10px; font-weight: 700; cursor: pointer;">Copy</button>
+            </div>
         </div>
 
         <div class="card-main">
@@ -311,15 +366,47 @@
         </button>
     </div>
 
+    <!-- PAYMENT MODAL -->
+    <div id="paymentModal" class="modal-overlay">
+        <div class="modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="font-size: 16px; margin: 0;">Chagua Mtandao wa Malipo</h3>
+                <button onclick="closePaymentModal()" style="background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer;">✕</button>
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Kiasi cha kulipa leo: <strong style="color: #fff;">TSh 2,000</strong></p>
+            
+            <div class="network-grid">
+                <div class="network-option" onclick="selectNetwork('M-Pesa', '🔴 Vodacom M-Pesa')">
+                    <div style="font-size: 20px;">🔴</div>
+                    <div style="font-size: 12px; font-weight: 700; margin-top: 6px;">M-Pesa</div>
+                </div>
+                <div class="network-option" onclick="selectNetwork('Tigo Pesa', '🔵 Tigo Pesa')">
+                    <div style="font-size: 20px;">🔵</div>
+                    <div style="font-size: 12px; font-weight: 700; margin-top: 6px;">Tigo Pesa</div>
+                </div>
+                <div class="network-option" onclick="selectNetwork('Airtel Money', '🔴 Airtel Money')">
+                    <div style="font-size: 20px;">🟡</div>
+                    <div style="font-size: 12px; font-weight: 700; margin-top: 6px;">Airtel Money</div>
+                </div>
+                <div class="network-option" onclick="selectNetwork('HaloPesa', '🟢 HaloPesa')">
+                    <div style="font-size: 20px;">🟢</div>
+                    <div style="font-size: 12px; font-weight: 700; margin-top: 6px;">HaloPesa</div>
+                </div>
+            </div>
+
+            <button class="btn-action" onclick="processPayment()">Thibitisha Malipo</button>
+        </div>
+    </div>
+
     <!-- BOTTOM NAVIGATION -->
     <div class="bottom-nav">
         <button onclick="switchTab('home')" id="navHome" class="nav-item active">
             <span style="font-size: 18px;">🏠</span> Nyumbani
         </button>
-        <button onclick="showToast('Sehemu ya Michango inapakia...')" class="nav-item">
+        <button onclick="switchTab('michango')" id="navMichango" class="nav-item">
             <span style="font-size: 18px;">💳</span> Michango
         </button>
-        <button onclick="showToast('Sehemu ya Risiti inapakia...')" class="nav-item">
+        <button onclick="switchTab('risiti')" id="navRisiti" class="nav-item">
             <span style="font-size: 18px;">🧾</span> Risiti
         </button>
         <button onclick="switchTab('profile')" id="navProfile" class="nav-item">
@@ -335,32 +422,52 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        function switchTab(tab) {
-            const homeView = document.getElementById('homeView');
-            const profileView = document.getElementById('profileView');
-            const navHome = document.getElementById('navHome');
-            const navProfile = document.getElementById('navProfile');
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-view').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
-            if (tab === 'profile') {
-                homeView.style.display = 'none';
-                profileView.style.display = 'block';
-                navProfile.classList.add('active');
-                navHome.classList.remove('active');
-
-                const user = JSON.parse(localStorage.getItem('mchezo_user'));
-                if (user) {
-                    document.getElementById('profileName').innerText = user.fullName;
-                    document.getElementById('profilePhone').innerText = user.phone;
-                    document.getElementById('profileEmail').innerText = user.email || 'Hakuna';
-                    document.getElementById('profileMemberNum').innerText = user.memberNumber || 'MW-2026-PRO';
-                    document.getElementById('profileAvatar').innerText = user.fullName.charAt(0).toUpperCase();
-                }
-            } else {
-                homeView.style.display = 'block';
-                profileView.style.display = 'none';
-                navHome.classList.add('active');
-                navProfile.classList.remove('active');
+            if (tabName === 'home') {
+                document.getElementById('homeView').style.display = 'block';
+                document.getElementById('navHome').classList.add('active');
+            } else if (tabName === 'michango') {
+                document.getElementById('michangoView').style.display = 'block';
+                document.getElementById('navMichango').classList.add('active');
+            } else if (tabName === 'risiti') {
+                document.getElementById('risitiView').style.display = 'block';
+                document.getElementById('navRisiti').classList.add('active');
+            } else if (tabName === 'profile') {
+                document.getElementById('profileView').style.display = 'block';
+                document.getElementById('navProfile').classList.add('active');
             }
+        }
+
+        let selectedNet = '';
+        function openPaymentModal() {
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+        function selectNetwork(net, name) {
+            selectedNet = net;
+            document.querySelectorAll('.network-option').forEach(el => el.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            showToast(`Umechagua ${name}`);
+        }
+        function processPayment() {
+            if (!selectedNet) {
+                showToast('Tafadhali chagua mtandao kwanza!');
+                return;
+            }
+            closePaymentModal();
+            showToast(`Ombi la TSh 2,000 limetumwa kupitia ${selectedNet}. Weka neno la siri kwenye simu yako.`);
+        }
+
+        function copyInviteLink() {
+            const input = document.getElementById('inviteLinkInput');
+            input.select();
+            navigator.clipboard.writeText(input.value);
+            showToast('Link ya mwaliko imenakiliwa kwenye clipboard!');
         }
 
         function handleLogout() {
@@ -373,6 +480,10 @@
             document.getElementById('userNameDisplay').innerText = userData.fullName;
             document.getElementById('userAvatar').innerText = userData.fullName.charAt(0).toUpperCase();
             
+            if (userData.memberNumber) {
+                document.getElementById('inviteLinkInput').value = `https://mchezo-wetu.onrender.com/?ref=${userData.memberNumber}`;
+            }
+
             const hour = new Date().getHours();
             let greeting = "Habari za asubuhi";
             if (hour >= 12 && hour < 16) greeting = "Habari za mchana";
