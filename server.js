@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const nodemailer = require('nodemailer');
 const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
@@ -19,52 +18,50 @@ function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Background Email Function (Imefanyiwa Fix ya IPv4 na Port 587 Kuzuia ENETUNREACH)
-function sendEmailInBackground(toEmail, otpCode, title = "Admin Verification") {
-    const emailUser = process.env.EMAIL_USER ? process.env.EMAIL_USER.trim() : null;
-    const rawPass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.trim() : null;
-    const cleanPass = rawPass ? rawPass.replace(/\s+/g, '') : null;
+// Resend HTTP API Email Engine (Port 443 HTTPS - Works 100% on Render Free Tier)
+async function sendEmailViaHTTP(toEmail, otpCode, title = "Admin Verification") {
+    const resendApiKey = process.env.RESEND_API_KEY ? process.env.RESEND_API_KEY.trim() : null;
 
-    if (!emailUser || !cleanPass) {
-        console.log(`\n==========================================\n[OTP LOG FOR ${toEmail}]: ${otpCode}\n==========================================\n`);
-        return;
+    if (resendApiKey) {
+        try {
+            const response = await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${resendApiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    from: 'Mchezo Wetu Fintech <onboarding@resend.dev>',
+                    to: [toEmail],
+                    subject: `🔑 ${otpCode} - Kodi yako ya ${title}`,
+                    html: `
+                        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 32px; background-color: #030712; color: #ffffff; border-radius: 20px; max-width: 480px; margin: auto; border: 1px solid rgba(255,255,255,0.1);">
+                            <div style="text-align: center; margin-bottom: 24px;">
+                                <span style="background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37, 99, 235, 0.3); color: #60a5fa; padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: 1px;">● MCHEZO WETU FINTECH</span>
+                                <h2 style="color: #ffffff; font-size: 20px; font-weight: 800; margin-top: 16px;">Uhakiki wa Utawala (Admin)</h2>
+                            </div>
+                            <p style="color: #9ca3af; font-size: 14px; text-align: center;">Kodi yako ya siri ya OTP ni:</p>
+                            <div style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(16, 185, 129, 0.1)); border: 1px solid rgba(59, 130, 246, 0.3); padding: 20px; border-radius: 16px; text-align: center; margin: 24px 0;">
+                                <span style="font-size: 36px; font-weight: 900; color: #10b981; letter-spacing: 8px; font-family: monospace;">${otpCode}</span>
+                            </div>
+                            <p style="color: #6b7280; font-size: 12px; text-align: center;">Muda wa matumizi ni dakika 5. Usiigawie mtu yeyote kwa sababu za kiusalama.</p>
+                        </div>
+                    `
+                })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                console.log(`[RESEND EMAIL SUCCESS] ID: ${data.id} -> Sent to: ${toEmail}`);
+            } else {
+                console.error(`[RESEND EMAIL ERROR]`, data);
+            }
+        } catch (err) {
+            console.error(`[RESEND HTTP ERROR]`, err.message);
+        }
+    } else {
+        console.log(`\n==========================================\n[SERVER LOG OTP FOR ${toEmail}]: ${otpCode}\n==========================================\n`);
     }
-
-    // Weka Transport inayolazimisha IPv4 (family: 4) na Port 587 kuzuia Render Block
-    let transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false, // TLS
-        requireTLS: true,
-        auth: {
-            user: emailUser,
-            pass: cleanPass
-        },
-        family: 4 // Lazimisha kutumia IPv4 kuzuia ENETUNREACH ya IPv6 kwenye Render
-    });
-
-    transporter.sendMail({
-        from: `"Mchezo Wetu Fintech" <${emailUser}>`,
-        to: toEmail,
-        subject: `🔑 ${otpCode} - Kodi yako ya ${title}`,
-        html: `
-            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 32px; background-color: #030712; color: #ffffff; border-radius: 20px; max-width: 480px; margin: auto; border: 1px solid rgba(255,255,255,0.1);">
-                <div style="text-align: center; margin-bottom: 24px;">
-                    <span style="background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37, 99, 235, 0.3); color: #60a5fa; padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: 1px;">● MCHEZO WETU FINTECH</span>
-                    <h2 style="color: #ffffff; font-size: 20px; font-weight: 800; margin-top: 16px;">Uhakiki wa Utawala (Admin)</h2>
-                </div>
-                <p style="color: #9ca3af; font-size: 14px; text-align: center;">Kodi yako ya uhakiki ya OTP ni:</p>
-                <div style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(16, 185, 129, 0.1)); border: 1px solid rgba(59, 130, 246, 0.3); padding: 20px; border-radius: 16px; text-align: center; margin: 24px 0;">
-                    <span style="font-size: 36px; font-weight: 900; color: #10b981; letter-spacing: 8px; font-family: monospace;">${otpCode}</span>
-                </div>
-                <p style="color: #6b7280; font-size: 12px; text-align: center;">Muda wa matumizi ni dakika 5.</p>
-            </div>
-        `
-    }).then(info => {
-        console.log(`[EMAIL SUCCESS] Message ID: ${info.messageId}`);
-    }).catch(err => {
-        console.error(`[EMAIL FAILED] Error: ${err.message}`);
-    });
 }
 
 // 1. ANGALIA KAMA KUNA ADMIN TAYARI KWENYE SUPABASE
@@ -103,7 +100,8 @@ app.post('/api/admin/register-send-otp', async (req, res) => {
             payload: { fullName, phone: phone || '', email: cleanEmail, password }
         });
 
-        sendEmailInBackground(cleanEmail, otpCode, "Usajili wa Msimamizi");
+        // Tuma kupitia HTTP API
+        sendEmailViaHTTP(cleanEmail, otpCode, "Usajili wa Msimamizi");
 
         return res.json({ 
             success: true, 
@@ -188,7 +186,7 @@ app.post('/api/admin/login-send-otp', async (req, res) => {
             email: admin.email
         });
 
-        sendEmailInBackground(admin.email, otpCode, "Kuingia Msimamizi");
+        sendEmailViaHTTP(admin.email, otpCode, "Kuingia Msimamizi");
 
         return res.json({ 
             success: true, 
