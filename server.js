@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const nodemailer = require('nodemailer');
 const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
@@ -12,11 +13,51 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Hifadhi ya muda ya OTP kwenye Seva
-const otpStore = new Map(); // phone -> { code, expiresAt, payload, type }
+// Hifadhi ya muda ya Email OTP
+const otpStore = new Map(); // email -> { code, expiresAt, payload, type }
 
 function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+// Mfumo wa Kutuma OTP kwa Email
+async function sendRealEmailOTP(toEmail, otpCode, title = "Uhakiki wa Mchezo Wetu Admin") {
+    const emailUser = process.env.EMAIL_USER;
+    const emailPass = process.env.EMAIL_PASS;
+
+    if (emailUser && emailPass) {
+        try {
+            let transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: emailUser,
+                    pass: emailPass
+                }
+            });
+
+            await transporter.sendMail({
+                from: `"Mchezo Wetu Admin" <${emailUser}>`,
+                to: toEmail,
+                subject: `${title} - OTP Code`,
+                html: `
+                    <div style="font-family: Arial, sans-serif; padding: 24px; background-color: #030712; color: #ffffff; border-radius: 16px; max-width: 500px; margin: auto; border: 1px solid rgba(255,255,255,0.1);">
+                        <h2 style="color: #3b82f6; margin-top: 0;">Mchezo Wetu Fintech</h2>
+                        <p style="color: #9ca3af; font-size: 14px;">Namba yako ya uhakiki ya OTP kwa ajili ya Admin Portal ni:</p>
+                        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); padding: 16px; border-radius: 12px; text-align: center; margin: 20px 0;">
+                            <span style="font-size: 32px; font-weight: 900; color: #10b981; letter-spacing: 6px;">${otpCode}</span>
+                        </div>
+                        <p style="color: #9ca3af; font-size: 12px;">Muda wa matumizi ya namba hii ni dakika 5. Usiigawie mtu yeyote kwa sababu za kiusalama.</p>
+                    </div>
+                `
+            });
+            console.log(`[EMAIL OTP SENT TO ${toEmail}]`);
+        } catch (err) {
+            console.error('[EMAIL SENDING ERROR]', err.message);
+        }
+    } else {
+        // Ikiwa Server Environment Variables hazijawekwa bado, inaonekana kwenye Terminal Server Logs pekee (Sio kwenye Browser UI)
+        console.log(`\n==========================================\n[REAL EMAIL OTP FOR ${toEmail}]: ${otpCode}\n==========================================\n`);
+    }
 }
 
 // 1. ANGALIA KAMA KUNA ADMIN TAYARI KWENYE SUPABASE
@@ -30,62 +71,63 @@ app.get('/api/admin/check-exists', async (req, res) => {
     }
 });
 
-// 2. ADMIN REGISTRATION - TUMA OTP (MARA YA KWANZA TU)
+// 2. USAJILI WA ADMIN - TUMA OTP KWA EMAIL
 app.post('/api/admin/register-send-otp', async (req, res) => {
     const { fullName, phone, email, password } = req.body;
 
-    // Hakikisha hakuna admin tayari
     const { data: existingAdmin } = await supabase.from('users').select('*').eq('role', 'admin');
     if (existingAdmin && existingAdmin.length > 0) {
-        return res.json({ success: false, message: 'Admin yupo tayari kwenye mfumo! Tafadhali ingia (Login).' });
+        return res.json({ success: false, message: 'Admin yupo tayari kwenye mfumo! Tafadhali ingia.' });
     }
 
-    if (!fullName || !phone || !password) {
-        return res.json({ success: false, message: 'Tafadhali jaza jina, namba ya simu na nenosiri.' });
+    if (!fullName || !email || !password) {
+        return res.json({ success: false, message: 'Tafadhali jaza jina, email na nenosiri.' });
     }
 
+    const cleanEmail = email.trim().toLowerCase();
     const otpCode = generateOTP();
     const expiresAt = Date.now() + 5 * 60 * 1000;
 
-    otpStore.set(phone, {
+    otpStore.set(cleanEmail, {
         code: otpCode,
         expiresAt,
         type: 'ADMIN_REGISTER',
-        payload: { fullName, phone, email: email || '', password }
+        payload: { fullName, phone: phone || '', email: cleanEmail, password }
     });
 
-    console.log(`[ADMIN SETUP OTP] OTP ya Usajili wa Admin (${phone}): ${otpCode}`);
+    await sendRealEmailOTP(cleanEmail, otpCode, "Usajili wa Msimamizi");
 
     res.json({ 
         success: true, 
-        message: `OTP ya usajili imetumwa kwa namba ${phone}.`, 
-        demoOtp: otpCode 
+        email: cleanEmail,
+        message: `OTP imetumwa kwa barua pepe (email): ${cleanEmail}` 
     });
 });
 
-// 3. THIBITISHA OTP YA USAJILI WA ADMIN NA HIFADHI SUPABASE
+// 3. THIBITISHA EMAIL OTP NA SAAJILI ADMIN KWENYE SUPABASE
 app.post('/api/admin/register-verify-otp', async (req, res) => {
-    const { phone, otp } = req.body;
-    const record = otpStore.get(phone);
+    const { email, otp } = req.body;
+    const cleanEmail = email ? email.trim().toLowerCase() : '';
+    const record = otpStore.get(cleanEmail);
 
     if (!record || record.type !== 'ADMIN_REGISTER') {
         return res.json({ success: false, message: 'Ombi la OTP halipatikani au limeisha.' });
     }
 
     if (Date.now() > record.expiresAt) {
-        otpStore.delete(phone);
+        otpStore.delete(cleanEmail);
         return res.json({ success: false, message: 'Muda wa OTP umeisha. Omba tena.' });
     }
 
     if (record.code !== otp.toString().trim()) {
-        return res.json({ success: false, message: 'OTP si sahihi. Angalia vizuri.' });
+        return res.json({ success: false, message: 'OTP uliyoingiza si sahihi.' });
     }
 
-    const { fullName, email, password } = record.payload;
+    const { fullName, phone, password } = record.payload;
     const adminUser = {
         full_name: fullName,
-        phone,
-        email,
+        phone: phone || '0000000000',
+        email: cleanEmail,
         password,
         member_number: 'MW-ADMIN-01',
         role: 'admin',
@@ -98,11 +140,11 @@ app.post('/api/admin/register-verify-otp', async (req, res) => {
         return res.json({ success: false, message: 'Hitilafu ya Supabase: ' + error.message });
     }
 
-    otpStore.delete(phone);
-    res.json({ success: true, message: 'Usajili wa Admin umefanikiwa! Sasa unaweza kuingia.' });
+    otpStore.delete(cleanEmail);
+    res.json({ success: true, message: 'Usajili wa Admin umefanikiwa!' });
 });
 
-// 4. ADMIN LOGIN - TUMA OTP YA KUINGIA
+// 4. LOGIN YA ADMIN - TUMA OTP KWA EMAIL
 app.post('/api/admin/login-send-otp', async (req, res) => {
     const { identifier, password } = req.body;
 
@@ -112,7 +154,7 @@ app.post('/api/admin/login-send-otp', async (req, res) => {
     }
 
     const admin = users.find(u => 
-        (u.phone === identifier || u.email === identifier || u.full_name.toLowerCase() === identifier.toLowerCase()) && 
+        (u.email.toLowerCase() === identifier.toLowerCase() || u.phone === identifier || u.full_name.toLowerCase() === identifier.toLowerCase()) && 
         u.password === password
     );
 
@@ -123,42 +165,42 @@ app.post('/api/admin/login-send-otp', async (req, res) => {
     const otpCode = generateOTP();
     const expiresAt = Date.now() + 5 * 60 * 1000;
 
-    otpStore.set(admin.phone, {
+    otpStore.set(admin.email, {
         code: otpCode,
         expiresAt,
         type: 'ADMIN_LOGIN',
-        phone: admin.phone
+        email: admin.email
     });
 
-    console.log(`[ADMIN LOGIN OTP] OTP ya Admin (${admin.phone}): ${otpCode}`);
+    await sendRealEmailOTP(admin.email, otpCode, "Kuingia Msimamizi");
 
     res.json({ 
         success: true, 
-        phone: admin.phone,
-        message: `OTP ya kuingia imetumwa kwa ${admin.phone}.`, 
-        demoOtp: otpCode 
+        email: admin.email,
+        message: `OTP imetumwa kwa njia ya Email kwenda ${admin.email}.` 
     });
 });
 
-// 5. THIBITISHA OTP YA LOGIN YA ADMIN
+// 5. THIBITISHA EMAIL OTP YA LOGIN YA ADMIN
 app.post('/api/admin/login-verify-otp', async (req, res) => {
-    const { phone, otp } = req.body;
-    const record = otpStore.get(phone);
+    const { email, otp } = req.body;
+    const cleanEmail = email ? email.trim().toLowerCase() : '';
+    const record = otpStore.get(cleanEmail);
 
     if (!record || record.type !== 'ADMIN_LOGIN') {
         return res.json({ success: false, message: 'Ombi la OTP halipatikani.' });
     }
 
     if (Date.now() > record.expiresAt) {
-        otpStore.delete(phone);
+        otpStore.delete(cleanEmail);
         return res.json({ success: false, message: 'Muda wa OTP umeisha.' });
     }
 
     if (record.code !== otp.toString().trim()) {
-        return res.json({ success: false, message: 'OTP si sahihi.' });
+        return res.json({ success: false, message: 'OTP uliyoingiza si sahihi.' });
     }
 
-    otpStore.delete(phone);
+    otpStore.delete(cleanEmail);
     res.json({ success: true, message: 'Umekaribishwa Msimamizi!' });
 });
 

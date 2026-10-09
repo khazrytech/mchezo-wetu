@@ -10,7 +10,6 @@
             --card-glass: rgba(17, 24, 39, 0.75);
             --border-glass: rgba(255, 255, 255, 0.08);
             --primary: #2563eb;
-            --primary-hover: #1d4ed8;
             --accent: #10b981;
             --text-main: #f9fafb;
             --text-muted: #9ca3af;
@@ -85,44 +84,44 @@
             <p id="portalSubheading" style="font-size: 12px; color: var(--text-muted); margin: 0 0 24px 0;">Tafadhali subiri kidogo...</p>
         </div>
 
-        <!-- FORM 1: USAJILI WA ADMIN (MARA YA KWANZA PEKEE) -->
+        <!-- FORM 1: USAJILI WA ADMIN -->
         <form id="signupForm" style="display: none;" onsubmit="handleAdminSignup(event)">
             <div class="input-group">
                 <label class="input-label">Jina Kamili la Admin</label>
                 <input type="text" id="regFullName" class="input-field" placeholder="Mfano: Msimamizi Mkuu" required>
             </div>
             <div class="input-group">
-                <label class="input-label">Namba ya Simu</label>
-                <input type="tel" id="regPhone" class="input-field" placeholder="07XXXXXXXX" required>
+                <label class="input-label">Barua Pepe (Email ya Kumiya OTP)</label>
+                <input type="email" id="regEmail" class="input-field" placeholder="admin@example.com" required>
             </div>
             <div class="input-group">
-                <label class="input-label">Barua Pepe (Email)</label>
-                <input type="email" id="regEmail" class="input-field" placeholder="admin@mchezowetu.com">
+                <label class="input-label">Namba ya Simu</label>
+                <input type="tel" id="regPhone" class="input-field" placeholder="07XXXXXXXX">
             </div>
             <div class="input-group">
                 <label class="input-label">Nenosiri (Password)</label>
                 <input type="password" id="regPassword" class="input-field" placeholder="••••••••" required>
             </div>
-            <button type="submit" class="btn-action">Jisajili & Tuma OTP ➔</button>
+            <button type="submit" class="btn-action">Jisajili & Tuma OTP kwa Email ➔</button>
         </form>
 
-        <!-- FORM 2: LOGIN YA ADMIN (INAPOKUWAPO SUPABASE) -->
+        <!-- FORM 2: LOGIN YA ADMIN -->
         <form id="loginForm" style="display: none;" onsubmit="handleAdminLogin(event)">
             <div class="input-group">
-                <label class="input-label">Namba ya Simu au Email</label>
-                <input type="text" id="loginIdentifier" class="input-field" placeholder="Ingiza namba ya simu au email" required>
+                <label class="input-label">Email au Namba ya Simu</label>
+                <input type="text" id="loginIdentifier" class="input-field" placeholder="Ingiza Email au Simu" required>
             </div>
             <div class="input-group">
                 <label class="input-label">Nenosiri (Password)</label>
                 <input type="password" id="loginPassword" class="input-field" placeholder="••••••••" required>
             </div>
-            <button type="submit" class="btn-action">Ingia & Tuma OTP ➔</button>
+            <button type="submit" class="btn-action">Ingia & Tuma OTP kwa Email ➔</button>
         </form>
 
-        <!-- FORM 3: UTHIBITISHO WA OTP -->
+        <!-- FORM 3: UTHIBITISHO WA EMAIL OTP -->
         <form id="otpForm" style="display: none;" onsubmit="handleVerifyOtp(event)">
             <div class="input-group" style="text-align: center;">
-                <label class="input-label">Ingiza Tarakimu 6 za OTP</label>
+                <label class="input-label">Ingiza Tarakimu 6 za OTP Zilizotumwa Kwenye Email</label>
                 <input type="number" id="otpInput" class="input-field" placeholder="123456" style="text-align: center; font-size: 22px; letter-spacing: 6px; font-weight: 800;" required>
             </div>
             <button type="submit" class="btn-action" style="background: var(--accent);">Thibitisha & Ingia ➔</button>
@@ -130,8 +129,8 @@
     </div>
 
     <script>
-        let currentPhone = '';
-        let currentMode = ''; // 'REGISTER' au 'LOGIN'
+        let currentEmail = '';
+        let currentMode = '';
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
@@ -140,20 +139,17 @@
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
-        // Angalia kama Admin yupo tayari Supabase
         async function checkAdminStatus() {
             try {
                 const res = await fetch('/api/admin/check-exists');
                 const data = await res.json();
                 
                 if (data.exists) {
-                    // Admin yupo -> Onyesha Login pekee
                     document.getElementById('portalHeading').innerText = 'Kuingia Msimamizi';
-                    document.getElementById('portalSubheading').innerText = 'Ingiza taarifa zako za utawala kupokea OTP';
+                    document.getElementById('portalSubheading').innerText = 'Ingiza taarifa zako za utawala kupokea OTP kwenye Email';
                     document.getElementById('loginForm').style.display = 'block';
                     document.getElementById('signupForm').style.display = 'none';
                 } else {
-                    // Hakuna Admin -> Onyesha Usajili wa mara ya kwanza
                     document.getElementById('portalHeading').innerText = 'Usajili wa Msimamizi Mkuu';
                     document.getElementById('portalSubheading').innerText = 'Tengeneza akaunti ya Admin ya mara ya kwanza';
                     document.getElementById('signupForm').style.display = 'block';
@@ -167,8 +163,8 @@
         async function handleAdminSignup(e) {
             e.preventDefault();
             const fullName = document.getElementById('regFullName').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
             const email = document.getElementById('regEmail').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
             const password = document.getElementById('regPassword').value.trim();
 
             try {
@@ -179,13 +175,13 @@
                 });
                 const data = await res.json();
                 if (data.success) {
-                    currentPhone = phone;
+                    currentEmail = data.email;
                     currentMode = 'REGISTER';
                     document.getElementById('signupForm').style.display = 'none';
                     document.getElementById('otpForm').style.display = 'block';
-                    document.getElementById('portalHeading').innerText = 'Thibitisha OTP';
-                    document.getElementById('portalSubheading').innerText = 'OTP imetumwa kwa ' + phone + ' (Demo: ' + data.demoOtp + ')';
-                    showToast('🔑 OTP: ' + data.demoOtp);
+                    document.getElementById('portalHeading').innerText = 'Thibitisha Email OTP';
+                    document.getElementById('portalSubheading').innerText = 'OTP imetumwa kwenye barua pepe: ' + data.email;
+                    showToast('📧 OTP imetumwa kwenye Email yako!');
                 } else {
                     showToast('⚠️ ' + data.message);
                 }
@@ -207,13 +203,13 @@
                 });
                 const data = await res.json();
                 if (data.success) {
-                    currentPhone = data.phone;
+                    currentEmail = data.email;
                     currentMode = 'LOGIN';
                     document.getElementById('loginForm').style.display = 'none';
                     document.getElementById('otpForm').style.display = 'block';
-                    document.getElementById('portalHeading').innerText = 'Thibitisha OTP';
-                    document.getElementById('portalSubheading').innerText = 'OTP imetumwa kwa ' + data.phone + ' (Demo: ' + data.demoOtp + ')';
-                    showToast('🔑 OTP: ' + data.demoOtp);
+                    document.getElementById('portalHeading').innerText = 'Thibitisha Email OTP';
+                    document.getElementById('portalSubheading').innerText = 'OTP imetumwa kwenye barua pepe: ' + data.email;
+                    showToast('📧 OTP imetumwa kwenye Email yako!');
                 } else {
                     showToast('⚠️ ' + data.message);
                 }
@@ -231,7 +227,7 @@
                 const res = await fetch(endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone: currentPhone, otp })
+                    body: JSON.stringify({ email: currentEmail, otp })
                 });
                 const data = await res.json();
                 if (data.success) {
