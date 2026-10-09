@@ -12,12 +12,26 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// Helper: Log Admin Activity
+async function logActivity(adminName, action, details) {
+    try {
+        await supabase.from('activity_logs').insert([{
+            admin_name: adminName,
+            action: action,
+            details: details,
+            date: new Date().toLocaleString('sw-TZ')
+        }]);
+    } catch (e) {
+        console.error('Log error:', e.message);
+    }
+}
+
 // LOGIN API
 app.post('/api/login', async (req, res) => {
     try {
         const { identifier, password } = req.body;
         if (!identifier || !password) {
-            return res.json({ success: false, message: 'Ingiza namba ya simu au namba ya mwanachama na nenosiri.' });
+            return res.json({ success: false, message: 'Ingiza namba ya simu, jina au namba ya mwanachama na nenosiri.' });
         }
 
         const cleanId = identifier.trim().toLowerCase();
@@ -52,10 +66,11 @@ app.post('/api/login', async (req, res) => {
                 phone: user.phone,
                 email: user.email,
                 memberNumber: user.member_number,
-                role: user.role,
+                role: user.role || 'member',
                 status: user.status,
                 banReason: user.ban_reason || '',
-                hasPaidToday: user.has_paid_today || false
+                hasPaidToday: user.has_paid_today || false,
+                paymentStatus: user.payment_status || 'unpaid'
             }
         });
     } catch (err) {
@@ -87,6 +102,8 @@ app.post('/api/register', async (req, res) => {
             status: 'pending',
             ban_reason: '',
             has_paid_today: false,
+            payment_status: 'unpaid',
+            monthly_contributions: 0,
             date_registered: new Date().toLocaleDateString('sw-TZ')
         };
 
@@ -112,42 +129,45 @@ app.get('/api/admin/users', async (req, res) => {
         role: u.role || 'member',
         status: u.status || 'approved',
         banReason: u.ban_reason || '',
-        hasPaidToday: u.has_paid_today || false
+        hasPaidToday: u.has_paid_today || false,
+        paymentStatus: u.payment_status || 'unpaid',
+        monthlyContributions: u.monthly_contributions || 0
     }));
     res.json({ success: true, users: formatted });
 });
 
-// APPROVE
+// ADMIN ACTIONS
 app.post('/api/admin/approve', async (req, res) => {
     const { phone } = req.body;
-    const { data, error } = await supabase.from('users').update({ status: 'approved', ban_reason: '' }).eq('phone', phone).select();
-    if (error) return res.json({ success: false, message: 'Imeshindikana kuidhinisha: ' + error.message });
+    const { error } = await supabase.from('users').update({ status: 'approved', ban_reason: '' }).eq('phone', phone);
+    if (error) return res.json({ success: false, message: error.message });
+    await logActivity('Super Admin', 'Approve User', `Amemuidhinisha mwanachama namba ${phone}`);
     res.json({ success: true, message: 'Mwanachama amethibitishwa kikamilifu!' });
 });
 
-// SUSPEND
 app.post('/api/admin/suspend', async (req, res) => {
     const { phone, reason } = req.body;
-    const reasonText = reason ? reason.trim() : 'Kusimamishwa kwa muda na Admin.';
-    const { data, error } = await supabase.from('users').update({ status: 'suspended', ban_reason: reasonText }).eq('phone', phone).select();
-    if (error) return res.json({ success: false, message: 'Imeshindikana: ' + error.message });
+    const reasonText = reason ? reason.trim() : 'Kusimamishwa kwa muda.';
+    const { error } = await supabase.from('users').update({ status: 'suspended', ban_reason: reasonText }).eq('phone', phone);
+    if (error) return res.json({ success: false, message: error.message });
+    await logActivity('Super Admin', 'Suspend User', `Amemsimamisha ${phone}. Sababu: ${reasonText}`);
     res.json({ success: true, message: 'Mwanachama amesimamishwa kwa muda!' });
 });
 
-// BAN
 app.post('/api/admin/ban', async (req, res) => {
     const { phone, reason } = req.body;
-    const reasonText = reason ? reason.trim() : 'Kufungiwa kabisa na Admin.';
-    const { data, error } = await supabase.from('users').update({ status: 'banned', ban_reason: reasonText }).eq('phone', phone).select();
-    if (error) return res.json({ success: false, message: 'Imeshindikana: ' + error.message });
+    const reasonText = reason ? reason.trim() : 'Kufungiwa kabisa.';
+    const { error } = await supabase.from('users').update({ status: 'banned', ban_reason: reasonText }).eq('phone', phone);
+    if (error) return res.json({ success: false, message: error.message });
+    await logActivity('Super Admin', 'Permanent Ban', `Amempiga ban kabisa ${phone}. Sababu: ${reasonText}`);
     res.json({ success: true, message: 'Mwanachama amepigwa ban kabisa!' });
 });
 
-// UNBAN / RESTORE
 app.post('/api/admin/unban', async (req, res) => {
     const { phone } = req.body;
-    const { data, error } = await supabase.from('users').update({ status: 'approved', ban_reason: '' }).eq('phone', phone).select();
-    if (error) return res.json({ success: false, message: 'Imeshindikana: ' + error.message });
+    const { error } = await supabase.from('users').update({ status: 'approved', ban_reason: '' }).eq('phone', phone);
+    if (error) return res.json({ success: false, message: error.message });
+    await logActivity('Super Admin', 'Unban User', `Ameondoa vikwazo kwa ${phone}`);
     res.json({ success: true, message: 'Kifungo kimeondolewa kikamilifu!' });
 });
 
@@ -159,13 +179,20 @@ app.get('/api/announcements', async (req, res) => {
 
 app.post('/api/announcements', async (req, res) => {
     const { title, message } = req.body;
-    if (!title || !message) return res.json({ success: false, message: 'Jaza kichwa na ujumbe.' });
+    if (!title || !message) return res.json({ success: false, message: 'Kichwa na ujumbe vinahitajika.' });
 
     const newAnn = { title, message, date: new Date().toLocaleDateString('sw-TZ') };
     const { error } = await supabase.from('announcements').insert([newAnn]);
-    if (error) return res.json({ success: false, message: 'Imeshindikana kutuma.' });
+    if (error) return res.json({ success: false, message: 'Imeshindikana kutuma tangazo.' });
 
+    await logActivity('Super Admin', 'Send Announcement', `Kichwa: ${title}`);
     res.json({ success: true, message: 'Tangazo limetumwa kwa wanachama wote!' });
+});
+
+// ACTIVITY LOGS API
+app.get('/api/admin/logs', async (req, res) => {
+    const { data: logs } = await supabase.from('activity_logs').select('*').order('id', { ascending: false }).limit(20);
+    res.json({ success: true, logs: logs || [] });
 });
 
 app.listen(PORT, () => {
