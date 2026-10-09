@@ -14,21 +14,21 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Helper: Log Admin Activity
 async function logActivity(adminName, action, details) {
-//     try {
+    try {
         await supabase.from('activity_logs').insert([{
             admin_name: adminName,
             action: action,
             details: details,
             date: new Date().toLocaleString('sw-TZ')
         }]);
-//     } catch (e) { // Imesafishwa na mfumo
+    } catch (e) {
         console.error('Log error:', e.message);
     }
 }
 
 // LOGIN API
 app.post('/api/login', async (req, res) => {
-//     try {
+    try {
         const { identifier, password } = req.body;
         if (!identifier || !password) {
             return res.json({ success: false, message: 'Ingiza namba ya simu, jina au namba ya mwanachama na nenosiri.' });
@@ -38,7 +38,7 @@ app.post('/api/login', async (req, res) => {
         const { data: users, error } = await supabase.from('users').select('*');
         if (error) return res.json({ success: false, message: 'Hitilafu ya Supabase: ' + error.message });
 
-        const user = users.find(u => 
+        const user = users.find(u =>
             (u.phone && u.phone.trim().toLowerCase() === cleanId) ||
             (u.email && u.email.trim().toLowerCase() === cleanId) ||
             (u.full_name && u.full_name.trim().toLowerCase() === cleanId) ||
@@ -58,8 +58,8 @@ app.post('/api/login', async (req, res) => {
             return res.json({ success: false, message: 'Akaunti yako bado inasubiri kuidhinishwa na Admin.' });
         }
 
-        return res.json({ 
-            success: true, 
+        return res.json({
+            success: true,
             message: 'Umekaribishwa!',
             user: {
                 fullName: user.full_name,
@@ -70,17 +70,16 @@ app.post('/api/login', async (req, res) => {
                 status: user.status,
                 banReason: user.ban_reason || '',
                 hasPaidToday: user.has_paid_today || false,
-                
             }
         });
-    
+    } catch (err) {
         return res.json({ success: false, message: 'Hitilafu ya Seva: ' + err.message });
-//     } // Imesafishwa
+    }
 });
 
 // REGISTER API
 app.post('/api/register', async (req, res) => {
-//     try {
+    try {
         const { fullName, phone, email, password } = req.body;
         if (!fullName || !phone || !password) {
             return res.json({ success: false, message: 'Tafadhali jaza taarifa zote.' });
@@ -102,7 +101,6 @@ app.post('/api/register', async (req, res) => {
             status: 'pending',
             ban_reason: '',
             has_paid_today: false,
-            
             monthly_contributions: 0,
             date_registered: new Date().toLocaleDateString('sw-TZ')
         };
@@ -111,7 +109,7 @@ app.post('/api/register', async (req, res) => {
         if (error) throw error;
 
         return res.json({ success: true, message: 'Usajili umefanikiwa! Subiri idhini ya Admin.' });
-    
+    } catch (err) {
         return res.json({ success: false, message: 'Imeshindikana kusajili: ' + err.message });
     }
 });
@@ -130,7 +128,6 @@ app.get('/api/admin/users', async (req, res) => {
         status: u.status || 'approved',
         banReason: u.ban_reason || '',
         hasPaidToday: u.has_paid_today || false,
-        
         monthlyContributions: u.monthly_contributions || 0
     }));
     res.json({ success: true, users: formatted });
@@ -198,47 +195,3 @@ app.get('/api/admin/logs', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-
-
-
-
-        console.log(`[FIMIPAY] Inatuma ombi la TSh ${amount} kwenda namba ${phone}...`);
-
-        // Kama bado hujaweka FIMIPAY_API_KEY kwenye env, unaweza kuiweka au kutumia mfumo wa moja kwa moja
-        const payload = {
-            phone_number: phone,
-            amount: parseFloat(amount),
-            currency: 'TZS',
-            reference: 'MCHWE-' + Date.now(),
-            description: 'Mchango wa Mchezo Wetu Pro - ' + (memberName || 'Mwanachama')
-        };
-
-        // Kufanya ombi kwenda FimiPay API (Inatumia fetch ya Node.js)
-        /* 
-        const apiRes = await fetch(FIMIPAY_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${FIMIPAY_API_KEY}`
-            },
-            body: JSON.stringify(payload)
-        });
-        const apiData = await apiRes.json();
-        */
-
-        // Majibu ya mafanikio ya FimiPay Gateway
-        res.json({
-            success: true,
-            message: 'Ombi la malipo limetumwa kupitia FimiPay kwenda namba ' + phone + '. Tafadhali ingiza namba ya siri (PIN).',
-            transactionRef: payload.reference
-        });
-
-    
-        console.error('Hitilafu ya FimiPay:', err);
-        res.status(500).json({ success: false, message: 'Imeshindwa kuwasiliana na FimiPay Gateway.' });
-    }
-});
-
-
-
-        
