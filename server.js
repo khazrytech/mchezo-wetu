@@ -13,14 +13,13 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Hifadhi ya muda ya Email OTP
 const otpStore = new Map();
 
 function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Background Email Sending Function (Haigandishi Seva Hata Kidogo)
+// Background Email Function (Imefanyiwa Fix ya IPv4 na Port 587 Kuzuia ENETUNREACH)
 function sendEmailInBackground(toEmail, otpCode, title = "Admin Verification") {
     const emailUser = process.env.EMAIL_USER ? process.env.EMAIL_USER.trim() : null;
     const rawPass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.trim() : null;
@@ -31,15 +30,17 @@ function sendEmailInBackground(toEmail, otpCode, title = "Admin Verification") {
         return;
     }
 
+    // Weka Transport inayolazimisha IPv4 (family: 4) na Port 587 kuzuia Render Block
     let transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // TLS
+        requireTLS: true,
         auth: {
             user: emailUser,
             pass: cleanPass
         },
-        connectionTimeout: 4000,
-        greetingTimeout: 4000,
-        socketTimeout: 4000
+        family: 4 // Lazimisha kutumia IPv4 kuzuia ENETUNREACH ya IPv6 kwenye Render
     });
 
     transporter.sendMail({
@@ -77,7 +78,7 @@ app.get('/api/admin/check-exists', async (req, res) => {
     }
 });
 
-// 2. USAJILI WA ADMIN - INSTANT RESPONSE (HAIGANDI)
+// 2. USAJILI WA ADMIN - INSTANT RESPONSE
 app.post('/api/admin/register-send-otp', async (req, res) => {
     try {
         const { fullName, phone, email, password } = req.body;
@@ -102,10 +103,8 @@ app.post('/api/admin/register-send-otp', async (req, res) => {
             payload: { fullName, phone: phone || '', email: cleanEmail, password }
         });
 
-        // Tuma barua pepe kwa nyuma (Background)
         sendEmailInBackground(cleanEmail, otpCode, "Usajili wa Msimamizi");
 
-        // Rudisha majibu papo hapo kwa Frontend bila kusubiri
         return res.json({ 
             success: true, 
             email: cleanEmail,
