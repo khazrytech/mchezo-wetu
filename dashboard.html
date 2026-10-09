@@ -30,7 +30,7 @@
         }
         .container { max-width: 500px; margin: 0 auto; padding: 20px 16px; }
 
-        /* Top Header */
+        /* Header */
         .app-header {
             display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 20px;
@@ -57,7 +57,7 @@
             width: 44px; height: 44px; border-radius: 16px;
             background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass);
             display: flex; align-items: center; justify-content: center;
-            position: relative; cursor: pointer; transition: all 0.2s;
+            position: relative; cursor: pointer;
         }
         .notif-badge {
             width: 8px; height: 8px; border-radius: 50%; background: #ef4444;
@@ -87,7 +87,7 @@
             display: flex; align-items: center; gap: 6px;
         }
 
-        /* Status Badges */
+        /* Badges */
         .badge-paid {
             background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3);
             color: #10b981; font-size: 10px; font-weight: 800; padding: 4px 10px;
@@ -131,7 +131,6 @@
             display: flex; align-items: center; justify-content: center; gap: 8px;
             transition: all 0.2s;
         }
-        .btn-pay:hover { transform: translateY(-1px); }
 
         /* Stats 3 Grid */
         .stats-3-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -142,7 +141,7 @@
         .stat-mini-lbl { font-size: 9px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
         .stat-mini-val { font-size: 18px; font-weight: 900; color: #fff; margin-top: 4px; }
 
-        /* Profile Cards Styling */
+        /* Profile Hero */
         .profile-hero { text-align: center; padding: 28px 20px; }
         .profile-avatar-large {
             width: 72px; height: 72px; margin: 0 auto 12px auto; border-radius: 24px;
@@ -184,7 +183,7 @@
         .data-label { font-size: 13px; font-weight: 700; color: var(--text-muted); }
         .data-value { font-size: 13px; font-weight: 800; color: #fff; }
 
-        /* PAYMENT MODAL WITH REAL LOGOS (AZAM PESA REMOVED) */
+        /* PAYMENT MODAL WITH OFFICIAL BRAND LOGOS */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(16px);
@@ -201,7 +200,6 @@
             color: var(--text-muted); cursor: pointer; font-weight: 800;
         }
         
-        /* Grid for 5 payment options (AzamPesa removed) */
         .method-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 16px 0; }
         .method-card {
             background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass);
@@ -213,19 +211,20 @@
             box-shadow: 0 0 18px rgba(37, 99, 235, 0.3);
         }
         
-        .brand-logo-icon {
-            width: 38px; height: 38px; border-radius: 12px;
+        /* OFFICIAL BRAND LOGO ICONS */
+        .official-logo-box {
+            width: 42px; height: 42px; border-radius: 14px;
             display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; font-weight: 900; font-size: 11px; color: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+            font-weight: 900; font-size: 11px; text-transform: uppercase;
         }
 
-        /* REAL BRAND LOGO BACKGROUND STYLES */
-        .logo-mix { background: linear-gradient(135deg, #0284c7, #2563eb); }
-        .logo-mpesa { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        .logo-airtel { background: linear-gradient(135deg, #e11d48, #b91c1c); }
-        .logo-tigo { background: linear-gradient(135deg, #1e40af, #1d4ed8); }
-        .logo-halo { background: linear-gradient(135deg, #f97316, #ea580c); }
+        /* BRAND COLORS & STYLING */
+        .bg-mix { background: linear-gradient(135deg, #003B95, #0056D2); color: #fff; }
+        .bg-mpesa { background: #E60000; color: #fff; }
+        .bg-airtel { background: #E2001A; color: #fff; }
+        .bg-tigo { background: #002855; color: #FFC72C; border: 1px solid rgba(255, 199, 44, 0.3); }
+        .bg-halopesa { background: #FF5500; color: #fff; }
 
         /* Bottom Nav */
         .bottom-nav {
@@ -250,7 +249,6 @@
             border: 1px solid rgba(37, 99, 235, 0.3);
         }
 
-        /* Bottom Floating Notification Sheet (Modern UX) */
         #notificationSheet {
             position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%) translateY(120px);
             background: rgba(15, 23, 42, 0.92); color: #fff; padding: 12px 20px; border-radius: 20px;
@@ -289,9 +287,8 @@
             </div>
         </div>
 
-        <!-- TAB 1: NYUMBANI (HOME DASHBOARD) -->
+        <!-- TAB 1: NYUMBANI -->
         <div id="tab-home">
-            <!-- MCHANGO WANGU LEO CARD -->
             <div class="glass-card">
                 <div class="card-header-flex">
                     <span class="card-title-sm">
@@ -312,7 +309,6 @@
                 </div>
             </div>
 
-            <!-- LENGO LA LEO CARD -->
             <div class="glass-card">
                 <div class="card-header-flex">
                     <span class="badge-paid" style="background:rgba(37,99,235,0.15); color:#60a5fa; border-color:rgba(37,99,235,0.3);">● LENGO LA LEO</span>
@@ -332,13 +328,11 @@
                     <div class="progress-fill" id="goalProgressBar" style="width: 0%;"></div>
                 </div>
 
-                <!-- MAIN PAYMENT BUTTON -->
                 <button class="btn-pay" id="btnPayAction" onclick="openPayModal()">
                     ⚡ LIPA TSH 2,000 YA LEO SASA
                 </button>
             </div>
 
-            <!-- BOTTOM STATS 3 GRID -->
             <div class="stats-3-grid">
                 <div class="stat-mini-card">
                     <div class="stat-mini-lbl">Wanachama</div>
@@ -375,9 +369,8 @@
             </div>
         </div>
 
-        <!-- TAB 4: PRO FINTECH PROFILE SECTION (REDESIGNED) -->
+        <!-- TAB 4: PROFILE -->
         <div id="tab-profile" style="display: none;">
-            <!-- EXECUTIVE PROFILE HERO -->
             <div class="glass-card profile-hero">
                 <div class="profile-avatar-large">
                     <span id="pInitials">BM</span>
@@ -391,7 +384,6 @@
                 </div>
             </div>
 
-            <!-- REFERRAL LINK CARD -->
             <div class="glass-card">
                 <div class="card-title-sm" style="margin-bottom:10px;">Link Yako ya Kipekee ya Mwaliko</div>
                 <p style="font-size:11px; color:var(--text-muted); margin:0 0 12px 0;">Mtumie mwanachama mpya link hii ajiunge chini ya akaunti yako:</p>
@@ -401,7 +393,6 @@
                 </div>
             </div>
 
-            <!-- PERSONAL & FINTECH DETAILS CARD -->
             <div class="glass-card">
                 <div class="card-title-sm" style="margin-bottom:14px;">Taarifa za Kibinafsi na Mfumo</div>
                 <div class="data-row">
@@ -422,7 +413,6 @@
                 </div>
             </div>
 
-            <!-- LOGOUT BUTTON -->
             <div class="glass-card" style="padding:14px;">
                 <button onclick="handleLogout()" style="width:100%; padding:15px; border-radius:18px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); color:#f87171; font-weight:800; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; gap:8px;">
                     🚪 Toka Kwenye Akaunti (Logout)
@@ -431,7 +421,7 @@
         </div>
     </div>
 
-    <!-- POP-UP YA MALIPO (REAL BRAND LOGOS - AZAM PESA REMOVED) -->
+    <!-- POP-UP YA MALIPO (WITH OFFICIAL BRAND LOGOS) -->
     <div class="modal-overlay" id="payModal">
         <div class="modal-card">
             <span class="modal-close" onclick="closePayModal()">✕</span>
@@ -442,12 +432,10 @@
                 <p style="font-size:12px; color:var(--text-muted); margin:0;">Kiasi cha Mchango wa Leo: <b style="color:#10b981;">TSh 2,000</b></p>
             </div>
 
-            <!-- 5 REAL BRAND PAYMENT METHODS (AZAMPESA REMOVED) -->
             <div class="method-grid">
-                <!-- MIX BY YAS -->
                 <div class="method-card selected" onclick="selectMethod(this, 'Mix by Yas')">
-                    <div class="brand-logo-icon logo-mix">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><rect x="2" y="5" width="20" height="14" rx="3"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                    <div class="official-logo-box bg-mix">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
                     </div>
                     <div style="text-align:left;">
                         <div style="font-size:12px; font-weight:900; color:#fff;">Mix by Yas</div>
@@ -455,10 +443,9 @@
                     </div>
                 </div>
 
-                <!-- VODACOM M-PESA -->
                 <div class="method-card" onclick="selectMethod(this, 'M-Pesa')">
-                    <div class="brand-logo-icon logo-mpesa">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v8M8 12h8"></path></svg>
+                    <div class="official-logo-box bg-mpesa">
+                        <span style="font-size:13px; font-weight:900; letter-spacing:-0.5px;">M</span>
                     </div>
                     <div style="text-align:left;">
                         <div style="font-size:12px; font-weight:900; color:#fff;">M-Pesa</div>
@@ -466,10 +453,9 @@
                     </div>
                 </div>
 
-                <!-- AIRTEL MONEY -->
                 <div class="method-card" onclick="selectMethod(this, 'Airtel')">
-                    <div class="brand-logo-icon logo-airtel">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+                    <div class="official-logo-box bg-airtel">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
                     </div>
                     <div style="text-align:left;">
                         <div style="font-size:12px; font-weight:900; color:#fff;">Airtel Money</div>
@@ -477,10 +463,9 @@
                     </div>
                 </div>
 
-                <!-- TIGO PESA -->
                 <div class="method-card" onclick="selectMethod(this, 'Tigo Pesa')">
-                    <div class="brand-logo-icon logo-tigo">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="3"></circle></svg>
+                    <div class="official-logo-box bg-tigo">
+                        <span style="font-size:11px; font-weight:900; color:#FFC72C;">tigo</span>
                     </div>
                     <div style="text-align:left;">
                         <div style="font-size:12px; font-weight:900; color:#fff;">Tigo Pesa</div>
@@ -488,10 +473,9 @@
                     </div>
                 </div>
 
-                <!-- HALOPESA -->
                 <div class="method-card" onclick="selectMethod(this, 'HaloPesa')" style="grid-column: span 2;">
-                    <div class="brand-logo-icon logo-halo">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    <div class="official-logo-box bg-halopesa">
+                        <span style="font-size:12px; font-weight:900; letter-spacing:-0.5px;">halo</span>
                     </div>
                     <div style="text-align:left;">
                         <div style="font-size:12px; font-weight:900; color:#fff;">HaloPesa</div>
