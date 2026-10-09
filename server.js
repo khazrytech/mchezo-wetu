@@ -12,11 +12,12 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// LOGIN API
 app.post('/api/login', async (req, res) => {
     try {
         const { identifier, password } = req.body;
         if (!identifier || !password) {
-            return res.json({ success: false, message: 'Ingiza namba ya simu, jina au no. ya mwanachama na nenosiri.' });
+            return res.json({ success: false, message: 'Ingiza namba ya simu au namba ya mwanachama na nenosiri.' });
         }
 
         const cleanId = identifier.trim().toLowerCase();
@@ -30,19 +31,15 @@ app.post('/api/login', async (req, res) => {
             (u.member_number && u.member_number.trim().toLowerCase() === cleanId)
         );
 
-        if (!user) return res.json({ success: false, message: 'Akaunti hii haijapatikana. Tafadhali jisajili kwanza.' });
-        if (user.password !== password) return res.json({ success: false, message: 'Nenosiri uliloingiza si sahihi.' });
+        if (!user) return res.json({ success: false, message: 'Akaunti hii haijapatikana.' });
+        if (user.password !== password) return res.json({ success: false, message: 'Nenosiri si sahihi.' });
 
         if (user.status === 'banned') {
-            const reason = user.ban_reason ? user.ban_reason : 'Akaunti imefungiwa kabisa na Admin.';
-            return res.json({ success: false, message: `Akaunti yako imefungiwa kabisa (Banned). Sababu: ${reason}` });
+            return res.json({ success: false, message: `Akaunti imefungiwa kabisa. Sababu: ${user.ban_reason || 'Hakuna sababu maalum.'}` });
         }
-
         if (user.status === 'suspended') {
-            const reason = user.ban_reason ? user.ban_reason : 'Akaunti imesimamishwa kwa muda.';
-            return res.json({ success: false, message: `Akaunti yako imesimamishwa kwa muda (Suspended). Sababu: ${reason}` });
+            return res.json({ success: false, message: `Akaunti imesimamishwa kwa muda. Sababu: ${user.ban_reason || 'Hakuna sababu maalum.'}` });
         }
-
         if (user.status !== 'approved') {
             return res.json({ success: false, message: 'Akaunti yako bado inasubiri kuidhinishwa na Admin.' });
         }
@@ -57,7 +54,8 @@ app.post('/api/login', async (req, res) => {
                 memberNumber: user.member_number,
                 role: user.role,
                 status: user.status,
-                banReason: user.ban_reason || ''
+                banReason: user.ban_reason || '',
+                hasPaidToday: user.has_paid_today || false
             }
         });
     } catch (err) {
@@ -65,11 +63,12 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// REGISTER API
 app.post('/api/register', async (req, res) => {
     try {
         const { fullName, phone, email, password } = req.body;
         if (!fullName || !phone || !password) {
-            return res.json({ success: false, message: 'Tafadhali jaza majina, namba ya simu na nenosiri.' });
+            return res.json({ success: false, message: 'Tafadhali jaza taarifa zote.' });
         }
 
         const { data: existing } = await supabase.from('users').select('*').eq('phone', phone.trim());
@@ -87,6 +86,7 @@ app.post('/api/register', async (req, res) => {
             role: 'member',
             status: 'pending',
             ban_reason: '',
+            has_paid_today: false,
             date_registered: new Date().toLocaleDateString('sw-TZ')
         };
 
@@ -99,6 +99,7 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
+// ADMIN USERS FETCH
 app.get('/api/admin/users', async (req, res) => {
     const { data: users, error } = await supabase.from('users').select('*').order('id', { ascending: false });
     if (error) return res.json({ success: false, message: error.message });
@@ -109,45 +110,48 @@ app.get('/api/admin/users', async (req, res) => {
         email: u.email,
         memberNumber: u.member_number,
         role: u.role || 'member',
-        status: u.status,
+        status: u.status || 'approved',
         banReason: u.ban_reason || '',
-        dateRegistered: u.date_registered || 'Leo'
+        hasPaidToday: u.has_paid_today || false
     }));
     res.json({ success: true, users: formatted });
 });
 
+// APPROVE
 app.post('/api/admin/approve', async (req, res) => {
     const { phone } = req.body;
     const { data, error } = await supabase.from('users').update({ status: 'approved', ban_reason: '' }).eq('phone', phone).select();
-    if (error || !data || data.length === 0) return res.json({ success: false, message: 'Imeshindikana kuidhinisha.' });
+    if (error) return res.json({ success: false, message: 'Imeshindikana kuidhinisha: ' + error.message });
     res.json({ success: true, message: 'Mwanachama amethibitishwa kikamilifu!' });
 });
 
+// SUSPEND
 app.post('/api/admin/suspend', async (req, res) => {
     const { phone, reason } = req.body;
-    const reasonText = reason ? reason.trim() : 'Akaunti imesimamishwa kwa muda.';
-    
+    const reasonText = reason ? reason.trim() : 'Kusimamishwa kwa muda na Admin.';
     const { data, error } = await supabase.from('users').update({ status: 'suspended', ban_reason: reasonText }).eq('phone', phone).select();
-    if (error || !data || data.length === 0) return res.json({ success: false, message: 'Imeshindikana kusimamisha mwanachama.' });
-    res.json({ success: true, message: `Mwanachama amesimamishwa kwa muda! Sababu: ${reasonText}` });
+    if (error) return res.json({ success: false, message: 'Imeshindikana: ' + error.message });
+    res.json({ success: true, message: 'Mwanachama amesimamishwa kwa muda!' });
 });
 
+// BAN
 app.post('/api/admin/ban', async (req, res) => {
     const { phone, reason } = req.body;
-    const reasonText = reason ? reason.trim() : 'Akaunti imefungiwa kabisa.';
-    
+    const reasonText = reason ? reason.trim() : 'Kufungiwa kabisa na Admin.';
     const { data, error } = await supabase.from('users').update({ status: 'banned', ban_reason: reasonText }).eq('phone', phone).select();
-    if (error || !data || data.length === 0) return res.json({ success: false, message: 'Imeshindikana kumfungia mwanachama.' });
-    res.json({ success: true, message: `Mwanachama amepigwa ban kabisa! Sababu: ${reasonText}` });
+    if (error) return res.json({ success: false, message: 'Imeshindikana: ' + error.message });
+    res.json({ success: true, message: 'Mwanachama amepigwa ban kabisa!' });
 });
 
+// UNBAN / RESTORE
 app.post('/api/admin/unban', async (req, res) => {
     const { phone } = req.body;
     const { data, error } = await supabase.from('users').update({ status: 'approved', ban_reason: '' }).eq('phone', phone).select();
-    if (error || !data || data.length === 0) return res.json({ success: false, message: 'Imeshindikana kuondoa kifungo.' });
-    res.json({ success: true, message: 'Vikwazo vyote vimeondolewa! Mwanachama yupo huru sasa.' });
+    if (error) return res.json({ success: false, message: 'Imeshindikana: ' + error.message });
+    res.json({ success: true, message: 'Kifungo kimeondolewa kikamilifu!' });
 });
 
+// ANNOUNCEMENTS
 app.get('/api/announcements', async (req, res) => {
     const { data: announcements } = await supabase.from('announcements').select('*').order('id', { ascending: false });
     res.json({ success: true, announcements: announcements || [] });
@@ -155,11 +159,11 @@ app.get('/api/announcements', async (req, res) => {
 
 app.post('/api/announcements', async (req, res) => {
     const { title, message } = req.body;
-    if (!title || !message) return res.json({ success: false, message: 'Kichwa na ujumbe vinahitajika.' });
+    if (!title || !message) return res.json({ success: false, message: 'Jaza kichwa na ujumbe.' });
 
     const newAnn = { title, message, date: new Date().toLocaleDateString('sw-TZ') };
     const { error } = await supabase.from('announcements').insert([newAnn]);
-    if (error) return res.json({ success: false, message: 'Imeshindikana kutuma tangazo.' });
+    if (error) return res.json({ success: false, message: 'Imeshindikana kutuma.' });
 
     res.json({ success: true, message: 'Tangazo limetumwa kwa wanachama wote!' });
 });
