@@ -6,386 +6,163 @@
     <title>Mchezo Wetu - Fintech Platform</title>
     <style>
         :root {
-            --bg-deep: #030712;
+            --bg-deep: #060913;
             --card-glass: rgba(15, 23, 42, 0.85);
             --border-glass: rgba(255, 255, 255, 0.12);
             --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.4);
             --accent: #10b981;
+            --warning: #f59e0b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(25px) scale(0.98);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
-            50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.5); }
-            100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
-        }
-
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background: radial-gradient(circle at 50% -20%, #1e3a8a 0%, var(--bg-deep) 70%);
             color: var(--text-main);
             margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 20px;
             min-height: 100vh;
-            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
         }
-
         .container {
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
+        }
+        .card {
             background: var(--card-glass);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-glass);
-            padding: 36px 28px;
-            border-radius: 28px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            margin: 16px;
-            box-sizing: border-box;
-            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .brand-header {
+            padding: 30px 24px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
             text-align: center;
-            margin-bottom: 24px;
         }
-
-        .brand-header h1 {
-            font-size: 26px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 0 0 8px 0;
-            letter-spacing: -0.5px;
-        }
-
-        .welcome-banner {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.25);
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-size: 13px;
-            color: #34d399;
-            text-align: center;
-            margin-bottom: 20px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .tabs {
-            display: flex;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 5px;
-            border-radius: 14px;
-            margin-bottom: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            background: none;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-muted);
-            cursor: pointer;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .tab-btn.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 15px var(--primary-glow);
-            transform: scale(1.02);
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 12px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-        }
-
-        input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1.5px solid var(--border-glass);
-            border-radius: 14px;
-            font-size: 14px;
-            box-sizing: border-box;
-            background: rgba(255, 255, 255, 0.04);
-            color: var(--text-main);
-            transition: all 0.3s ease;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 0 4px var(--primary-glow);
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
-            border: none;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
-            animation: pulseGlow 3s infinite;
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(59, 130, 246, 0.6);
-        }
-
-        .alert {
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 18px;
-            font-size: 13px;
-            text-align: center;
-            font-weight: 600;
-            animation: fadeInUp 0.3s ease;
-        }
-        .alert-error { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
-        .alert-success { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-
-        /* Pending Screen */
-        .pending-box {
-            text-align: center;
-            padding: 10px 0;
-            animation: fadeInUp 0.5s ease;
-        }
-        .pending-icon {
-            width: 72px;
-            height: 72px;
-            background: rgba(245, 158, 11, 0.15);
-            color: #fbbf24;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin: 0 auto 20px auto;
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.2);
-        }
-
-        /* Profile View */
-        .profile-view {
-            text-align: center;
-            animation: fadeInUp 0.5s ease;
-        }
-        .avatar {
-            width: 76px;
-            height: 76px;
-            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 800;
-            margin: 0 auto 14px auto;
-            box-shadow: 0 8px 20px var(--primary-glow);
-        }
-        .verified-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            padding: 6px 14px;
+        .icon-box {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 18px auto;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
         }
-        .member-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px dashed var(--border-glass);
-            padding: 16px;
-            border-radius: 16px;
-            margin: 20px 0;
+        .icon-pending { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); color: #fbbf24; }
+        .icon-success { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; }
+        
+        h2 { font-size: 20px; margin: 0 0 10px 0; font-weight: 800; color: #fff; }
+        p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin: 0 0 20px 0; }
+        
+        .form-group { text-align: left; margin-bottom: 16px; }
+        label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
+        input {
+            width: 100%; padding: 12px 14px; background: rgba(255,255,255,0.04);
+            border: 1.5px solid var(--border-glass); border-radius: 12px;
+            color: var(--text-main); font-size: 14px; box-sizing: border-box;
         }
-        .btn-logout {
-            background: rgba(239, 68, 68, 0.15);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            box-shadow: none;
-            margin-top: 10px;
+        input:focus { outline: none; border-color: var(--primary); }
+        
+        .btn {
+            width: 100%; padding: 13px; background: var(--primary); color: white;
+            border: none; border-radius: 12px; font-size: 14px; font-weight: 700;
+            cursor: pointer; transition: all 0.2s; margin-top: 6px;
         }
-        .btn-logout:hover {
-            background: rgba(239, 68, 68, 0.25);
-            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        .btn:hover { opacity: 0.9; }
+        .btn-secondary { background: rgba(255,255,255,0.06); color: var(--text-muted); border: 1px solid var(--border-glass); }
+        
+        .badge-status {
+            display: inline-block; padding: 6px 14px; border-radius: 20px;
+            font-size: 12px; font-weight: 700; margin-bottom: 20px;
         }
+        .badge-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-approved { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
     </style>
 </head>
 <body>
     <div class="container">
-        
-        <!-- HEADER & TABS -->
-        <div id="authHeader">
-            <div class="brand-header">
-                <h1>Mchezo Wetu</h1>
-                <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Mfumo wa Kikundi cha Kifedha</p>
-            </div>
-            
-            <div class="welcome-banner" id="welcomeBanner">
-                ✨ Karibu sana kwenye familia yetu!
-            </div>
-
-            <div class="tabs">
-                <button class="tab-btn active" id="tabLoginBtn" onclick="switchTab('login')">Ingia</button>
-                <button class="tab-btn" id="tabSignupBtn" onclick="switchTab('signup')">Jisajili</button>
-            </div>
-        </div>
-
-        <!-- LOGIN FORM -->
-        <div id="loginSection">
-            <div id="loginMsg"></div>
+        <!-- 1. LOGIN VIEW -->
+        <div id="loginView" class="card">
+            <div class="icon-box icon-success">🛡️</div>
+            <h2>Mchezo Wetu</h2>
+            <p>Ingia kwenye mfumo wa kifedha wa kikundi</p>
             <form onsubmit="handleLogin(event)">
                 <div class="form-group">
-                    <label>Simu, Jina, au Namba ya Mwanachama</label>
-                    <input type="text" id="loginIdentifier" required placeholder="Mf. 0712345678 au Juma Ally">
+                    <label>Namba ya Simu / Jina / No. ya Mwanachama</label>
+                    <input type="text" id="loginId" required placeholder="Ingiza hapa...">
                 </div>
                 <div class="form-group">
-                    <label>Neno la Siri (Password)</label>
-                    <input type="password" id="loginPassword" required placeholder="Weka password yako">
+                    <label>Password</label>
+                    <input type="password" id="loginPass" required placeholder="Neno la siri">
                 </div>
-                <button type="submit" class="btn-submit">Ingia Kwenye Mfumo</button>
+                <button type="submit" class="btn">Ingia Kwenye Akaunti</button>
             </form>
+            <div style="margin-top: 16px; font-size: 13px;">
+                Huna akaunti? <a href="#" onclick="showView('registerView')" style="color: var(--primary); text-decoration: none; font-weight: 700;">Jisajili Hapa</a>
+            </div>
+            <div style="margin-top: 12px; font-size: 12px;">
+                <a href="/admin.html" style="color: var(--text-muted); text-decoration: none;">Jopo la Utawala (Admin)</a>
+            </div>
         </div>
 
-        <!-- SIGNUP FORM -->
-        <div id="signupSection" style="display: none;">
-            <div id="signupMsg"></div>
+        <!-- 2. REGISTER VIEW -->
+        <div id="registerView" class="card" style="display: none;">
+            <div class="icon-box icon-success">📝</div>
+            <h2>Jisajili Sasa</h2>
+            <p>Jaza taarifa zako ili kujiunga na Mchezo Wetu</p>
             <form onsubmit="handleRegister(event)">
                 <div class="form-group">
                     <label>Jina Kamili</label>
-                    <input type="text" id="regName" required placeholder="Mf. Juma Ally">
+                    <input type="text" id="regName" required placeholder="Jina lako kamili">
                 </div>
                 <div class="form-group">
                     <label>Namba ya Simu</label>
                     <input type="tel" id="regPhone" required placeholder="07xxxxxxxx">
                 </div>
                 <div class="form-group">
-                    <label>Barua Pepe (Hiari)</label>
-                    <input type="email" id="regEmail" placeholder="juma@example.com">
+                    <label>Barua Pepe (Si lazima)</label>
+                    <input type="email" id="regEmail" placeholder="mfano@email.com">
                 </div>
                 <div class="form-group">
-                    <label>Neno la Siri (Password)</label>
-                    <input type="password" id="regPassword" required placeholder="Weka password imara">
+                    <label>Password</label>
+                    <input type="password" id="regPass" required placeholder="Neno la siri">
                 </div>
-                <button type="submit" class="btn-submit">Tuma Ombi la Kujiunga</button>
+                <button type="submit" class="btn">Wasilisha Ombi</button>
+                <button type="button" class="btn btn-secondary" onclick="showView('loginView')">Rudi Ukurasa wa Kuingia</button>
             </form>
         </div>
 
-        <!-- PENDING APPROVAL SCREEN -->
-        <div id="pendingSection" style="display: none;" class="pending-box">
-            <div class="pending-icon">⏳</div>
-            <h2 style="font-size: 20px; margin-bottom: 8px; color: var(--text-main);">Ombi Limeshapokelewa!</h2>
-            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px;">
-                Asante sana kwa kujiunga nasi! Ombi lako limetumwa kwa Msimamizi. Tafadhali subiri kwa muda mfupi upate uthibitisho (approval) ili uanze kutumia mfumo.
-            </p>
-            <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass); padding: 12px; border-radius: 12px; font-size: 13px; margin-bottom: 20px;">
-                Hali ya Ombi: <strong style="color: #fbbf24;">Inasubiri Idhini (Pending)</strong>
+        <!-- 3. PENDING / APPROVED NOTICE VIEW -->
+        <div id="pendingView" class="card" style="display: none;">
+            <div id="noticeIcon" class="icon-box icon-pending">⏳</div>
+            <h2 id="noticeTitle">Ombi Limeshapokelewa!</h2>
+            <p id="noticeDesc">Asante sana kujiunga nasi! Ombi lako limetumwa kwa Msimamizi. Tafadhali subiri kwa muda mfupi upate uthibitisho (approval) ili uanze kutumia mfumo.</p>
+            
+            <div id="statusBadgeContainer">
+                <div class="badge-status badge-pending">Hali ya Ombi: Inasubiri Idhini (Pending)</div>
             </div>
-            <button class="btn-submit" onclick="resetToLogin()" style="background: rgba(255,255,255,0.1); box-shadow: none;">Rudi Ukurasa wa Kuingia</button>
+
+            <div id="memberNumBox" style="display: none; margin-bottom: 16px; font-size: 14px; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid var(--border-glass);">
+                <strong>Namba ya Mwanachama:</strong> <span id="displayMemberNum" style="color: #60a5fa; font-weight: bold;"></span>
+            </div>
+
+            <button id="noticeBtn" class="btn btn-secondary" onclick="showView('loginView')">Rudi Ukurasa wa Kuingia</button>
         </div>
-
-        <!-- PROFILE SECTION -->
-        <div id="profileSection" style="display: none;" class="profile-view">
-            <div class="avatar" id="userAvatar">MW</div>
-            <h2 id="profName" style="margin: 0 0 4px 0; font-size: 20px;">Jina</h2>
-            <div>
-                <span class="verified-badge">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#34d399"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                    Verified Member
-                </span>
-            </div>
-
-            <div class="member-card">
-                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">Namba ya Uanachama Rasmi</span><br>
-                <span id="profMemberNumber" style="font-size: 22px; color: #60a5fa; font-weight: 800; display: block; margin-top: 4px;"></span>
-            </div>
-
-            <div style="text-align: left; font-size: 13px; background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass); padding: 14px; border-radius: 14px; margin-bottom: 16px;">
-                <p style="margin: 6px 0; color: var(--text-muted);">Simu: <strong id="profPhone" style="color: var(--text-main);"></strong></p>
-                <p style="margin: 6px 0; color: var(--text-muted);">Hali ya Akaunti: <strong style="color: #34d399;">Imethibitishwa (Active)</strong></p>
-            </div>
-
-            <button class="btn-submit btn-logout" onclick="handleLogout()">Ondoka (Logout)</button>
-        </div>
-
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedUser = localStorage.getItem('mchezo_user');
-            if (savedUser) {
-                showProfile(JSON.parse(savedUser));
-            }
-        });
+        let pollingInterval = null;
+        let registeredPhone = '';
 
-        function switchTab(tab) {
-            const loginSec = document.getElementById('loginSection');
-            const signupSec = document.getElementById('signupSection');
-            const loginBtn = document.getElementById('tabLoginBtn');
-            const signupBtn = document.getElementById('tabSignupBtn');
-            const banner = document.getElementById('welcomeBanner');
-
-            if (tab === 'login') {
-                loginSec.style.display = 'block';
-                signupSec.style.display = 'none';
-                loginBtn.classList.add('active');
-                signupBtn.classList.remove('active');
-                banner.innerHTML = "👋 Karibu tena kwenye akaunti yako!";
-            } else {
-                loginSec.style.display = 'none';
-                signupSec.style.display = 'block';
-                signupBtn.classList.add('active');
-                loginBtn.classList.remove('active');
-                banner.innerHTML = "🚀 Jiunge sasa ujenge maisha ya kifedha nasi!";
+        function showView(viewId) {
+            document.getElementById('loginView').style.display = viewId === 'loginView' ? 'block' : 'none';
+            document.getElementById('registerView').style.display = viewId === 'registerView' ? 'block' : 'none';
+            document.getElementById('pendingView').style.display = viewId === 'pendingView' ? 'block' : 'none';
+            
+            if (viewId !== 'pendingView' && pollingInterval) {
+                clearInterval(pollingInterval);
             }
         }
 
@@ -394,8 +171,7 @@
             const fullName = document.getElementById('regName').value;
             const phone = document.getElementById('regPhone').value;
             const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            const msgBox = document.getElementById('signupMsg');
+            const password = document.getElementById('regPass').value;
 
             try {
                 const res = await fetch('/api/register', {
@@ -404,26 +180,59 @@
                     body: JSON.stringify({ fullName, phone, email, password })
                 });
                 const data = await res.json();
-
                 if (data.success) {
-                    document.getElementById('authHeader').style.display = 'none';
-                    document.getElementById('signupSection').style.display = 'none';
-                    document.getElementById('pendingSection').style.display = 'block';
+                    registeredPhone = phone;
+                    showView('pendingView');
+                    startStatusPolling(phone);
                 } else {
-                    msgBox.className = 'alert alert-error';
-                    msgBox.innerText = data.message;
+                    alert(data.message);
                 }
             } catch (err) {
-                msgBox.className = 'alert alert-error';
-                msgBox.innerText = 'Hitilafu ya mtandao.';
+                alert('Hitilafu ya mtandao.');
             }
+        }
+
+        function startStatusPolling(phone) {
+            if (pollingInterval) clearInterval(pollingInterval);
+            
+            pollingInterval = setInterval(async () => {
+                try {
+                    const res = await fetch('/api/check-status', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ phone })
+                    });
+                    const data = await res.json();
+                    
+                    if (data.success && data.status === 'approved') {
+                        clearInterval(pollingInterval);
+                        
+                        // Transform to Success Approved View
+                        document.getElementById('noticeIcon').className = 'icon-box icon-success';
+                        document.getElementById('noticeIcon').innerText = '✓';
+                        document.getElementById('noticeTitle').innerText = 'Umekubaliwa!';
+                        document.getElementById('noticeDesc').innerText = `Hongera sana ${data.fullName}! Ombi lako limethibitishwa na Msimamizi. Sasa unaweza kuingia kwenye akaunti yako.`;
+                        
+                        document.getElementById('statusBadgeContainer').innerHTML = `<div class="badge-status badge-approved">✓ Umekubaliwa (Approved)</div>`;
+                        
+                        document.getElementById('displayMemberNum').innerText = data.memberNumber;
+                        document.getElementById('memberNumBox').style.display = 'block';
+                        
+                        const btn = document.getElementById('noticeBtn');
+                        btn.className = 'btn';
+                        btn.innerText = 'Ingia Kwenye Akaunti Yako';
+                        btn.onclick = () => showView('loginView');
+                    }
+                } catch (err) {
+                    console.error('Polling error:', err);
+                }
+            }, 3000); // Check kila baada ya sekunde 3
         }
 
         async function handleLogin(e) {
             e.preventDefault();
-            const identifier = document.getElementById('loginIdentifier').value;
-            const password = document.getElementById('loginPassword').value;
-            const msgBox = document.getElementById('loginMsg');
+            const identifier = document.getElementById('loginId').value;
+            const password = document.getElementById('loginPass').value;
 
             try {
                 const res = await fetch('/api/login', {
@@ -432,44 +241,22 @@
                     body: JSON.stringify({ identifier, password })
                 });
                 const data = await res.json();
-
+                
                 if (data.success) {
-                    localStorage.setItem('mchezo_user', JSON.stringify(data.user));
-                    showProfile(data.user);
+                    alert(data.message);
+                    // Hapa utaelekezwa kwenye dashboard ya mwanachama
+                    window.location.href = '/dashboard.html'; 
+                } else if (data.pending) {
+                    alert(data.message);
+                    registeredPhone = identifier;
+                    showView('pendingView');
+                    startStatusPolling(identifier);
                 } else {
-                    msgBox.className = 'alert alert-error';
-                    msgBox.innerText = data.message;
+                    alert(data.message);
                 }
             } catch (err) {
-                msgBox.className = 'alert alert-error';
-                msgBox.innerText = 'Hitilafu imetokea wakati wa kuingia.';
+                alert('Hitilafu ya mtandao.');
             }
-        }
-
-        function resetToLogin() {
-            document.getElementById('pendingSection').style.display = 'none';
-            document.getElementById('authHeader').style.display = 'block';
-            switchTab('login');
-        }
-
-        function showProfile(user) {
-            document.getElementById('authHeader').style.display = 'none';
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('signupSection').style.display = 'none';
-            document.getElementById('pendingSection').style.display = 'none';
-            document.getElementById('profileSection').style.display = 'block';
-
-            document.getElementById('profName').innerText = user.fullName;
-            document.getElementById('profPhone').innerText = user.phone;
-            document.getElementById('profMemberNumber').innerText = user.memberNumber;
-            
-            const initials = user.fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            document.getElementById('userAvatar').innerText = initials;
-        }
-
-        function handleLogout() {
-            localStorage.removeItem('mchezo_user');
-            location.reload();
         }
     </script>
 </body>

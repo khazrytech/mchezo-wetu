@@ -48,17 +48,27 @@ app.post('/api/register', (req, res) => {
     res.json({ success: true, message: 'Ombi lako limetumwa kwa mafanikio!', user: newUser });
 });
 
-// 2. Admin kupata data zote
-app.get('/api/admin/data', (req, res) => {
+// 2. Kuangalia hali ya ombi (Status Check) kwa ajili ya Live Update kwenye Pending Screen
+app.post('/api/check-status', (req, res) => {
+    const { phone } = req.body;
+    const user = users.find(u => u.phone === phone);
+    if (!user) {
+        return res.status(404).json({ success: false, message: 'Mtumiaji hajapatikana.' });
+    }
     res.json({
-        users,
-        transactions,
-        announcements,
-        groupStats
+        success: true,
+        status: user.status,
+        memberNumber: user.memberNumber,
+        fullName: user.fullName
     });
 });
 
-// 3. Admin ku-approve mwanachama
+// 3. Admin kupata data zote
+app.get('/api/admin/data', (req, res) => {
+    res.json({ users, transactions, announcements, groupStats });
+});
+
+// 4. Admin ku-approve mwanachama
 app.post('/api/admin/approve/:id', (req, res) => {
     const user = users.find(u => u.id === req.params.id);
     if (!user) return res.status(404).json({ success: false, message: 'Mwanachama hajapatikana.' });
@@ -66,54 +76,33 @@ app.post('/api/admin/approve/:id', (req, res) => {
     user.status = 'approved';
     const randomNum = Math.floor(1000 + Math.random() * 9000);
     user.memberNumber = `MW-${new Date().getFullYear()}-${randomNum}`;
-    res.json({ success: true, message: 'Mwanachama amekubaliwa kikamilifu!' });
+    res.json({ success: true, message: 'Mwanachama amekubaliwa kikamilifu!', user });
 });
 
-// 4. Admin ku-reject / kufuta ombi
+// 5. Admin ku-reject / kufuta ombi
 app.post('/api/admin/reject/:id', (req, res) => {
     const index = users.findIndex(u => u.id === req.params.id);
     if (index === -1) return res.status(404).json({ success: false, message: 'Ombi halijapatikana.' });
 
     users.splice(index, 1);
-    res.json({ success: true, message: 'Ombi limekataliwa na kufutwa.' });
+    res.json({ success: true, message: 'Ombi limeondolewa.' });
 });
 
-// 5. Admin kusimamisha (Suspend) au Kuruhusu (Unsuspend) mwanachama
+// 6. Admin kusimamisha (Suspend) au Kuruhusu (Unsuspend)
 app.post('/api/admin/suspend/:id', (req, res) => {
     const user = users.find(u => u.id === req.params.id);
     if (!user) return res.status(404).json({ success: false, message: 'Mwanachama hajapatikana.' });
 
     if (user.status === 'suspended') {
         user.status = 'approved';
-        res.json({ success: true, message: 'Mwanachama amerejeshwa kwenye mfumo (Unsuspended)!' });
+        res.json({ success: true, message: 'Mwanachama amerejeshwa!' });
     } else {
         user.status = 'suspended';
-        res.json({ success: true, message: 'Mwanachama amesimamishwa kwa muda (Suspended)!' });
+        res.json({ success: true, message: 'Mwanachama amesimamishwa!' });
     }
 });
 
-// 6. Admin kuongeza Miamala
-app.post('/api/admin/transaction', (req, res) => {
-    const { type, amount, member } = req.body;
-    if (!type || !amount || !member) return res.status(400).json({ success: false, message: 'Jaza taarifa zote.' });
-    
-    const num = parseFloat(amount);
-    transactions.unshift({ id: Date.now(), type, amount: num, member, date: new Date().toISOString().split('T')[0] });
-    groupStats.balance += num;
-    groupStats.total += num;
-    res.json({ success: true, message: 'Muamala umehifadhiwa!' });
-});
-
-// 7. Admin kutuma Tangazo
-app.post('/api/admin/announcement', (req, res) => {
-    const { title, message } = req.body;
-    if (!title || !message) return res.status(400).json({ success: false, message: 'Jaza kichwa na ujumbe.' });
-    
-    announcements.unshift({ id: Date.now(), title, message, date: new Date().toISOString().split('T')[0] });
-    res.json({ success: true, message: 'Tangazo limetumwa!' });
-});
-
-// 8. Login ya Mwanachama
+// 7. Login ya Mwanachama
 app.post('/api/login', (req, res) => {
     const { identifier, password } = req.body;
     if (!identifier || !password) return res.status(400).json({ success: false, message: 'Jaza taarifa zote.' });
@@ -126,17 +115,17 @@ app.post('/api/login', (req, res) => {
         return match && u.password === password;
     });
 
-    if (!user) return res.status(400).json({ success: false, message: 'Taarifa si sahihi.' });
+    if (!user) return res.status(400).json({ success: false, message: 'Taarifa si sahihi. Angalia namba, jina au password.' });
 
     if (user.status === 'suspended') {
-        return res.status(403).json({ success: false, message: 'Akaunti yako imesimamishwa kwa muda na Msimamizi. Wasiliana na uongozi.' });
+        return res.status(403).json({ success: false, message: 'Akaunti yako imesimamishwa kwa muda na Msimamizi.' });
     }
 
     if (user.status !== 'approved') {
-        return res.status(403).json({ success: false, pending: true, message: 'Akaunti yako inasubiri idhini.' });
+        return res.status(403).json({ success: false, pending: true, message: 'Akaunti yako bado inasubiri idhini.' });
     }
 
-    res.json({ success: true, message: 'Umeingia kikamilifu!', user });
+    res.json({ success: true, message: 'Umeingia kwa mafanikio!', user });
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
