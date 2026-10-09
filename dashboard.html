@@ -318,16 +318,6 @@
                     <span class="badge-tag badge-success">Imefanikiwa</span>
                 </div>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px;">
-                <div>
-                    <div style="font-size: 13px; font-weight: 700;">Mchango wa Jana</div>
-                    <div style="font-size: 11px; color: var(--text-muted);">08 Oktoba 2026</div>
-                </div>
-                <div style="text-align: right;">
-                    <div style="font-size: 14px; font-weight: 800; color: var(--accent);">+TSh 2,000</div>
-                    <span class="badge-tag badge-success">Imefanikiwa</span>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -342,7 +332,7 @@
         </div>
     </div>
 
-    <!-- PROFILE VIEW & UNIQUE LINK -->
+    <!-- PROFILE VIEW -->
     <div id="profileView" class="tab-view" style="display: none;">
         <div class="card-main" style="text-align: center; padding: 24px 20px;">
             <div id="profileAvatar" class="avatar" style="width: 70px; height: 70px; font-size: 26px; margin: 0 auto 14px auto;">J</div>
@@ -384,25 +374,31 @@
             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Kiasi cha kulipa leo: <strong style="color: #fff;">TSh 2,000</strong></p>
             
             <div class="network-grid">
-                <div class="network-option" onclick="selectNetwork('M-Pesa', '🔴 Vodacom M-Pesa')">
-                    <div style="font-size: 20px;">🔴</div>
-                    <div style="font-size: 12px; font-weight: 700; margin-top: 6px; color: #fff;">M-Pesa</div>
+                <div class="network-option" onclick="selectNetwork('M-Pesa', 'Vodacom M-Pesa')">
+                    <div style="background: rgba(239, 68, 68, 0.2); color: #ef4444; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; margin: 0 auto 6px auto;">M</div>
+                    <div style="font-size: 12px; font-weight: 700; color: #fff;">M-Pesa</div>
                 </div>
-                <div class="network-option" onclick="selectNetwork('Tigo Pesa', '🔵 Tigo Pesa')">
-                    <div style="font-size: 20px;">🔵</div>
-                    <div style="font-size: 12px; font-weight: 700; margin-top: 6px; color: #fff;">Tigo Pesa</div>
+                <div class="network-option" onclick="selectNetwork('Tigo Pesa', 'Tigo Pesa')">
+                    <div style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; margin: 0 auto 6px auto;">T</div>
+                    <div style="font-size: 12px; font-weight: 700; color: #fff;">Tigo Pesa</div>
                 </div>
-                <div class="network-option" onclick="selectNetwork('Airtel Money', '🟡 Airtel Money')">
-                    <div style="font-size: 20px;">🟡</div>
-                    <div style="font-size: 12px; font-weight: 700; margin-top: 6px; color: #fff;">Airtel Money</div>
+                <div class="network-option" onclick="selectNetwork('Airtel Money', 'Airtel Money')">
+                    <div style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; margin: 0 auto 6px auto;">A</div>
+                    <div style="font-size: 12px; font-weight: 700; color: #fff;">Airtel Money</div>
                 </div>
-                <div class="network-option" onclick="selectNetwork('HaloPesa', '🟢 HaloPesa')">
-                    <div style="font-size: 20px;">🟢</div>
-                    <div style="font-size: 12px; font-weight: 700; margin-top: 6px; color: #fff;">HaloPesa</div>
+                <div class="network-option" onclick="selectNetwork('HaloPesa', 'HaloPesa')">
+                    <div style="background: rgba(16, 185, 129, 0.2); color: #10b981; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; margin: 0 auto 6px auto;">H</div>
+                    <div style="font-size: 12px; font-weight: 700; color: #fff;">HaloPesa</div>
                 </div>
             </div>
 
-            <button class="btn-action" onclick="processPayment()">Thibitisha Malipo</button>
+            <!-- SEHEMU YA KWEKA NAMBA YA SIMU BAADA YA KUCHAGUA MTANDAO -->
+            <div id="phoneInputContainer" style="display: none; margin-top: 14px; text-align: left;">
+                <label id="phoneInputLabel" style="display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">Weka Namba ya Simu</label>
+                <input type="tel" id="paymentPhone" placeholder="07xxxxxxxx" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.04); border: 1.5px solid var(--border-glass); border-radius: 12px; color: #fff; font-size: 14px; box-sizing: border-box;">
+            </div>
+
+            <button class="btn-action" onclick="processPayment()" style="margin-top: 16px;">Thibitisha Malipo</button>
         </div>
     </div>
 
@@ -436,9 +432,10 @@
     </div>
 
     <script>
-        function showToast(message) {
+        function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
-            toast.innerHTML = `✅ ${message}`;
+            toast.style.borderColor = isError ? 'rgba(239, 68, 68, 0.4)' : 'rgba(255, 255, 255, 0.2)';
+            toast.innerHTML = `${isError ? '⚠️' : '✅'} ${message}`;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
@@ -463,25 +460,46 @@
         }
 
         let selectedNet = '';
+        let selectedNetName = '';
+
         function openPaymentModal() {
+            selectedNet = '';
+            selectedNetName = '';
             document.getElementById('paymentModal').style.display = 'flex';
+            document.getElementById('phoneInputContainer').style.display = 'none';
+            document.getElementById('paymentPhone').value = '';
+            document.querySelectorAll('.network-option').forEach(el => el.classList.remove('selected'));
         }
+
         function closePaymentModal() {
             document.getElementById('paymentModal').style.display = 'none';
         }
-        function selectNetwork(net, name) {
-            selectedNet = net;
+
+        function selectNetwork(netCode, netName) {
+            selectedNet = netCode;
+            selectedNetName = netName;
             document.querySelectorAll('.network-option').forEach(el => el.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
-            showToast(`Umechagua ${name}`);
+            
+            const phoneContainer = document.getElementById('phoneInputContainer');
+            const phoneLabel = document.getElementById('phoneInputLabel');
+            phoneContainer.style.display = 'block';
+            phoneLabel.innerText = `Weka Namba ya ${netName} (07xxxxxxxx)`;
+            document.getElementById('paymentPhone').focus();
         }
+
         function processPayment() {
             if (!selectedNet) {
-                showToast('Tafadhali chagua mtandao kwanza!');
+                showToast('Tafadhali chagua mtandao wa malipo kwanza!', true);
+                return;
+            }
+            const phoneVal = document.getElementById('paymentPhone').value.trim();
+            if (!phoneVal || phoneVal.length < 10) {
+                showToast(`Weka namba sahihi ya simu ya ${selectedNetName}!`, true);
                 return;
             }
             closePaymentModal();
-            showToast(`Ombi la TSh 2,000 limetumwa kupitia ${selectedNet}. Weka neno la siri.`);
+            showToast(`Ombi la TSh 2,000 limetumwa kwenye namba ${phoneVal} kupitia ${selectedNetName}. Weka neno la siri.`);
         }
 
         async function openNotifications() {
