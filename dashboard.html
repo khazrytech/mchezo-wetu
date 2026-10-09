@@ -2118,6 +2118,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
+
 <!-- START FIMIPAY MODAL -->
 <style>
 @keyframes fadeInOverlay { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
@@ -2137,7 +2138,7 @@ function openFimiPayModal() {
     modal.innerHTML = `
         <div style="background:rgba(15,23,42,0.98); border:1px solid rgba(255,255,255,0.15); border-radius:28px; padding:20px; width:100%; max-width:420px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.9); font-family:inherit; max-height:92vh; overflow-y:auto; position:relative;">
             
-            <!-- Animated Pro Status Overlay (Inatokea juu kisasa wakati wa malipo) -->
+            <!-- Animated Pro Status Overlay (Inafunika juu kisasa wakati wa malipo) -->
             <div id="proStatusOverlay" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.98); backdrop-filter:blur(18px); z-index:200; border-radius:28px; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center; animation: fadeInOverlay 0.3s ease-out forwards;">
                 <div id="overlayIcon" style="font-size:50px; margin-bottom:15px; animation: bounceIcon 0.6s infinite alternate;">⏳</div>
                 <h3 id="overlayTitle" style="font-size:18px; font-weight:900; color:#fff; margin:0 0 8px 0;">Inaandaa malipo...</h3>
@@ -2172,21 +2173,22 @@ function openFimiPayModal() {
 
             <!-- Chagua Mtandao -->
             <div style="margin-bottom:16px;">
-                <div style="font-size:12px; font-weight:800; color:#fff; margin-bottom:6px;">Chagua Mtandao</div>
+                <div style="font-size:12px; font-weight:800; color:#fff; margin-bottom:4px;">Chagua Mtandao</div>
+                <div style="font-size:10px; color:#94a3b8; margin-bottom:8px;">Tumia namba yako ya simu ya mtandao uliyopo</div>
                 <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px;" id="networkSelector">
-                    <div onclick="selectNetwork('mpesa', 'M-Pesa (Vodacom)', this)" class="net-card selected" style="background:rgba(234,179,8,0.12); border:2px solid #eab308; border-radius:14px; padding:10px 4px; text-align:center; cursor:pointer;">
+                    <div onclick="selectNetwork('mpesa', 'M-Pesa (Vodacom)', this)" class="net-card selected" style="background:rgba(234,179,8,0.12); border:2px solid #eab308; border-radius:14px; padding:10px 4px; text-align:center; cursor:pointer; position:relative;">
                         <div style="font-size:11px; font-weight:900; color:#facc15;">M-Pesa</div>
                         <div style="font-size:8px; color:#94a3b8; margin-top:2px;">Vodacom</div>
                     </div>
-                    <div onclick="selectNetwork('airtel', 'Airtel Money', this)" class="net-card" style="background:rgba(255,255,255,0.03); border:2px solid rgba(255,255,255,0.08); border-radius:14px; padding:10px 4px; text-align:center; cursor:pointer;">
+                    <div onclick="selectNetwork('airtel', 'Airtel Money', this)" class="net-card" style="background:rgba(255,255,255,0.03); border:2px solid rgba(255,255,255,0.08); border-radius:14px; padding:10px 4px; text-align:center; cursor:pointer; position:relative;">
                         <div style="font-size:11px; font-weight:900; color:#f87171;">Airtel</div>
                         <div style="font-size:8px; color:#94a3b8; margin-top:2px;">Money</div>
                     </div>
-                    <div onclick="selectNetwork('tigo', 'Tigo Pesa', this)" class="net-card" style="background:rgba(255,255,255,0.03); border:2px solid rgba(255,255,255,0.08); border-radius:14px; padding:10px 4px; text-align:center; cursor:pointer;">
+                    <div onclick="selectNetwork('tigo', 'Tigo Pesa', this)" class="net-card" style="background:rgba(255,255,255,0.03); border:2px solid rgba(255,255,255,0.08); border-radius:14px; padding:10px 4px; text-align:center; cursor:pointer; position:relative;">
                         <div style="font-size:11px; font-weight:900; color:#60a5fa;">Tigo</div>
                         <div style="font-size:8px; color:#94a3b8; margin-top:2px;">Pesa</div>
                     </div>
-                    <div onclick="selectNetwork('halopesa', 'HaloPesa', this)" class="net-card" style="background:rgba(255,255,255,0.03); border:2px solid rgba(255,255,255,0.08); border-radius:14px; padding:10px 4px; text-align:center; cursor:pointer;">
+                    <div onclick="selectNetwork('halopesa', 'HaloPesa', this)" class="net-card" style="background:rgba(255,255,255,0.03); border:2px solid rgba(255,255,255,0.08); border-radius:14px; padding:10px 4px; text-align:center; cursor:pointer; position:relative;">
                         <div style="font-size:11px; font-weight:900; color:#34d399;">Halo</div>
                         <div style="font-size:8px; color:#94a3b8; margin-top:2px;">Pesa</div>
                     </div>
@@ -2195,7 +2197,8 @@ function openFimiPayModal() {
 
             <!-- Namba ya Simu -->
             <div style="margin-bottom:16px;">
-                <div style="font-size:12px; font-weight:800; color:#fff; margin-bottom:6px;">Namba ya simu ya malipo</div>
+                <div style="font-size:12px; font-weight:800; color:#fff; margin-bottom:4px;">Namba ya simu ya malipo</div>
+                <div style="font-size:10px; color:#94a3b8; margin-bottom:8px;">Weka namba yako ya simu (Mf. 07XXXXXXXX)</div>
                 <div style="display:flex; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-radius:14px; overflow:hidden; align-items:center;">
                     <div style="padding:12px 14px; background:rgba(255,255,255,0.04); border-right:1px solid rgba(255,255,255,0.08); color:#cbd5e1; font-weight:700; font-size:13px; display:flex; align-items:center; gap:4px;">
                         +255 <span>▾</span>
@@ -2226,7 +2229,7 @@ function openFimiPayModal() {
             </div>
 
             <!-- Kitufe cha Kulipa -->
-            <button id="fimiPayBtn" onclick="submitEnterprisePayment()" style="width:100%; background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; border-radius:14px; padding:14px; font-weight:900; font-size:14px; cursor:pointer; box-shadow:0 10px 25px -5px rgba(16,185,129,0.5); display:flex; align-items:center; justify-content:center; gap:8px;">
+            <button id="fimiPayBtn" onclick="submitEnterprisePayment()" style="width:100%; background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; border-radius:14px; padding:14px; font-weight:900; font-size:14px; cursor:pointer; box-shadow:0 10px 25px -5px rgba(16,185,129,0.5); display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.3s ease;">
                 <span>🔒</span> Lipa TSh 2,000 Sasa <span>→</span>
             </button>
 
@@ -2359,6 +2362,7 @@ async function submitEnterprisePayment() {
 }
 </script>
 <!-- END FIMIPAY MODAL -->
+
 
 
 </body>
