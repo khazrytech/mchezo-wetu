@@ -17,48 +17,71 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
-// API ya Login inayoshughulikia Jina, Member ID, Phone, au Email
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { identifier, password } = req.body;
         if (!identifier || !password) {
-            return res.status(400).json({ error: 'Jaza taarifa zote.' });
+            return res.status(400).json({ error: 'Tafadhali jaza taarifa zote.' });
         }
 
-        let targetEmail = identifier;
+        let targetEmail = identifier.trim();
 
-        // Kama identifier haina @ (mfano: ni Baraka makoi, member_id, au phone)
-        if (!identifier.includes('@')) {
-            // Tafuta kwenye profiles table
-            const { data: prof, error: profErr } = await supabase
-                .from('profiles')
-                .select('email')
-                .or(`full_name.ilike.%${identifier}%,phone.eq.${identifier},member_id.eq.${identifier}`)
-                .maybeSingle();
-
-            if (prof && prof.email) {
-                targetEmail = prof.email;
-            } else {
-                // Kama haipatikani moja kwa moja, jaribu kama format ya gmail ya zamani
-                targetEmail = identifier.toLowerCase().replace(/\s+/g, '') + '@gmail.com';
-            }
-        }
-
-        // Fanya login Supabase Auth kwa kutumia email tuliyopata
-        const { data, error } = await supabase.auth.signInWithPassword({
+        // 1. Jaribu kuingia na kile kilichoandikwa
+        let authResult = await supabase.auth.signInWithPassword({
             email: targetEmail,
             password: password
         });
 
-        if (error || !data.session) {
-            return res.status(400).json({ error: 'Kuingia kimeshindikana. Angalia jina/email au nenosiri lako.' });
+        // 2. Kama kimeshindikana na si email kamili, tafuta email kupitia profiles au listUsers
+        if (authResult.error) {
+            let matchedEmail = null;
+
+            // Search profiles table
+            const { data: prof } = await supabase
+                .from('profiles')
+                .select('email')
+                .or(`full_name.ilike.%${targetEmail}%,phone.eq.${targetEmail}`)
+                .maybeSingle();
+
+            if (prof && prof.email) {
+                matchedEmail = prof.email;
+            } else {
+                // Search via Supabase Admin Auth API
+                try {
+                    const { data: { users } } = await supabase.auth.admin.listUsers();
+                    if (users) {
+                        const u = users.find(usr => 
+                            usr.email.toLowerCase().includes(targetEmail.toLowerCase()) ||
+                            usr.user_metadata?.full_name?.toLowerCase() === targetEmail.toLowerCase() ||
+                            usr.user_metadata?.phone === targetEmail ||
+                            usr.email.split('@')[0].toLowerCase() === targetEmail.toLowerCase()
+                        );
+                        if (u) matchedEmail = u.email;
+                    }
+                } catch (e) {
+                    console.log("Admin listUsers failed/not supported with anon key");
+                }
+            }
+
+            if (matchedEmail) {
+                authResult = await supabase.auth.signInWithPassword({
+                    email: matchedEmail,
+                    password: password
+                });
+            }
         }
 
-        // Uhakiki wa Approval na Ban
-        const { data: profile } = await supabase
+        if (authResult.error || !authResult.data.session) {
+            return res.status(400).json({ error: 'Kuingia kimeshindikana. Hakiki nenosiri au jina/email yako.' });
+        }
+
+        const user = authResult.data.user;
+
+        // Check Approval and Ban
+        let { data: profile } = await supabase
             .from('profiles')
             .select('*')
-            .eq('id', data.user.id)
+            .eq('id', user.id)
             .single();
 
         if (profile) {
@@ -66,17 +89,16 @@ app.post('/api/auth/login', async (req, res) => {
                 return res.status(403).json({ error: 'Akaunti yako imepigwa marufuku (Banned).' });
             }
             if (!profile.is_approved) {
-                return res.status(403).json({ error: 'Akaunti yako inasubiri idhini (Approval) kutoka kwa Admin.' });
+                return res.status(403).json({ error: 'Akaunti yako inasubiri idhini (Approval) ya Admin.' });
             }
         }
 
-        res.json({ token: data.session.access_token, user: data.user });
+        res.json({ token: authResult.data.session.access_token, user });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// API ya Signup
 app.post('/api/auth/signup', async (req, res) => {
     try {
         const { email, password, fullName, phone } = req.body;
@@ -102,7 +124,6 @@ app.post('/api/auth/signup', async (req, res) => {
     }
 });
 
-// Get Logged In User
 app.get('/api/user/me', async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
@@ -129,39 +150,8 @@ app.get('/api/user/me', async (req, res) => {
     }
 });
 
-// Admin Users List
-app.get('/api/admin/users', async (req, res) => {
-    try {
-        const { data, error } = await supabase.from('profiles').select('*');
-        if (error) throw error;
-        res.json(data);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// Admin Approve/Ban Action
-app.post('/api/admin/action', async (req, res) => {
-    try {
-        const { userId, action } = req.body;
-        let updateData = {};
-        if (action === 'approve') updateData = { is_approved: true };
-        if (action === 'ban') updateData = { is_banned: true };
-        if (action === 'unban') updateData = { is_banned: false };
-
-        const { error } = await supabase.from('profiles').update(updateData).eq('id', userId);
-        if (error) throw error;
-
-        res.json({ success: true, message: `Action ${action} successful.` });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
 
-app.listen(PORT, () => {
-    console.log(`[SERVER RUNNING]: Port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`[SERVER RUNNING]: Port ${PORT}`));
