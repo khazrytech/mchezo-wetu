@@ -45,7 +45,7 @@ app.post('/api/auth/signup-user', async (req, res) => {
     }
 });
 
-// 2. User Login (Kuthibitisha kama kashawekewa OTP na Ameidhinishwa na Admin)
+// 2. User Login
 app.post('/api/auth/login-user', async (req, res) => {
     try {
         const { identifier, password } = req.body;
@@ -79,13 +79,6 @@ app.post('/api/auth/login-user', async (req, res) => {
 
         if (profile?.is_banned) {
             return res.status(403).json({ error: 'Akaunti yako imepigwa marufuku (Banned).' });
-        }
-
-        if (!profile?.is_approved) {
-            return res.status(403).json({ 
-                error: 'Akaunti yako imesajiliwa na OTP imethibitishwa, lakini bado inasubiri idhini (Approval) ya Admin.',
-                pendingApproval: true 
-            });
         }
 
         res.json({ token: authResult.data.session.access_token });
@@ -198,8 +191,9 @@ app.get('/api/user/me', async (req, res) => {
     }
 });
 
+// Kurasa (Routes)
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
-app.get('/admin-login?v=2.0', (req, res) => res.sendFile(path.join(__dirname, 'admin-login.html')));
+app.get('/admin-login', (req, res) => res.sendFile(path.join(__dirname, 'admin-login.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
 
