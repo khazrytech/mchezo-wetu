@@ -3,184 +3,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mchezo Wetu - Portal</title>
+    <title>Mchezo Wetu - Elite Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-body: #090d16;
-            --card-bg: rgba(21, 30, 47, 0.75);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --accent-blue: #3b82f6;
-            --accent-green: #10b981;
-            --text-primary: #ffffff;
-            --text-secondary: #9ca3af;
+            --bg-deep: #020617;
+            --surface-glass: rgba(15, 23, 42, 0.82);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --primary-glow: #3b82f6;
+            --emerald-glow: #10b981;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --shadow-elite: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            background-color: var(--bg-body);
+            background-color: var(--bg-deep);
             background-image: 
-                radial-gradient(circle at 20% 10%, rgba(59, 130, 246, 0.12), transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.08), transparent 40%);
+                radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 90% 90%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
             color: var(--text-primary);
             min-height: 100vh;
-            padding-bottom: 90px;
+            padding-bottom: 110px;
         }
 
-        .container {
+        .portal-wrapper {
             max-width: 440px;
             margin: 0 auto;
             padding: 20px 16px;
         }
 
-        /* Profile Top Header */
-        .header-box {
+        /* Top Elite Header */
+        .elite-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            padding: 4px 0;
+        }
+
+        .profile-cluster {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
+            gap: 14px;
         }
-        .user-meta { display: flex; align-items: center; gap: 14px; }
-        .avatar-circle {
-            width: 52px;
-            height: 52px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+
+        .elite-avatar {
+            width: 54px;
+            height: 54px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            position: relative;
+        }
+
+        .elite-avatar::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 13px;
+            height: 13px;
+            background: var(--emerald-glow);
+            border: 2.5px solid var(--bg-deep);
+            border-radius: 50%;
+        }
+
+        .time-badge {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #60a5fa;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+
+        .user-title {
             font-size: 19px;
             font-weight: 800;
-            color: #fff;
-            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            letter-spacing: -0.3px;
         }
-        .greeting { font-size: 11px; font-weight: 800; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 0.5px; }
-        .user-name { font-size: 18px; font-weight: 800; color: #fff; }
 
-        .notif-badge {
-            width: 42px;
-            height: 42px;
-            border-radius: 14px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
+        .bell-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 16px;
+            background: var(--surface-glass);
+            border: 1px solid var(--border-glass);
+            backdrop-filter: blur(16px);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
             cursor: pointer;
+            box-shadow: var(--shadow-elite);
+            transition: transform 0.2s;
+        }
+        .bell-btn:active { transform: scale(0.95); }
+
+        /* Premium Balance Card */
+        .neo-card {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.65) 0%, rgba(15, 23, 42, 0.85) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 26px;
+            padding: 24px;
+            margin-bottom: 18px;
+            box-shadow: 0 20px 40px -10px rgba(30, 58, 138, 0.4);
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Hero Financial Card */
-        .finance-card {
-            background: linear-gradient(135deg, rgba(30, 58, 138, 0.6), rgba(17, 24, 39, 0.8));
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 24px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+        .neo-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -30%;
+            width: 150px; height: 150px;
+            background: rgba(59, 130, 246, 0.15);
+            filter: blur(40px);
+            border-radius: 50%;
         }
-        .f-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #93c5fd; letter-spacing: 0.5px; }
-        .f-amount { font-size: 32px; font-weight: 800; margin: 6px 0 18px; color: #fff; }
-        .f-row {
+
+        .neo-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #93c5fd;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .neo-amount {
+            font-size: 34px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+        }
+
+        .neo-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            padding-top: 14px;
+            padding-top: 16px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .f-sub-title { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; }
-        .f-sub-val { font-size: 15px; font-weight: 800; color: #fff; }
 
-        /* Progress Box */
-        .card-box {
-            background: var(--card-bg);
+        .neo-sub-val { font-size: 16px; font-weight: 800; color: #fff; }
+        .neo-sub-lbl { font-size: 10px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-top: 2px; }
+
+        /* Progress Module */
+        .glass-box {
+            background: var(--surface-glass);
             backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
+            border: 1px solid var(--border-glass);
+            border-radius: 22px;
             padding: 20px;
             margin-bottom: 18px;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #10b981);
-            width: 0%;
-            transition: width 0.6s ease;
+            box-shadow: var(--shadow-elite);
         }
 
-        /* Stats Grid */
-        .stats-grid {
+        .progress-track {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 12px;
+            padding: 2px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            border-radius: 6px;
+            width: 0%;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
             margin-bottom: 24px;
         }
-        .stat-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 14px 10px;
+
+        .metric-card {
+            background: var(--surface-glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 16px 10px;
             text-align: center;
+            box-shadow: var(--shadow-elite);
         }
-        .stat-lbl { font-size: 10px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; }
-        .stat-num { font-size: 18px; font-weight: 800; margin-top: 4px; }
 
-        /* Profile Custom View */
-        .profile-container {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 22px;
-            padding: 22px;
-            margin-bottom: 20px;
-        }
-        .p-item {
-            padding-bottom: 14px;
+        .metric-title { font-size: 10px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; }
+        .metric-data { font-size: 18px; font-weight: 800; }
+
+        /* Section Headings */
+        .section-title {
+            font-size: 16px;
+            font-weight: 800;
             margin-bottom: 14px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            letter-spacing: -0.3px;
         }
-        .p-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .p-label { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; }
-        .p-value { font-size: 16px; font-weight: 800; color: #fff; margin-top: 2px; }
 
-        .btn-logout {
-            width: 100%;
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+        .activity-tile {
+            background: var(--surface-glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
             padding: 16px;
-            border-radius: 16px;
-            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-elite);
+        }
+
+        /* Profile Redesign */
+        .profile-elite-card {
+            background: var(--surface-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-elite);
+        }
+
+        .profile-row-item {
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .profile-row-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+        .p-key { font-size: 11px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .p-val { font-size: 16px; font-weight: 800; color: #fff; }
+
+        .elite-logout-btn {
+            width: 100%;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1));
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            padding: 16px;
+            border-radius: 18px;
+            font-size: 15px;
             font-weight: 800;
             cursor: pointer;
+            box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.25);
+            transition: transform 0.2s;
         }
+        .elite-logout-btn:active { transform: scale(0.98); }
 
-        /* Tab Visibility */
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        /* Tab Management */
+        .tab-section { display: none; }
+        .tab-section.active { display: block; }
 
-        /* Navigation Bar */
-        .bottom-nav {
+        /* Bottom Navigation Bar */
+        .elite-bottom-nav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
-            background: rgba(9, 13, 22, 0.95);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid var(--card-border);
+            background: rgba(2, 6, 23, 0.92);
+            backdrop-filter: blur(24px);
+            border-top: 1px solid var(--border-glass);
             display: flex;
             justify-content: space-around;
-            padding: 12px 0 16px;
+            padding: 12px 0 18px;
             max-width: 440px;
             margin: 0 auto;
+            z-index: 1000;
         }
-        .nav-item {
+
+        .nav-button {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -189,101 +302,112 @@
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
-        .nav-item.active { color: var(--accent-blue); }
-        .nav-item span:first-child { font-size: 20px; }
+        .nav-button.active { color: #60a5fa; transform: translateY(-2px); }
+        .nav-button span:first-child { font-size: 22px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Top Profile Header -->
-        <div class="header-box">
-            <div class="user-meta">
-                <div class="avatar-circle" id="userAvatar">MW</div>
+    <div class="portal-wrapper">
+        <!-- Elite Header -->
+        <div class="elite-header">
+            <div class="profile-cluster">
+                <div class="elite-avatar" id="userAvatar">MW</div>
                 <div>
-                    <div class="greeting" id="greetingText">Habari</div>
-                    <div class="user-name" id="userNameHeader">Inapakia...</div>
+                    <div class="time-badge" id="timeGreeting">Habari</div>
+                    <div class="user-title" id="userNameDisplay">Inapakia...</div>
                 </div>
             </div>
-            <div class="notif-badge" onclick="alert('Hakuna taarifa mpya.')">🔔</div>
+            <div class="bell-btn" onclick="alert('Hakuna taarifa mpya kwa sasa.')">🔔</div>
         </div>
 
-        <!-- Tab 1: Home Dashboard -->
-        <div id="tab-home" class="tab-content active">
-            <div class="finance-card">
-                <div class="f-label">Mchango Wako Wote</div>
-                <div class="f-amount" id="myContrib">TSh 0</div>
-                <div class="f-row">
+        <!-- Tab 1: Nyumbani (Dashboard) -->
+        <div id="tab-home" class="tab-section active">
+            <div class="neo-card">
+                <div class="neo-label">Mchango Wako Wote</div>
+                <div class="neo-amount" id="myContribVal">TSh 0</div>
+                <div class="neo-grid">
                     <div>
-                        <div class="f-sub-val" id="groupContrib">TSh 0</div>
-                        <div class="f-sub-title">Jumla Kikundi</div>
+                        <div class="neo-sub-val" id="totalGroupVal">TSh 0</div>
+                        <div class="neo-sub-lbl">Jumla ya Kikundi</div>
                     </div>
                     <div>
-                        <div class="f-sub-val" style="color: var(--accent-green);">Active</div>
-                        <div class="f-sub-title">Hali ya Akaunti</div>
+                        <div class="neo-sub-val" style="color: var(--emerald-glow);">Verified ✓</div>
+                        <div class="neo-sub-lbl">Hali ya Akaunti</div>
                     </div>
                 </div>
             </div>
 
-            <div class="card-box">
+            <div class="glass-box">
+                <div style="font-size: 11px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Lengo la Kikundi</div>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 15px; font-weight: 800;" id="groupTitle">Mchezo Wetu Enterprise</span>
-                    <span style="font-size: 13px; font-weight: 800; color: var(--accent-green);" id="progressText">0%</span>
+                    <span style="font-size: 18px; font-weight: 800;" id="groupNameTitle">Mchezo Wetu Pro</span>
+                    <span style="font-size: 14px; font-weight: 800; color: var(--emerald-glow);" id="progressText">0%</span>
                 </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-track">
+                    <div class="progress-bar-fill" id="progressBarFill"></div>
                 </div>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-lbl">Wanachama</div>
-                    <div class="stat-num" id="totalM">0</div>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-title">Wanachama</div>
+                    <div class="metric-data" id="statMembers">0</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-lbl">Wamelipa</div>
-                    <div class="stat-num" style="color: var(--accent-green);" id="paidM">0</div>
+                <div class="metric-card">
+                    <div class="metric-title">Wamelipa</div>
+                    <div class="metric-data" style="color: var(--emerald-glow);" id="statPaid">0</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-lbl">Wadaiwa</div>
-                    <div class="stat-num" style="color: #ef4444;" id="pendingM">0</div>
+                <div class="metric-card">
+                    <div class="metric-title">Wadaiwa</div>
+                    <div class="metric-data" style="color: #ef4444;" id="statPending">0</div>
                 </div>
+            </div>
+
+            <div class="section-title">Shughuli za Hivi Karibuni</div>
+            <div class="activity-tile">
+                <div>
+                    <h4 style="font-size: 14px; font-weight: 700;">Usalama wa Mfumo</h4>
+                    <p style="font-size: 12px; color: var(--text-secondary);">Umeunganishwa na Supabase Auth</p>
+                </div>
+                <span style="font-size: 11px; font-weight: 800; color: var(--emerald-glow); background: rgba(16,185,129,0.15); padding: 5px 10px; border-radius: 8px;">Salama</span>
             </div>
         </div>
 
         <!-- Tab 2: Profile -->
-        <div id="tab-profile" class="tab-content">
-            <h3 style="margin-bottom: 14px; font-size: 16px; font-weight: 800;">Taarifa za Mwanachama</h3>
-            <div class="profile-container">
-                <div class="p-item">
-                    <div class="p-label">Majina Kamili</div>
-                    <div class="p-value" id="pFullName">Inapakia...</div>
+        <div id="tab-profile" class="tab-section">
+            <div class="section-title">Taarifa za Mwanachama</div>
+            <div class="profile-elite-card">
+                <div class="profile-row-item">
+                    <div class="p-key">Majina Kamili</div>
+                    <div class="p-val" id="profileName">Inapakia...</div>
                 </div>
-                <div class="p-item">
-                    <div class="p-label">Barua Pepe (Email)</div>
-                    <div class="p-value" id="pEmail">Inapakia...</div>
+                <div class="profile-row-item">
+                    <div class="p-key">Barua Pepe (Email)</div>
+                    <div class="p-val" id="profileEmail">Inapakia...</div>
                 </div>
-                <div class="p-item">
-                    <div class="p-label">Namba ya Simu</div>
-                    <div class="p-value" id="pPhone">Imeunganishwa</div>
+                <div class="profile-row-item">
+                    <div class="p-key">Namba ya Simu</div>
+                    <div class="p-val" id="profilePhone">Inapakia...</div>
                 </div>
-                <div class="p-item">
-                    <div class="p-label">Hali ya Mfumo</div>
-                    <div class="p-value" style="color: var(--accent-green);">Supabase Authenticated</div>
+                <div class="profile-row-item">
+                    <div class="p-key">Hali ya Usalama</div>
+                    <div class="p-val" style="color: var(--emerald-glow);">✓ Supabase Session Active</div>
                 </div>
             </div>
-            <button class="btn-logout" onclick="logout()">🚪 Ondoka Kwenye Mfumo (Logout)</button>
+            <button class="elite-logout-btn" onclick="logoutSession()">🚪 Ondoka Kwenye Mfumo (Logout)</button>
         </div>
     </div>
 
     <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('tab-home', this)">
+    <nav class="elite-bottom-nav">
+        <div class="nav-button active" onclick="switchTab('tab-home', this)">
             <span>🏠</span>
             <span>Nyumbani</span>
         </div>
-        <div class="nav-item" onclick="switchTab('tab-profile', this)">
+        <div class="nav-button" onclick="switchTab('tab-profile', this)">
             <span>👤</span>
             <span>Profile</span>
         </div>
@@ -291,58 +415,73 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
-            const h = new Date().getHours();
-            let g = h < 12 ? "Habari za Asubuhi" : h < 16 ? "Habari za Mchana" : "Habari za Jioni";
-            document.getElementById("greetingText").innerText = g;
+            const hour = new Date().getHours();
+            let greet = "Habari za Leo";
+            if (hour < 12) greet = "Habari za Asubuhi";
+            else if (hour < 16) greet = "Habari za Mchana";
+            else greet = "Habari za Jioni";
+            document.getElementById("timeGreeting").innerText = greet;
 
-            await fetchProfileAndStats();
+            await loadUserDataAndStats();
         });
 
-        async function fetchProfileAndStats() {
-            const token = localStorage.getItem("token");
+        async function loadUserDataAndStats() {
+            const token = localStorage.getItem("token") || localStorage.getItem("sb-access-token");
             try {
-                const res = await fetch("/api/user/me", {
+                const resUser = await fetch("/api/user/me", {
                     headers: { "Authorization": "Bearer " + token }
                 });
-                if (res.ok) {
-                    const user = await res.json();
-                    document.getElementById("userNameHeader").innerText = user.full_name;
-                    document.getElementById("pFullName").innerText = user.full_name;
-                    document.getElementById("pEmail").innerText = user.email;
-                    document.getElementById("pPhone").innerText = user.phone;
+                if (resUser.ok) {
+                    const u = await resUser.json();
+                    document.getElementById("userNameDisplay").innerText = u.full_name;
+                    document.getElementById("profileName").innerText = u.full_name;
+                    document.getElementById("profileEmail").innerText = u.email;
+                    document.getElementById("profilePhone").innerText = u.phone;
 
-                    const parts = user.full_name.split(" ");
-                    const initials = parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
+                    const parts = u.full_name.trim().split(" ");
+                    let initials = parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
                     document.getElementById("userAvatar").innerText = initials;
+                } else {
+                    document.getElementById("userNameDisplay").innerText = "Mwanachama";
+                    document.getElementById("profileName").innerText = "Mwanachama";
                 }
 
                 const resStats = await fetch("/api/user/stats", {
                     headers: { "Authorization": "Bearer " + token }
                 });
                 if (resStats.ok) {
-                    const st = await resStats.json();
-                    document.getElementById("myContrib").innerText = "TSh " + Number(st.myContribution).toLocaleString();
-                    document.getElementById("groupContrib").innerText = "TSh " + Number(st.totalContribution).toLocaleString();
-                    document.getElementById("totalM").innerText = st.totalMembers;
-                    document.getElementById("paidM").innerText = st.activeContributors;
-                    document.getElementById("pendingM").innerText = st.pendingMembers;
-                    document.getElementById("groupTitle").innerText = st.groupName;
-                    document.getElementById("progressText").innerText = st.progress + "%";
-                    document.getElementById("progressFill").style.width = st.progress + "%";
+                    const d = await resStats.json();
+                    if (d.myContribution !== undefined) {
+                        document.getElementById("myContribVal").innerText = "TSh " + Number(d.myContribution).toLocaleString();
+                    }
+                    if (d.totalContribution !== undefined) {
+                        document.getElementById("totalGroupVal").innerText = "TSh " + Number(d.totalContribution).toLocaleString();
+                    }
+                    if (d.totalMembers) document.getElementById("statMembers").innerText = d.totalMembers;
+                    if (d.activeContributors) document.getElementById("statPaid").innerText = d.activeContributors;
+                    if (d.pendingMembers) document.getElementById("statPending").innerText = d.pendingMembers;
+                    if (d.groupName) document.getElementById("groupNameTitle").innerText = d.groupName;
+                    if (d.progress !== undefined) {
+                        document.getElementById("progressText").innerText = d.progress + "%";
+                        document.getElementById("progressBarFill").style.width = d.progress + "%";
+                    }
                 }
-            } catch(e) { console.error(e); }
+            } catch (err) {
+                console.error(err);
+            }
         }
 
-        function switchTab(tabId, el) {
-            document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
-            document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-            document.getElementById(tabId).classList.add("active");
+        function switchTab(paneId, el) {
+            document.querySelectorAll(".tab-section").forEach(p => p.classList.remove("active"));
+            document.querySelectorAll(".nav-button").forEach(n => n.classList.remove("active"));
+            document.getElementById(paneId).classList.add("active");
             el.classList.add("active");
         }
 
-        function logout() {
+        function logoutSession() {
             if (confirm("Je, una uhakika unataka kuondoka?")) {
                 localStorage.clear();
+                sessionStorage.clear();
                 window.location.href = "index.html";
             }
         }
