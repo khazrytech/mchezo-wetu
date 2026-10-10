@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mchezo Wetu - Digital Contribution Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg-main: #030712;
@@ -82,19 +81,29 @@
             <button class="tab-btn" id="tabSignup" onclick="switchMode('signup')">Jisajili</button>
         </div>
 
-        <form id="authForm">
+        <!-- Tunatumia novalidate ili browser isilazimishe @ kwenye input -->
+        <form id="authForm" novalidate>
             <div class="form-group" id="nameGroup" style="display: none;">
                 <label>Majina Kamili</label>
-                <input type="text" id="fullName" class="form-control" placeholder="Juma Ally">
+                <input type="text" id="fullName" class="form-control" placeholder="Baraka Makoi">
             </div>
+            
+            <div class="form-group" id="phoneGroup" style="display: none;">
+                <label>Namba ya Simu</label>
+                <input type="text" id="phone" class="form-control" placeholder="0747464481">
+            </div>
+
             <div class="form-group">
-                <label>Barua Pepe (Email)</label>
-                <input type="email" id="email" class="form-control" placeholder="juma@gmail.com" required>
+                <label id="inputLabel">Namba ya Simu, Jina, au Barua Pepe</label>
+                <!-- Input ni TYPE="TEXT" ili isikatae majina au namba za simu -->
+                <input type="text" id="identifier" class="form-control" placeholder="Baraka makoi au 0747464481" required>
             </div>
+
             <div class="form-group">
                 <label>Nenosiri (Password)</label>
                 <input type="password" id="password" class="form-control" placeholder="••••••••" required>
             </div>
+
             <button type="submit" class="btn-submit" id="submitBtn">Ingia Kwenye Akaunti →</button>
         </form>
 
@@ -105,9 +114,6 @@
 
     <script>
         let mode = 'login';
-        const SUPABASE_URL = "YOUR_SUPABASE_URL";
-        const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         function switchMode(m) {
             mode = m;
@@ -115,49 +121,60 @@
                 document.getElementById('tabLogin').classList.add('active');
                 document.getElementById('tabSignup').classList.remove('active');
                 document.getElementById('nameGroup').style.display = 'none';
+                document.getElementById('phoneGroup').style.display = 'none';
+                document.getElementById('inputLabel').innerText = 'Namba ya Simu, Jina, au Barua Pepe';
+                document.getElementById('identifier').placeholder = 'Baraka makoi au 0747464481';
                 document.getElementById('submitBtn').innerText = 'Ingia Kwenye Akaunti →';
             } else {
                 document.getElementById('tabSignup').classList.add('active');
                 document.getElementById('tabLogin').classList.remove('active');
                 document.getElementById('nameGroup').style.display = 'block';
+                document.getElementById('phoneGroup').style.display = 'block';
+                document.getElementById('inputLabel').innerText = 'Barua Pepe (Email)';
+                document.getElementById('identifier').placeholder = 'baraka@gmail.com';
                 document.getElementById('submitBtn').innerText = 'Jisajili Sasa →';
             }
         }
 
         document.getElementById('authForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value.trim();
+            const identifier = document.getElementById('identifier').value.trim();
             const password = document.getElementById('password').value;
+
+            if (!identifier || !password) {
+                alert('Tafadhali jaza taarifa zote.');
+                return;
+            }
 
             if (mode === 'signup') {
                 const fullName = document.getElementById('fullName').value.trim();
+                const phone = document.getElementById('phone').value.trim();
                 if (!fullName) { alert('Weka jina lako kamili.'); return; }
                 
-                const { data, error } = await supabase.auth.signUp({
-                    email, password, options: { data: { full_name: fullName } }
+                const res = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: identifier, password, fullName, phone })
                 });
-                if (error) alert(error.message);
+                const data = await res.json();
+                if (!res.ok) alert(data.error || 'Usajili umeshindikana.');
                 else {
-                    alert('Usajili umefanikiwa! Tafadhali subiri Admin akupitishe (Approve) ndipo uingie.');
+                    alert('Usajili umefanikiwa! Subiri Admin akuidhinishe (Approve) kisha uingie.');
                     switchMode('login');
                 }
             } else {
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-                if (error) {
-                    alert('Kuingia kimeshindikana: ' + error.message);
+                // Tuma maombi ya login server backend
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier, password })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    alert(data.error || 'Kuingia kimeshindikana. Hakiki taarifa zako.');
                 } else {
-                    localStorage.setItem('token', data.session.access_token);
-                    // Angalia kama ameruhusiwa
-                    const res = await fetch('/api/user/me', {
-                        headers: { 'Authorization': 'Bearer ' + data.session.access_token }
-                    });
-                    if (res.ok) {
-                        window.location.href = 'dashboard.html';
-                    } else {
-                        const errData = await res.json();
-                        alert(errData.error || 'Akaunti yako bado haijaruhusiwa au imefungwa.');
-                        supabase.auth.signOut();
-                    }
+                    localStorage.setItem('token', data.token);
+                    window.location.href = 'dashboard.html';
                 }
             }
         });
