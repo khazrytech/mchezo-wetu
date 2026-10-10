@@ -17,7 +17,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
-// API za Admin
 app.get('/api/admin/users', async (req, res) => {
     try {
         let { data: profiles } = await supabase.from('profiles').select('*');
@@ -42,19 +41,18 @@ app.post('/api/admin/action', async (req, res) => {
     }
 });
 
-// ROUTING DIRECT BILA LOGIN KABISA:
-// 1. Ukitembelea link kuu (/), inapeleka moja kwa moja kwenye dashboard ya wanachama
+// Njia kuu: Ukifungua link kuu, inaleta dashboard moja kwa moja
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
-// 2. Ukitembelea /admin, inapeleka moja kwa moja kwenye admin panel
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin.html'));
-});
-
 app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
+
+// Ukifungua /admin, inaleta admin panel moja kwa moja
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
 app.listen(PORT, () => console.log(`[SERVER RUNNING]: Port ${PORT}`));
