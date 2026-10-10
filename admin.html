@@ -8,7 +8,7 @@
     <style>
         :root {
             --bg-deep: #030712;
-            --surface-glass: rgba(15, 23, 42, 0.85);
+            --surface-glass: rgba(15, 23, 42, 0.88);
             --border-glass: rgba(255, 255, 255, 0.12);
             --primary-purple: #8b5cf6;
             --accent-blue: #3b82f6;
@@ -31,7 +31,6 @@
             padding-bottom: 95px;
         }
 
-        /* Modern Toast Notifications */
         #toast-container {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
             z-index: 9999; width: 90%; max-width: 360px; pointer-events: none;
@@ -50,7 +49,6 @@
 
         .admin-wrapper { max-width: 440px; margin: 0 auto; padding: 20px 16px; }
 
-        /* Header */
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
         .header-left { display: flex; align-items: center; gap: 12px; }
         .shield-icon {
@@ -71,7 +69,6 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
-        /* Vault Card */
         .vault-card {
             background: linear-gradient(135deg, rgba(88, 28, 135, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
             border: 1px solid rgba(168, 85, 247, 0.35); backdrop-filter: blur(20px); border-radius: 26px; padding: 22px;
@@ -103,7 +100,6 @@
         .metric-box .m-title { font-size: 10px; font-weight: 800; color: var(--text-sub); text-transform: uppercase; }
         .metric-box .m-val { font-size: 18px; font-weight: 800; color: #fff; margin-top: 4px; }
 
-        /* User Cards */
         .user-card {
             background: var(--surface-glass); border: 1px solid var(--border-glass); backdrop-filter: blur(16px);
             border-radius: 20px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
@@ -123,7 +119,6 @@
         .admin-pane { display: none; }
         .admin-pane.active { display: block; }
 
-        /* Bottom Nav */
         .admin-nav {
             position: fixed; bottom: 0; left: 0; right: 0; background: rgba(3, 7, 18, 0.95);
             backdrop-filter: blur(20px); border-top: 1px solid var(--border-glass); display: flex; justify-content: space-around;
@@ -143,7 +138,6 @@
             padding: 12px 14px; border-radius: 12px; color: #fff; font-size: 14px; outline: none; margin-bottom: 12px;
         }
 
-        /* Glassmorphic Modal Cards */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(3, 7, 18, 0.85); backdrop-filter: blur(16px);
@@ -247,7 +241,7 @@
                 <h4 style="font-size: 14px; margin-bottom: 10px; color: #fff;">Ada ya Mchango wa Siku</h4>
                 <label class="form-label">Kiasi cha Siku (TSh)</label>
                 <input type="number" class="form-input" id="cfgDailyAmount" value="2000">
-                <button class="btn-modal-submit" style="margin-top:0;" onclick="showToast('Ada ya siku imesasishwa kuwa TSh ' + document.getElementById('cfgDailyAmount').value, 'success')">Hifadhi Mabadiliko</button>
+                <button class="btn-modal-submit" style="margin-top:0;" onclick="showToast('Ada imesasishwa!', 'success')">Hifadhi Mabadiliko</button>
             </div>
             <div class="setting-card">
                 <h4 style="font-size: 14px; margin-bottom: 6px; color: #fff;">Supabase Database Engine</h4>
@@ -257,7 +251,7 @@
         </div>
     </div>
 
-    <!-- MODAL 1: SAJILI -->
+    <!-- MODALS -->
     <div class="modal-overlay" id="modalSajili">
         <div class="modal-card">
             <div class="modal-title">
@@ -265,8 +259,8 @@
                 <button class="modal-close" onclick="closeModal('modalSajili')">✕</button>
             </div>
             <label class="form-label">Majina Kamili</label>
-            <input type="text" class="form-input" id="newMemberName" placeholder="Mfano: Baraka Makoi">
-            <label class="form-label">Email / Username</label>
+            <input type="text" class="form-input" id="newMemberName" placeholder="Baraka Makoi">
+            <label class="form-label">Email au Username</label>
             <input type="email" class="form-input" id="newMemberEmail" placeholder="baraka@gmail.com">
             <label class="form-label">Namba ya Simu</label>
             <input type="tel" class="form-input" id="newMemberPhone" placeholder="07XXXXXXXX">
@@ -274,7 +268,6 @@
         </div>
     </div>
 
-    <!-- MODAL 2: REKODI -->
     <div class="modal-overlay" id="modalRekodi">
         <div class="modal-card">
             <div class="modal-title">
@@ -291,7 +284,6 @@
         </div>
     </div>
 
-    <!-- MODAL 3: TANGAZO -->
     <div class="modal-overlay" id="modalTangazo">
         <div class="modal-card">
             <div class="modal-title">
@@ -299,14 +291,13 @@
                 <button class="modal-close" onclick="closeModal('modalTangazo')">✕</button>
             </div>
             <label class="form-label">Kichwa cha Tangazo</label>
-            <input type="text" class="form-input" id="annTitle" placeholder="Mfano: Kumbusho la Mchango">
+            <input type="text" class="form-input" id="annTitle" placeholder="Kumbusho la Mchango">
             <label class="form-label">Ujumbe</label>
             <textarea class="form-input" id="annBody" rows="3" style="resize:none;" placeholder="Andika ujumbe wako hapa..."></textarea>
             <button class="btn-modal-submit" onclick="submitAnnouncement()">Tuma Kwa Wanachama Wote</button>
         </div>
     </div>
 
-    <!-- MODAL 4: RIPOTI -->
     <div class="modal-overlay" id="modalRipoti">
         <div class="modal-card">
             <div class="modal-title">
@@ -318,7 +309,6 @@
         </div>
     </div>
 
-    <!-- Bottom Nav -->
     <nav class="admin-nav">
         <div class="nav-btn active" onclick="switchAdminTab('pane-dashibodi', this)"><span>📊</span><span>DASHIBODI</span></div>
         <div class="nav-btn" onclick="switchAdminTab('pane-watu', this)"><span>👥</span><span>WATU</span></div>
@@ -363,12 +353,8 @@
                 const users = await res.json();
                 currentUsers = users || [];
 
-                // Populate Modal Select
                 const sel = document.getElementById('selectMember');
                 sel.innerHTML = '<option value="">Chagua mwanachama...</option>';
-                currentUsers.forEach(u => {
-                    sel.innerHTML += `<option value="${u.id}">${u.full_name || u.email}</option>`;
-                });
 
                 if (!currentUsers || currentUsers.length === 0) {
                     container.innerHTML = `<div class="user-card" style="justify-content: center; text-align: center;"><p style="color: var(--text-sub);">Bado hakuna wanachama waliojisajili.</p></div>`;
@@ -377,6 +363,7 @@
 
                 container.innerHTML = "";
                 currentUsers.forEach(u => {
+                    sel.innerHTML += `<option value="${u.id}">${u.full_name || u.email}</option>`;
                     const card = document.createElement("div");
                     card.className = "user-card";
                     card.innerHTML = `
@@ -414,18 +401,41 @@
         }
 
         async function submitNewMember() {
-            const name = document.getElementById('newMemberName').value;
-            const email = document.getElementById('newMemberEmail').value;
-            const phone = document.getElementById('newMemberPhone').value;
+            const name = document.getElementById('newMemberName').value.trim();
+            const email = document.getElementById('newMemberEmail').value.trim();
+            const phone = document.getElementById('newMemberPhone').value.trim();
+
             if (!name || !email) { showToast('Tafadhali jaza jina na email.', 'error'); return; }
 
-            closeModal('modalSajili');
-            showToast('Mwanachama ' + name + ' amesajiliwa kikamilifu!', 'success');
-            loadAdminUsers();
+            try {
+                const res = await fetch('/api/admin/add-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullName: name, email, phone })
+                });
+                if (res.ok) {
+                    closeModal('modalSajili');
+                    showToast('Mwanachama ' + name + ' amesajiliwa kikamilifu!', 'success');
+                    loadAdminUsers();
+                } else {
+                    showToast('Imeshindikana kuhifadhi mwanachama.', 'error');
+                }
+            } catch(e) {
+                showToast('Shida ya mtandao.', 'error');
+            }
         }
 
         function submitContribution() {
             const amt = document.getElementById('recordAmount').value;
+            const sel = document.getElementById('selectMember');
+            if (!sel.value) { showToast('Chagua mwanachama kwanza.', 'error'); return; }
+
+            const currentVault = parseInt(document.getElementById('vaultTotal').innerText.replace(/[^0-9]/g, '') || 0);
+            const newTotal = currentVault + parseInt(amt);
+            document.getElementById('vaultTotal').innerText = 'TSh ' + newTotal.toLocaleString();
+            document.getElementById('sumTotal').innerText = 'TSh ' + newTotal.toLocaleString();
+            document.getElementById('sumMonth').innerText = 'TSh ' + newTotal.toLocaleString();
+
             closeModal('modalRekodi');
             showToast('Mchango wa TSh ' + amt + ' umerekodiwa!', 'success');
         }

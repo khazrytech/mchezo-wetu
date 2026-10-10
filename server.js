@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
-// API Login
+// 1. API ya Login
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { identifier, password } = req.body;
@@ -95,7 +95,7 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// API Signup
+// 2. API ya Signup
 app.post('/api/auth/signup', async (req, res) => {
     try {
         const { email, password, fullName, phone } = req.body;
@@ -121,12 +121,11 @@ app.post('/api/auth/signup', async (req, res) => {
     }
 });
 
-// API Admin: Orodha ya Wanachama (yenye fallback ya Supabase Auth Users)
+// 3. Admin: Orodha ya Wanachama (Soma kutoka profiles + auth)
 app.get('/api/admin/users', async (req, res) => {
     try {
         let { data: profiles, error } = await supabase.from('profiles').select('*');
         
-        // Kama profiles hazipatikani, jaribu kusoma watumiaji kutoka Supabase Auth Admin
         if (error || !profiles || profiles.length === 0) {
             try {
                 const { data: { users } } = await supabase.auth.admin.listUsers();
@@ -135,7 +134,7 @@ app.get('/api/admin/users', async (req, res) => {
                         id: u.id,
                         email: u.email,
                         full_name: u.user_metadata?.full_name || u.email.split('@')[0],
-                        phone: u.user_metadata?.phone || 'Imeunganishwa',
+                        phone: u.user_metadata?.phone || '07XXXXXXXX',
                         is_approved: true,
                         is_banned: false
                     }));
@@ -149,7 +148,36 @@ app.get('/api/admin/users', async (req, res) => {
     }
 });
 
-// API Admin Action (Approve / Ban)
+// 4. Admin: Hifadhi Mwanachama Mpya Kutoka Kadi ya Modal
+app.post('/api/admin/add-user', async (req, res) => {
+    try {
+        const { fullName, email, phone } = req.body;
+        const tempPassword = 'User@123456';
+
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password: tempPassword,
+            options: { data: { full_name: fullName, phone } }
+        });
+
+        if (data.user) {
+            await supabase.from('profiles').upsert([{
+                id: data.user.id,
+                email: email,
+                full_name: fullName,
+                phone: phone || '',
+                is_approved: true,
+                is_banned: false
+            }]);
+        }
+
+        res.json({ success: true, message: 'Mwanachama amehifadhiwa vizuri!' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 5. Admin: Approve / Ban Action
 app.post('/api/admin/action', async (req, res) => {
     try {
         const { userId, action } = req.body;
