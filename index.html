@@ -81,38 +81,55 @@
             <button class="tab-btn" id="tabSignup" onclick="switchMode('signup')">Jisajili</button>
         </div>
 
-        <!-- Tunatumia novalidate ili browser isilazimishe @ kwenye input -->
-        <form id="authForm" novalidate>
+        <form id="authForm" novalidate autocomplete="on">
             <div class="form-group" id="nameGroup" style="display: none;">
                 <label>Majina Kamili</label>
-                <input type="text" id="fullName" class="form-control" placeholder="Baraka Makoi">
+                <input type="text" id="fullName" class="form-control" placeholder="Weka majina yako kamili" autocomplete="name">
             </div>
             
             <div class="form-group" id="phoneGroup" style="display: none;">
                 <label>Namba ya Simu</label>
-                <input type="text" id="phone" class="form-control" placeholder="0747464481">
+                <input type="tel" id="phone" class="form-control" placeholder="Weka namba yako ya simu (Mf. 07XXXXXXXX)" autocomplete="tel">
             </div>
 
             <div class="form-group">
                 <label id="inputLabel">Namba ya Simu, Jina, au Barua Pepe</label>
-                <!-- Input ni TYPE="TEXT" ili isikatae majina au namba za simu -->
-                <input type="text" id="identifier" class="form-control" placeholder="Baraka makoi au 0747464481" required>
+                <input type="text" id="identifier" class="form-control" placeholder="Weka jina, namba au email" autocomplete="username" required>
             </div>
 
             <div class="form-group">
                 <label>Nenosiri (Password)</label>
-                <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                <input type="password" id="password" class="form-control" placeholder="••••••••" autocomplete="current-password" required>
             </div>
 
             <button type="submit" class="btn-submit" id="submitBtn">Ingia Kwenye Akaunti →</button>
         </form>
 
         <div class="notice-box" id="noticeText">
-            Kumbuka: Akaunti mpya zinahitaji idhini (Approval) ya Admin kabla ya kuingia mfumo.
+            Kumbuka: Akaunti mpya zinahitaji idhini (Approval) ya Admin kabla ya kuingia kwenye mfumo.
         </div>
     </div>
 
     <script>
+        // Angalia kama mtumiaji ameshakuwa na Session/Token kabla ya kuonyesha fomu
+        document.addEventListener("DOMContentLoaded", async () => {
+            const token = localStorage.getItem("token");
+            if (token) {
+                try {
+                    const res = await fetch("/api/user/me", {
+                        headers: { "Authorization": "Bearer " + token }
+                    });
+                    if (res.ok) {
+                        // Kama token ni halali na akaunti ipo active, elekeza moja kwa moja dashboard
+                        window.location.href = "dashboard.html";
+                        return;
+                    }
+                } catch(e) {
+                    console.error("Session Check Failed", e);
+                }
+            }
+        });
+
         let mode = 'login';
 
         function switchMode(m) {
@@ -123,7 +140,7 @@
                 document.getElementById('nameGroup').style.display = 'none';
                 document.getElementById('phoneGroup').style.display = 'none';
                 document.getElementById('inputLabel').innerText = 'Namba ya Simu, Jina, au Barua Pepe';
-                document.getElementById('identifier').placeholder = 'Baraka makoi au 0747464481';
+                document.getElementById('identifier').placeholder = 'Weka jina, namba au email';
                 document.getElementById('submitBtn').innerText = 'Ingia Kwenye Akaunti →';
             } else {
                 document.getElementById('tabSignup').classList.add('active');
@@ -131,7 +148,7 @@
                 document.getElementById('nameGroup').style.display = 'block';
                 document.getElementById('phoneGroup').style.display = 'block';
                 document.getElementById('inputLabel').innerText = 'Barua Pepe (Email)';
-                document.getElementById('identifier').placeholder = 'baraka@gmail.com';
+                document.getElementById('identifier').placeholder = 'mfano@email.com';
                 document.getElementById('submitBtn').innerText = 'Jisajili Sasa →';
             }
         }
@@ -142,14 +159,14 @@
             const password = document.getElementById('password').value;
 
             if (!identifier || !password) {
-                alert('Tafadhali jaza taarifa zote.');
+                alert('Tafadhali jaza taarifa zote zinazohitajika.');
                 return;
             }
 
             if (mode === 'signup') {
                 const fullName = document.getElementById('fullName').value.trim();
                 const phone = document.getElementById('phone').value.trim();
-                if (!fullName) { alert('Weka jina lako kamili.'); return; }
+                if (!fullName) { alert('Tafadhali weka majina yako kamili.'); return; }
                 
                 const res = await fetch('/api/auth/signup', {
                     method: 'POST',
@@ -163,7 +180,6 @@
                     switchMode('login');
                 }
             } else {
-                // Tuma maombi ya login server backend
                 const res = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
