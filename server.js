@@ -17,132 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
-// 1. User Signup (OTP kupitia Supabase/Resend)
-app.post('/api/auth/signup-user', async (req, res) => {
-    try {
-        const { email, password, fullName, phone } = req.body;
-        const { data, error } = await supabase.auth.signUp({
-            email, password, options: { data: { full_name: fullName, phone } }
-        });
-
-        if (error) return res.status(400).json({ error: error.message });
-
-        if (data.user) {
-            await supabase.from('profiles').upsert([{
-                id: data.user.id,
-                email: email,
-                full_name: fullName,
-                phone: phone || '',
-                is_approved: false,
-                is_admin: false,
-                is_banned: false
-            }]);
-        }
-
-        res.json({ success: true, message: 'OTP imetumwa kwenye barua pepe yako.' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// 2. User Login
-app.post('/api/auth/login-user', async (req, res) => {
-    try {
-        const { identifier, password } = req.body;
-        let targetEmail = identifier.trim();
-
-        let authResult = await supabase.auth.signInWithPassword({ email: targetEmail, password });
-
-        if (authResult.error) {
-            const { data: profs } = await supabase.from('profiles').select('email, full_name, phone').limit(200);
-            if (profs) {
-                const found = profs.find(p => 
-                    (p.full_name && p.full_name.toLowerCase().trim() === targetEmail.toLowerCase()) ||
-                    (p.phone && p.phone.trim() === targetEmail) ||
-                    (p.email && p.email.toLowerCase().includes(targetEmail.toLowerCase()))
-                );
-                if (found) targetEmail = found.email;
-            }
-            authResult = await supabase.auth.signInWithPassword({ email: targetEmail, password });
-        }
-
-        if (authResult.error || !authResult.data.session) {
-            return res.status(400).json({ error: 'Kuingia kimeshindikana. Hakiki nenosiri au email.' });
-        }
-
-        const user = authResult.data.user;
-        let { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
-
-        if (profile?.is_admin) {
-            return res.status(403).json({ error: 'Akaunti hii ni ya Admin! Tumia Admin Portal.' });
-        }
-
-        if (profile?.is_banned) {
-            return res.status(403).json({ error: 'Akaunti yako imepigwa marufuku (Banned).' });
-        }
-
-        res.json({ token: authResult.data.session.access_token });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// 3. Admin Login
-app.post('/api/auth/login-admin', async (req, res) => {
-    try {
-        const { identifier, password } = req.body;
-        let targetEmail = identifier.trim();
-
-        let authResult = await supabase.auth.signInWithPassword({ email: targetEmail, password });
-
-        if (authResult.error) {
-            const { data: profs } = await supabase.from('profiles').select('email, full_name, phone').limit(200);
-            if (profs) {
-                const found = profs.find(p => 
-                    (p.full_name && p.full_name.toLowerCase().trim() === targetEmail.toLowerCase()) ||
-                    (p.phone && p.phone.trim() === targetEmail) ||
-                    (p.email && p.email.toLowerCase().includes(targetEmail.toLowerCase()))
-                );
-                if (found) targetEmail = found.email;
-            }
-            authResult = await supabase.auth.signInWithPassword({ email: targetEmail, password });
-        }
-
-        if (authResult.error || !authResult.data.session) {
-            return res.status(400).json({ error: 'Ingia ya Admin imeshindikana.' });
-        }
-
-        const user = authResult.data.user;
-        let { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
-
-        if (!profile?.is_admin) {
-            return res.status(403).json({ error: 'Huruhusiwi! Akaunti hii sio ya Admin.' });
-        }
-
-        res.json({ token: authResult.data.session.access_token });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-app.get('/api/admin/verify', async (req, res) => {
-    try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader) return res.status(401).json({ error: 'Unauthorised' });
-        const token = authHeader.split(' ')[1];
-
-        const { data: { user }, error } = await supabase.auth.getUser(token);
-        if (error || !user) return res.status(401).json({ error: 'Invalid Token' });
-
-        const { data: profile } = await supabase.from('profiles').select('is_admin').eq('id', user.id).maybeSingle();
-        if (!profile || !profile.is_admin) return res.status(403).json({ error: 'Sio Admin' });
-
-        res.json({ isAdmin: true });
-    } catch (e) {
-        res.status(500).json({ error: e.message });
-    }
-});
-
+// API zote za mfumo zinabaki salama nyuma ya pazia
 app.get('/api/admin/users', async (req, res) => {
     try {
         let { data: profiles } = await supabase.from('profiles').select('*');
@@ -167,33 +42,15 @@ app.post('/api/admin/action', async (req, res) => {
     }
 });
 
-app.get('/api/user/me', async (req, res) => {
-    try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader) return res.status(401).json({ error: 'Hairuhusiwi' });
-        const token = authHeader.split(' ')[1];
-        
-        const { data: { user }, error } = await supabase.auth.getUser(token);
-        if (error || !user) return res.status(401).json({ error: 'Token si sahihi' });
+// HAPA NDIPO KILA KITU KINAFUNGUKA DIRECT BILA LOGIN PAGE:
+// 1. Ukitembelea link kuu (/), inafungua dashboard moja kwa moja
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
 
-        let { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
-
-        res.json({
-            id: user.id,
-            email: user.email,
-            full_name: profile?.full_name || user.user_metadata?.full_name || user.email.split('@')[0],
-            phone: profile?.phone || user.user_metadata?.phone || '07XXXXXXXX',
-            is_approved: profile?.is_approved || false
-        });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// 4. Routes kuu kabisa
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
-app.get('/admin-login', (req, res) => res.sendFile(path.join(__dirname, 'admin-login.html')));
-app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
+// 2. Ukitembelea /admin-login au /admin, inafungua admin panel moja kwa moja
+app.get('/admin-login', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
+
+// 3. Dashboard ya wanachama
+app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
 
 app.listen(PORT, () => console.log(`[SERVER RUNNING]: Port ${PORT}`));
