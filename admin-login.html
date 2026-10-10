@@ -3,322 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mchezo Wetu - Admin Portal</title>
+    <title>Mchezo Wetu - Super Admin Secure Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #020617;
-            --card-glass: rgba(15, 23, 42, 0.85);
-            --border-glass: rgba(255, 255, 255, 0.12);
-            --primary: #2563eb;
-            --primary-glow: rgba(37, 99, 235, 0.4);
-            --accent: #10b981;
-            --accent-glow: rgba(16, 185, 129, 0.4);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --bg-dark: #030712;
+            --card-glass: rgba(15, 23, 42, 0.92);
+            --border-glass: rgba(168, 85, 247, 0.35);
+            --primary-purple: #8b5cf6;
+            --text-main: #ffffff;
+            --text-sub: #94a3b8;
         }
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+
         body {
-            background: var(--bg-deep);
+            background-color: var(--bg-dark);
             background-image: 
-                radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.25) 0%, transparent 70%),
-                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.18) 0%, transparent 60%);
+                radial-gradient(circle at 50% 10%, rgba(139, 92, 246, 0.35) 0%, transparent 60%),
+                radial-gradient(circle at 90% 90%, rgba(236, 72, 153, 0.25) 0%, transparent 50%);
             color: var(--text-main);
-            margin: 0; min-height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-            padding: 20px;
-        }
-        .portal-card {
-            background: var(--card-glass);
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
-            border: 1px solid var(--border-glass);
-            border-radius: 28px;
-            padding: 36px 28px;
-            width: 100%; max-width: 420px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85), 0 0 40px rgba(37, 99, 235, 0.12);
-        }
-        .brand-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(37, 99, 235, 0.12); border: 1px solid rgba(37, 99, 235, 0.3);
-            color: #60a5fa; padding: 6px 16px; border-radius: 20px;
-            font-size: 11px; font-weight: 800; letter-spacing: 0.8px;
-            margin-bottom: 20px;
-        }
-        .input-group { margin-bottom: 18px; }
-        .input-label {
-            font-size: 11px; font-weight: 800; color: var(--text-muted);
-            letter-spacing: 0.6px; margin-bottom: 8px; display: block;
-            text-transform: uppercase;
-        }
-        .input-field {
-            width: 100%; padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-glass);
-            border-radius: 16px; color: #fff;
-            font-size: 14px; outline: none; transition: all 0.25s ease;
-        }
-        .input-field:focus { 
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
-            background: rgba(255, 255, 255, 0.06);
-        }
-        .btn-action {
-            width: 100%; padding: 16px;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: white; border: none; border-radius: 16px;
-            font-size: 14px; font-weight: 800; cursor: pointer;
-            margin-top: 12px; transition: all 0.2s ease;
-            box-shadow: 0 8px 20px var(--primary-glow);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        .btn-action:hover { transform: translateY(-1px); }
-        .btn-action:active { transform: translateY(1px); }
-        .btn-action:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
-
-        /* Sleek Modern Fintech Spinner */
-        .btn-spinner {
-            width: 18px; height: 18px;
-            border: 2.5px solid rgba(255,255,255,0.3);
-            border-top-color: #ffffff;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Initial Glow Ring Loader */
-        #initRing {
-            padding: 30px 0; text-align: center;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .glowing-ring {
-            width: 48px; height: 48px; border-radius: 50%;
-            border: 3px solid rgba(37, 99, 235, 0.2);
-            border-top-color: var(--primary);
-            animation: spin 0.8s linear infinite;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 16px;
         }
 
-        #toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
-            background: rgba(15, 23, 42, 0.95); color: #fff; padding: 14px 28px; border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.15); font-size: 13px; font-weight: 700;
-            z-index: 3000; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none; backdrop-filter: blur(12px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        #toast-container {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 9999; width: 90%; max-width: 360px; pointer-events: none;
         }
-        #toast.show { transform: translateX(-50%) translateY(0); }
+
+        .custom-toast {
+            background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px); color: #fff; padding: 14px 18px; border-radius: 16px;
+            font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8); margin-bottom: 10px;
+            transform: translateY(-20px); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: auto;
+        }
+        .custom-toast.show { transform: translateY(0); opacity: 1; }
+        .custom-toast.error { border-left: 4px solid #ef4444; }
+        .custom-toast.success { border-left: 4px solid #10b981; }
+
+        .auth-wrapper { width: 100%; max-width: 400px; animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .brand-header { text-align: center; margin-bottom: 24px; }
+        .shield-ring {
+            width: 86px; height: 86px; border-radius: 26px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;
+            box-shadow: 0 12px 35px rgba(139, 92, 246, 0.5); font-size: 38px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+        }
+        .app-title { font-size: 26px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+        .app-subtitle { font-size: 11px; font-weight: 800; color: #f472b6; text-transform: uppercase; letter-spacing: 2px; margin-top: 6px; }
+
+        .auth-card {
+            background: var(--card-glass); backdrop-filter: blur(24px);
+            border: 1px solid var(--border-glass); border-radius: 28px; padding: 28px 22px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.95);
+        }
+
+        .pro-header-badge {
+            background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.35);
+            border-radius: 16px; padding: 12px; text-align: center; margin-bottom: 22px;
+            font-weight: 800; font-size: 13px; color: #c084fc; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .input-group { margin-bottom: 16px; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-icon { position: absolute; left: 16px; font-size: 16px; color: var(--text-sub); }
+
+        .custom-input {
+            width: 100%; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 15px 16px 15px 46px; border-radius: 16px; color: #fff; font-size: 14px; outline: none;
+            transition: all 0.2s ease;
+        }
+        .custom-input:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25); }
+
+        .btn-submit-glow {
+            width: 100%; background: linear-gradient(135deg, #8b5cf6 0%, #db2777 100%);
+            color: #fff; border: none; padding: 16px; border-radius: 18px; font-weight: 800; font-size: 15px;
+            cursor: pointer; box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.6); display: flex; align-items: center; justify-content: center; gap: 8px;
+            margin-top: 10px; transition: transform 0.2s;
+        }
+        .btn-submit-glow:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
-    <div id="toast">✅ Notification</div>
 
-    <div class="portal-card">
-        <div style="text-align: center;">
-            <div class="brand-badge">● MCHEZO WETU FINTECH</div>
-            <h2 id="portalHeading" style="font-size: 22px; font-weight: 900; margin: 0 0 6px 0; color: #fff;"></h2>
-            <p id="portalSubheading" style="font-size: 12px; color: var(--text-muted); margin: 0 0 24px 0;"></p>
+    <div id="toast-container"></div>
+
+    <div class="auth-wrapper">
+        <div class="brand-header">
+            <div class="shield-ring">🛡️</div>
+            <h1 class="app-title">Mchezo Wetu</h1>
+            <div class="app-subtitle">SUPER ADMIN SECURE GATEWAY</div>
         </div>
 
-        <!-- SKELETON LOADER RING -->
-        <div id="initRing">
-            <div class="glowing-ring"></div>
+        <div class="auth-card">
+            <div class="pro-header-badge">
+                <span>🔐</span> <span>Eneo Maalum la Utawala Mkuu</span>
+            </div>
+
+            <form id="adminLoginForm">
+                <div class="input-group">
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="adminIdentifier" class="custom-input" placeholder="Admin Email au Jina" autocomplete="username" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="adminPassword" class="custom-input" placeholder="Nenosiri la Siri" autocomplete="current-password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit-glow">
+                    <span>Fungua Admin Dashboard</span> <span>→</span>
+                </button>
+            </form>
         </div>
-
-        <!-- FORM 1: USAJILI WA ADMIN -->
-        <form id="signupForm" style="display: none;" onsubmit="handleAdminSignup(event)">
-            <div class="input-group">
-                <label class="input-label">Jina Kamili la Admin</label>
-                <input type="text" id="regFullName" class="input-field" placeholder="Full Name" required>
-            </div>
-            <div class="input-group">
-                <label class="input-label">Barua Pepe (Email ya OTP)</label>
-                <input type="email" id="regEmail" class="input-field" placeholder="admin@example.com" required>
-            </div>
-            <div class="input-group">
-                <label class="input-label">Namba ya Simu</label>
-                <input type="tel" id="regPhone" class="input-field" placeholder="07XXXXXXXX">
-            </div>
-            <div class="input-group">
-                <label class="input-label">Nenosiri (Password)</label>
-                <input type="password" id="regPassword" class="input-field" placeholder="••••••••" required>
-            </div>
-            <button type="submit" id="btnSignup" class="btn-action">
-                <span>Create Admin Account ➔</span>
-            </button>
-        </form>
-
-        <!-- FORM 2: LOGIN YA ADMIN -->
-        <form id="loginForm" style="display: none;" onsubmit="handleAdminLogin(event)">
-            <div class="input-group">
-                <label class="input-label">Email au Phone Number</label>
-                <input type="text" id="loginIdentifier" class="input-field" placeholder="Email or Phone" required>
-            </div>
-            <div class="input-group">
-                <label class="input-label">Nenosiri (Password)</label>
-                <input type="password" id="loginPassword" class="input-field" placeholder="••••••••" required>
-            </div>
-            <button type="submit" id="btnLogin" class="btn-action">
-                <span>Request OTP ➔</span>
-            </button>
-        </form>
-
-        <!-- FORM 3: UTHIBITISHO WA EMAIL OTP -->
-        <form id="otpForm" style="display: none;" onsubmit="handleVerifyOtp(event)">
-            <div class="input-group" style="text-align: center;">
-                <label class="input-label">Enter 6-Digit OTP Code</label>
-                <input type="number" id="otpInput" class="input-field" placeholder="123456" style="text-align: center; font-size: 24px; letter-spacing: 8px; font-weight: 900; background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.3);" required>
-            </div>
-            <button type="submit" id="btnOtp" class="btn-action" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 8px 20px var(--accent-glow);">
-                <span>Verify & Login ➔</span>
-            </button>
-        </form>
     </div>
 
     <script>
-        let currentEmail = '';
-        let currentMode = '';
+        function showToast(message, type = 'error') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `custom-toast ${type}`;
+            toast.innerHTML = `<span>${type === 'error' ? '⚠️' : '✅'}</span> <span>${message}</span>`;
+            container.appendChild(toast);
 
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 4000);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
         }
 
-        function setBtnLoading(btnId, isLoading, defaultText) {
-            const btn = document.getElementById(btnId);
-            if (isLoading) {
-                btn.disabled = true;
-                btn.innerHTML = `<div class="btn-spinner"></div> <span>Sending OTP...</span>`;
-            } else {
-                btn.disabled = false;
-                btn.innerHTML = `<span>${defaultText}</span>`;
-            }
-        }
-
-        async function checkAdminStatus() {
-            try {
-                const res = await fetch('/api/admin/check-exists');
-                const data = await res.json();
-                
-                document.getElementById('initRing').style.display = 'none';
-
-                if (data.exists) {
-                    document.getElementById('portalHeading').innerText = 'Admin Login';
-                    document.getElementById('portalSubheading').innerText = 'Ingiza taarifa zako za utawala kupokea OTP kwa Email';
-                    document.getElementById('loginForm').style.display = 'block';
-                } else {
-                    document.getElementById('portalHeading').innerText = 'Admin Registration';
-                    document.getElementById('portalSubheading').innerText = 'Tengeneza akaunti ya Admin ya mara ya kwanza';
-                    document.getElementById('signupForm').style.display = 'block';
-                }
-            } catch (err) {
-                document.getElementById('initRing').style.display = 'none';
-                showToast('⚠️ Imeshindikana kuangalia hali ya Admin.');
-            }
-        }
-
-        async function handleAdminSignup(e) {
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const fullName = document.getElementById('regFullName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const password = document.getElementById('regPassword').value.trim();
+            const identifier = document.getElementById('adminIdentifier').value.trim();
+            const password = document.getElementById('adminPassword').value;
 
-            setBtnLoading('btnSignup', true, 'Create Admin Account ➔');
-
-            try {
-                const res = await fetch('/api/admin/register-send-otp', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ fullName, phone, email, password })
-                });
-                const data = await res.json();
-                
-                if (data.success) {
-                    currentEmail = data.email;
-                    currentMode = 'REGISTER';
-                    document.getElementById('signupForm').style.display = 'none';
-                    document.getElementById('otpForm').style.display = 'block';
-                    document.getElementById('portalHeading').innerText = 'Verify OTP Code';
-                    document.getElementById('portalSubheading').innerText = 'Kodi imetumwa kwenye barua pepe: ' + data.email;
-                    showToast('📧 OTP Code sent successfully!');
-                } else {
-                    showToast('⚠️ ' + data.message);
-                    setBtnLoading('btnSignup', false, 'Create Admin Account ➔');
-                }
-            } catch (err) {
-                showToast('⚠️ Failed to process request.');
-                setBtnLoading('btnSignup', false, 'Create Admin Account ➔');
+            if (!identifier || !password) {
+                showToast('Jaza taarifa zote za Admin.', 'error');
+                return;
             }
-        }
-
-        async function handleAdminLogin(e) {
-            e.preventDefault();
-            const identifier = document.getElementById('loginIdentifier').value.trim();
-            const password = document.getElementById('loginPassword').value.trim();
-
-            setBtnLoading('btnLogin', true, 'Request OTP ➔');
 
             try {
-                const res = await fetch('/api/admin/login-send-otp', {
+                const res = await fetch('/api/auth/login-admin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ identifier, password })
                 });
                 const data = await res.json();
 
-                if (data.success) {
-                    currentEmail = data.email;
-                    currentMode = 'LOGIN';
-                    document.getElementById('loginForm').style.display = 'none';
-                    document.getElementById('otpForm').style.display = 'block';
-                    document.getElementById('portalHeading').innerText = 'Verify OTP Code';
-                    document.getElementById('portalSubheading').innerText = 'Kodi imetumwa kwenye barua pepe: ' + data.email;
-                    showToast('📧 OTP Code sent successfully!');
+                if (!res.ok) {
+                    showToast(data.error || 'Ingia ya Admin imeshindikana.', 'error');
                 } else {
-                    showToast('⚠️ ' + data.message);
-                    setBtnLoading('btnLogin', false, 'Request OTP ➔');
+                    localStorage.setItem('token', data.token);
+                    window.location.href = 'admin.html';
                 }
-            } catch (err) {
-                showToast('⚠️ Credentials invalid.');
-                setBtnLoading('btnLogin', false, 'Request OTP ➔');
+            } catch(e) {
+                showToast('Shida ya mtandao.', 'error');
             }
-        }
-
-        async function handleVerifyOtp(e) {
-            e.preventDefault();
-            const otp = document.getElementById('otpInput').value.trim();
-            const endpoint = currentMode === 'REGISTER' ? '/api/admin/register-verify-otp' : '/api/admin/login-verify-otp';
-
-            const btn = document.getElementById('btnOtp');
-            btn.disabled = true;
-            btn.innerHTML = `<div class="btn-spinner"></div> <span>Verifying...</span>`;
-
-            try {
-                const res = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: currentEmail, otp })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    localStorage.setItem('adminToken', 'MW-ADMIN-AUTHENTICATED');
-                    showToast('✅ Access Granted!');
-                    setTimeout(() => { window.location.href = '/admin.html'; }, 1000);
-                } else {
-                    showToast('⚠️ ' + data.message);
-                    btn.disabled = false;
-                    btn.innerHTML = `<span>Verify & Login ➔</span>`;
-                }
-            } catch (err) {
-                showToast('⚠️ Verification Failed.');
-                btn.disabled = false;
-                btn.innerHTML = `<span>Verify & Login ➔</span>`;
-            }
-        }
-
-        checkAdminStatus();
+        });
     </script>
 </body>
 </html>

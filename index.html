@@ -9,7 +9,8 @@
         :root {
             --bg-dark: #030712;
             --card-glass: rgba(15, 23, 42, 0.85);
-            --border-glass: rgba(255, 255, 255, 0.12);
+            --border-glass: rgba(59, 130, 246, 0.25);
+            --primary-blue: #3b82f6;
             --text-main: #ffffff;
             --text-sub: #94a3b8;
         }
@@ -19,9 +20,8 @@
         body {
             background-color: var(--bg-dark);
             background-image: 
-                radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.25) 0%, transparent 60%),
-                radial-gradient(circle at 10% 30%, rgba(6, 182, 212, 0.2) 0%, transparent 50%),
-                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.2) 0%, transparent 50%);
+                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 50%);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -46,26 +46,22 @@
         .custom-toast.error { border-left: 4px solid #ef4444; }
         .custom-toast.success { border-left: 4px solid #10b981; }
 
-        .auth-wrapper { width: 100%; max-width: 400px; }
+        .auth-wrapper { width: 100%; max-width: 400px; animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
         .brand-header { text-align: center; margin-bottom: 24px; }
         .logo-ring {
-            width: 80px; height: 80px; border-radius: 50%;
-            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #10b981 100%);
+            width: 82px; height: 82px; border-radius: 24px;
+            background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
             display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; padding: 3px;
-            box-shadow: 0 0 30px rgba(6, 182, 212, 0.4);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
         }
         .logo-inner {
-            width: 100%; height: 100%; background: #030712; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800; color: #06b6d4;
+            width: 100%; height: 100%; background: #030712; border-radius: 22px;
+            display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800; color: #3b82f6;
         }
-        .app-title { font-size: 28px; font-weight: 800; color: #fff; }
-        .app-subtitle { font-size: 12px; font-weight: 700; color: #38bdf8; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
-
-        .motto-line {
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            margin-top: 10px; font-size: 13px; color: var(--text-sub); font-weight: 600;
-        }
-        .motto-line::before, .motto-line::after { content: ''; width: 30px; height: 1px; background: rgba(255,255,255,0.2); }
+        .app-title { font-size: 26px; font-weight: 800; color: #fff; }
+        .app-subtitle { font-size: 11px; font-weight: 800; color: #38bdf8; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; }
 
         .auth-card {
             background: var(--card-glass); backdrop-filter: blur(24px);
@@ -73,29 +69,30 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
         }
 
-        .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 14px; margin-bottom: 22px; }
-        .tab-btn { background: none; border: none; padding: 10px; color: var(--text-sub); font-weight: 700; font-size: 13px; border-radius: 10px; cursor: pointer; transition: all 0.2s; }
-        .tab-btn.active { background: #3b82f6; color: #fff; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+        .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 16px; margin-bottom: 22px; }
+        .tab-btn { background: none; border: none; padding: 12px; color: var(--text-sub); font-weight: 800; font-size: 13px; border-radius: 12px; cursor: pointer; transition: all 0.3s; }
+        .tab-btn.active { background: var(--primary-blue); color: #fff; box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
 
         .input-group { margin-bottom: 16px; }
         .input-wrapper { position: relative; display: flex; align-items: center; }
         .input-icon { position: absolute; left: 16px; font-size: 16px; color: var(--text-sub); }
 
         .custom-input {
-            width: 100%; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.12);
+            width: 100%; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 255, 255, 0.12);
             padding: 15px 16px 15px 46px; border-radius: 16px; color: #fff; font-size: 14px; outline: none;
             transition: all 0.2s ease;
         }
-        .custom-input:focus { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
+        .custom-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); }
 
         .flex-options { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-sub); margin: 14px 0 20px; }
         .checkbox-label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
         .forgot-link { color: #38bdf8; text-decoration: none; font-weight: 600; }
 
         .btn-submit-glow {
-            width: 100%; background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
-            color: #fff; border: none; padding: 16px; border-radius: 18px; font-weight: 800; font-size: 16px;
-            cursor: pointer; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.5); display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #fff; border: none; padding: 16px; border-radius: 18px; font-weight: 800; font-size: 15px;
+            cursor: pointer; box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5); display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: transform 0.2s;
         }
         .btn-submit-glow:active { transform: scale(0.98); }
     </style>
@@ -108,8 +105,7 @@
         <div class="brand-header">
             <div class="logo-ring"><div class="logo-inner">MW</div></div>
             <h1 class="app-title">Mchezo Wetu</h1>
-            <div class="app-subtitle">DIGITAL CONTRIBUTION HUB</div>
-            <div class="motto-line">Pamoja Tunajenga Kesho Bora</div>
+            <div class="app-subtitle">M PORTAL YA WANACHAMA</div>
         </div>
 
         <div class="auth-card">
@@ -129,7 +125,7 @@
                 <div class="input-group" id="phoneGroup" style="display: none;">
                     <div class="input-wrapper">
                         <span class="input-icon">📞</span>
-                        <input type="tel" id="phone" class="custom-input" placeholder="Namba ya simu">
+                        <input type="tel" id="phone" class="custom-input" placeholder="Namba yako ya simu">
                     </div>
                 </div>
 
@@ -156,7 +152,7 @@
                 </div>
 
                 <button type="submit" class="btn-submit-glow" id="submitBtn">
-                    <span id="btnText">Ingia</span> <span>→</span>
+                    <span id="btnText">Ingia Kwenye Mfumo</span> <span>→</span>
                 </button>
             </form>
         </div>
@@ -188,15 +184,15 @@
                 document.getElementById('phoneGroup').style.display = 'none';
                 document.getElementById('optionsRow').style.display = 'flex';
                 document.getElementById('identifier').placeholder = 'Namba ya simu, Jina au Email';
-                document.getElementById('btnText').innerText = 'Ingia';
+                document.getElementById('btnText').innerText = 'Ingia Kwenye Mfumo';
             } else {
                 document.getElementById('tabSignup').classList.add('active');
                 document.getElementById('tabLogin').classList.remove('active');
                 document.getElementById('nameGroup').style.display = 'block';
                 document.getElementById('phoneGroup').style.display = 'block';
                 document.getElementById('optionsRow').style.display = 'none';
-                document.getElementById('identifier').placeholder = 'Barua pepe (Email)';
-                document.getElementById('btnText').innerText = 'Jisajili Sasa';
+                document.getElementById('identifier').placeholder = 'Barua pepe (Email ya kupokea OTP)';
+                document.getElementById('btnText').innerText = 'Jisajili na Tuma OTP';
             }
         }
 
