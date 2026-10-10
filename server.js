@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
-// 1. User Signup (Inatuma OTP kupitia Supabase Auth / Resend API)
+// 1. User Signup (OTP kupitia Supabase/Resend)
 app.post('/api/auth/signup-user', async (req, res) => {
     try {
         const { email, password, fullName, phone } = req.body;
@@ -39,7 +39,7 @@ app.post('/api/auth/signup-user', async (req, res) => {
             }]);
         }
 
-        res.json({ success: true, message: 'OTP imetumwa kwenye barua pepe yako. Tafadhali thibitisha.' });
+        res.json({ success: true, message: 'OTP imetumwa kwenye barua pepe yako.' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -67,7 +67,7 @@ app.post('/api/auth/login-user', async (req, res) => {
         }
 
         if (authResult.error || !authResult.data.session) {
-            return res.status(400).json({ error: 'Kuingia kimeshindikana. Hakiki nenosiri au email yako.' });
+            return res.status(400).json({ error: 'Kuingia kimeshindikana. Hakiki nenosiri au email.' });
         }
 
         const user = authResult.data.user;
@@ -125,7 +125,6 @@ app.post('/api/auth/login-admin', async (req, res) => {
     }
 });
 
-// Admin Guard Verify
 app.get('/api/admin/verify', async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
@@ -191,7 +190,7 @@ app.get('/api/user/me', async (req, res) => {
     }
 });
 
-// Kurasa (Routes)
+// 4. Routes kuu kabisa
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.get('/admin-login', (req, res) => res.sendFile(path.join(__dirname, 'admin-login.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
