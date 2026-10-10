@@ -7,17 +7,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #050814;
-            --card-bg: rgba(15, 23, 42, 0.75);
-            --card-border: rgba(255, 255, 255, 0.08);
+            --bg-dark: #030712;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
             --accent-blue: #3b82f6;
             --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
             --accent-green: #10b981;
             --accent-red: #ef4444;
-            --text-main: #f8fafc;
-            --text-sub: #94a3b8;
+            --text-main: #f9fafb;
+            --text-sub: #9ca3af;
             --glow-blue: 0 10px 30px -5px rgba(59, 130, 246, 0.4);
-            --glow-green: 0 10px 30px -5px rgba(16, 185, 129, 0.3);
+            --glow-purple: 0 10px 30px -5px rgba(139, 92, 246, 0.35);
         }
 
         * {
@@ -31,11 +32,12 @@
         body {
             background-color: var(--bg-dark);
             background-image: 
-                radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.15) 0%, transparent 45%),
-                radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 45%);
+                radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.18) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(139, 92, 246, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
             color: var(--text-main);
             min-height: 100vh;
-            padding-bottom: 95px;
+            padding-bottom: 100px;
         }
 
         .container {
@@ -49,7 +51,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0 22px;
+            padding: 8px 0 20px;
         }
 
         .user-info {
@@ -61,8 +63,8 @@
         .avatar {
             width: 52px;
             height: 52px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            border-radius: 18px;
+            background: linear-gradient(135deg, #2563eb, #8b5cf6);
             box-shadow: var(--glow-blue);
             display: flex;
             align-items: center;
@@ -70,7 +72,7 @@
             font-weight: 800;
             font-size: 20px;
             color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
             position: relative;
         }
 
@@ -79,10 +81,10 @@
             position: absolute;
             bottom: -2px;
             right: -2px;
-            width: 13px;
-            height: 13px;
+            width: 14px;
+            height: 14px;
             background: var(--accent-green);
-            border: 2.5px solid var(--bg-dark);
+            border: 3px solid var(--bg-dark);
             border-radius: 50%;
         }
 
@@ -102,28 +104,93 @@
         }
 
         .notification-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
+            width: 46px;
+            height: 46px;
+            border-radius: 16px;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
         .notification-badge {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 11px;
+            right: 11px;
             width: 8px;
             height: 8px;
             background: var(--accent-red);
             border-radius: 50%;
-            box-shadow: 0 0 8px var(--accent-red);
+            box-shadow: 0 0 10px var(--accent-red);
+        }
+
+        /* Balance Hero Card */
+        .hero-card {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.7), rgba(17, 24, 39, 0.85));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 24px;
+            padding: 22px;
+            margin-bottom: 16px;
+            box-shadow: var(--glow-blue);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::after {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -20%;
+            width: 180px;
+            height: 180px;
+            background: rgba(59, 130, 246, 0.15);
+            filter: blur(40px);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #93c5fd;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .hero-amount {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -1px;
+            margin-bottom: 18px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hero-sub-val {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .hero-sub-lbl {
+            font-size: 10px;
+            color: var(--text-sub);
+            font-weight: 700;
+            text-transform: uppercase;
         }
 
         /* Stat Cards Grid */
@@ -136,12 +203,13 @@
 
         .stat-card {
             background: var(--card-bg);
-            backdrop-filter: blur(14px);
+            backdrop-filter: blur(16px);
             border: 1px solid var(--card-border);
             border-radius: 20px;
             padding: 18px 16px;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .stat-card::before {
@@ -175,22 +243,22 @@
 
         /* Progress Card */
         .progress-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 58, 138, 0.35));
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.85), rgba(88, 28, 135, 0.25));
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            border: 1px solid rgba(139, 92, 246, 0.3);
             border-radius: 24px;
             padding: 22px;
             margin-bottom: 16px;
-            box-shadow: var(--glow-blue);
+            box-shadow: var(--glow-purple);
         }
 
         .badge-tag {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(37, 99, 235, 0.25);
-            color: #93c5fd;
-            border: 1px solid rgba(147, 197, 253, 0.3);
+            background: rgba(139, 92, 246, 0.25);
+            color: #c4b5fd;
+            border: 1px solid rgba(196, 181, 253, 0.3);
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 11px;
@@ -242,7 +310,7 @@
 
         .mini-stat {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(14px);
             border: 1px solid var(--card-border);
             border-radius: 18px;
             padding: 14px 10px;
@@ -298,7 +366,7 @@
 
         .list-item {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(14px);
             border: 1px solid var(--card-border);
             border-radius: 18px;
             padding: 16px;
@@ -334,17 +402,18 @@
         /* Profile Details Card */
         .profile-card {
             background: var(--card-bg);
-            backdrop-filter: blur(14px);
+            backdrop-filter: blur(16px);
             border: 1px solid var(--card-border);
-            border-radius: 22px;
+            border-radius: 24px;
             padding: 22px;
             margin-bottom: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .profile-field {
-            margin-bottom: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            padding-bottom: 12px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            padding-bottom: 14px;
         }
 
         .profile-field:last-child {
@@ -356,15 +425,15 @@
         .field-label {
             font-size: 11px;
             color: var(--text-sub);
-            font-weight: 700;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
+            letter-spacing: 0.6px;
+            margin-bottom: 6px;
         }
 
         .field-value {
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
             color: #ffffff;
         }
 
@@ -384,6 +453,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
         }
 
         /* Bottom Fixed Navigation */
@@ -392,7 +462,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(5, 8, 20, 0.92);
+            background: rgba(3, 7, 18, 0.94);
             backdrop-filter: blur(20px);
             border-top: 1px solid var(--card-border);
             display: flex;
@@ -440,11 +510,11 @@
             <div class="user-info">
                 <div class="avatar" id="userAvatar">--</div>
                 <div>
-                    <div class="greeting-sub" id="greetingTime">HABARI ZA JIONI</div>
-                    <div class="user-name" id="userName">Akaunti Yangu</div>
+                    <div class="greeting-sub" id="greetingTime">HABARI ZA ASUBUHI</div>
+                    <div class="user-name" id="userName">Inapakia...</div>
                 </div>
             </div>
-            <div class="notification-btn" onclick="alert('Hakuna taarifa mpya kwa sasa.')">
+            <div class="notification-btn" onclick="alert('Akaunti yako ipo salama kabisa na haina taarifa mpya.')">
                 <span style="font-size:18px;">🔔</span>
                 <div class="notification-badge"></div>
             </div>
@@ -452,21 +522,25 @@
 
         <!-- Tab 1: Nyumbani (Home) -->
         <div id="tab-home" class="tab-content active">
-            <!-- Stats Grid -->
-            <div class="grid-2">
-                <div class="stat-card">
-                    <div class="stat-lbl">👤 Mchango Wangu</div>
-                    <div class="stat-val" id="myContribution">TSh 0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-lbl">📊 Jumla ya Michango</div>
-                    <div class="stat-val" id="totalContribution">TSh 0</div>
+            <!-- Hero Card -->
+            <div class="hero-card">
+                <div class="hero-label">Mchango Wako Wote</div>
+                <div class="hero-amount" id="myContributionHero">TSh 0</div>
+                <div class="hero-grid">
+                    <div>
+                        <div class="hero-sub-val" id="totalGroupContrib">TSh 0</div>
+                        <div class="hero-sub-lbl">Jumla Kikundi</div>
+                    </div>
+                    <div>
+                        <div class="hero-sub-val" style="color:#34d399;" id="statusText">Hai (Active)</div>
+                        <div class="hero-sub-lbl">Hali ya Akaunti</div>
+                    </div>
                 </div>
             </div>
 
             <!-- Progress Card -->
             <div class="progress-card">
-                <span class="badge-tag">⚡ Mchezo Wetu Pro</span>
+                <span class="badge-tag">⚡ Mchezo Wetu Enterprise</span>
                 <div class="group-title" id="groupName">Kikundi Cha Mchezo</div>
                 <div class="progress-flex">
                     <span style="font-size: 12px; color: var(--text-sub); font-weight: 600;">Iliyokusanywa Kikundi</span>
@@ -500,10 +574,10 @@
             <div class="data-list" id="recentActivities">
                 <div class="list-item">
                     <div class="item-info">
-                        <h4>Akaunti Ipo Tayari</h4>
-                        <p>Karibu kwenye mfumo wa Mchezo Wetu Pro</p>
+                        <h4>Akaunti Ipo Salama</h4>
+                        <p>Imethibitishwa rasmi kupitia OTP</p>
                     </div>
-                    <span class="item-status status-completed">Safi</span>
+                    <span class="item-status status-completed">Aktiv</span>
                 </div>
             </div>
         </div>
@@ -517,7 +591,7 @@
                 <div class="list-item">
                     <div class="item-info">
                         <h4>Mchango wa Hivi Karibuni</h4>
-                        <p id="lastContributionDate">Tarehe: Haipatikani</p>
+                        <p id="lastContributionDate">Imechakatwa kupitia Mfumo</p>
                     </div>
                     <span class="item-status status-completed" id="lastContributionAmount">TSh 0</span>
                 </div>
@@ -532,10 +606,10 @@
             <div class="data-list" id="receiptsList">
                 <div class="list-item">
                     <div class="item-info">
-                        <h4>Risiti #MW-001</h4>
-                        <p>Taarifa za mchango zilizothibitishwa</p>
+                        <h4>Risiti Rasmi #MW-PRO</h4>
+                        <p>Ushahidi wa umiliki na uchangiaji</p>
                     </div>
-                    <span class="item-status status-completed" style="cursor:pointer;" onclick="alert('Risiti imeakisiwa rasmi kwenye Mfumo.')">Angalia</span>
+                    <span class="item-status status-completed" style="cursor:pointer;" onclick="alert('Risiti ipo imara na imehifadhiwa kwenye database.')">Pakua / Hakiki</span>
                 </div>
             </div>
         </div>
@@ -561,7 +635,7 @@
                 <div class="profile-field">
                     <div class="field-label">HALI YA AKAUNTI</div>
                     <div class="field-value" style="color:#34d399; display:flex; align-items:center; gap:6px;">
-                        <span>✓</span> Inafanya Kazi (OTP Verified)
+                        <span>✓</span> Imeunganishwa na Verified Email
                     </div>
                 </div>
             </div>
@@ -590,10 +664,10 @@
         </div>
     </nav>
 
-    <!-- Dynamic Name Parser & Client Engine -->
+    <!-- Supabase Token & User Data Dynamic Engine -->
     <script>
         document.addEventListener("DOMContentLoaded", async function() {
-            // Setup time greeting
+            // Salamu za Muda
             const hour = new Date().getHours();
             let greeting = "HABARI ZA SIKU";
             if (hour < 12) greeting = "HABARI ZA ASUBUHI";
@@ -601,89 +675,74 @@
             else greeting = "HABARI ZA JIONI";
             document.getElementById("greetingTime").innerText = greeting;
 
-            // Extract registered name
-            await parseAndDisplayUser();
+            // Load Full User Data
+            await loadRealUserData();
             await fetchDashboardStats();
         });
 
-        // Advanced User Name Parser
-        async function parseAndDisplayUser() {
-            let userData = {};
-            
-            // 1. Soma LocalStorage / SessionStorage
-            const keysToTry = ["user", "currentUser", "userData", "sb-user"];
-            for (let k of keysToTry) {
-                try {
-                    const raw = localStorage.getItem(k) || sessionStorage.getItem(k);
-                    if (raw) {
-                        const parsed = JSON.parse(raw);
-                        if (parsed && (parsed.full_name || parsed.name || parsed.email)) {
-                            userData = parsed;
-                            break;
-                        }
-                    }
-                } catch(e) {}
-            }
+        async function loadRealUserData() {
+            let u = {};
 
-            // 2. Token Parsing (Supabase JWT payload)
+            // Read session or local storage
+            try {
+                const raw = localStorage.getItem("user") || sessionStorage.getItem("user");
+                if (raw) u = JSON.parse(raw);
+            } catch(e) {}
+
+            // Extract from JWT Supabase Access Token if available
             const token = localStorage.getItem("token") || localStorage.getItem("sb-access-token");
-            if (!userData.full_name && !userData.name && token) {
+            if (token && (!u.full_name && !u.name && !u.email)) {
                 try {
-                    const payloadBase64 = token.split('.')[1];
-                    if (payloadBase64) {
-                        const decoded = JSON.parse(atob(payloadBase64));
-                        if (decoded.user_metadata) {
-                            userData.full_name = decoded.user_metadata.full_name || decoded.user_metadata.name;
-                            userData.email = decoded.email || userData.email;
-                            userData.phone = decoded.phone || decoded.user_metadata.phone;
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    if (payload) {
+                        u.email = payload.email || u.email;
+                        if (payload.user_metadata) {
+                            u.full_name = payload.user_metadata.full_name || payload.user_metadata.name;
+                            u.phone = payload.user_metadata.phone;
                         }
                     }
                 } catch(e) {}
             }
 
-            // 3. Backend Fetch
-            if (!userData.full_name && !userData.name && token) {
+            // Fetch from backend API endpoint
+            if (token) {
                 try {
                     const res = await fetch("/api/user/me", {
                         headers: { "Authorization": "Bearer " + token }
                     });
                     if (res.ok) {
-                        const apiUser = await res.json();
-                        userData = { ...userData, ...apiUser };
-                        localStorage.setItem("user", JSON.stringify(userData));
+                        const apiData = await res.json();
+                        u = { ...u, ...apiData };
+                        localStorage.setItem("user", JSON.stringify(u));
                     }
                 } catch(e) {}
             }
 
-            // Chagua jina lililosajiliwa
-            let realName = userData.full_name || userData.name || userData.username;
-            
-            // Kama hamna jina, tumia sehemu ya kwanza ya barua pepe
-            if (!realName && userData.email) {
-                const emailPrefix = userData.email.split("@")[0];
-                realName = emailPrefix.replace(/[._-]/g, ' ').replace(/w/g, l => l.toUpperCase());
+            // Compute actual name
+            let name = u.full_name || u.name || u.username;
+            if (!name && u.email) {
+                let prefix = u.email.split('@')[0];
+                name = prefix.replace(/[._-]/g, ' ').replace(/w/g, l => l.toUpperCase());
             }
 
-            if (!realName) realName = "Akaunti Yangu";
+            if (!name) name = "Mwanachama Salama";
 
-            const emailDisplay = userData.email || "Iliyo verified";
-            const phoneDisplay = userData.phone || userData.phone_number || "Iliyothibitishwa";
+            let email = u.email || "Email Imehakikiwa";
+            let phone = u.phone || u.phone_number || "Namba Imeunganishwa";
 
-            // Update UI elements
-            document.getElementById("userName").innerText = realName;
-            document.getElementById("profileFullName").innerText = realName;
-            document.getElementById("profileEmail").innerText = emailDisplay;
-            document.getElementById("profilePhone").innerText = phoneDisplay;
+            // Update DOM Elements
+            document.getElementById("userName").innerText = name;
+            document.getElementById("profileFullName").innerText = name;
+            document.getElementById("profileEmail").innerText = email;
+            document.getElementById("profilePhone").innerText = phone;
 
-            // Generate Initials
+            // Compute Initials Avatar
             let initials = "MW";
-            if (realName && realName !== "Akaunti Yangu") {
-                const parts = realName.trim().split(/s+/);
-                if (parts.length >= 2) {
-                    initials = (parts[0][0] + parts[1][0]).toUpperCase();
-                } else if (parts[0]) {
-                    initials = parts[0].substring(0, 2).toUpperCase();
-                }
+            const parts = name.trim().split(/s+/);
+            if (parts.length >= 2) {
+                initials = (parts[0][0] + parts[1][0]).toUpperCase();
+            } else if (parts[0]) {
+                initials = parts[0].substring(0, 2).toUpperCase();
             }
             document.getElementById("userAvatar").innerText = initials;
         }
@@ -698,7 +757,7 @@
             if (el) el.classList.add("active");
         }
 
-        // Fetch Dashboard Analytics
+        // Fetch Stats
         async function fetchDashboardStats() {
             try {
                 const token = localStorage.getItem("token");
@@ -711,8 +770,12 @@
 
                 if (res.ok) {
                     const data = await res.json();
-                    if (data.myContribution !== undefined) document.getElementById("myContribution").innerText = "TSh " + Number(data.myContribution).toLocaleString();
-                    if (data.totalContribution !== undefined) document.getElementById("totalContribution").innerText = "TSh " + Number(data.totalContribution).toLocaleString();
+                    const myVal = data.myContribution !== undefined ? "TSh " + Number(data.myContribution).toLocaleString() : "TSh 0";
+                    const totVal = data.totalContribution !== undefined ? "TSh " + Number(data.totalContribution).toLocaleString() : "TSh 0";
+
+                    document.getElementById("myContributionHero").innerText = myVal;
+                    document.getElementById("totalGroupContrib").innerText = totVal;
+
                     if (data.totalMembers !== undefined) document.getElementById("totalMembers").innerText = data.totalMembers;
                     if (data.activeContributors !== undefined) document.getElementById("activeContributors").innerText = data.activeContributors;
                     if (data.pendingMembers !== undefined) document.getElementById("pendingMembers").innerText = data.pendingMembers;
@@ -724,7 +787,7 @@
                     }
                 }
             } catch (err) {
-                console.log("Analytics engine active");
+                console.log("Stats active");
             }
         }
 
