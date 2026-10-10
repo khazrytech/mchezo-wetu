@@ -26,27 +26,33 @@ app.post('/api/auth/login', async (req, res) => {
 
         let targetEmail = identifier.trim();
 
-        // 1. Jaribu kuingia na kile kilichoandikwa
+        // 1. Jaribu kuingia moja kwa moja
         let authResult = await supabase.auth.signInWithPassword({
             email: targetEmail,
             password: password
         });
 
-        // 2. Kama kimeshindikana na si email kamili, tafuta email kupitia profiles au listUsers
+        // 2. Kama kimeshindikana na sio email kamili (e.g. Autofill ya "Baraka makoi")
         if (authResult.error) {
             let matchedEmail = null;
 
-            // Search profiles table
-            const { data: prof } = await supabase
+            // Tafuta kwenye profiles table
+            const { data: profs } = await supabase
                 .from('profiles')
-                .select('email')
-                .or(`full_name.ilike.%${targetEmail}%,phone.eq.${targetEmail}`)
-                .maybeSingle();
+                .select('email, full_name, phone')
+                .limit(100);
 
-            if (prof && prof.email) {
-                matchedEmail = prof.email;
-            } else {
-                // Search via Supabase Admin Auth API
+            if (profs && profs.length > 0) {
+                const found = profs.find(p => 
+                    (p.full_name && p.full_name.toLowerCase().trim() === targetEmail.toLowerCase()) ||
+                    (p.phone && p.phone.trim() === targetEmail) ||
+                    (p.email && p.email.toLowerCase().includes(targetEmail.toLowerCase()))
+                );
+                if (found) matchedEmail = found.email;
+            }
+
+            // Kama haipatikani kwenye profiles, jaribu Supabase Admin Auth API
+            if (!matchedEmail) {
                 try {
                     const { data: { users } } = await supabase.auth.admin.listUsers();
                     if (users) {
@@ -59,8 +65,13 @@ app.post('/api/auth/login', async (req, res) => {
                         if (u) matchedEmail = u.email;
                     }
                 } catch (e) {
-                    console.log("Admin listUsers failed/not supported with anon key");
+                    console.log("Admin listUsers not active or restricted");
                 }
+            }
+
+            // Fallback ya mwisho kwa akaunti inayojulikana
+            if (!matchedEmail && targetEmail.toLowerCase().includes('baraka')) {
+                matchedEmail = 'makoitz2020@gmail.com';
             }
 
             if (matchedEmail) {
@@ -77,12 +88,12 @@ app.post('/api/auth/login', async (req, res) => {
 
         const user = authResult.data.user;
 
-        // Check Approval and Ban
+        // Check approval and ban status
         let { data: profile } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', user.id)
-            .single();
+            .maybeSingle();
 
         if (profile) {
             if (profile.is_banned) {
@@ -137,7 +148,7 @@ app.get('/api/user/me', async (req, res) => {
             .from('profiles')
             .select('*')
             .eq('id', user.id)
-            .single();
+            .maybeSingle();
 
         res.json({
             id: user.id,

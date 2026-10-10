@@ -41,7 +41,7 @@
             overflow-x: hidden;
         }
 
-        /* Modern Custom Toast Container */
+        /* Toast Notifications */
         #toast-container {
             position: fixed;
             top: 20px;
@@ -73,18 +73,9 @@
             pointer-events: auto;
         }
 
-        .custom-toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .custom-toast.error {
-            border-left: 4px solid #ef4444;
-        }
-
-        .custom-toast.success {
-            border-left: 4px solid #10b981;
-        }
+        .custom-toast.show { transform: translateY(0); opacity: 1; }
+        .custom-toast.error { border-left: 4px solid #ef4444; }
+        .custom-toast.success { border-left: 4px solid #10b981; }
 
         .auth-wrapper {
             width: 100%;
@@ -125,21 +116,8 @@
             letter-spacing: -1px;
         }
 
-        .app-title {
-            font-size: 28px;
-            font-weight: 800;
-            color: #ffffff;
-            letter-spacing: -0.5px;
-        }
-
-        .app-subtitle {
-            font-size: 12px;
-            font-weight: 700;
-            color: #38bdf8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 2px;
-        }
+        .app-title { font-size: 28px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px; }
+        .app-subtitle { font-size: 12px; font-weight: 700; color: #38bdf8; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
 
         .motto-line {
             display: flex;
@@ -151,13 +129,7 @@
             color: var(--text-sub);
             font-weight: 600;
         }
-
-        .motto-line::before, .motto-line::after {
-            content: '';
-            width: 30px;
-            height: 1px;
-            background: rgba(255,255,255,0.2);
-        }
+        .motto-line::before, .motto-line::after { content: ''; width: 30px; height: 1px; background: rgba(255,255,255,0.2); }
 
         .auth-card {
             background: var(--card-glass);
@@ -168,8 +140,8 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
         }
 
-        /* Single Action Header - Imerekenishwa (Haijaweka Jisajili Pembeni) */
-        .single-header-tab {
+        /* Modern Simple Header - "Ingia" Only */
+        .pro-header-tab {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
@@ -177,30 +149,18 @@
             text-align: center;
             margin-bottom: 22px;
             font-weight: 800;
-            font-size: 14px;
+            font-size: 15px;
             color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            letter-spacing: 0.5px;
         }
 
-        .input-group {
-            margin-bottom: 16px;
-        }
-
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .input-icon {
-            position: absolute;
-            left: 16px;
-            font-size: 16px;
-            color: var(--text-sub);
-        }
+        .input-group { margin-bottom: 16px; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-icon { position: absolute; left: 16px; font-size: 16px; color: var(--text-sub); }
 
         .custom-input {
             width: 100%;
@@ -213,11 +173,7 @@
             outline: none;
             transition: all 0.2s ease;
         }
-
-        .custom-input:focus {
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
-        }
+        .custom-input:focus { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
 
         .flex-options {
             display: flex;
@@ -228,18 +184,8 @@
             margin: 14px 0 20px;
         }
 
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-        }
-
-        .forgot-link {
-            color: #38bdf8;
-            text-decoration: none;
-            font-weight: 600;
-        }
+        .checkbox-label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .forgot-link { color: #38bdf8; text-decoration: none; font-weight: 600; }
 
         .btn-submit-glow {
             width: 100%;
@@ -258,24 +204,10 @@
             justify-content: center;
             gap: 8px;
         }
+        .btn-submit-glow:active { transform: scale(0.98); }
 
-        .btn-submit-glow:active {
-            transform: scale(0.98);
-        }
-
-        .bottom-switch {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 13px;
-            color: var(--text-sub);
-        }
-
-        .bottom-switch a {
-            color: #38bdf8;
-            font-weight: 800;
-            text-decoration: none;
-            cursor: pointer;
-        }
+        .bottom-switch { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-sub); }
+        .bottom-switch a { color: #38bdf8; font-weight: 800; text-decoration: none; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -293,8 +225,8 @@
         </div>
 
         <div class="auth-card">
-            <div class="single-header-tab" id="headerTitle">
-                <span>👤</span> <span id="headerTitleText">Ingia Kwenye Akaunti</span>
+            <div class="pro-header-tab" id="headerTitle">
+                <span>👤</span> <span id="headerTitleText">Ingia</span>
             </div>
 
             <form id="authForm" novalidate autocomplete="on">
@@ -315,7 +247,7 @@
                 <div class="input-group">
                     <div class="input-wrapper">
                         <span class="input-icon">👤</span>
-                        <input type="text" id="identifier" class="custom-input" placeholder="Namba ya simu, Jina au Barua pepe" autocomplete="username" required>
+                        <input type="text" id="identifier" class="custom-input" placeholder="Namba ya simu, Jina au Email" autocomplete="username" required>
                     </div>
                 </div>
 
@@ -381,7 +313,7 @@
         function toggleAuthMode() {
             isSignUpMode = !isSignUpMode;
             if (isSignUpMode) {
-                document.getElementById('headerTitleText').innerText = 'Jisajili Akaunti Mpya';
+                document.getElementById('headerTitleText').innerText = 'Jisajili';
                 document.getElementById('nameGroup').style.display = 'block';
                 document.getElementById('phoneGroup').style.display = 'block';
                 document.getElementById('optionsRow').style.display = 'none';
@@ -390,11 +322,11 @@
                 document.getElementById('bottomQuestion').innerText = 'Unayo akaunti tayari?';
                 document.getElementById('bottomLink').innerText = 'Ingia hapa';
             } else {
-                document.getElementById('headerTitleText').innerText = 'Ingia Kwenye Akaunti';
+                document.getElementById('headerTitleText').innerText = 'Ingia';
                 document.getElementById('nameGroup').style.display = 'none';
                 document.getElementById('phoneGroup').style.display = 'none';
                 document.getElementById('optionsRow').style.display = 'flex';
-                document.getElementById('identifier').placeholder = 'Namba ya simu, Jina au Barua pepe';
+                document.getElementById('identifier').placeholder = 'Namba ya simu, Jina au Email';
                 document.getElementById('btnText').innerText = 'Ingia';
                 document.getElementById('bottomQuestion').innerText = 'Huna akaunti?';
                 document.getElementById('bottomLink').innerText = 'Jisajili sasa';
@@ -435,7 +367,7 @@
                 });
                 const data = await res.json();
                 if (!res.ok) {
-                    showToast(data.error || 'Kuingia kimeshindikana. Angalia taarifa zako.', 'error');
+                    showToast(data.error || 'Kuingia kimeshindikana. Hakiki taarifa zako.', 'error');
                 } else {
                     localStorage.setItem('token', data.token);
                     window.location.href = 'dashboard.html';
