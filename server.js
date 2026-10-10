@@ -5,15 +5,24 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const SUPABASE_URL = process.env.SUPABASE_URL || '';
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+// Inatafuta majina mbalimbali ili kuzuia error ya supabaseKey is required
+const supabaseUrl = process.env.SUPABASE_URL || process.env.SUPABASE_PROJECT_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+    console.log("[ONYO]: Tafadhali hakikisha SUPABASE_URL na SUPABASE_KEY zimewekwa vizuri kwenye Render Environment Variables.");
+}
+
+const supabase = createClient(
+    supabaseUrl || 'https://placeholder.supabase.co', 
+    supabaseKey || 'placeholder-key'
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
-// 1. Endpoint ya Taarifa za Mtumiaji na Uhakiki wa Approval/Ban
+// 1. Endpoint ya taarifa za mtumiaji na uhakiki wa Approval/Ban
 app.get('/api/user/me', async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
@@ -23,7 +32,6 @@ app.get('/api/user/me', async (req, res) => {
         const { data: { user }, error } = await supabase.auth.getUser(token);
         if (error || !user) return res.status(401).json({ error: 'Token si sahihi' });
 
-        // Angalia kwenye profiles table kama yupo na hali yake
         let { data: profile } = await supabase
             .from('profiles')
             .select('*')
@@ -31,7 +39,6 @@ app.get('/api/user/me', async (req, res) => {
             .single();
 
         if (!profile) {
-            // Unda profile ya awali ikiwa haipo
             const newProf = {
                 id: user.id,
                 email: user.email,
@@ -79,7 +86,7 @@ app.get('/api/user/stats', async (req, res) => {
     });
 });
 
-// 3. Admin: Orodha ya Wanachama Wote
+// 3. Admin: Orodha ya Wanachama
 app.get('/api/admin/users', async (req, res) => {
     try {
         const { data, error } = await supabase.from('profiles').select('*');
@@ -90,10 +97,10 @@ app.get('/api/admin/users', async (req, res) => {
     }
 });
 
-// 4. Admin: Approve / Ban Wanachama
+// 4. Admin: Approve / Ban
 app.post('/api/admin/action', async (req, res) => {
     try {
-        const { userId, action } = req.body; // action: 'approve', 'ban', 'unban'
+        const { userId, action } = req.body;
         let updateData = {};
         if (action === 'approve') updateData = { is_approved: true };
         if (action === 'ban') updateData = { is_banned: true };
