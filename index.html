@@ -3,25 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mchezo Wetu - Ingia Mwanachama</title>
+    <title>Mchezo Wetu - Portal ya Wanachama</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #030712;
-            --card-glass: rgba(15, 23, 42, 0.85);
-            --border-glass: rgba(59, 130, 246, 0.25);
-            --primary-blue: #3b82f6;
-            --text-main: #ffffff;
+            --bg-deep: #020617;
+            --surface: rgba(15, 23, 42, 0.75);
+            --border: rgba(59, 130, 246, 0.2);
+            --primary: #3b82f6;
+            --accent: #10b981;
+            --text-main: #f8fafc;
             --text-sub: #94a3b8;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-deep);
             background-image: 
-                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.25) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 50%);
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.18) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 40%);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -30,129 +31,128 @@
             padding: 20px 16px;
         }
 
-        #toast-container {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            z-index: 9999; width: 90%; max-width: 360px; pointer-events: none;
-        }
-
-        .custom-toast {
-            background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px); color: #fff; padding: 14px 18px; border-radius: 16px;
-            font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 12px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8); margin-bottom: 10px;
-            transform: translateY(-20px); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: auto;
-        }
+        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 90%; max-width: 360px; pointer-events: none; }
+        .custom-toast { background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px); color: #fff; padding: 14px 18px; border-radius: 16px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 12px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8); margin-bottom: 10px; transform: translateY(-20px); opacity: 0; transition: all 0.3s; pointer-events: auto; }
         .custom-toast.show { transform: translateY(0); opacity: 1; }
         .custom-toast.error { border-left: 4px solid #ef4444; }
         .custom-toast.success { border-left: 4px solid #10b981; }
 
-        .auth-wrapper { width: 100%; max-width: 400px; animation: fadeIn 0.6s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .auth-container { width: 100%; max-width: 420px; animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .brand-header { text-align: center; margin-bottom: 24px; }
-        .logo-ring {
-            width: 82px; height: 82px; border-radius: 24px;
+        .brand-box { text-align: center; margin-bottom: 24px; }
+        .logo-circle {
+            width: 76px; height: 76px; border-radius: 22px;
             background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
-            display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; padding: 3px;
-            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.35); font-size: 28px; font-weight: 800; color: #fff;
         }
-        .logo-inner {
-            width: 100%; height: 100%; background: #030712; border-radius: 22px;
-            display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800; color: #3b82f6;
-        }
-        .app-title { font-size: 26px; font-weight: 800; color: #fff; }
-        .app-subtitle { font-size: 11px; font-weight: 800; color: #38bdf8; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; }
-
-        .auth-card {
-            background: var(--card-glass); backdrop-filter: blur(24px);
-            border: 1px solid var(--border-glass); border-radius: 28px; padding: 26px 22px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+        .brand-title { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+        .brand-badge {
+            display: inline-block; margin-top: 6px; padding: 4px 12px; border-radius: 20px;
+            background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
         }
 
-        .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 16px; margin-bottom: 22px; }
-        .tab-btn { background: none; border: none; padding: 12px; color: var(--text-sub); font-weight: 800; font-size: 13px; border-radius: 12px; cursor: pointer; transition: all 0.3s; }
-        .tab-btn.active { background: var(--primary-blue); color: #fff; box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
-
-        .input-group { margin-bottom: 16px; }
-        .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-icon { position: absolute; left: 16px; font-size: 16px; color: var(--text-sub); }
-
-        .custom-input {
-            width: 100%; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 15px 16px 15px 46px; border-radius: 16px; color: #fff; font-size: 14px; outline: none;
-            transition: all 0.2s ease;
+        .glass-card {
+            background: var(--surface); backdrop-filter: blur(25px);
+            border: 1px solid var(--border); border-radius: 30px; padding: 26px 22px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
         }
-        .custom-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); }
 
-        .flex-options { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-sub); margin: 14px 0 20px; }
-        .checkbox-label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
-        .forgot-link { color: #38bdf8; text-decoration: none; font-weight: 600; }
+        .tab-switcher {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+            background: rgba(255, 255, 255, 0.04); padding: 4px; border-radius: 16px; margin-bottom: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .tab-item {
+            background: transparent; border: none; padding: 12px; color: var(--text-sub);
+            font-size: 13px; font-weight: 800; border-radius: 12px; cursor: pointer; transition: all 0.3s;
+        }
+        .tab-item.active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
 
-        .btn-submit-glow {
-            width: 100%; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        .field-group { margin-bottom: 16px; }
+        .input-wrap { position: relative; display: flex; align-items: center; }
+        .input-icon { position: absolute; left: 16px; font-size: 16px; }
+
+        .modern-input {
+            width: 100%; background: rgba(2, 6, 23, 0.7); border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 16px 15px 48px; border-radius: 16px; color: #fff; font-size: 14px; outline: none;
+            transition: all 0.2s;
+        }
+        .modern-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+
+        .options-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-sub); margin: 14px 0 20px; }
+        .checkbox-lbl { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .link-sub { color: #60a5fa; text-decoration: none; font-weight: 700; }
+
+        .btn-action {
+            width: 100%; background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
             color: #fff; border: none; padding: 16px; border-radius: 18px; font-weight: 800; font-size: 15px;
-            cursor: pointer; box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5); display: flex; align-items: center; justify-content: center; gap: 8px;
-            transition: transform 0.2s;
+            cursor: pointer; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4); transition: transform 0.2s;
         }
-        .btn-submit-glow:active { transform: scale(0.98); }
+        .btn-action:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
     <div id="toast-container"></div>
 
-    <div class="auth-wrapper">
-        <div class="brand-header">
-            <div class="logo-ring"><div class="logo-inner">MW</div></div>
-            <h1 class="app-title">Mchezo Wetu</h1>
-            <div class="app-subtitle">M PORTAL YA WANACHAMA</div>
+    <div class="auth-container">
+        <div class="brand-box">
+            <div class="logo-circle">MW</div>
+            <h1 class="brand-title">Mchezo Wetu</h1>
+            <div class="brand-badge">Portal ya Wanachama Rasmi</div>
         </div>
 
-        <div class="auth-card">
-            <div class="auth-tabs">
-                <button class="tab-btn active" id="tabLogin" onclick="switchMode('login')">Ingia</button>
-                <button class="tab-btn" id="tabSignup" onclick="switchMode('signup')">Jisajili</button>
+        <div class="glass-card">
+            <div class="tab-switcher">
+                <button class="tab-item active" id="tabLogin" onclick="switchMode('login')">Ingia</button>
+                <button class="tab-item" id="tabSignup" onclick="switchMode('signup')">Jisajili</button>
             </div>
 
             <form id="authForm" novalidate>
-                <div class="input-group" id="nameGroup" style="display: none;">
-                    <div class="input-wrapper">
+                <div class="field-group" id="nameGroup" style="display: none;">
+                    <div class="input-wrap">
                         <span class="input-icon">👤</span>
-                        <input type="text" id="fullName" class="custom-input" placeholder="Majina yako kamili">
+                        <input type="text" id="fullName" class="modern-input" placeholder="Majina yako kamili">
                     </div>
                 </div>
 
-                <div class="input-group" id="phoneGroup" style="display: none;">
-                    <div class="input-wrapper">
+                <div class="field-group" id="phoneGroup" style="display: none;">
+                    <div class="input-wrap">
                         <span class="input-icon">📞</span>
-                        <input type="tel" id="phone" class="custom-input" placeholder="Namba yako ya simu">
+                        <input type="tel" id="phone" class="modern-input" placeholder="Namba yako ya simu">
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <div class="input-wrapper">
-                        <span class="input-icon">👤</span>
-                        <input type="text" id="identifier" class="custom-input" placeholder="Namba ya simu, Jina au Email" required>
+                <div class="field-group">
+                    <div class="input-wrap">
+                        <span class="input-icon">📧</span>
+                        <input type="text" id="identifier" class="modern-input" placeholder="Namba ya simu, Jina au Email" required>
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <div class="input-wrapper">
-                        <span class="input-icon">🔒</span>
-                        <input type="password" id="password" class="custom-input" placeholder="Nenosiri" required>
+                <div class="field-group">
+                    <div class="input-wrap">
+                        <span class="input-icon">🔑</span>
+                        <input type="password" id="password" class="modern-input" placeholder="Nenosiri" required>
                     </div>
                 </div>
 
-                <div class="flex-options" id="optionsRow">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="rememberMe" checked>
-                        <span>Kumbuka maelezo yangu</span>
+                <div class="options-row" id="optionsRow">
+                    <label class="checkbox-lbl">
+                        <input type="checkbox" id="remember" checked>
+                        <span>Kumbuka taarifa zangu</span>
                     </label>
-                    <a href="javascript:void(0)" class="forgot-link" onclick="showToast('Wasiliana na Admin.', 'error')">Sahau nenosiri?</a>
+                    <a href="javascript:void(0)" class="link-sub" onclick="showToast('Wasiliana na Admin.', 'error')">Sahau nenosiri?</a>
                 </div>
 
-                <button type="submit" class="btn-submit-glow" id="submitBtn">
-                    <span id="btnText">Ingia Kwenye Mfumo</span> <span>→</span>
+                <button type="submit" class="btn-action" id="submitBtn">
+                    <span id="btnText">Ingia Kwenye Mfumo</span> →
                 </button>
             </form>
         </div>
@@ -165,16 +165,11 @@
             toast.className = `custom-toast ${type}`;
             toast.innerHTML = `<span>${type === 'error' ? '⚠️' : '✅'}</span> <span>${message}</span>`;
             container.appendChild(toast);
-
             setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 4000);
         }
 
         let mode = 'login';
-
         function switchMode(m) {
             mode = m;
             if (m === 'login') {
@@ -191,7 +186,7 @@
                 document.getElementById('nameGroup').style.display = 'block';
                 document.getElementById('phoneGroup').style.display = 'block';
                 document.getElementById('optionsRow').style.display = 'none';
-                document.getElementById('identifier').placeholder = 'Barua pepe (Email ya kupokea OTP)';
+                document.getElementById('identifier').placeholder = 'Barua pepe (Email ya OTP)';
                 document.getElementById('btnText').innerText = 'Jisajili na Tuma OTP';
             }
         }
@@ -201,31 +196,26 @@
             const identifier = document.getElementById('identifier').value.trim();
             const password = document.getElementById('password').value;
 
-            if (!identifier || !password) {
-                showToast('Tafadhali jaza taarifa zote.', 'error');
-                return;
-            }
+            if (!identifier || !password) { showToast('Jaza taarifa zote.', 'error'); return; }
 
             if (mode === 'signup') {
                 const fullName = document.getElementById('fullName').value.trim();
                 const phone = document.getElementById('phone').value.trim();
-                if (!fullName) { showToast('Weka majina yako kamili.', 'error'); return; }
+                if (!fullName) { showToast('Weka jina lako kamili.', 'error'); return; }
 
                 const res = await fetch('/api/auth/signup-user', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: identifier, password, fullName, phone })
                 });
                 const data = await res.json();
                 if (!res.ok) showToast(data.error || 'Usajili umeshindikana.', 'error');
                 else {
-                    showToast('Usajili umefanikiwa! Angalia email yako kwa ajili ya OTP kisha subiri idhini ya Admin.', 'success');
+                    showToast('Usajili umefanikiwa! Angalia email yako kwa ajili ya OTP.', 'success');
                     switchMode('login');
                 }
             } else {
                 const res = await fetch('/api/auth/login-user', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ identifier, password })
                 });
                 const data = await res.json();
