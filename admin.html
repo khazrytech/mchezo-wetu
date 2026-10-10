@@ -1,117 +1,320 @@
 <!DOCTYPE html>
 <html lang="sw">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080b16">
-<title>Mchezo Wetu | Admin Control</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090a16">
+<title>Mchezo Wetu — Admin Control Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:dark;--bg:#080b16;--panel:#121a2c;--line:#28334b;--purple:#9c7bff;--cyan:#39dfcf;--muted:#97a4bd;--white:#f5f7ff}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 90% 0,#412c7040,transparent 38%),var(--bg);color:var(--white);font:14px Inter,Arial,sans-serif;padding-bottom:40px}.layout{max-width:1200px;margin:auto;padding:24px 20px}.top{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:28px}.brand{font-size:19px;font-weight:800}.brand span{color:var(--purple)}.btn{border:1px solid var(--line);background:#1a2540;color:white;border-radius:11px;padding:10px 13px;cursor:pointer;font-size:12px;font-weight:700}.primary{background:linear-gradient(110deg,#9c7bff,#6385ff);color:#080b16;border:0}.danger{color:#ff9cab}.hero{margin:22px 0}.eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--purple);font-weight:800}.hero h1{font-size:clamp(27px,4vw,38px);letter-spacing:-1.5px;margin:10px 0}.muted{color:var(--muted);line-height:1.7}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.stat,.panel{background:linear-gradient(145deg,#151e32f5,#0f1525f5);border:1px solid #ffffff13;border-radius:18px;padding:19px;min-width:0}.stat label{font-size:12px;color:var(--muted)}.stat strong{display:block;font-size:clamp(20px,3vw,27px);margin-top:12px;overflow-wrap:anywhere}.columns{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:15px}.panel h2{font-size:17px;margin:0}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}.field{padding:10px 13px;background:#080e1c;border:1px solid var(--line);border-radius:10px;color:white;max-width:100%}.field.search{width:min(100%,260px)}.item{padding:15px 0;border-bottom:1px solid #ffffff12;display:flex;align-items:center;justify-content:space-between;gap:12px}.item:last-child{border:0}.item b{font-size:13px;overflow-wrap:anywhere}.item small{display:block;color:var(--muted);margin-top:5px;font-size:11px;overflow-wrap:anywhere}.actions{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-end}.pill{display:inline-block;border-radius:20px;padding:6px 9px;font-size:10px;background:#26314b;color:#d2dcff;white-space:nowrap}.ok{color:#75e8cb;background:#10372f}.bad{color:#ff9eaf;background:#401e2a}.notice{display:none;padding:12px;border-radius:11px;margin:12px 0;background:#19233a;color:#c6d3ff;overflow-wrap:anywhere}.notice.show{display:block}.wide{margin-top:15px}.empty{color:var(--muted);font-size:12px;padding:18px 0}.section-desc{font-size:12px;color:var(--muted);line-height:1.6}@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.columns{grid-template-columns:1fr}.layout{padding:18px 13px}.stat,.panel{padding:15px}}@media(max-width:370px){.top{align-items:flex-start;flex-direction:column}.item{align-items:flex-start;flex-direction:column}.actions{justify-content:flex-start}}
+:root{--bg:#090a16;--card:#121426;--card2:#17192e;--line:#ffffff12;--text:#f5f4ff;--muted:#9296b2;--purple:#a184ff;--cyan:#5ce5df;--green:#67e5ac;--yellow:#ffd078;--red:#ff8097}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:18px}
+body{margin:0;background:radial-gradient(ellipse at 75% -10%,#603bc12b,transparent 35%),radial-gradient(ellipse at 0 60%,#15577816,transparent 38%),var(--bg);font:13px Inter,system-ui,sans-serif;color:var(--text);min-height:100vh}
+button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:wait}a{color:inherit;text-decoration:none}
+.layout{min-height:100vh}
+.sidebar{position:fixed;inset:0 auto 0 0;width:245px;padding:24px 17px;background:#0d0e1cf5;border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:20;backdrop-filter:blur(20px);transition:transform .25s}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 7px 30px}
+.logo{width:43px;height:43px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(135deg,#a184ff,#6558ff 60%,#53dcd7);font-weight:900;font-size:18px;box-shadow:0 7px 28px #9474ff38}
+.brand-name{font-size:15px;font-weight:900;letter-spacing:-.5px}.brand-sub{font-size:9px;color:#9d91d2;letter-spacing:2px;margin-top:5px}
+.nav-label{padding:12px 12px 9px;color:#656b89;font-size:9px;font-weight:800;letter-spacing:1.8px}
+.nav{display:grid;gap:5px}.nav a{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid transparent;border-radius:12px;color:#a5a8c1;font-size:11px;font-weight:650;transition:.2s}
+.nav a:hover,.nav a.active{background:linear-gradient(100deg,#a184ff21,#5ce5df09);border-color:#a184ff24;color:white}.nav a.active{box-shadow:inset 3px 0 var(--purple)}
+.nav-icon{width:20px;text-align:center;font-size:17px}.nav-count{margin-left:auto;background:#a184ff20;color:#cbbdff;padding:4px 7px;border-radius:7px;font-size:10px}
+.sidebar-bottom{margin-top:auto}.security{padding:14px;border:1px solid #67e5ac22;border-radius:14px;background:linear-gradient(135deg,#67e5ac0d,#a184ff0b)}
+.security b{font-size:11px}.security p{color:var(--muted);font-size:10px;line-height:1.8;margin:7px 0}
+.status-live{color:var(--green);font-size:10px;display:flex;align-items:center;gap:7px}.dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor}
+.main{margin-left:245px;padding:25px clamp(15px,3vw,38px) 30px;max-width:1800px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.crumb{font-size:11px;color:var(--muted)}.crumb strong{color:#eeeaff}
+.top-actions{display:flex;align-items:center;gap:8px}.avatar{width:35px;height:35px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,#805cce,#24345f);font-size:11px;font-weight:900}
+.btn{border:1px solid var(--line);background:#ffffff07;color:#eeeaff;border-radius:10px;padding:10px 12px;font-size:10px;font-weight:750;transition:.2s}
+.btn:hover{border-color:#a184ff66;background:#a184ff12}.primary{border:0;background:linear-gradient(110deg,#a184ff,#7160ff);color:white;box-shadow:0 5px 20px #8765ff22}.danger{color:#ff9caf;border-color:#ff80972a;background:#ff809709}
+.menu-toggle{display:none}
+.welcome{display:flex;justify-content:space-between;align-items:flex-end;gap:15px;padding:27px 0 22px}
+.eyebrow{color:#b8a6ff;text-transform:uppercase;letter-spacing:1.8px;font-size:9px;font-weight:800}
+h1{font-size:clamp(25px,3vw,35px);letter-spacing:-1.5px;margin:11px 0 8px;font-weight:850}
+.subtitle{color:var(--muted);font-size:11px;line-height:1.8;margin:0;max-width:650px}
+.date-chip{border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:#b7b9d2;font-size:10px;white-space:nowrap}
+.notice{display:none;padding:12px 14px;border-radius:11px;margin:0 0 16px;font-size:11px;line-height:1.7;overflow-wrap:anywhere}
+.notice.show{display:block}.notice.good{color:#8bf0c0;background:#67e5ac10;border:1px solid #67e5ac30}.notice.bad{color:#ffb0bf;background:#ff809710;border:1px solid #ff809730}
+.section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:22px 0 13px}
+.section-heading h2{font-size:13px;margin:0;font-weight:800}.section-heading p{font-size:10px;color:var(--muted);margin:5px 0 0}
+.tag{font-size:9px;padding:7px 9px;border-radius:8px;color:#c6b7ff;background:#a184ff12;border:1px solid #a184ff22;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.stat{position:relative;overflow:hidden;min-width:0;padding:17px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#17192cf5,#111222f5);transition:.2s}
+.stat:hover{transform:translateY(-2px);border-color:#a184ff4a}.stat:after{content:"";position:absolute;right:-35px;top:-45px;width:90px;height:90px;border-radius:50%;background:var(--accent);opacity:.12;filter:blur(25px);pointer-events:none}
+.stat-top{display:flex;align-items:center;justify-content:space-between;gap:7px}.stat-label{color:#a4a7c2;font-size:10px;line-height:1.7}
+.stat-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:color-mix(in srgb,var(--accent) 13%,transparent);color:var(--accent);font-size:16px;flex-shrink:0}
+.stat-value{font-size:clamp(19px,2vw,27px);letter-spacing:-1px;font-weight:850;margin:17px 0 8px;overflow-wrap:anywhere}
+.stat-foot{color:var(--muted);font-size:9px;line-height:1.7}.stat-foot strong{color:var(--accent)}
+.content-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(245px,.8fr);gap:13px;margin-top:15px}
+.panel{min-width:0;padding:18px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#141629f5,#101120f7)}
+.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
+.panel-title{font-size:12px;font-weight:800}.panel-sub{font-size:10px;line-height:1.8;color:var(--muted);margin-top:6px}
+.legend{display:flex;gap:13px;flex-wrap:wrap;color:var(--muted);font-size:9px}.legend span{display:flex;align-items:center;gap:6px}.legend i{width:7px;height:7px;background:var(--purple);border-radius:3px}.legend .cy i{background:var(--cyan)}
+.chart{height:170px;display:flex;align-items:stretch;gap:10px;padding:14px 0 0;border-bottom:1px solid var(--line)}
+.chart-col{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px}
+.bars{height:calc(100% - 17px);width:min(100%,44px);display:flex;align-items:flex-end;justify-content:center;gap:4px}
+.bar{width:45%;min-height:3px;max-width:18px;border-radius:5px 5px 2px 2px;background:linear-gradient(#bba9ff,#7656de)}
+.bar.cyan{background:linear-gradient(#77eee5,#319eb9)}.chart-label{font-size:9px;color:#8589a5;padding-bottom:8px}
+.chart-foot{display:flex;justify-content:space-between;gap:8px;margin-top:13px;color:var(--muted);font-size:10px}.chart-foot strong{color:#f2efff}
+.breakdown{display:grid;gap:17px}.break-row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:10px}
+.break-name{display:flex;align-items:center;gap:8px;color:#b8bad0}.mark{width:8px;height:8px;border-radius:3px;background:var(--purple);flex-shrink:0}.break-value{font-weight:800;text-align:right;overflow-wrap:anywhere}
+.progress{height:5px;background:#ffffff0b;border-radius:9px;margin-top:9px;overflow:hidden}.progress span{display:block;width:0;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--purple),var(--cyan));transition:width .4s}
+.callout{margin-top:19px;padding:12px;border:1px solid #a184ff24;border-radius:12px;background:linear-gradient(120deg,#a184ff0e,#5ce5df08)}
+.callout b{font-size:10px}.callout p{font-size:10px;line-height:1.8;color:var(--muted);margin:7px 0 0}
+.table-panel{margin-top:15px}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:17px 0 13px}
+.search-wrap{display:flex;align-items:center;gap:8px;min-width:min(100%,250px);max-width:360px;flex:1;border:1px solid var(--line);border-radius:10px;background:#0b0c19;padding:0 11px;color:#7f84a2}
+.search{width:100%;min-width:0;padding:11px 0;border:0;outline:0;background:transparent;color:white;font-size:10px}.search::placeholder{color:#737793}
+.filter{max-width:100%;border:1px solid var(--line);border-radius:10px;background:#0c0d1b;color:#d2d0e7;padding:10px;font-size:10px}
+.table-scroll{width:100%;overflow-x:auto}table{width:100%;border-collapse:collapse;text-align:left;white-space:nowrap}
+th{padding:12px 10px;border-bottom:1px solid var(--line);color:#777d9a;font-size:9px;letter-spacing:.8px;text-transform:uppercase}
+td{padding:13px 10px;border-bottom:1px solid #ffffff09;color:#c7c8de;font-size:10px}tbody tr:hover{background:#ffffff04}tbody tr:last-child td{border-bottom:0}
+.member{display:flex;align-items:center;gap:9px;min-width:145px}.member-avatar{width:32px;height:32px;display:grid;place-items:center;flex-shrink:0;border-radius:10px;background:linear-gradient(140deg,#59448d,#202947);font-size:10px;font-weight:800}
+.member-name{font-size:10px;font-weight:750;color:#f0efff}.member-meta{font-size:9px;color:#8589a5;margin-top:4px}
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:7px;padding:6px 8px;font-size:9px;font-weight:750;background:#ffffff08;color:#b7bad1}.pill:before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.pill.ok{color:#72e8b5;background:#67e5ac11}.pill.pending{color:#ffd17e;background:#ffd07810}.pill.bad{color:#ff91a4;background:#ff809711}
+.actions{display:flex;justify-content:flex-end;gap:5px}.mini{padding:7px 8px;border:1px solid var(--line);border-radius:7px;background:#ffffff06;color:#dddaf4;font-size:9px;font-weight:750}.mini.approve{color:#82efbd;border-color:#67e5ac2a}.mini.reject{color:#ff9caf;border-color:#ff80972a}.mini.verify{color:#c6b4ff;border-color:#a184ff32}
+.empty,.loading{padding:25px 10px;text-align:center;color:var(--muted);font-size:10px;line-height:1.8}.loading{display:flex;align-items:center;justify-content:center;gap:9px}
+.spinner{width:14px;height:14px;border:2px solid #ffffff20;border-top-color:var(--purple);border-radius:50%;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.footer{display:flex;justify-content:space-between;gap:10px;padding-top:17px;color:#676b87;font-size:9px;line-height:1.7}
+@media(max-width:1100px){.sidebar{width:215px}.main{margin-left:215px;padding:21px 17px 25px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.content-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.sidebar{width:250px;transform:translateX(-105%);box-shadow:20px 0 50px #0009}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:14px 12px 24px}.menu-toggle{display:inline-block}.topbar{padding-bottom:15px}.welcome{align-items:flex-start;flex-direction:column;padding:22px 0 17px;gap:11px}h1{font-size:27px}.date-chip{font-size:9px}.panel{padding:14px}.stat{padding:13px}.stat-value{font-size:22px}.member-view{display:none}.footer{flex-direction:column}.chart{height:150px}}
+@media(max-width:390px){.stats{gap:8px}.stat{padding:10px;border-radius:13px}.stat-value{font-size:19px}.stat-label{font-size:9px}.stat-icon{width:29px;height:29px}.top-actions{gap:5px}.btn{padding:9px}.panel-head{gap:7px}.tag{font-size:8px;padding:6px}}
 </style>
 </head>
 <body>
-<main class="layout">
-<header class="top"><div class="brand">◈ <span>MW</span> Control Center</div><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="/dashboard" style="text-decoration:none">Member view ↗</a><button class="btn" id="logout">Toka</button></div></header>
-<section class="hero"><div class="eyebrow">Administration / Secure access</div><h1>Admin Control Center</h1><p class="muted">Usimamizi wa wanachama, fedha na uthibitishaji wa miamala.</p><div id="notice" class="notice" role="status"></div></section>
-<section class="grid">
-<div class="stat"><label>Wanachama wote</label><strong id="users">—</strong></div>
-<div class="stat"><label>Walioidhinishwa</label><strong id="active">—</strong></div>
-<div class="stat"><label>Malipo yanayosubiri</label><strong id="pendingCount">—</strong></div>
-<div class="stat"><label>Malipo yaliyothibitishwa</label><strong id="verifiedCount">—</strong></div>
-<div class="stat"><label>Fedha zilizothibitishwa</label><strong id="verifiedAmount">—</strong></div>
-<div class="stat"><label>Fedha zinazosubiri</label><strong id="pendingAmount">—</strong></div>
-<div class="stat"><label>Akaunti zilizosimamishwa</label><strong id="blocked">—</strong></div>
-<div class="stat"><label>Michango iliyopangiwa</label><strong id="assigned">—</strong></div>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><div class="logo">MW</div><div><div class="brand-name">Mchezo Wetu</div><div class="brand-sub">ADMIN CENTER</div></div></div>
+  <div class="nav-label">WORKSPACE</div>
+  <nav class="nav">
+    <a class="active" href="#overview"><span class="nav-icon">◈</span>Overview</a>
+    <a href="#members"><span class="nav-icon">♙</span>Wanachama</a>
+    <a href="#payments"><span class="nav-icon">⇄</span>Malipo <span class="nav-count" id="pendingBadge">—</span></a>
+    <a href="#finance"><span class="nav-icon">▥</span>Muhtasari wa fedha</a>
+  </nav>
+  <div class="nav-label" style="margin-top:20px">QUICK ACCESS</div>
+  <nav class="nav"><a href="/dashboard"><span class="nav-icon">↗</span>Member portal</a><a href="#security"><span class="nav-icon">◇</span>Usalama</a></nav>
+  <div class="sidebar-bottom">
+    <div class="security" id="security"><b>Ulinzi wa mfumo</b><p>Vitendo vya admin vinathibitishwa na server. Hakiki muamala kabla ya kukubali malipo.</p><div class="status-live"><span class="dot"></span><span id="connectionStatus">Inaunganisha...</span></div></div>
+    <button class="btn" id="logout" style="width:100%;text-align:left;margin-top:12px">↗ &nbsp; Toka kwenye akaunti</button>
+  </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:11px"><button class="btn menu-toggle" id="menuToggle" aria-label="Fungua menyu">☰</button><div class="crumb">Mchezo Wetu &nbsp;/&nbsp; <strong>Admin Dashboard</strong></div></div>
+  <div class="top-actions"><a href="/dashboard" class="btn member-view">Member view ↗</a><button class="btn" id="refresh" title="Refresh data">↻</button><div class="avatar" id="adminAvatar">MW</div></div>
+</header>
+
+<section class="welcome" id="overview">
+  <div><div class="eyebrow">✦ &nbsp; SECURE ADMINISTRATION</div><h1>Habari, Admin <span style="color:var(--purple)">✦</span></h1><p class="subtitle">Karibu kwenye control center yako. Simamia wanachama, michango na miamala yote sehemu moja.</p></div>
+  <div class="date-chip" id="today">Inapakia tarehe...</div>
 </section>
-<section class="panel wide">
-<div class="panel-head"><h2>Usimamizi wa wanachama</h2><input id="userSearch" class="field search" placeholder="Tafuta jina au simu..." aria-label="Tafuta mwanachama"></div>
-<p class="section-desc">Thibitisha wanachama wapya au simamisha akaunti zinazohitaji hatua.</p>
-<div id="usersList" class="empty">Inapakia wanachama...</div>
+<div id="notice" class="notice" role="status" aria-live="polite"></div>
+
+<div class="section-heading"><div><h2>Muhtasari wa mfumo</h2><p>Takwimu halisi kutoka database yako.</p></div><span class="tag">● LIVE DATA</span></div>
+<section class="stats">
+  <article class="stat" style="--accent:#b7a0ff"><div class="stat-top"><span class="stat-label">Wanachama wote</span><span class="stat-icon">♙</span></div><div class="stat-value" id="users">—</div><div class="stat-foot"><strong>●</strong> Akaunti zilizosajiliwa</div></article>
+  <article class="stat" style="--accent:#67e5ac"><div class="stat-top"><span class="stat-label">Wanachama hai</span><span class="stat-icon">✓</span></div><div class="stat-value" id="active">—</div><div class="stat-foot"><strong>●</strong> Walioidhinishwa na admin</div></article>
+  <article class="stat" style="--accent:#ffd078"><div class="stat-top"><span class="stat-label">Malipo yanayosubiri</span><span class="stat-icon">◷</span></div><div class="stat-value" id="pendingCount">—</div><div class="stat-foot"><strong id="pendingAmount">TSh —</strong> bado hayajathibitishwa</div></article>
+  <article class="stat" style="--accent:#5ce5df"><div class="stat-top"><span class="stat-label">Malipo yaliyothibitishwa</span><span class="stat-icon">↗</span></div><div class="stat-value" id="verifiedAmount">TSh —</div><div class="stat-foot"><strong id="verifiedCount">—</strong> miamala imethibitishwa</div></article>
 </section>
-<section class="panel wide">
-<div class="panel-head"><h2>Uhakiki wa malipo</h2><button class="btn" id="refresh">↻ Refresh</button></div>
-<p class="section-desc">Kagua reference na kiasi kabla ya kuthibitisha malipo. Usithibitishe bila kuhakiki muamala kwenye chanzo chake.</p>
-<div id="paymentsList" class="empty">Inapakia malipo...</div>
+
+<section class="content-grid" id="finance">
+  <article class="panel">
+    <div class="panel-head"><div><div class="panel-title">Muonekano wa malipo</div><div class="panel-sub">Ulinganisho wa kiasi kilichothibitishwa na kinachosubiri.</div></div><span class="tag">TSh</span></div>
+    <div class="legend"><span><i></i>Yaliyothibitishwa</span><span class="cy"><i></i>Yanasubiri</span></div>
+    <div class="chart" id="chart"><div class="empty">Inapakia data...</div></div>
+    <div class="chart-foot"><span>Muhtasari wa sasa</span><strong id="chartTotal">TSh —</strong></div>
+  </article>
+  <article class="panel">
+    <div class="panel-head"><div><div class="panel-title">Afya ya mfumo</div><div class="panel-sub">Hali ya akaunti na miamala.</div></div><span style="font-size:9px;color:var(--green)">● LIVE</span></div>
+    <div class="breakdown">
+      <div><div class="break-row"><span class="break-name"><i class="mark" style="background:var(--green)"></i>Wanachama hai</span><strong class="break-value" id="approvedBreak">—</strong></div><div class="progress"><span id="approvedBar" style="background:linear-gradient(90deg,#67e5ac,#5ce5df)"></span></div></div>
+      <div><div class="break-row"><span class="break-name"><i class="mark" style="background:var(--yellow)"></i>Malipo yanayosubiri</span><strong class="break-value" id="pendingBreak">—</strong></div><div class="progress"><span id="pendingBar" style="background:linear-gradient(90deg,#ffd078,#ff9f70)"></span></div></div>
+      <div><div class="break-row"><span class="break-name"><i class="mark" style="background:var(--red)"></i>Akaunti zilizosimamishwa</span><strong class="break-value" id="blocked">—</strong></div><div class="progress"><span id="blockedBar" style="background:linear-gradient(90deg,#ff8097,#b14f82)"></span></div></div>
+      <div><div class="break-row"><span class="break-name"><i class="mark"></i>Michango iliyopangiwa</span><strong class="break-value" id="assigned">TSh —</strong></div><div class="progress"><span id="contributionBar"></span></div></div>
+    </div>
+    <div class="callout"><b>✦ Kumbusho la usalama</b><p>Usithibitishe malipo kwa reference pekee. Hakiki muamala kwenye huduma ya malipo husika kwanza.</p></div>
+  </article>
 </section>
-<p class="muted" style="text-align:center;font-size:11px;margin-top:22px">Mchezo Wetu · Admin actions zinapaswa kutumika na wasimamizi walioidhinishwa pekee.</p>
+
+<section class="panel table-panel" id="members">
+  <div class="panel-head"><div><div class="panel-title">Usimamizi wa wanachama</div><div class="panel-sub">Idhinisha, tafuta au simamisha akaunti inapohitajika.</div></div><span class="tag" id="memberCount">— wanachama</span></div>
+  <div class="toolbar"><label class="search-wrap"><span>⌕</span><input class="search" id="userSearch" placeholder="Tafuta jina au simu..." autocomplete="off"></label><select class="filter" id="userFilter" aria-label="Chuja wanachama"><option value="all">Wanachama wote</option><option value="pending">Hawajaidhinishwa</option><option value="approved">Walioidhinishwa</option><option value="banned">Waliosimamishwa</option><option value="admin">Wasimamizi</option></select></div>
+  <div class="table-scroll"><table><thead><tr><th>Mwanachama</th><th>Jukumu</th><th>Hali ya akaunti</th><th>Tarehe</th><th style="text-align:right">Vitendo</th></tr></thead><tbody id="usersList"><tr><td colspan="5"><div class="loading"><span class="spinner"></span>Inapakia wanachama...</div></td></tr></tbody></table></div>
+  <div class="footer"><span id="userResult">Inapakia...</span><span>Taarifa kutoka Supabase</span></div>
+</section>
+
+<section class="panel table-panel" id="payments">
+  <div class="panel-head"><div><div class="panel-title">Uhakiki wa malipo</div><div class="panel-sub">Kagua reference, kiasi na hali ya kila muamala.</div></div><span class="tag" id="paymentCount">— malipo</span></div>
+  <div class="toolbar"><label class="search-wrap"><span>⌕</span><input class="search" id="paymentSearch" placeholder="Tafuta reference au jina..." autocomplete="off"></label><select class="filter" id="paymentFilter" aria-label="Chuja malipo"><option value="all">Malipo yote</option><option value="pending">Yanasubiri</option><option value="verified">Yaliyothibitishwa</option><option value="rejected">Yaliyokataliwa</option></select></div>
+  <div class="table-scroll"><table><thead><tr><th>Mwanachama</th><th>Kiasi</th><th>Reference</th><th>Njia</th><th>Hali</th><th>Tarehe</th><th style="text-align:right">Vitendo</th></tr></thead><tbody id="paymentsList"><tr><td colspan="7"><div class="loading"><span class="spinner"></span>Inapakia malipo...</div></td></tr></tbody></table></div>
+  <div class="footer"><span id="paymentResult">Inapakia...</span><span>Uamuzi wa malipo unatumwa kwa server</span></div>
+</section>
+<footer class="footer"><span>© <span id="year"></span> Mchezo Wetu · Admin Control Center</span><span>Premium Member Management</span></footer>
 </main>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-let client,token,users=[];
+'use strict';
+let supabaseClient=null,sessionToken=null,allUsers=[],allPayments=[],currentUser=null,busy=false;
 const $=id=>document.getElementById(id);
-const money=n=>'TSh '+Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2});
-function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function note(t,ok=false){const n=$('notice');n.textContent=t;n.className='notice show';n.style.color=ok?'#75e8cb':'#ffacba'}
+const money=n=>'TSh '+Number(n||0).toLocaleString('en-TZ',{maximumFractionDigits:0});
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const initials=v=>String(v||'MW').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'MW';
+const date=v=>{if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?'—':d.toLocaleDateString('sw-TZ',{day:'2-digit',month:'short',year:'numeric'})};
+function note(msg,good=false){const n=$('notice');n.textContent=msg;n.className='notice show '+(good?'good':'bad')}
+function clearNote(){$('notice').className='notice'}
 async function api(url,options={}){
- const r=await fetch(url,{...options,headers:{'Content-Type':'application/json','Authorization':'Bearer '+token,...options.headers}});
- const d=await r.json();if(!r.ok)throw Error(d.error||'Ombi halikufanikiwa.');return d;
+ const headers={Authorization:'Bearer '+sessionToken,...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})};
+ const r=await fetch(url,{...options,headers,cache:'no-store'});
+ let data={};try{data=await r.json()}catch{}
+ if(!r.ok)throw new Error(data.error||data.message||'Ombi halikufanikiwa. HTTP '+r.status);
+ return data;
 }
-function date(v){return v?new Date(v).toLocaleString('sw-TZ',{dateStyle:'medium',timeStyle:'short'}):'—'}
-function state(s){return s==='verified'?'Imethibitishwa':s==='rejected'?'Imekataliwa':s==='pending'?'Inasubiri':s==='approved'?'Ameidhinishwa':s==='banned'?'Amesimamishwa':'Hajaidhinishwa'}
-function pill(s){return '<span class="pill '+(s==='verified'||s==='approved'?'ok':s==='rejected'||s==='banned'?'bad':'')+'">'+state(s)+'</span>'}
-async function loadSummary(){
- const d=await api('/api/admin/summary'),s=d.stats;
- $('users').textContent=s.users;$('active').textContent=s.active;$('blocked').textContent=s.blocked;
- $('pendingCount').textContent=s.pendingPayments;$('verifiedCount').textContent=s.verifiedPayments;
- $('verifiedAmount').textContent=money(s.verifiedAmount);$('pendingAmount').textContent=money(s.pendingAmount);
+function pill(status){
+ const names={pending:'Inasubiri',verified:'Imethibitishwa',rejected:'Imekataliwa',approved:'Ameidhinishwa',banned:'Amesimamishwa'};
+ const cls=['verified','approved'].includes(status)?'ok':['rejected','banned'].includes(status)?'bad':'pending';
+ return '<span class="pill '+cls+'">'+esc(names[status]||status||'Haijulikani')+'</span>';
+}
+function renderStats(s){
+ $('users').textContent=Number(s.users||0).toLocaleString();
+ $('active').textContent=Number(s.active||0).toLocaleString();
+ $('pendingCount').textContent=Number(s.pendingPayments||0).toLocaleString();
+ $('verifiedCount').textContent=Number(s.verifiedPayments||0).toLocaleString();
+ $('verifiedAmount').textContent=money(s.verifiedAmount);
+ $('pendingAmount').textContent=money(s.pendingAmount);
+ $('blocked').textContent=Number(s.blocked||0).toLocaleString();
  $('assigned').textContent=money(s.assignedContributions);
-}
-async function loadUsers(){
- const d=await api('/api/admin/users');users=d.users||[];renderUsers();
+ $('pendingBadge').textContent=Number(s.pendingPayments||0).toLocaleString();
+ $('approvedBreak').textContent=(s.active||0)+' / '+(s.users||0);
+ $('pendingBreak').textContent=Number(s.pendingPayments||0).toLocaleString();
+ const pct=(a,b)=>Math.max(0,Math.min(100,b?Number(a||0)/Number(b)*100:0));
+ $('approvedBar').style.width=pct(s.active,s.users)+'%';
+ $('pendingBar').style.width=pct(s.pendingPayments,(s.pendingPayments||0)+(s.verifiedPayments||0)+(s.rejectedPayments||0))+'%';
+ $('blockedBar').style.width=pct(s.blocked,s.users)+'%';
+ $('contributionBar').style.width=pct(s.assignedContributions,Math.max(Number(s.assignedContributions||0),Number(s.verifiedAmount||0)))+'%';
+ $('chartTotal').textContent=money(Number(s.verifiedAmount||0)+Number(s.pendingAmount||0));
+ const vals=[Number(s.verifiedAmount||0),Number(s.pendingAmount||0)];
+ const max=Math.max(...vals,1);
+ $('chart').innerHTML='<div class="chart-col"><div class="bars"><div class="bar" style="height:'+Math.max(3,vals[0]/max*100)+'%"></div></div><div class="chart-label">Imethibitishwa</div></div><div class="chart-col"><div class="bars"><div class="bar cyan" style="height:'+Math.max(3,vals[1]/max*100)+'%"></div></div><div class="chart-label">Inasubiri</div></div>';
 }
 function renderUsers(){
- const q=$('userSearch').value.trim().toLowerCase();
- const list=users.filter(u=>(u.full_name||'').toLowerCase().includes(q)||(u.phone||'').toLowerCase().includes(q));
- $('usersList').innerHTML=list.length?list.map(u=>{
-  const s=u.is_banned?'banned':u.is_approved?'approved':'pending';
-  const action=u.is_banned
-   ?'<button class="btn primary" data-id="'+esc(u.id)+'" data-action="unban">Rudisha</button>'
-   :!u.is_approved
-    ?'<button class="btn primary" data-id="'+esc(u.id)+'" data-action="approve">Idhinisha</button>'
-    :'<button class="btn danger" data-id="'+esc(u.id)+'" data-action="ban">Simamisha</button>';
-  return '<div class="item"><div><b>'+esc(u.full_name||'Mwanachama')+'</b><small>'+esc(u.phone||'Simu haijawekwa')+' · '+esc(u.role)+' · '+date(u.created_at)+'</small>'+pill(s)+'</div><div class="actions">'+action+'</div></div>';
- }).join(''):'<div class="empty">Hakuna mwanachama anayelingana na utafutaji.</div>';
+ const q=$('userSearch').value.trim().toLowerCase(),f=$('userFilter').value;
+ const rows=allUsers.filter(u=>{
+  const text=[u.full_name,u.phone,u.role,u.id].join(' ').toLowerCase();
+  if(q&&!text.includes(q))return false;
+  if(f==='pending'&&(u.is_approved||u.is_banned))return false;
+  if(f==='approved'&&(!u.is_approved||u.is_banned))return false;
+  if(f==='banned'&&!u.is_banned)return false;
+  if(f==='admin'&&u.role!=='admin')return false;
+  return true;
+ });
+ $('memberCount').textContent=allUsers.length+' wanachama';
+ $('userResult').textContent='Inaonyesha '+rows.length+' kati ya '+allUsers.length+' wanachama';
+ if(!rows.length){$('usersList').innerHTML='<tr><td colspan="5"><div class="empty">Hakuna mwanachama anayelingana na utafutaji.</div></td></tr>';return}
+ $('usersList').innerHTML=rows.map(u=>{
+  const state=u.is_banned?'banned':u.is_approved?'approved':'pending';
+  let actions='';
+  if(u.role!=='admin'&&!u.is_banned&&!u.is_approved)actions+='<button class="mini approve" data-user="'+esc(u.id)+'" data-action="approve">Idhinisha</button>';
+  if(u.role!=='admin'&&u.is_banned)actions+='<button class="mini approve" data-user="'+esc(u.id)+'" data-action="unban">Fungua</button>';
+  if(u.role!=='admin'&&!u.is_banned)actions+='<button class="mini reject" data-user="'+esc(u.id)+'" data-action="ban">Simamisha</button>';
+  if(!actions)actions='<span style="color:var(--muted);font-size:9px">'+(u.role==='admin'?'Admin':'Hakuna')+'</span>';
+  return '<tr><td><div class="member"><div class="member-avatar">'+esc(initials(u.full_name))+'</div><div><div class="member-name">'+esc(u.full_name||'Bila jina')+'</div><div class="member-meta">'+esc(u.phone||'Simu haijawekwa')+'</div></div></div></td><td>'+pill(u.role==='admin'?'verified':'pending').replace('Inasubiri',esc(u.role==='admin'?'Admin':'Mwanachama')).replace('Imethibitishwa',esc(u.role==='admin'?'Admin':'Mwanachama'))+'</td><td>'+pill(state)+'</td><td>'+esc(date(u.created_at))+'</td><td><div class="actions">'+actions+'</div></td></tr>';
+ }).join('');
 }
-async function loadPayments(){
- const d=await api('/api/admin/payments'),list=d.payments||[];
- $('paymentsList').innerHTML=list.length?list.map(p=>{
+function renderPayments(){
+ const q=$('paymentSearch').value.trim().toLowerCase(),f=$('paymentFilter').value;
+ const rows=allPayments.filter(p=>{
+  const name=p.profiles?.full_name||'',text=[name,p.profiles?.phone,p.reference,p.method,p.status,p.id].join(' ').toLowerCase();
+  return (!q||text.includes(q))&&(f==='all'||p.status===f);
+ });
+ $('paymentCount').textContent=allPayments.length+' malipo';
+ $('paymentResult').textContent='Inaonyesha '+rows.length+' kati ya '+allPayments.length+' miamala';
+ if(!rows.length){$('paymentsList').innerHTML='<tr><td colspan="7"><div class="empty">Hakuna malipo yanayolingana na utafutaji.</div></td></tr>';return}
+ $('paymentsList').innerHTML=rows.map(p=>{
   const name=p.profiles?.full_name||'Mwanachama';
-  const actions=p.status==='pending'
-   ?'<button class="btn primary" data-payment="'+esc(p.id)+'" data-action="verify">Thibitisha</button><button class="btn danger" data-payment="'+esc(p.id)+'" data-action="reject">Kataa</button>'
-   :'';
-  return '<div class="item"><div><b>'+money(p.amount)+' · '+esc(name)+'</b><small>Ref: '+esc(p.reference)+' · '+esc(p.method)+' · '+date(p.created_at)+'</small>'+pill(p.status)+'</div><div class="actions">'+actions+'</div></div>';
- }).join(''):'<div class="empty">Hakuna malipo yaliyorekodiwa.</div>';
+  const actions=p.status==='pending'?'<button class="mini verify" data-payment="'+esc(p.id)+'" data-action="verify">Thibitisha</button><button class="mini reject" data-payment="'+esc(p.id)+'" data-action="reject">Kataa</button>':'<span style="color:var(--muted);font-size:9px">Imekaguliwa</span>';
+  return '<tr><td><div class="member"><div class="member-avatar">'+esc(initials(name))+'</div><div><div class="member-name">'+esc(name)+'</div><div class="member-meta">'+esc(p.profiles?.phone||'')+'</div></div></div></td><td style="font-weight:800;color:#f3efff">'+money(p.amount)+'</td><td>'+esc(p.reference||'—')+'</td><td>'+esc(p.method||'—')+'</td><td>'+pill(p.status)+'</td><td>'+esc(date(p.created_at))+'</td><td><div class="actions">'+actions+'</div></td></tr>';
+ }).join('');
 }
-document.addEventListener('click',async e=>{
- const b=e.target.closest('button[data-action]');if(!b)return;
- const action=b.dataset.action;
+async function loadAll(){
+ if(busy)return;busy=true;clearNote();$('connectionStatus').textContent='Inasasisha...';
+ $('refresh').disabled=true;
  try{
-  b.disabled=true;
-  if(b.dataset.id){
-   await api('/api/admin/users/'+encodeURIComponent(b.dataset.id)+'/action',{method:'POST',body:JSON.stringify({action})});
-   note('Mabadiliko ya akaunti yamehifadhiwa.',true);await loadUsers();await loadSummary();
-  }else if(b.dataset.payment){
-   if(!confirm(action==='verify'?'Umethibitisha muamala huu kutoka chanzo cha malipo?':'Unataka kukataa taarifa hii ya malipo?'))return;
-   const d=await api('/api/admin/payments/'+encodeURIComponent(b.dataset.payment)+'/review',{method:'POST',body:JSON.stringify({action})});
-   note(d.message,true);await loadPayments();await loadSummary();
-  }
- }catch(err){note(err.message)}finally{b.disabled=false}
-});
-async function start(){
- try{
-  const c=await fetch('/api/config').then(r=>r.json());
-  client=window.supabase.createClient(c.supabaseUrl,c.supabaseAnonKey);
-  const s=await client.auth.getSession();token=s.data.session?.access_token;
-  if(!token){location.replace('/login');return}
-  await api('/api/me');
-  await Promise.all([loadSummary(),loadUsers(),loadPayments()]);
+  const results=await Promise.all([api('/api/admin/summary'),api('/api/admin/users'),api('/api/admin/payments')]);
+  renderStats(results[0].stats||{});
+  allUsers=results[1].users||[];allPayments=results[2].payments||[];
+  renderUsers();renderPayments();
+  $('connectionStatus').textContent='Server imeunganishwa';
  }catch(e){
-  if(String(e.message).toLowerCase().includes('admin'))note(e.message);
-  else note(e.message||'Imeshindikana kupakia Admin Panel.');
+  $('connectionStatus').textContent='Hitilafu ya muunganisho';
+  note(e.message+' — Hakikisha akaunti yako ina role ya admin kwenye Supabase na Render ina SERVICE ROLE KEY.');
+ }finally{busy=false;$('refresh').disabled=false}
+}
+async function start(){
+ $('today').textContent=new Date().toLocaleDateString('sw-TZ',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+ $('year').textContent=new Date().getFullYear();
+ try{
+  const cr=await fetch('/api/config',{cache:'no-store'});
+  if(!cr.ok)throw new Error('Imeshindikana kupata mipangilio ya Supabase kutoka server.');
+  const cfg=await cr.json();
+  const url=cfg.supabaseUrl||cfg.url||cfg.SUPABASE_URL;
+  const key=cfg.supabaseAnonKey||cfg.anonKey||cfg.publishableKey||cfg.SUPABASE_ANON_KEY;
+  if(!url||!key)throw new Error('Supabase URL au anon/publishable key haijarudishwa na /api/config.');
+  if(!window.supabase)throw new Error('Supabase client haijapakia. Kagua muunganisho wa intaneti.');
+  supabaseClient=window.supabase.createClient(url,key);
+  const {data,error}=await supabaseClient.auth.getSession();
+  if(error)throw error;
+  if(!data.session){location.href='/';return}
+  sessionToken=data.session.access_token;
+  const me=await api('/api/me');
+  currentUser=me.profile||me.user||me;
+  if(currentUser.role&&currentUser.role!=='admin'){
+   note('Akaunti hii haina ruhusa za admin. Ingia kwa akaunti iliyoidhinishwa kama admin.');
+   $('connectionStatus').textContent='Ruhusa imekataliwa';return;
+  }
+  $('adminAvatar').textContent=initials(currentUser.full_name||data.session.user.email);
+  $('connectionStatus').textContent='Akaunti imeunganishwa';
+  await loadAll();
+ }catch(e){
+  $('connectionStatus').textContent='Muunganisho umeshindikana';
+  note(e.message||'Imeshindikana kuanzisha dashboard.');
  }
 }
+$('refresh').addEventListener('click',loadAll);
 $('userSearch').addEventListener('input',renderUsers);
-$('refresh').onclick=async()=>{try{await Promise.all([loadSummary(),loadUsers(),loadPayments()]);note('Taarifa zimefanywa upya.',true)}catch(e){note(e.message)}};
-$('logout').onclick=async()=>{if(client)await client.auth.signOut();location.replace('/login')};
+$('userFilter').addEventListener('change',renderUsers);
+$('paymentSearch').addEventListener('input',renderPayments);
+$('paymentFilter').addEventListener('change',renderPayments);
+$('menuToggle').addEventListener('click',()=>$('sidebar').classList.toggle('open'));
+document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>{$('sidebar').classList.remove('open');document.querySelectorAll('.nav a').forEach(n=>n.classList.remove('active'));a.classList.add('active')}));
+document.addEventListener('click',async e=>{
+ const ub=e.target.closest('[data-user]');
+ const pb=e.target.closest('[data-payment]');
+ if(!ub&&!pb)return;
+ const btn=ub||pb,action=btn.dataset.action;
+ if(action==='ban'&&!confirm('Una uhakika unataka kusimamisha akaunti hii?'))return;
+ if(action==='reject'&&!confirm('Una uhakika umekagua muamala na unataka kuukataa?'))return;
+ if(action==='verify'&&!confirm('Thibitisha tu baada ya kuhakiki muamala kwenye huduma ya malipo. Uendelee?'))return;
+ btn.disabled=true;
+ try{
+  if(ub)await api('/api/admin/users/'+encodeURIComponent(ub.dataset.user)+'/action',{method:'POST',body:JSON.stringify({action})});
+  else await api('/api/admin/payments/'+encodeURIComponent(pb.dataset.payment)+'/review',{method:'POST',body:JSON.stringify({action})});
+  note('Mabadiliko yamehifadhiwa kwa mafanikio.',true);
+  await loadAll();
+ }catch(err){note(err.message);btn.disabled=false}
+});
+$('logout').addEventListener('click',async()=>{
+ try{if(supabaseClient)await supabaseClient.auth.signOut()}catch(e){}
+ location.href='/';
+});
 start();
 </script>
 </body>
