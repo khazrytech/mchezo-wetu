@@ -8,18 +8,20 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --bg-main: #0b0f19;
-            --card-bg: rgba(23, 32, 51, 0.75);
-            --border-color: rgba(255, 255, 255, 0.1);
+            --bg-main: #020617;
+            --card-bg: rgba(15, 23, 42, 0.85);
+            --border-color: rgba(255, 255, 255, 0.08);
             --primary: #3b82f6;
             --primary-hover: #2563eb;
             --text-main: #f9fafb;
-            --text-sub: #9ca3af;
+            --text-sub: #94a3b8;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         body {
             background-color: var(--bg-main);
-            background-image: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.15), transparent 70%);
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.15), transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1), transparent 50%);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -33,42 +35,44 @@
             background: var(--card-bg);
             backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
-            border-radius: 24px;
+            border-radius: 26px;
             padding: 32px 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
         .brand-logo { text-align: center; margin-bottom: 24px; }
-        .brand-logo h1 { font-size: 26px; font-weight: 800; color: #fff; }
-        .brand-logo p { font-size: 13px; color: var(--text-sub); margin-top: 4px; }
+        .brand-logo h1 { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+        .brand-logo p { font-size: 13px; color: var(--text-sub); margin-top: 6px; }
         .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-sub); margin-bottom: 6px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-sub); margin-bottom: 6px; letter-spacing: 0.5px; }
         .form-control {
             width: 100%;
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.8);
             border: 1px solid var(--border-color);
-            padding: 14px 16px;
-            border-radius: 14px;
+            padding: 15px 16px;
+            border-radius: 16px;
             color: #fff;
-            font-size: 14px;
+            font-size: 15px;
             outline: none;
             transition: all 0.2s;
         }
-        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2); }
         .btn-submit {
             width: 100%;
             background: linear-gradient(135deg, var(--primary), var(--primary-hover));
             color: #fff;
             border: none;
             padding: 16px;
-            border-radius: 14px;
+            border-radius: 16px;
             font-weight: 800;
-            font-size: 15px;
+            font-size: 16px;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
             margin-top: 10px;
+            transition: transform 0.2s;
         }
-        .toggle-text { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-sub); }
-        .toggle-text a { color: var(--primary); font-weight: 700; text-decoration: none; cursor: pointer; }
+        .btn-submit:active { transform: scale(0.98); }
+        .toggle-text { text-align: center; margin-top: 22px; font-size: 13px; color: var(--text-sub); }
+        .toggle-text a { color: #60a5fa; font-weight: 800; text-decoration: none; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -81,11 +85,11 @@
         <form id="authForm">
             <div class="form-group" id="fullNameGroup" style="display: none;">
                 <label>Majina Kamili</label>
-                <input type="text" id="fullNameInput" class="form-control" placeholder="Mfano: Makoitz Mako">
+                <input type="text" id="fullNameInput" class="form-control" placeholder="Mfano: Baraka Makoi">
             </div>
             <div class="form-group">
-                <label>Barua Pepe (Email)</label>
-                <input type="email" id="emailInput" class="form-control" placeholder="jina@email.com" required>
+                <label>Barua Pepe au Jina (Email / Username)</label>
+                <input type="text" id="emailInput" class="form-control" placeholder="Weka email yako au jina" required>
             </div>
             <div class="form-group">
                 <label>Nenosiri (Password)</label>
@@ -117,12 +121,19 @@
 
         document.getElementById("authForm").addEventListener("submit", async (e) => {
             e.preventDefault();
-            const email = document.getElementById("emailInput").value.trim();
+            let inputVal = document.getElementById("emailInput").value.trim();
             const password = document.getElementById("passwordInput").value;
             const fullName = document.getElementById("fullNameInput").value.trim();
 
+            let email = inputVal;
+            if (!email.includes("@") && !isSignUp) {
+                email = inputVal.toLowerCase().replace(/\s+/g, '') + "@mchezowetu.com";
+            }
+
             if (isSignUp) {
                 if (!fullName) { alert("Tafadhali ingiza Majina Yako Kamili."); return; }
+                if (!email.includes("@")) { email = email + "@gmail.com"; }
+                
                 const { data, error } = await supabase.auth.signUp({
                     email: email,
                     password: password,
@@ -135,7 +146,7 @@
                 if (error) {
                     alert("Makosa ya Usajili: " + error.message);
                 } else {
-                    alert("Usajili umefanikiwa! Unaweza kuingia sasa.");
+                    alert("Usajili umefanikiwa! Sasa unaweza kuingia.");
                     toggleAuthMode();
                 }
             } else {
