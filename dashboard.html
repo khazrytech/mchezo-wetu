@@ -2,11 +2,209 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard ya Wanachama</title>
-    <style>body{background:#030712;color:#fff;font-family:sans-serif;text-align:center;padding-top:100px;}h1{color:#38bdf8;}</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mchezo Wetu - Portal ya Wanachama (Enterprise Mega Edition)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #020617;
+            --bg-card: rgba(15, 23, 42, 0.92);
+            --border-glow: rgba(59, 130, 246, 0.35);
+            --primary: #3b82f6;
+            --accent: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --purple: #8b5cf6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg-base);
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.22) 0%, transparent 45%),
+                radial-gradient(circle at 90% 90%, rgba(16, 185, 129, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 60%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 16px 16px 140px 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Top Enterprise Header */
+        .enterprise-header {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--bg-card); border: 1px solid var(--border-glow);
+            padding: 20px 24px; border-radius: 26px; backdrop-filter: blur(30px);
+            margin-bottom: 22px; box-shadow: 0 25px 50px rgba(0,0,0,0.7);
+        }
+        .user-meta-box h1 { font-size: 19px; font-weight: 800; color: #fff; letter-spacing: -0.4px; }
+        .user-meta-box p { font-size: 11px; color: var(--accent); font-weight: 700; margin-top: 5px; display: flex; align-items: center; gap: 6px; }
+        
+        .admin-pill-btn {
+            background: rgba(147, 51, 234, 0.25); border: 1px solid rgba(147, 51, 234, 0.6);
+            color: #c084fc; padding: 9px 16px; border-radius: 16px; font-size: 11px; font-weight: 800;
+            text-decoration: none; display: flex; align-items: center; gap: 6px; transition: transform 0.2s;
+        }
+        .admin-pill-btn:active { transform: scale(0.95); }
+
+        /* Mega Glass Containers */
+        .glass-container {
+            background: var(--bg-card); border: 1px solid var(--border-glow);
+            border-radius: 30px; padding: 26px 22px; margin-bottom: 22px;
+            backdrop-filter: blur(30px); box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        }
+        .panel-heading-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .panel-tag-title { font-size: 12px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; }
+        .panel-pill-status { background: rgba(59, 130, 246, 0.18); color: #60a5fa; padding: 6px 12px; border-radius: 12px; font-size: 10px; font-weight: 800; }
+
+        .metric-big-val { font-size: 36px; font-weight: 800; color: #fff; margin-bottom: 16px; letter-spacing: -0.8px; }
+
+        /* Heavy Progress Bar */
+        .heavy-progress-wrap { width: 100%; height: 14px; background: rgba(255,255,255,0.06); border-radius: 7px; overflow: hidden; margin: 18px 0; }
+        .heavy-progress-inner { width: 80%; height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); border-radius: 7px; }
+
+        /* Action Buttons */
+        .btn-heavy-action {
+            display: block; width: 100%; background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+            color: #fff; border: none; padding: 19px; border-radius: 20px; font-size: 16px; font-weight: 800;
+            text-align: center; cursor: pointer; box-shadow: 0 15px 35px rgba(59, 130, 246, 0.45); text-decoration: none;
+            transition: transform 0.2s;
+        }
+        .btn-heavy-action:active { transform: scale(0.98); }
+
+        /* Multi Stats Grid */
+        .grid-stats-heavy { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 18px; text-align: center; }
+        .stat-card-item { background: rgba(255,255,255,0.03); padding: 16px 10px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.06); }
+        .stat-num-val { font-size: 19px; font-weight: 800; color: #fff; }
+        .stat-lbl-txt { font-size: 10px; color: var(--text-muted); margin-top: 5px; font-weight: 700; text-transform: uppercase; }
+
+        /* Transaction Lists */
+        .tx-history-box { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
+        .tx-row-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); }
+        .tx-name-txt { font-size: 14px; font-weight: 700; color: #fff; }
+        .tx-time-txt { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+        .tx-price-txt { font-size: 15px; font-weight: 800; color: var(--accent); }
+
+        /* Bottom Fixed Navigation Bar */
+        .bottom-nav-enterprise {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px;
+            background: rgba(15, 23, 42, 0.98); border-top: 1px solid var(--border-glow); backdrop-filter: blur(30px);
+            display: flex; justify-content: space-around; padding: 16px 0; z-index: 1000;
+        }
+        .nav-item-tab { color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 700; text-align: center; background: transparent; border: none; cursor: pointer; transition: color 0.2s; }
+        .nav-item-tab.active { color: var(--primary); }
+    </style>
 </head>
 <body>
-    <h1>Karibu Kwenye Dashboard ya Wanachama (Direct Access)</h1>
-    <p>Hapa ni kwa ajili ya wanachama pekee.</p>
+
+    <!-- Enterprise Header -->
+    <div class="enterprise-header">
+        <div class="user-meta-box">
+            <h1 id="memberNameDisplay">Mwanachama Mkuu Enterprise</h1>
+            <p><span>🟢</span> Mwanachama Hai (Direct Direct Access)</p>
+        </div>
+        <a href="/admin" class="admin-pill-btn">⚙️ Admin Control</a>
+    </div>
+
+    <!-- Mchango wa Siku Panel -->
+    <div class="glass-container">
+        <div class="panel-heading-row">
+            <span class="panel-tag-title">Mchango wa Leo</span>
+            <span class="panel-pill-status">Imethibitishwa Salama</span>
+        </div>
+        <div class="metric-big-val">Tsh 2,000</div>
+        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px;">Hali ya Malipo: <b style="color: var(--accent);">Imelipwa Kikamilifu</b></div>
+        <button class="btn-heavy-action" onclick="alert('Malipo yameshawasilishwa salama kwenye hifadhidata!')">Lipa Tsh 2,000 ya Leo Sasa</button>
+    </div>
+
+    <!-- Mzunguko Panel -->
+    <div class="glass-container">
+        <div class="panel-heading-row">
+            <span class="panel-tag-title">Mzunguko wa Fedha wa Leo</span>
+            <span class="panel-pill-status" style="background: rgba(16, 185, 129, 0.18); color: #34d399;">Lengo Linafikiwa</span>
+        </div>
+        <div class="metric-big-val" style="font-size: 28px; margin-bottom: 10px;">Tsh 160,000 / <span style="font-size: 16px; color: var(--text-muted);">200,000</span></div>
+        <div class="heavy-progress-wrap"><div class="heavy-progress-inner"></div></div>
+        <div class="grid-stats-heavy">
+            <div class="stat-card-item">
+                <div class="stat-num-val" style="color: var(--accent);">80</div>
+                <div class="stat-lbl-txt">Waliolipa</div>
+            </div>
+            <div class="stat-card-item">
+                <div class="stat-num-val" style="color: var(--danger);">20</div>
+                <div class="stat-lbl-txt">Hawajalipa</div>
+            </div>
+            <div class="stat-card-item">
+                <div class="stat-num-val" style="color: var(--primary);">100</div>
+                <div class="stat-lbl-txt">Jumla</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historia ya Miamala -->
+    <div class="glass-container">
+        <div class="panel-heading-row">
+            <span class="panel-tag-title">Historia ya Miamala Yako</span>
+            <span style="font-size: 11px; color: var(--primary); font-weight: 700; cursor: pointer;" onclick="alert('Inapakia kumbukumbu zote za kina...')">Ona Yote</span>
+        </div>
+        <div class="tx-history-box">
+            <div class="tx-row-item">
+                <div>
+                    <div class="tx-name-txt">Mchango wa Siku</div>
+                    <div class="tx-time-txt">Leo, 08:15 Asubuhi</div>
+                </div>
+                <div class="tx-price-txt">+ Tsh 2,000</div>
+            </div>
+            <div class="tx-row-item">
+                <div>
+                    <div class="tx-name-txt">Mchango wa Siku</div>
+                    <div class="tx-time-txt">Jana, 09:30 Asubuhi</div>
+                </div>
+                <div class="tx-price-txt">+ Tsh 2,000</div>
+            </div>
+            <div class="tx-row-item">
+                <div>
+                    <div class="tx-name-txt">Mchango wa Siku</div>
+                    <div class="tx-time-txt">08 Oktoba, 14:00 Usiku</div>
+                </div>
+                <div class="tx-price-txt">+ Tsh 2,000</div>
+            </div>
+            <div class="tx-row-item">
+                <div>
+                    <div class="tx-name-txt">Mchango wa Siku</div>
+                    <div class="tx-time-txt">07 Oktoba, 10:10 Asubuhi</div>
+                </div>
+                <div class="tx-price-txt">+ Tsh 2,000</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Taarifa na Ilani -->
+    <div class="glass-container">
+        <div class="panel-heading-row">
+            <span class="panel-tag-title">Ilani na Sheria za Mfumo</span>
+        </div>
+        <p style="font-size: 13px; color: var(--text-muted); line-height: 1.7;">Mfumo huu umejengwa kwa mtindo wa Direct Access. Hakuna kurasa za login wala nenosiri linalohitajika ili kuingia kwenye akaunti yako. Kila kitu kiko wazi, salama, na kinajitegemea moja kwa moja kwa viwango vya juu vya Enterprise.</p>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav-enterprise">
+        <button class="nav-item-tab active">🏠 Nyumbani</button>
+        <button class="nav-item-tab" onclick="alert('Sehemu ya Michango')">💳 Michango</button>
+        <button class="nav-item-tab" onclick="alert('Sehemu ya Historia')">📜 Historia</button>
+        <button class="nav-item-tab" onclick="alert('Akaunti Yako')">👤 Profile</button>
+    </div>
+
+    <script>
+        // Enterprise Core JavaScript Logic for Member Dashboard
+        console.log("Mchezo Wetu Member Portal Initialized Successfully.");
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM fully loaded and parsed. Direct Access mode active.");
+        });
+    </script>
 </body>
 </html>
