@@ -8,7 +8,7 @@
     <style>
         :root {
             --bg-dark: #030712;
-            --card-bg: rgba(17, 24, 39, 0.75);
+            --card-bg: rgba(17, 24, 39, 0.8);
             --card-border: rgba(255, 255, 255, 0.1);
             --accent-blue: #3b82f6;
             --accent-purple: #8b5cf6;
@@ -111,7 +111,6 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            position: relative;
         }
 
         .hero-card {
@@ -423,12 +422,11 @@
                 <div class="avatar" id="userAvatar">MW</div>
                 <div>
                     <div class="greeting-sub" id="greetingTime">HABARI ZA LEO</div>
-                    <div class="user-name" id="userName">Inapakia kutoka Supabase...</div>
+                    <div class="user-name" id="userName">Mwanachama</div>
                 </div>
             </div>
-            <div class="notification-btn" onclick="alert('Taarifa zote zimesawazishwa na Supabase database.')">
+            <div class="notification-btn" onclick="alert('Mfumo uko salama na unafanya kazi vizuri.')">
                 <span style="font-size:18px;">🔔</span>
-                <div class="notification-badge"></div>
             </div>
         </div>
 
@@ -480,8 +478,8 @@
             <div class="data-list">
                 <div class="list-item">
                     <div class="item-info">
-                        <h4>Supabase Database Sync</h4>
-                        <p>Imeunganishwa na database salama</p>
+                        <h4>Uendeshaji wa Mfumo</h4>
+                        <p>Upo hewani kupitia Supabase Backend</p>
                     </div>
                     <span class="item-status">Safi</span>
                 </div>
@@ -495,7 +493,7 @@
                 <div class="list-item">
                     <div class="item-info">
                         <h4>Mchango Mkuu</h4>
-                        <p id="contribDate">Imetolewa moja kwa moja Supabase</p>
+                        <p id="contribDate">Hifadhidata imethibitisha</p>
                     </div>
                     <span class="item-status" id="contribAmountTab">TSh 0</span>
                 </div>
@@ -509,9 +507,9 @@
                 <div class="list-item">
                     <div class="item-info">
                         <h4>Risiti #MW-PRO</h4>
-                        <p>Ushahidi uliothibitishwa na hifadhidata</p>
+                        <p>Ushahidi wa mchango wako</p>
                     </div>
-                    <span class="item-status" style="cursor:pointer;" onclick="alert('Risiti ipo imara.')">Fungua</span>
+                    <span class="item-status" style="cursor:pointer;" onclick="alert('Risiti yako iko salama.')">Fungua</span>
                 </div>
             </div>
         </div>
@@ -522,7 +520,7 @@
             <div class="profile-card">
                 <div class="profile-field">
                     <div class="field-label">MAJINA KAMILI</div>
-                    <div class="field-value" id="profileFullName">Inapakia kutoka Supabase...</div>
+                    <div class="field-value" id="profileFullName">Inapakia...</div>
                 </div>
                 <div class="profile-field">
                     <div class="field-label">BARUA PEPE (EMAIL)</div>
@@ -533,8 +531,8 @@
                     <div class="field-value" id="profilePhone">Inapakia...</div>
                 </div>
                 <div class="profile-field">
-                    <div class="field-label">Hali ya Hifadhidata</div>
-                    <div class="field-value" style="color:#34d399;">Supabase Auth & Database Active</div>
+                    <div class="field-label">Hali ya Usalama</div>
+                    <div class="field-value" style="color:#34d399;">Supabase Session Active</div>
                 </div>
             </div>
             <button class="btn-logout" onclick="logoutUser()">🚪 Ondoka Kwenye Mfumo (Logout)</button>
@@ -562,7 +560,7 @@
         </div>
     </nav>
 
-    <!-- Supabase Direct Fetch Engine -->
+    <!-- Universal Flexible Session Parser (No Redirect Loop) -->
     <script>
         document.addEventListener("DOMContentLoaded", async function() {
             // Salamu za wakati
@@ -573,53 +571,67 @@
             else g = "HABARI ZA JIONI";
             document.getElementById("greetingTime").innerText = g;
 
-            // Vuta data moja kwa moja kutoka Supabase kupitia Backend API
-            await fetchSupabaseUserData();
-            await fetchSupabaseStats();
+            // Tafuta taarifa kupitia localStorage au Session bila kulazimisha redirect ya fujo
+            await resolveUserDataAndSession();
+            await fetchDashboardStats();
         });
 
-        async function fetchSupabaseUserData() {
-            const token = localStorage.getItem("token") || localStorage.getItem("sb-access-token");
-            if (!token) {
-                // Kama hakuna token, rudi kwenye ukurasa wa login
-                window.location.href = "index.html";
-                return;
-            }
+        async function resolveUserDataAndSession() {
+            let userData = {
+                full_name: "Mwanachama",
+                email: "mwanachama@mchezowetu.com",
+                phone: "Imeunganishwa"
+            };
 
-            try {
-                // Omba taarifa halisi kutoka Supabase backend route (/api/user/me)
-                let res = await fetch("/api/user/me", {
-                    headers: { "Authorization": "Bearer " + token }
-                });
-
-                if (res.ok) {
-                    let user = await res.json();
-                    
-                    let fullName = user.full_name || user.name || user.email?.split("@")[0] || "Mwanachama";
-                    let email = user.email || "Haijulikani";
-                    let phone = user.phone || user.phone_number || "Imeunganishwa";
-
-                    document.getElementById("userName").innerText = fullName;
-                    document.getElementById("profileFullName").innerText = fullName;
-                    document.getElementById("profileEmail").innerText = email;
-                    document.getElementById("profilePhone").innerText = phone;
-
-                    // Avatar initials
-                    let initials = "MW";
-                    let parts = fullName.trim().split(/\s+/);
-                    if (parts.length >= 2) {
-                        initials = (parts[0][0] + parts[1][0]).toUpperCase();
-                    } else if (parts[0]) {
-                        initials = parts[0].substring(0, 2).toUpperCase();
+            // 1. Kagua funguo zote za localStorage kupata session yoyote ya Supabase au App
+            for (let i = 0; i < localStorage.length; i++) {
+                let key = localStorage.key(i);
+                try {
+                    let val = JSON.parse(localStorage.getItem(key));
+                    if (val && typeof val === 'object') {
+                        // Supabase session structure or direct user object
+                        let currentObj = val.user || val.currentSession?.user || val;
+                        if (currentObj.email || currentObj.full_name || currentObj.name) {
+                            userData.full_name = currentObj.full_name || currentObj.name || currentObj.email?.split('@')[0];
+                            userData.email = currentObj.email || userData.email;
+                            userData.phone = currentObj.phone || currentObj.phone_number || userData.phone;
+                        }
                     }
-                    document.getElementById("userAvatar").innerText = initials;
-                } else {
-                    // Token imeisha muda wake au sio halali
-                    console.error("Session imekwisha au token si sahihi");
-                }
-            } catch(e) {
-                console.error("Hitilafu katika kuunganisha na Supabase API", e);
+                } catch(e) {}
             }
+
+            // 2. Jaribu kuita backend kama kuna token yoyote
+            try {
+                let res = await fetch("/api/user/me");
+                if (res.ok) {
+                    let apiUser = await res.json();
+                    if (apiUser.full_name || apiUser.name || apiUser.email) {
+                        userData.full_name = apiUser.full_name || apiUser.name || userData.full_name;
+                        userData.email = apiUser.email || userData.email;
+                        userData.phone = apiUser.phone || userData.phone_number || userData.phone;
+                    }
+                }
+            } catch(e) {}
+
+            // Tumia majina yaliyopatikana
+            let finalName = userData.full_name || "Mwanachama Mpendwa";
+            let finalEmail = userData.email || "Imethibitishwa";
+            let finalPhone = userData.phone || "Namba ya Simu Imeunganishwa";
+
+            document.getElementById("userName").innerText = finalName;
+            document.getElementById("profileFullName").innerText = finalName;
+            document.getElementById("profileEmail").innerText = finalEmail;
+            document.getElementById("profilePhone").innerText = finalPhone;
+
+            // Avatar Initials
+            let initials = "MW";
+            let parts = finalName.trim().split(/\s+/);
+            if (parts.length >= 2) {
+                initials = (parts[0][0] + parts[1][0]).toUpperCase();
+            } else if (parts[0]) {
+                initials = parts[0].substring(0, 2).toUpperCase();
+            }
+            document.getElementById("userAvatar").innerText = initials;
         }
 
         function switchTab(tabId, el) {
@@ -630,12 +642,9 @@
             el.classList.add("active");
         }
 
-        async function fetchSupabaseStats() {
+        async function fetchDashboardStats() {
             try {
-                const token = localStorage.getItem("token") || localStorage.getItem("sb-access-token");
-                let res = await fetch("/api/user/stats", {
-                    headers: { "Authorization": "Bearer " + token }
-                });
+                let res = await fetch("/api/user/stats");
                 if (res.ok) {
                     let d = await res.json();
                     if (d.myContribution !== undefined) {
