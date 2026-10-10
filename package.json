@@ -1,6 +1,6 @@
 {
   "name": "mchezo-wetu-enterprise",
-  "version": "2.0.0",
+  "version": "2.5.0",
   "description": "Mchezo Wetu Digital Contribution Hub",
   "main": "server.js",
   "scripts": {

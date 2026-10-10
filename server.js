@@ -17,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
+// 1. Login Endpoint (Flexible: Simu, Jina, au Email + Autofill Support)
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { identifier, password } = req.body;
@@ -26,21 +27,14 @@ app.post('/api/auth/login', async (req, res) => {
 
         let targetEmail = identifier.trim();
 
-        // 1. Jaribu kuingia moja kwa moja
         let authResult = await supabase.auth.signInWithPassword({
             email: targetEmail,
             password: password
         });
 
-        // 2. Kama kimeshindikana na sio email kamili (e.g. Autofill ya "Baraka makoi")
         if (authResult.error) {
             let matchedEmail = null;
-
-            // Tafuta kwenye profiles table
-            const { data: profs } = await supabase
-                .from('profiles')
-                .select('email, full_name, phone')
-                .limit(100);
+            const { data: profs } = await supabase.from('profiles').select('email, full_name, phone').limit(200);
 
             if (profs && profs.length > 0) {
                 const found = profs.find(p => 
@@ -51,7 +45,6 @@ app.post('/api/auth/login', async (req, res) => {
                 if (found) matchedEmail = found.email;
             }
 
-            // Kama haipatikani kwenye profiles, jaribu Supabase Admin Auth API
             if (!matchedEmail) {
                 try {
                     const { data: { users } } = await supabase.auth.admin.listUsers();
@@ -65,13 +58,8 @@ app.post('/api/auth/login', async (req, res) => {
                         if (u) matchedEmail = u.email;
                     }
                 } catch (e) {
-                    console.log("Admin listUsers not active or restricted");
+                    console.log("Admin listUsers restricted");
                 }
-            }
-
-            // Fallback ya mwisho kwa akaunti inayojulikana
-            if (!matchedEmail && targetEmail.toLowerCase().includes('baraka')) {
-                matchedEmail = 'makoitz2020@gmail.com';
             }
 
             if (matchedEmail) {
@@ -88,7 +76,6 @@ app.post('/api/auth/login', async (req, res) => {
 
         const user = authResult.data.user;
 
-        // Check approval and ban status
         let { data: profile } = await supabase
             .from('profiles')
             .select('*')
@@ -100,7 +87,7 @@ app.post('/api/auth/login', async (req, res) => {
                 return res.status(403).json({ error: 'Akaunti yako imepigwa marufuku (Banned).' });
             }
             if (!profile.is_approved) {
-                return res.status(403).json({ error: 'Akaunti yako inasubiri idhini (Approval) ya Admin.' });
+                return res.status(403).json({ error: 'Akaunti yako inasubiri idhini (Approval) kutoka kwa Admin.' });
             }
         }
 
@@ -110,6 +97,7 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
+// 2. Signup Endpoint
 app.post('/api/auth/signup', async (req, res) => {
     try {
         const { email, password, fullName, phone } = req.body;
@@ -135,6 +123,21 @@ app.post('/api/auth/signup', async (req, res) => {
     }
 });
 
+// 3. User Stats Endpoint (Sifuri hadi kuchanga kuanze)
+app.get('/api/user/stats', async (req, res) => {
+    res.json({
+        dailyContribution: 2000,
+        dailyTarget: 6000,
+        totalCollectedToday: 0,
+        progress: 0,
+        paidToday: 0,
+        pendingToday: 0,
+        totalMembers: 0,
+        groupName: "Mchezo Wetu Digital Hub"
+    });
+});
+
+// 4. Get Current Logged In User
 app.get('/api/user/me', async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
@@ -154,8 +157,37 @@ app.get('/api/user/me', async (req, res) => {
             id: user.id,
             email: user.email,
             full_name: profile?.full_name || user.user_metadata?.full_name || user.email.split('@')[0],
-            phone: profile?.phone || user.user_metadata?.phone || 'Imeunganishwa'
+            phone: profile?.phone || user.user_metadata?.phone || '07XXXXXXXX'
         });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 5. Admin: Users List
+app.get('/api/admin/users', async (req, res) => {
+    try {
+        const { data, error } = await supabase.from('profiles').select('*');
+        if (error) throw error;
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 6. Admin: Approve / Ban Action
+app.post('/api/admin/action', async (req, res) => {
+    try {
+        const { userId, action } = req.body;
+        let updateData = {};
+        if (action === 'approve') updateData = { is_approved: true };
+        if (action === 'ban') updateData = { is_banned: true };
+        if (action === 'unban') updateData = { is_banned: false };
+
+        const { error } = await supabase.from('profiles').update(updateData).eq('id', userId);
+        if (error) throw error;
+
+        res.json({ success: true, message: `Action ${action} successful.` });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
