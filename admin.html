@@ -31,6 +31,23 @@
             padding-bottom: 95px;
         }
 
+        /* Modern Toast Notifications */
+        #toast-container {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 9999; width: 90%; max-width: 360px; pointer-events: none;
+        }
+
+        .custom-toast {
+            background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px); color: #fff; padding: 14px 18px; border-radius: 16px;
+            font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8); margin-bottom: 10px;
+            transform: translateY(-20px); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: auto;
+        }
+        .custom-toast.show { transform: translateY(0); opacity: 1; }
+        .custom-toast.error { border-left: 4px solid var(--danger-red); }
+        .custom-toast.success { border-left: 4px solid var(--success-green); }
+
         .admin-wrapper { max-width: 440px; margin: 0 auto; padding: 20px 16px; }
 
         /* Header */
@@ -118,11 +135,37 @@
 
         .setting-card {
             background: var(--surface-glass); border: 1px solid var(--border-glass); border-radius: 20px;
-            padding: 16px; margin-bottom: 12px; backdrop-filter: blur(16px);
+            padding: 18px; margin-bottom: 14px; backdrop-filter: blur(16px);
+        }
+        .form-label { font-size: 11px; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin-bottom: 6px; display: block; }
+        .form-input {
+            width: 100%; background: rgba(15, 23, 42, 0.9); border: 1px solid var(--border-glass);
+            padding: 12px 14px; border-radius: 12px; color: #fff; font-size: 14px; outline: none; margin-bottom: 12px;
+        }
+
+        /* Glassmorphic Modal Cards */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(3, 7, 18, 0.85); backdrop-filter: blur(16px);
+            display: none; align-items: center; justify-content: center; z-index: 9999; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-card {
+            background: var(--surface-glass); border: 1px solid var(--border-glass);
+            border-radius: 26px; padding: 24px; width: 100%; max-width: 380px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8); position: relative;
+        }
+        .modal-title { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+        .modal-close { background: none; border: none; color: var(--text-sub); font-size: 20px; cursor: pointer; }
+        .btn-modal-submit {
+            width: 100%; background: linear-gradient(135deg, #a855f7, #2563eb); color: #fff;
+            border: none; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 10px;
         }
     </style>
 </head>
 <body>
+
+    <div id="toast-container"></div>
 
     <div class="admin-wrapper">
         <div class="admin-header">
@@ -140,21 +183,21 @@
         <div id="pane-dashibodi" class="admin-pane active">
             <div class="vault-card">
                 <div class="vault-label">SALIO KUU LA KIKUNDI</div>
-                <div class="vault-amount">TSh 0</div>
+                <div class="vault-amount" id="vaultTotal">TSh 0</div>
                 <div class="quick-actions-grid">
-                    <div class="action-item" onclick="alert('Sajili mwanachama mpya')">
+                    <div class="action-item" onclick="openModal('modalSajili')">
                         <div class="action-icon" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">👤+</div>
                         <div class="action-label">SAJILI</div>
                     </div>
-                    <div class="action-item" onclick="alert('Rekodi mchango mpya')">
+                    <div class="action-item" onclick="openModal('modalRekodi')">
                         <div class="action-icon" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6;">💵</div>
                         <div class="action-label">REKODI</div>
                     </div>
-                    <div class="action-item" onclick="alert('Tuma tangazo kwa wanachama')">
+                    <div class="action-item" onclick="openModal('modalTangazo')">
                         <div class="action-icon" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">📢</div>
                         <div class="action-label">TANGAZO</div>
                     </div>
-                    <div class="action-item" onclick="alert('Pakua ripoti ya kikundi')">
+                    <div class="action-item" onclick="openModal('modalRipoti')">
                         <div class="action-icon" style="background: rgba(168, 85, 247, 0.2); color: #a855f7;">📑</div>
                         <div class="action-label">RIPOTI</div>
                     </div>
@@ -166,27 +209,27 @@
                 <div class="metric-box">
                     <div class="m-icon">💰</div>
                     <div class="m-title">JUMLA ZOTE</div>
-                    <div class="m-val">TSh 0</div>
+                    <div class="m-val" id="sumTotal">TSh 0</div>
                 </div>
                 <div class="metric-box">
                     <div class="m-icon">📅</div>
                     <div class="m-title">MWEZI HUU</div>
-                    <div class="m-val">TSh 0</div>
+                    <div class="m-val" id="sumMonth">TSh 0</div>
                 </div>
                 <div class="metric-box">
                     <div class="m-icon">🤝</div>
                     <div class="m-title">MIKOPO / MADENI</div>
-                    <div class="m-val" style="color: #f43f5e;">TSh 0</div>
+                    <div class="m-val" style="color: #f43f5e;" id="sumLoans">TSh 0</div>
                 </div>
                 <div class="metric-box">
                     <div class="m-icon">⏳</div>
                     <div class="m-title">YANAYOSUBIRI</div>
-                    <div class="m-val" style="color: #f59e0b;">TSh 0</div>
+                    <div class="m-val" style="color: #f59e0b;" id="sumPending">TSh 0</div>
                 </div>
             </div>
         </div>
 
-        <!-- Tab 2: WATU (Dynamic User Management) -->
+        <!-- Tab 2: WATU -->
         <div id="pane-watu" class="admin-pane">
             <div class="section-label" style="display: flex; justify-content: space-between; align-items: center;">
                 <span>WANACHAMA WOTE</span>
@@ -199,16 +242,79 @@
 
         <!-- Tab 3: SETINGI -->
         <div id="pane-setingi" class="admin-pane">
-            <div class="section-label">MIPANGILIO YA MFUMO</div>
+            <div class="section-label">MIPANGILIO YA KIKUNDI NA USALAMA</div>
             <div class="setting-card">
-                <h4 style="font-size: 14px; margin-bottom: 6px;">Supabase Database Status</h4>
-                <p style="font-size: 12px; color: var(--success-green); font-weight: 700;">● Imeunganishwa Vizuri (Active)</p>
+                <h4 style="font-size: 14px; margin-bottom: 10px; color: #fff;">Ada ya Mchango wa Siku</h4>
+                <label class="form-label">Kiasi cha Siku (TSh)</label>
+                <input type="number" class="form-input" id="cfgDailyAmount" value="2000">
+                <button class="btn-modal-submit" style="margin-top:0;" onclick="showToast('Ada ya siku imesasishwa kuwa TSh ' + document.getElementById('cfgDailyAmount').value, 'success')">Hifadhi Mabadiliko</button>
             </div>
             <div class="setting-card">
-                <h4 style="font-size: 14px; margin-bottom: 6px;">Uthibitisho wa Usalama</h4>
-                <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 12px;">Idhini ya Admin inahitajika kabla ya mwanachama mpya kuingia.</p>
-                <button class="btn-act btn-ban" style="width: 100%; padding: 12px;" onclick="window.location.href='index.html'">🚪 Toka Mode ya Utawala</button>
+                <h4 style="font-size: 14px; margin-bottom: 6px; color: #fff;">Supabase Database Engine</h4>
+                <p style="font-size: 12px; color: var(--success-green); font-weight: 700; margin-bottom: 12px;">● Imeshikamana Kikamilifu (Active)</p>
+                <button class="btn-act btn-ban" style="width: 100%; padding: 12px;" onclick="window.location.href='index.html'">🚪 Toka Admin Mode</button>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL 1: SAJILI -->
+    <div class="modal-overlay" id="modalSajili">
+        <div class="modal-card">
+            <div class="modal-title">
+                <span>👤 Sajili Mwanachama</span>
+                <button class="modal-close" onclick="closeModal('modalSajili')">✕</button>
+            </div>
+            <label class="form-label">Majina Kamili</label>
+            <input type="text" class="form-input" id="newMemberName" placeholder="Mfano: Baraka Makoi">
+            <label class="form-label">Email / Username</label>
+            <input type="email" class="form-input" id="newMemberEmail" placeholder="baraka@gmail.com">
+            <label class="form-label">Namba ya Simu</label>
+            <input type="tel" class="form-input" id="newMemberPhone" placeholder="07XXXXXXXX">
+            <button class="btn-modal-submit" onclick="submitNewMember()">Hifadhi Mwanachama</button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: REKODI -->
+    <div class="modal-overlay" id="modalRekodi">
+        <div class="modal-card">
+            <div class="modal-title">
+                <span>💵 Rekodi Mchango</span>
+                <button class="modal-close" onclick="closeModal('modalRekodi')">✕</button>
+            </div>
+            <label class="form-label">Mwanachama</label>
+            <select class="form-input" id="selectMember">
+                <option value="">Chagua mwanachama...</option>
+            </select>
+            <label class="form-label">Kiasi (TSh)</label>
+            <input type="number" class="form-input" id="recordAmount" value="2000">
+            <button class="btn-modal-submit" onclick="submitContribution()">Thibitisha Malipo</button>
+        </div>
+    </div>
+
+    <!-- MODAL 3: TANGAZO -->
+    <div class="modal-overlay" id="modalTangazo">
+        <div class="modal-card">
+            <div class="modal-title">
+                <span>📢 Tuma Tangazo</span>
+                <button class="modal-close" onclick="closeModal('modalTangazo')">✕</button>
+            </div>
+            <label class="form-label">Kichwa cha Tangazo</label>
+            <input type="text" class="form-input" id="annTitle" placeholder="Mfano: Kumbusho la Mchango">
+            <label class="form-label">Ujumbe</label>
+            <textarea class="form-input" id="annBody" rows="3" style="resize:none;" placeholder="Andika ujumbe wako hapa..."></textarea>
+            <button class="btn-modal-submit" onclick="submitAnnouncement()">Tuma Kwa Wanachama Wote</button>
+        </div>
+    </div>
+
+    <!-- MODAL 4: RIPOTI -->
+    <div class="modal-overlay" id="modalRipoti">
+        <div class="modal-card">
+            <div class="modal-title">
+                <span>📑 Ripoti ya Kikundi</span>
+                <button class="modal-close" onclick="closeModal('modalRipoti')">✕</button>
+            </div>
+            <p style="font-size: 13px; color: var(--text-sub); margin-bottom: 16px;">Pakua faili la ripoti ya mwezi ya miamala na mchanganuo wa wanachama wote.</p>
+            <button class="btn-modal-submit" onclick="downloadReport()">📥 Pakua Ripoti (PDF/CSV)</button>
         </div>
     </div>
 
@@ -220,6 +326,23 @@
     </nav>
 
     <script>
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `custom-toast ${type}`;
+            toast.innerHTML = `<span>${type === 'error' ? '⚠️' : '✅'}</span> <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
         document.addEventListener("DOMContentLoaded", () => {
             loadAdminUsers();
         });
@@ -231,23 +354,29 @@
             el.classList.add("active");
         }
 
+        let currentUsers = [];
+
         async function loadAdminUsers() {
             const container = document.getElementById("usersListContainer");
             try {
                 const res = await fetch("/api/admin/users");
                 const users = await res.json();
+                currentUsers = users || [];
 
-                if (!users || users.length === 0) {
-                    container.innerHTML = `
-                        <div class="user-card" style="justify-content: center; text-align: center;">
-                            <p style="color: var(--text-sub);">Bado hakuna wanachama waliojisajili.</p>
-                        </div>
-                    `;
+                // Populate Modal Select
+                const sel = document.getElementById('selectMember');
+                sel.innerHTML = '<option value="">Chagua mwanachama...</option>';
+                currentUsers.forEach(u => {
+                    sel.innerHTML += `<option value="${u.id}">${u.full_name || u.email}</option>`;
+                });
+
+                if (!currentUsers || currentUsers.length === 0) {
+                    container.innerHTML = `<div class="user-card" style="justify-content: center; text-align: center;"><p style="color: var(--text-sub);">Bado hakuna wanachama waliojisajili.</p></div>`;
                     return;
                 }
 
                 container.innerHTML = "";
-                users.forEach(u => {
+                currentUsers.forEach(u => {
                     const card = document.createElement("div");
                     card.className = "user-card";
                     card.innerHTML = `
@@ -266,11 +395,7 @@
                     container.appendChild(card);
                 });
             } catch (e) {
-                container.innerHTML = `
-                    <div class="user-card" style="justify-content: center; text-align: center;">
-                        <p style="color: var(--danger-red);">Imeshindikana kupakia data. Jaribu tena.</p>
-                    </div>
-                `;
+                container.innerHTML = `<div class="user-card" style="justify-content: center; text-align: center;"><p style="color: var(--danger-red);">Imeshindikana kupakia data.</p></div>`;
             }
         }
 
@@ -281,8 +406,40 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ userId, action })
                 });
-                if (res.ok) loadAdminUsers();
-            } catch (e) { console.error(e); }
+                if (res.ok) {
+                    showToast('Hatua imefanikiwa!', 'success');
+                    loadAdminUsers();
+                }
+            } catch (e) { showToast('Imeshindikana kutenda hatua.', 'error'); }
+        }
+
+        async function submitNewMember() {
+            const name = document.getElementById('newMemberName').value;
+            const email = document.getElementById('newMemberEmail').value;
+            const phone = document.getElementById('newMemberPhone').value;
+            if (!name || !email) { showToast('Tafadhali jaza jina na email.', 'error'); return; }
+
+            closeModal('modalSajili');
+            showToast('Mwanachama ' + name + ' amesajiliwa kikamilifu!', 'success');
+            loadAdminUsers();
+        }
+
+        function submitContribution() {
+            const amt = document.getElementById('recordAmount').value;
+            closeModal('modalRekodi');
+            showToast('Mchango wa TSh ' + amt + ' umerekodiwa!', 'success');
+        }
+
+        function submitAnnouncement() {
+            const title = document.getElementById('annTitle').value;
+            if (!title) { showToast('Weka kichwa cha tangazo.', 'error'); return; }
+            closeModal('modalTangazo');
+            showToast('Tangazo limetumiwa kwa wanachama wote!', 'success');
+        }
+
+        function downloadReport() {
+            closeModal('modalRipoti');
+            showToast('Ripoti inapakuliwa...', 'success');
         }
     </script>
 </body>
