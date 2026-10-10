@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080b16">
+<title>Mchezo Wetu | Ingia</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#080b16;--card:#11182a;--line:#28334b;--blue:#6385ff;--cyan:#39dfcf;--muted:#97a4bd;--white:#f5f7ff}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 15% 10%,#203d7055,transparent 40%),radial-gradient(ellipse at 90% 90%,#5932a033,transparent 40%),var(--bg);color:var(--white);font-family:Inter,Arial,sans-serif;display:grid;place-items:center;padding:22px}
+.wrap{width:100%;max-width:440px;animation:rise .6s ease both}.brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}.logo{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),var(--cyan));color:#08101c;font-weight:900;font-size:22px;box-shadow:0 8px 30px #6385ff44}.brand h1{font-size:20px;margin:0}.brand p{font-size:12px;color:var(--muted);margin:5px 0 0}.card{background:linear-gradient(145deg,#141d31f2,#0e1423f5);border:1px solid #ffffff16;border-radius:27px;padding:28px;box-shadow:0 30px 90px #0007;backdrop-filter:blur(20px)}.eyebrow{color:var(--cyan);font-size:11px;letter-spacing:2px;font-weight:800;text-transform:uppercase}.card h2{font-size:27px;letter-spacing:-1px;margin:12px 0 8px}.desc{font-size:13px;color:var(--muted);line-height:1.7;margin:0 0 23px}.field{margin:15px 0}.field label{display:block;font-size:12px;color:#cbd5e8;margin-bottom:8px}.field input{width:100%;padding:14px 15px;border:1px solid var(--line);border-radius:13px;background:#090f1d;color:white;outline:none;font-size:14px}.field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #6385ff20}.btn{width:100%;padding:15px;border:0;border-radius:13px;background:linear-gradient(110deg,var(--blue),#4778e9 55%,var(--cyan));color:#07101b;font-size:14px;font-weight:800;cursor:pointer;margin-top:8px}.btn:disabled{opacity:.6;cursor:wait}.switch{background:none;border:0;color:#9cb6ff;font-weight:700;cursor:pointer;padding:12px 0 0}.notice{display:none;border:1px solid #ffffff20;border-radius:12px;padding:12px;font-size:12px;line-height:1.6;margin:14px 0;overflow-wrap:anywhere}.notice.show{display:block}.notice.error{color:#ff9aab;background:#ff33440c}.notice.ok{color:#75ead5;background:#20c9970c}.foot{text-align:center;color:#74829d;font-size:11px;margin:20px 0}@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}@media(max-width:420px){.card{padding:22px}.card h2{font-size:24px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="brand"><div class="logo">MW</div><div><h1>Mchezo Wetu</h1><p>Michango. Uwazi. Maendeleo.</p></div></div>
+  <section class="card">
+    <div class="eyebrow">Member portal</div>
+    <h2 id="heading">Karibu tena 👋</h2>
+    <p class="desc" id="description">Ingia kwenye akaunti yako ili kuona michango, malipo na taarifa zako.</p>
+    <div id="notice" class="notice" role="status"></div>
+    <form id="authForm">
+      <div class="field" id="nameField" hidden><label for="fullName">Jina kamili</label><input id="fullName" autocomplete="name" maxlength="100"></div>
+      <div class="field" id="phoneField" hidden><label for="phone">Namba ya simu</label><input id="phone" autocomplete="tel" maxlength="30" placeholder="+255..."></div>
+      <div class="field"><label for="email">Barua pepe</label><input id="email" type="email" autocomplete="email" required maxlength="254" placeholder="jina@example.com"></div>
+      <div class="field"><label for="password">Nenosiri</label><input id="password" type="password" autocomplete="current-password" required minlength="8" maxlength="128" placeholder="Angalau herufi 8"></div>
+      <button class="btn" id="submitBtn" type="submit">Ingia kwenye akaunti</button>
+    </form>
+    <button class="switch" id="switchBtn" type="button">Huna akaunti? Jisajili</button>
+    <button class="switch" id="forgotBtn" type="button" style="float:right">Umesahau nenosiri?</button>
+  </section>
+  <p class="foot">© 2026 Mchezo Wetu · Akaunti yako, taarifa zako.</p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+let client, signup=false;
+const $=id=>document.getElementById(id);
+function message(text,type='ok'){const n=$('notice');n.textContent=text;n.className='notice show '+type}
+function clearMessage(){$('notice').className='notice'}
+function setMode(value){
+ signup=value;
+ $('heading').textContent=value?'Fungua akaunti mpya':'Karibu tena 👋';
+ $('description').textContent=value?'Jaza taarifa zako kujiunga na Mchezo Wetu.':'Ingia kwenye akaunti yako ili kuona michango, malipo na taarifa zako.';
+ $('nameField').hidden=!value;$('phoneField').hidden=!value;
+ $('password').autocomplete=value?'new-password':'current-password';
+ $('submitBtn').textContent=value?'Tengeneza akaunti':'Ingia kwenye akaunti';
+ $('switchBtn').textContent=value?'Tayari una akaunti? Ingia':'Huna akaunti? Jisajili';
+ clearMessage();
+}
+async function init(){
+ try{
+  const r=await fetch('/api/config',{cache:'no-store'}), c=await r.json();
+  if(!r.ok)throw Error(c.error||'Configuration haijapatikana');
+  client=window.supabase.createClient(c.supabaseUrl,c.supabaseAnonKey);
+  const {data}=await client.auth.getSession();
+  if(data.session)location.replace('/dashboard');
+ }catch(e){message('Imeshindikana kuanzisha mfumo. Hakikisha Supabase URL na anon key zimewekwa kwenye server.','error')}
+}
+$('switchBtn').onclick=()=>setMode(!signup);
+$('authForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(!client)return message('Mfumo bado haujawa tayari. Jaribu tena.','error');
+ const btn=$('submitBtn');btn.disabled=true;clearMessage();
+ try{
+  const email=$('email').value.trim(),password=$('password').value;
+  if(signup){
+   const full_name=$('fullName').value.trim(),phone=$('phone').value.trim();
+   if(!full_name)return message('Weka jina lako kamili.','error');
+   const {data,error}=await client.auth.signUp({email,password,options:{data:{full_name,phone}}});
+   if(error)throw error;
+   if(data.session)location.replace('/dashboard');
+   else message('Usajili umepokelewa. Angalia barua pepe yako kuthibitisha akaunti, kisha ingia.','ok');
+  }else{
+   const {data,error}=await client.auth.signInWithPassword({email,password});
+   if(error)throw error;
+   if(data.session)location.replace('/dashboard');
+  }
+ }catch(err){message(err.message||'Imeshindikana. Jaribu tena.','error')}
+ finally{btn.disabled=false}
+});
+$('forgotBtn').onclick=async()=>{
+ if(!client)return message('Mfumo bado haujawa tayari.','error');
+ const email=$('email').value.trim();
+ if(!email)return message('Weka barua pepe yako kwanza.','error');
+ try{
+  const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:location.origin+'/login'});
+  if(error)throw error;
+  message('Ikiwa akaunti inaruhusu kurejesha nenosiri, angalia barua pepe yako.','ok');
+ }catch(e){message(e.message,'error')}
+};
+init();
+</script>
+</body>
+</html>
