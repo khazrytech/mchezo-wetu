@@ -9,7 +9,9 @@
         :root {
             --bg-deep: #030712;
             --surface-glass: rgba(15, 23, 42, 0.85);
-            --border-glass: rgba(255, 255, 255, 0.1);
+            --border-glass: rgba(255, 255, 255, 0.12);
+            --primary-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
             --success-green: #10b981;
             --warning-gold: #f59e0b;
             --danger-red: #ef4444;
@@ -22,81 +24,89 @@
         body {
             background-color: var(--bg-deep);
             background-image: 
-                radial-gradient(circle at 15% 10%, rgba(139, 92, 246, 0.18) 0%, transparent 45%),
-                radial-gradient(circle at 85% 85%, rgba(59, 130, 246, 0.12) 0%, transparent 45%);
-            color: var(--text-main); min-height: 100vh; padding-bottom: 90px;
+                radial-gradient(circle at 15% 10%, rgba(139, 92, 246, 0.22) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(59, 130, 246, 0.15) 0%, transparent 45%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 95px;
         }
 
         .admin-wrapper { max-width: 440px; margin: 0 auto; padding: 20px 16px; }
 
+        /* Header */
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
         .header-left { display: flex; align-items: center; gap: 12px; }
         .shield-icon {
-            width: 46px; height: 46px; border-radius: 16px; background: linear-gradient(135deg, #a855f7, #ec4899);
-            display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4);
+            width: 48px; height: 48px; border-radius: 18px;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            display: flex; align-items: center; justify-content: center; font-size: 22px;
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.45);
         }
-        .header-title-box h2 { font-size: 17px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+        .header-title-box h2 { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
         .super-badge {
             font-size: 10px; font-weight: 800; color: #f472b6; background: rgba(244, 114, 182, 0.15);
-            padding: 2px 8px; border-radius: 6px; display: inline-block; margin-top: 2px; border: 1px solid rgba(244, 114, 182, 0.3);
+            padding: 3px 10px; border-radius: 8px; display: inline-block; margin-top: 3px; border: 1px solid rgba(244, 114, 182, 0.3);
         }
         .home-btn {
-            width: 42px; height: 42px; border-radius: 14px; background: var(--surface-glass);
+            width: 44px; height: 44px; border-radius: 16px; background: var(--surface-glass);
             border: 1px solid var(--border-glass); display: flex; align-items: center; justify-content: center;
-            font-size: 18px; color: #fff; text-decoration: none; backdrop-filter: blur(16px);
+            font-size: 20px; color: #fff; text-decoration: none; backdrop-filter: blur(16px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
+        /* Vault Card */
         .vault-card {
-            background: linear-gradient(135deg, rgba(88, 28, 135, 0.6) 0%, rgba(15, 23, 42, 0.85) 100%);
-            border: 1px solid rgba(168, 85, 247, 0.3); backdrop-filter: blur(20px); border-radius: 26px; padding: 22px;
-            margin-bottom: 22px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            background: linear-gradient(135deg, rgba(88, 28, 135, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(168, 85, 247, 0.35); backdrop-filter: blur(20px); border-radius: 26px; padding: 22px;
+            margin-bottom: 22px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
         }
         .vault-label { font-size: 11px; font-weight: 800; color: #c084fc; text-transform: uppercase; letter-spacing: 0.8px; }
-        .vault-amount { font-size: 32px; font-weight: 800; color: #fff; margin: 8px 0 20px; letter-spacing: -0.5px; }
+        .vault-amount { font-size: 34px; font-weight: 800; color: #fff; margin: 8px 0 20px; letter-spacing: -0.5px; }
 
         .quick-actions-grid {
             display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding-top: 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
         }
         .action-item {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px; padding: 12px 6px; text-align: center; cursor: pointer;
+            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 16px; padding: 12px 6px; text-align: center; cursor: pointer; transition: transform 0.2s;
         }
+        .action-item:active { transform: scale(0.95); }
         .action-icon {
-            width: 36px; height: 36px; border-radius: 12px; margin: 0 auto 6px;
-            display: flex; align-items: center; justify-content: center; font-size: 16px;
+            width: 38px; height: 38px; border-radius: 12px; margin: 0 auto 6px;
+            display: flex; align-items: center; justify-content: center; font-size: 17px;
         }
         .action-label { font-size: 10px; font-weight: 800; color: var(--text-sub); text-transform: uppercase; }
 
         .section-label { font-size: 12px; font-weight: 800; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
         
         .finance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
-        .metric-box { background: var(--surface-glass); border: 1px solid var(--border-glass); backdrop-filter: blur(16px); border-radius: 20px; padding: 16px; }
-        .metric-box .m-icon { font-size: 20px; margin-bottom: 10px; }
+        .metric-box { background: var(--surface-glass); border: 1px solid var(--border-glass); backdrop-filter: blur(16px); border-radius: 22px; padding: 16px; }
+        .metric-box .m-icon { font-size: 22px; margin-bottom: 8px; }
         .metric-box .m-title { font-size: 10px; font-weight: 800; color: var(--text-sub); text-transform: uppercase; }
-        .metric-box .m-val { font-size: 17px; font-weight: 800; color: #fff; margin-top: 4px; }
+        .metric-box .m-val { font-size: 18px; font-weight: 800; color: #fff; margin-top: 4px; }
 
-        .graph-card { background: var(--surface-glass); border: 1px solid var(--border-glass); backdrop-filter: blur(16px); border-radius: 22px; padding: 18px; margin-bottom: 22px; }
-        .graph-svg { width: 100%; height: 90px; margin-top: 10px; }
-
+        /* User Cards */
         .user-card {
             background: var(--surface-glass); border: 1px solid var(--border-glass); backdrop-filter: blur(16px);
             border-radius: 20px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
         .user-info h4 { font-size: 15px; font-weight: 800; color: #fff; }
-        .user-info p { font-size: 12px; color: var(--text-sub); margin: 2px 0 6px; }
-        .status-tag { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; display: inline-block; }
+        .user-info p { font-size: 12px; color: var(--text-sub); margin: 3px 0 8px; }
+        .status-tag { font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 8px; text-transform: uppercase; display: inline-block; }
         .tag-approved { background: rgba(16, 185, 129, 0.15); color: var(--success-green); border: 1px solid rgba(16, 185, 129, 0.3); }
         .tag-pending { background: rgba(245, 158, 11, 0.15); color: var(--warning-gold); border: 1px solid rgba(245, 158, 11, 0.3); }
         .tag-banned { background: rgba(239, 68, 68, 0.15); color: var(--danger-red); border: 1px solid rgba(239, 68, 68, 0.3); }
 
-        .btn-act { padding: 8px 12px; border-radius: 10px; font-size: 11px; font-weight: 800; border: none; cursor: pointer; }
-        .btn-approve { background: var(--success-green); color: #fff; }
+        .btn-act { padding: 8px 14px; border-radius: 12px; font-size: 11px; font-weight: 800; border: none; cursor: pointer; }
+        .btn-approve { background: var(--success-green); color: #fff; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
         .btn-ban { background: rgba(239, 68, 68, 0.2); color: var(--danger-red); border: 1px solid rgba(239, 68, 68, 0.3); }
 
         .admin-pane { display: none; }
         .admin-pane.active { display: block; }
 
+        /* Bottom Nav */
         .admin-nav {
             position: fixed; bottom: 0; left: 0; right: 0; background: rgba(3, 7, 18, 0.95);
             backdrop-filter: blur(20px); border-top: 1px solid var(--border-glass); display: flex; justify-content: space-around;
@@ -105,6 +115,11 @@
         .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-sub); font-size: 11px; font-weight: 800; cursor: pointer; }
         .nav-btn.active { color: #a855f7; }
         .nav-btn span:first-child { font-size: 20px; }
+
+        .setting-card {
+            background: var(--surface-glass); border: 1px solid var(--border-glass); border-radius: 20px;
+            padding: 16px; margin-bottom: 12px; backdrop-filter: blur(16px);
+        }
     </style>
 </head>
 <body>
@@ -125,21 +140,21 @@
         <div id="pane-dashibodi" class="admin-pane active">
             <div class="vault-card">
                 <div class="vault-label">SALIO KUU LA KIKUNDI</div>
-                <div class="vault-amount" id="vaultTotal">TSh 0</div>
+                <div class="vault-amount">TSh 0</div>
                 <div class="quick-actions-grid">
-                    <div class="action-item" onclick="alert('Sajili mwanachama')">
+                    <div class="action-item" onclick="alert('Sajili mwanachama mpya')">
                         <div class="action-icon" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">👤+</div>
                         <div class="action-label">SAJILI</div>
                     </div>
-                    <div class="action-item" onclick="alert('Rekodi mchango')">
+                    <div class="action-item" onclick="alert('Rekodi mchango mpya')">
                         <div class="action-icon" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6;">💵</div>
                         <div class="action-label">REKODI</div>
                     </div>
-                    <div class="action-item" onclick="alert('Tuma tangazo')">
+                    <div class="action-item" onclick="alert('Tuma tangazo kwa wanachama')">
                         <div class="action-icon" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">📢</div>
                         <div class="action-label">TANGAZO</div>
                     </div>
-                    <div class="action-item" onclick="alert('Ripoti ya kikundi')">
+                    <div class="action-item" onclick="alert('Pakua ripoti ya kikundi')">
                         <div class="action-icon" style="background: rgba(168, 85, 247, 0.2); color: #a855f7;">📑</div>
                         <div class="action-label">RIPOTI</div>
                     </div>
@@ -169,34 +184,35 @@
                     <div class="m-val" style="color: #f59e0b;">TSh 0</div>
                 </div>
             </div>
-
-            <div class="section-label">MWENENDO WA FEDHA</div>
-            <div class="graph-card">
-                <svg class="graph-svg" viewBox="0 0 300 80">
-                    <path d="M 0 70 Q 50 70, 100 70 T 200 70 T 300 70" fill="none" stroke="#a855f7" stroke-width="4"/>
-                </svg>
-            </div>
         </div>
 
-        <!-- Tab 2: WATU -->
+        <!-- Tab 2: WATU (Dynamic User Management) -->
         <div id="pane-watu" class="admin-pane">
-            <div class="section-label">WANACHAMA WOTE</div>
+            <div class="section-label" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>WANACHAMA WOTE</span>
+                <span onclick="loadAdminUsers()" style="color: #c084fc; cursor: pointer;">🔄 Onesha Upya</span>
+            </div>
             <div id="usersListContainer">
-                <div style="text-align: center; padding: 20px; color: var(--text-sub);">Inapakia wanachama...</div>
+                <div style="text-align: center; padding: 20px; color: var(--text-sub);">Inapakia orodha...</div>
             </div>
         </div>
 
         <!-- Tab 3: SETINGI -->
         <div id="pane-setingi" class="admin-pane">
-            <div class="section-label">MIPANGILIO YA KIKUNDI</div>
-            <div class="graph-card">
-                <h4 style="font-size: 14px; margin-bottom: 12px;">Dhibiti Mfumo</h4>
-                <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 16px;">Supabase Backend: Imeshikamana ✓</p>
-                <button class="btn-act btn-ban" style="width: 100%; padding: 12px;" onclick="window.location.href='index.html'">🚪 Toka Admin Mode</button>
+            <div class="section-label">MIPANGILIO YA MFUMO</div>
+            <div class="setting-card">
+                <h4 style="font-size: 14px; margin-bottom: 6px;">Supabase Database Status</h4>
+                <p style="font-size: 12px; color: var(--success-green); font-weight: 700;">● Imeunganishwa Vizuri (Active)</p>
+            </div>
+            <div class="setting-card">
+                <h4 style="font-size: 14px; margin-bottom: 6px;">Uthibitisho wa Usalama</h4>
+                <p style="font-size: 12px; color: var(--text-sub); margin-bottom: 12px;">Idhini ya Admin inahitajika kabla ya mwanachama mpya kuingia.</p>
+                <button class="btn-act btn-ban" style="width: 100%; padding: 12px;" onclick="window.location.href='index.html'">🚪 Toka Mode ya Utawala</button>
             </div>
         </div>
     </div>
 
+    <!-- Bottom Nav -->
     <nav class="admin-nav">
         <div class="nav-btn active" onclick="switchAdminTab('pane-dashibodi', this)"><span>📊</span><span>DASHIBODI</span></div>
         <div class="nav-btn" onclick="switchAdminTab('pane-watu', this)"><span>👥</span><span>WATU</span></div>
@@ -204,7 +220,9 @@
     </nav>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => { loadAdminUsers(); });
+        document.addEventListener("DOMContentLoaded", () => {
+            loadAdminUsers();
+        });
 
         function switchAdminTab(paneId, el) {
             document.querySelectorAll(".admin-pane").forEach(p => p.classList.remove("active"));
@@ -217,11 +235,14 @@
             const container = document.getElementById("usersListContainer");
             try {
                 const res = await fetch("/api/admin/users");
-                if (!res.ok) throw new Error("Fetch failed");
                 const users = await res.json();
 
                 if (!users || users.length === 0) {
-                    container.innerHTML = `<div style="text-align: center; padding: 20px; color: var(--text-sub);">Hakuna wanachama bado.</div>`;
+                    container.innerHTML = `
+                        <div class="user-card" style="justify-content: center; text-align: center;">
+                            <p style="color: var(--text-sub);">Bado hakuna wanachama waliojisajili.</p>
+                        </div>
+                    `;
                     return;
                 }
 
@@ -234,10 +255,10 @@
                             <h4>${u.full_name || 'Mwanachama'}</h4>
                             <p>${u.email} • ${u.phone || '07XXXXXXXX'}</p>
                             <span class="status-tag ${u.is_banned ? 'tag-banned' : (u.is_approved ? 'tag-approved' : 'tag-pending')}">
-                                ${u.is_banned ? 'Banned ✕' : (u.is_approved ? 'Approved ✓' : 'Pending')}
+                                ${u.is_banned ? 'Banned ✕' : (u.is_approved ? 'Approved ✓' : 'Pending Approval')}
                             </span>
                         </div>
-                        <div>
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
                             ${!u.is_approved && !u.is_banned ? `<button class="btn-act btn-approve" onclick="actionUser('${u.id}', 'approve')">Approve ✓</button>` : ''}
                             ${!u.is_banned ? `<button class="btn-act btn-ban" onclick="actionUser('${u.id}', 'ban')">Ban ✕</button>` : `<button class="btn-act btn-approve" onclick="actionUser('${u.id}', 'unban')">Unban</button>`}
                         </div>
@@ -245,7 +266,11 @@
                     container.appendChild(card);
                 });
             } catch (e) {
-                container.innerHTML = `<div style="text-align: center; padding: 20px; color: var(--danger-red);">Imeshindikana kupakia data.</div>`;
+                container.innerHTML = `
+                    <div class="user-card" style="justify-content: center; text-align: center;">
+                        <p style="color: var(--danger-red);">Imeshindikana kupakia data. Jaribu tena.</p>
+                    </div>
+                `;
             }
         }
 

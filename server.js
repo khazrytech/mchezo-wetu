@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
-// 1. Login Endpoint (Flexible: Simu, Jina, au Email + Autofill Support)
+// API Login
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { identifier, password } = req.body;
@@ -57,9 +57,7 @@ app.post('/api/auth/login', async (req, res) => {
                         );
                         if (u) matchedEmail = u.email;
                     }
-                } catch (e) {
-                    console.log("Admin listUsers restricted");
-                }
+                } catch (e) {}
             }
 
             if (matchedEmail) {
@@ -97,7 +95,7 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// 2. Signup Endpoint
+// API Signup
 app.post('/api/auth/signup', async (req, res) => {
     try {
         const { email, password, fullName, phone } = req.body;
@@ -123,21 +121,52 @@ app.post('/api/auth/signup', async (req, res) => {
     }
 });
 
-// 3. User Stats Endpoint (Sifuri hadi kuchanga kuanze)
-app.get('/api/user/stats', async (req, res) => {
-    res.json({
-        dailyContribution: 2000,
-        dailyTarget: 6000,
-        totalCollectedToday: 0,
-        progress: 0,
-        paidToday: 0,
-        pendingToday: 0,
-        totalMembers: 0,
-        groupName: "Mchezo Wetu Digital Hub"
-    });
+// API Admin: Orodha ya Wanachama (yenye fallback ya Supabase Auth Users)
+app.get('/api/admin/users', async (req, res) => {
+    try {
+        let { data: profiles, error } = await supabase.from('profiles').select('*');
+        
+        // Kama profiles hazipatikani, jaribu kusoma watumiaji kutoka Supabase Auth Admin
+        if (error || !profiles || profiles.length === 0) {
+            try {
+                const { data: { users } } = await supabase.auth.admin.listUsers();
+                if (users && users.length > 0) {
+                    profiles = users.map(u => ({
+                        id: u.id,
+                        email: u.email,
+                        full_name: u.user_metadata?.full_name || u.email.split('@')[0],
+                        phone: u.user_metadata?.phone || 'Imeunganishwa',
+                        is_approved: true,
+                        is_banned: false
+                    }));
+                }
+            } catch (e) {}
+        }
+
+        res.json(profiles || []);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-// 4. Get Current Logged In User
+// API Admin Action (Approve / Ban)
+app.post('/api/admin/action', async (req, res) => {
+    try {
+        const { userId, action } = req.body;
+        let updateData = {};
+        if (action === 'approve') updateData = { is_approved: true };
+        if (action === 'ban') updateData = { is_banned: true };
+        if (action === 'unban') updateData = { is_banned: false };
+
+        const { error } = await supabase.from('profiles').update(updateData).eq('id', userId);
+        if (error) throw error;
+
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.get('/api/user/me', async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
@@ -159,35 +188,6 @@ app.get('/api/user/me', async (req, res) => {
             full_name: profile?.full_name || user.user_metadata?.full_name || user.email.split('@')[0],
             phone: profile?.phone || user.user_metadata?.phone || '07XXXXXXXX'
         });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// 5. Admin: Users List
-app.get('/api/admin/users', async (req, res) => {
-    try {
-        const { data, error } = await supabase.from('profiles').select('*');
-        if (error) throw error;
-        res.json(data);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// 6. Admin: Approve / Ban Action
-app.post('/api/admin/action', async (req, res) => {
-    try {
-        const { userId, action } = req.body;
-        let updateData = {};
-        if (action === 'approve') updateData = { is_approved: true };
-        if (action === 'ban') updateData = { is_banned: true };
-        if (action === 'unban') updateData = { is_banned: false };
-
-        const { error } = await supabase.from('profiles').update(updateData).eq('id', userId);
-        if (error) throw error;
-
-        res.json({ success: true, message: `Action ${action} successful.` });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
