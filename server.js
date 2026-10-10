@@ -5,217 +5,64 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Supabase Configuration
+const SUPABASE_URL = process.env.SUPABASE_URL || '';
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-// Helper: Log Admin Activity
-async function logActivity(adminName, action, details) {
-    try {
-        await supabase.from('activity_logs').insert([{
-            admin_name: adminName,
-            action: action,
-            details: details,
-            date: new Date().toLocaleString('sw-TZ')
-        }]);
-    } catch (e) {
-        console.error('Log error:', e.message);
-    }
-}
-
-// LOGIN API
-app.post('/api/login', async (req, res) => {
-    try {
-        const { identifier, password } = req.body;
-        if (!identifier || !password) {
-            return res.json({ success: false, message: 'Ingiza namba ya simu, jina au namba ya mwanachama na nenosiri.' });
-        }
-
-        const cleanId = identifier.trim().toLowerCase();
-        const { data: users, error } = await supabase.from('users').select('*');
-        if (error) return res.json({ success: false, message: 'Hitilafu ya Supabase: ' + error.message });
-
-        const user = users.find(u =>
-            (u.phone && u.phone.trim().toLowerCase() === cleanId) ||
-            (u.email && u.email.trim().toLowerCase() === cleanId) ||
-            (u.full_name && u.full_name.trim().toLowerCase() === cleanId) ||
-            (u.member_number && u.member_number.trim().toLowerCase() === cleanId)
-        );
-
-        if (!user) return res.json({ success: false, message: 'Akaunti hii haijapatikana.' });
-        if (user.password !== password) return res.json({ success: false, message: 'Nenosiri si sahihi.' });
-
-        if (user.status === 'banned') {
-            return res.json({ success: false, message: `Akaunti imefungiwa kabisa. Sababu: ${user.ban_reason || 'Hakuna sababu maalum.'}` });
-        }
-        if (user.status === 'suspended') {
-            return res.json({ success: false, message: `Akaunti imesimamishwa kwa muda. Sababu: ${user.ban_reason || 'Hakuna sababu maalum.'}` });
-        }
-        if (user.status !== 'approved') {
-            return res.json({ success: false, message: 'Akaunti yako bado inasubiri kuidhinishwa na Admin.' });
-        }
-
-        return res.json({
-            success: true,
-            message: 'Umekaribishwa!',
-            user: {
-                fullName: user.full_name,
-                phone: user.phone,
-                email: user.email,
-                memberNumber: user.member_number,
-                role: user.role || 'member',
-                status: user.status,
-                banReason: user.ban_reason || '',
-            }
-        });
-    } catch (err) {
-        return res.json({ success: false, message: 'Hitilafu ya Seva: ' + err.message });
-    }
-});
-
-// REGISTER API
-app.post('/api/register', async (req, res) => {
-    try {
-        const { fullName, phone, email, password } = req.body;
-        if (!fullName || !phone || !password) {
-            return res.json({ success: false, message: 'Tafadhali jaza taarifa zote.' });
-        }
-
-        const { data: existing } = await supabase.from('users').select('*').eq('phone', phone.trim());
-        if (existing && existing.length > 0) {
-            return res.json({ success: false, message: 'Namba hii ya simu imeshasajiliwa tayari.' });
-        }
-
-        const memberNumber = 'MW-' + Math.floor(1000 + Math.random() * 9000);
-        const newUser = {
-            full_name: fullName.trim(),
-            phone: phone.trim(),
-            email: email ? email.trim() : '',
-            password: password,
-            member_number: memberNumber,
-            role: 'member',
-            status: 'pending',
-            ban_reason: '',
-            monthly_contributions: 0,
-            date_registered: new Date().toLocaleDateString('sw-TZ')
-        };
-
-        const { error } = await supabase.from('users').insert([newUser]);
-        if (error) throw error;
-
-        return res.json({ success: true, message: 'Usajili umefanikiwa! Subiri idhini ya Admin.' });
-    } catch (err) {
-        return res.json({ success: false, message: 'Imeshindikana kusajili: ' + err.message });
-    }
-});
-
-// ADMIN USERS FETCH
-app.get('/api/admin/users', async (req, res) => {
-    const { data: users, error } = await supabase.from('users').select('*').order('id', { ascending: false });
-    if (error) return res.json({ success: false, message: error.message });
-
-    const formatted = users.map(u => ({
-        fullName: u.full_name,
-        phone: u.phone,
-        email: u.email,
-        memberNumber: u.member_number,
-        role: u.role || 'member',
-        status: u.status || 'approved',
-        banReason: u.ban_reason || '',
-        monthlyContributions: u.monthly_contributions || 0
-    }));
-    res.json({ success: true, users: formatted });
-});
-
-// ADMIN ACTIONS
-app.post('/api/admin/approve', async (req, res) => {
-    const { phone } = req.body;
-    const { error } = await supabase.from('users').update({ status: 'approved', ban_reason: '' }).eq('phone', phone);
-    if (error) return res.json({ success: false, message: error.message });
-    await logActivity('Super Admin', 'Approve User', `Amemuidhinisha mwanachama namba ${phone}`);
-    res.json({ success: true, message: 'Mwanachama amethibitishwa kikamilifu!' });
-});
-
-app.post('/api/admin/suspend', async (req, res) => {
-    const { phone, reason } = req.body;
-    const reasonText = reason ? reason.trim() : 'Kusimamishwa kwa muda.';
-    const { error } = await supabase.from('users').update({ status: 'suspended', ban_reason: reasonText }).eq('phone', phone);
-    if (error) return res.json({ success: false, message: error.message });
-    await logActivity('Super Admin', 'Suspend User', `Amemsimamisha ${phone}. Sababu: ${reasonText}`);
-    res.json({ success: true, message: 'Mwanachama amesimamishwa kwa muda!' });
-});
-
-app.post('/api/admin/ban', async (req, res) => {
-    const { phone, reason } = req.body;
-    const reasonText = reason ? reason.trim() : 'Kufungiwa kabisa.';
-    const { error } = await supabase.from('users').update({ status: 'banned', ban_reason: reasonText }).eq('phone', phone);
-    if (error) return res.json({ success: false, message: error.message });
-    await logActivity('Super Admin', 'Permanent Ban', `Amempiga ban kabisa ${phone}. Sababu: ${reasonText}`);
-    res.json({ success: true, message: 'Mwanachama amepigwa ban kabisa!' });
-});
-
-app.post('/api/admin/unban', async (req, res) => {
-    const { phone } = req.body;
-    const { error } = await supabase.from('users').update({ status: 'approved', ban_reason: '' }).eq('phone', phone);
-    if (error) return res.json({ success: false, message: error.message });
-    await logActivity('Super Admin', 'Unban User', `Ameondoa vikwazo kwa ${phone}`);
-    res.json({ success: true, message: 'Kifungo kimeondolewa kikamilifu!' });
-});
-
-// ANNOUNCEMENTS
-app.get('/api/announcements', async (req, res) => {
-    const { data: announcements } = await supabase.from('announcements').select('*').order('id', { ascending: false });
-    res.json({ success: true, announcements: announcements || [] });
-});
-
-app.post('/api/announcements', async (req, res) => {
-    const { title, message } = req.body;
-    if (!title || !message) return res.json({ success: false, message: 'Kichwa na ujumbe vinahitajika.' });
-
-    const newAnn = { title, message, date: new Date().toLocaleDateString('sw-TZ') };
-    const { error } = await supabase.from('announcements').insert([newAnn]);
-    if (error) return res.json({ success: false, message: 'Imeshindikana kutuma tangazo.' });
-
-    await logActivity('Super Admin', 'Send Announcement', `Kichwa: ${title}`);
-    res.json({ success: true, message: 'Tangazo limetumwa kwa wanachama wote!' });
-});
-
-// ACTIVITY LOGS API
-app.get('/api/admin/logs', async (req, res) => {
-    const { data: logs } = await supabase.from('activity_logs').select('*').order('id', { ascending: false }).limit(20);
-    res.json({ success: true, logs: logs || [] });
-});
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
-
-// Endpoint rasmi ya kupata taarifa halisi za mtumiaji kutoka Supabase
+// 1. Endpoint rasmi ya taarifa za mtumiaji kutoka Supabase Auth
 app.get('/api/user/me', async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
-        if (!authHeader) return res.status(401).json({ error: 'Unauthorized' });
+        if (!authHeader) {
+            return res.status(401).json({ error: 'Hairuhusiwi: Hakuna Token' });
+        }
         const token = authHeader.split(' ')[1];
         
-        // Ulizia Supabase Auth kwa ajili ya mtumiaji aliyelogin
         const { data: { user }, error } = await supabase.auth.getUser(token);
         if (error || !user) {
-            return.status(401).json({ error: 'Invalid token' });
+            return res.status(401).json({ error: 'Token si sahihi au muda umekwisha' });
         }
 
-        // Vuta jina halisi kutoka user_metadata
         let fullName = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0];
         
         res.json({
             id: user.id,
             email: user.email,
             full_name: fullName,
-            phone: user.user_metadata?.phone || user.phone || 'Imeunganishwa'
+            phone: user.user_metadata?.phone || user.phone || 'Imeunganishwa Salama'
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+});
+
+// 2. Endpoint ya takwimu za Dashboard
+app.get('/api/user/stats', async (req, res) => {
+    try {
+        res.json({
+            myContribution: 0,
+            totalContribution: 0,
+            totalMembers: 1,
+            activeContributors: 0,
+            pendingMembers: 1,
+            groupName: "Mchezo Wetu Enterprise",
+            progress: 0
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Frontend Routes
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'dashboard.html')));
+app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
+
+app.listen(PORT, () => {
+    console.log(`[SERVER RUNNING]: Imewashwa kwenye port ${PORT}`);
 });

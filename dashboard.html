@@ -7,17 +7,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #030712;
-            --card-bg: rgba(17, 24, 39, 0.8);
-            --card-border: rgba(255, 255, 255, 0.1);
-            --accent-blue: #3b82f6;
-            --accent-purple: #8b5cf6;
-            --accent-green: #10b981;
-            --accent-red: #ef4444;
+            --bg-base: #030712;
+            --card-bg: rgba(17, 24, 39, 0.85);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary: #3b82f6;
+            --success: #10b981;
             --text-main: #f9fafb;
             --text-sub: #9ca3af;
-            --glow-blue: 0 10px 30px -5px rgba(59, 130, 246, 0.4);
-            --glow-purple: 0 10px 30px -5px rgba(139, 92, 246, 0.35);
+            --glow-blue: 0 10px 30px -5px rgba(59, 130, 246, 0.35);
         }
 
         * {
@@ -29,110 +26,113 @@
         }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-base);
             background-image: 
-                radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.18) 0%, transparent 40%),
-                radial-gradient(circle at 90% 90%, rgba(139, 92, 246, 0.15) 0%, transparent 45%);
+                radial-gradient(circle at 10% 15%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 40%);
             color: var(--text-main);
             min-height: 100vh;
             padding-bottom: 100px;
         }
 
-        .container {
+        .app-container {
             max-width: 480px;
             margin: 0 auto;
-            padding: 18px 16px;
+            padding: 20px 16px;
         }
 
-        .top-header {
+        /* Header Styling */
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0 20px;
+            margin-bottom: 24px;
         }
 
-        .user-info {
+        .user-profile-box {
             display: flex;
             align-items: center;
             gap: 14px;
         }
 
-        .avatar {
+        .user-avatar {
             width: 52px;
             height: 52px;
-            border-radius: 18px;
+            border-radius: 16px;
             background: linear-gradient(135deg, #2563eb, #8b5cf6);
-            box-shadow: var(--glow-blue);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
             font-size: 20px;
             color: #ffffff;
-            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            box-shadow: var(--glow-blue);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             position: relative;
         }
 
-        .avatar::after {
+        .user-avatar::after {
             content: '';
             position: absolute;
             bottom: -2px;
             right: -2px;
-            width: 14px;
-            height: 14px;
-            background: var(--accent-green);
-            border: 3px solid var(--bg-dark);
+            width: 12px;
+            height: 12px;
+            background: var(--success);
+            border: 2.5px solid var(--bg-base);
             border-radius: 50%;
         }
 
-        .greeting-sub {
+        .greeting-label {
             font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #60a5fa;
             font-weight: 800;
+            text-transform: uppercase;
+            color: #60a5fa;
+            letter-spacing: 0.8px;
         }
 
-        .user-name {
-            font-size: 20px;
+        .user-fullname {
+            font-size: 19px;
             font-weight: 800;
             color: #ffffff;
-            letter-spacing: -0.4px;
+            letter-spacing: -0.3px;
         }
 
-        .notification-btn {
-            width: 46px;
-            height: 46px;
-            border-radius: 16px;
+        .notif-icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            backdrop-filter: blur(16px);
+            backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            font-size: 18px;
         }
 
-        .hero-card {
+        /* Hero Balance Card */
+        .main-balance-card {
             background: linear-gradient(135deg, rgba(30, 58, 138, 0.75), rgba(17, 24, 39, 0.9));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(96, 165, 250, 0.35);
-            border-radius: 24px;
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 22px;
             padding: 22px;
             margin-bottom: 16px;
             box-shadow: var(--glow-blue);
         }
 
-        .hero-label {
+        .card-title-sm {
             font-size: 11px;
             font-weight: 800;
-            color: #93c5fd;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            color: #93c5fd;
+            letter-spacing: 0.8px;
             margin-bottom: 6px;
         }
 
-        .hero-amount {
+        .main-amount {
             font-size: 32px;
             font-weight: 800;
             color: #ffffff;
@@ -140,7 +140,7 @@
             margin-bottom: 18px;
         }
 
-        .hero-grid {
+        .card-grid-split {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
@@ -148,221 +148,147 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .hero-sub-val {
+        .split-val {
             font-size: 16px;
             font-weight: 800;
             color: #ffffff;
         }
 
-        .hero-sub-lbl {
+        .split-lbl {
             font-size: 10px;
             color: var(--text-sub);
             font-weight: 700;
             text-transform: uppercase;
         }
 
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .stat-card {
+        /* Progress Card */
+        .progress-box {
             background: var(--card-bg);
             backdrop-filter: blur(16px);
             border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 18px 16px;
-        }
-
-        .stat-lbl {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-sub);
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
-        .stat-val {
-            font-size: 22px;
-            font-weight: 800;
-            color: #ffffff;
-        }
-
-        .progress-card {
-            background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(88, 28, 135, 0.3));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(139, 92, 246, 0.35);
-            border-radius: 24px;
-            padding: 22px;
+            border-radius: 22px;
+            padding: 20px;
             margin-bottom: 16px;
-            box-shadow: var(--glow-purple);
         }
 
-        .badge-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(139, 92, 246, 0.25);
-            color: #c4b5fd;
-            border: 1px solid rgba(196, 181, 253, 0.3);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-        }
-
-        .group-title {
-            font-size: 22px;
-            font-weight: 800;
-            margin-bottom: 14px;
-            color: #ffffff;
-        }
-
-        .progress-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 10px;
-        }
-
-        .progress-bar-bg {
+        .progress-bar-wrap {
             width: 100%;
             height: 10px;
             background: rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
+            border-radius: 8px;
             overflow: hidden;
+            margin-top: 10px;
             padding: 2px;
         }
 
-        .progress-bar-fill {
+        .progress-bar-inner {
             height: 100%;
             background: linear-gradient(90deg, #3b82f6, #10b981);
-            border-radius: 8px;
+            border-radius: 6px;
             width: 0%;
-            transition: width 0.8s ease;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .group-stats-grid {
+        /* Mini Stats Grid */
+        .mini-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
             margin-bottom: 24px;
         }
 
-        .mini-stat {
+        .mini-card {
             background: var(--card-bg);
             backdrop-filter: blur(14px);
             border: 1px solid var(--card-border);
-            border-radius: 18px;
+            border-radius: 16px;
             padding: 14px 10px;
             text-align: center;
         }
 
-        .mini-stat-lbl {
+        .mini-lbl {
             font-size: 10px;
-            color: var(--text-sub);
             font-weight: 700;
+            color: var(--text-sub);
             text-transform: uppercase;
             margin-bottom: 6px;
         }
 
-        .mini-stat-val {
-            font-size: 20px;
+        .mini-num {
+            font-size: 18px;
             font-weight: 800;
         }
 
-        .section-title {
+        /* Section Title & Lists */
+        .section-heading {
             font-size: 16px;
             font-weight: 800;
             margin-bottom: 14px;
+            letter-spacing: -0.2px;
         }
 
-        .tab-content {
+        .tab-pane {
             display: none;
+            animation: fadeIn 0.3s ease;
         }
-
-        .tab-content.active {
+        .tab-pane.active {
             display: block;
         }
 
-        .data-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .list-item {
+        .list-item-clean {
             background: var(--card-bg);
             backdrop-filter: blur(14px);
             border: 1px solid var(--card-border);
-            border-radius: 18px;
+            border-radius: 16px;
             padding: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 10px;
         }
 
-        .item-info h4 {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 3px;
-        }
-
-        .item-info p {
-            font-size: 12px;
-            color: var(--text-sub);
-        }
-
-        .item-status {
-            font-size: 12px;
-            font-weight: 700;
-            padding: 6px 12px;
-            border-radius: 10px;
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            border: 1px solid rgba(52, 211, 153, 0.3);
-        }
-
-        .profile-card {
+        /* Profile Box */
+        .profile-card-box {
             background: var(--card-bg);
             backdrop-filter: blur(16px);
             border: 1px solid var(--card-border);
-            border-radius: 24px;
+            border-radius: 22px;
             padding: 22px;
             margin-bottom: 16px;
         }
 
-        .profile-field {
-            margin-bottom: 18px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-            padding-bottom: 14px;
+        .profile-row {
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
-
-        .profile-field:last-child {
+        .profile-row:last-child {
             border-bottom: none;
             margin-bottom: 0;
             padding-bottom: 0;
         }
 
-        .field-label {
+        .p-lbl {
             font-size: 11px;
             color: var(--text-sub);
             font-weight: 800;
             text-transform: uppercase;
-            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
         }
 
-        .field-value {
+        .p-val {
             font-size: 16px;
             font-weight: 800;
             color: #ffffff;
         }
 
-        .btn-logout {
+        .logout-btn-custom {
             width: 100%;
             background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(220, 38, 38, 0.15));
             color: #f87171;
@@ -372,15 +298,16 @@
             font-weight: 800;
             font-size: 15px;
             cursor: pointer;
-            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
         }
 
-        .bottom-nav {
+        /* Bottom Fixed Navigation Bar */
+        .bottom-nav-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(3, 7, 18, 0.95);
+            background: rgba(3, 7, 18, 0.94);
             backdrop-filter: blur(20px);
             border-top: 1px solid var(--card-border);
             display: flex;
@@ -391,7 +318,7 @@
             margin: 0 auto;
         }
 
-        .nav-item {
+        .nav-link-item {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -401,272 +328,223 @@
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
+            transition: all 0.2s ease;
             width: 25%;
         }
 
-        .nav-item.active {
+        .nav-link-item.active {
             color: #60a5fa;
+            transform: translateY(-2px);
         }
 
-        .nav-icon {
+        .nav-link-item span:first-child {
             font-size: 22px;
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
+    <div class="app-container">
         <!-- Header -->
-        <div class="top-header">
-            <div class="user-info">
-                <div class="avatar" id="userAvatar">MW</div>
+        <div class="header">
+            <div class="user-profile-box">
+                <div class="user-avatar" id="userAvatar">MW</div>
                 <div>
-                    <div class="greeting-sub" id="greetingTime">HABARI ZA LEO</div>
-                    <div class="user-name" id="userName">Mwanachama</div>
+                    <div class="greeting-label" id="timeGreeting">Habari</div>
+                    <div class="user-fullname" id="userNameDisplay">Inapakia...</div>
                 </div>
             </div>
-            <div class="notification-btn" onclick="alert('Mfumo uko salama na unafanya kazi vizuri.')">
-                <span style="font-size:18px;">🔔</span>
-            </div>
+            <div class="notif-icon-btn" onclick="alert('Mfumo upo salama na hauna taarifa mpya.')">🔔</div>
         </div>
 
         <!-- Tab 1: Nyumbani -->
-        <div id="tab-home" class="tab-content active">
-            <div class="hero-card">
-                <div class="hero-label">Mchango Wako Wote</div>
-                <div class="hero-amount" id="myContributionHero">TSh 0</div>
-                <div class="hero-grid">
+        <div id="tab-home" class="tab-pane active">
+            <div class="main-balance-card">
+                <div class="card-title-sm">Mchango Wako Wote</div>
+                <div class="main-amount" id="myContribVal">TSh 0</div>
+                <div class="card-grid-split">
                     <div>
-                        <div class="hero-sub-val" id="totalGroupContrib">TSh 0</div>
-                        <div class="hero-sub-lbl">Jumla Kikundi</div>
+                        <div class="split-val" id="totalGroupVal">TSh 0</div>
+                        <div class="split-lbl">Jumla ya Kikundi</div>
                     </div>
                     <div>
-                        <div class="hero-sub-val" style="color:#34d399;">Active</div>
-                        <div class="hero-sub-lbl">Hali ya Akaunti</div>
+                        <div class="split-val" style="color: var(--success);">Active</div>
+                        <div class="split-lbl">Hali ya Akaunti</div>
                     </div>
                 </div>
             </div>
 
-            <div class="progress-card">
-                <span class="badge-tag">⚡ Mchezo Wetu Enterprise</span>
-                <div class="group-title" id="groupName">Kikundi Cha Mchezo</div>
-                <div class="progress-flex">
-                    <span style="font-size: 12px; color: var(--text-sub); font-weight: 600;">Iliyokusanywa</span>
-                    <span style="font-size: 13px; font-weight: 800; color: #34d399;" id="progressPercentage">0% ya Lengo</span>
+            <div class="progress-box">
+                <div style="font-size: 11px; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin-bottom: 6px;">Lengo la Kikundi</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 18px; font-weight: 800;" id="groupNameTitle">Mchezo Wetu Enterprise</span>
+                    <span style="font-size: 14px; font-weight: 800; color: var(--success);" id="progressText">0%</span>
                 </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" id="progressBar"></div>
-                </div>
-            </div>
-
-            <div class="group-stats-grid">
-                <div class="mini-stat">
-                    <div class="mini-stat-lbl">Wanachama</div>
-                    <div class="mini-stat-val" id="totalMembers">0</div>
-                </div>
-                <div class="mini-stat">
-                    <div class="mini-stat-lbl">Waliochangia</div>
-                    <div class="mini-stat-val" style="color:#34d399;" id="activeContributors">0</div>
-                </div>
-                <div class="mini-stat">
-                    <div class="mini-stat-lbl">Wanaodaiwa</div>
-                    <div class="mini-stat-val" style="color:#f87171;" id="pendingMembers">0</div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-inner" id="progressBarFill"></div>
                 </div>
             </div>
 
-            <div class="section-title">Shughuli za Hivi Karibuni</div>
-            <div class="data-list">
-                <div class="list-item">
-                    <div class="item-info">
-                        <h4>Uendeshaji wa Mfumo</h4>
-                        <p>Upo hewani kupitia Supabase Backend</p>
-                    </div>
-                    <span class="item-status">Safi</span>
+            <div class="mini-grid">
+                <div class="mini-card">
+                    <div class="mini-lbl">Wanachama</div>
+                    <div class="mini-num" id="statMembers">0</div>
                 </div>
+                <div class="mini-card">
+                    <div class="mini-lbl">Wamelipa</div>
+                    <div class="mini-num" style="color: var(--success);" id="statPaid">0</div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-lbl">Wadaiwa</div>
+                    <div class="mini-num" style="color: #ef4444;" id="statPending">0</div>
+                </div>
+            </div>
+
+            <div class="section-heading">Shughuli za Hivi Karibuni</div>
+            <div class="list-item-clean">
+                <div>
+                    <h4 style="font-size: 14px; font-weight: 700;">Usalama wa Akaunti</h4>
+                    <p style="font-size: 12px; color: var(--text-sub);">Imethibitishwa rasmi kupitia Supabase</p>
+                </div>
+                <span style="font-size: 11px; font-weight: 800; color: var(--success); background: rgba(16,185,129,0.15); padding: 5px 10px; border-radius: 8px;">Safi</span>
             </div>
         </div>
 
         <!-- Tab 2: Michango -->
-        <div id="tab-michango" class="tab-content">
-            <div class="section-title">Historia ya Michango Yako</div>
-            <div class="data-list">
-                <div class="list-item">
-                    <div class="item-info">
-                        <h4>Mchango Mkuu</h4>
-                        <p id="contribDate">Hifadhidata imethibitisha</p>
-                    </div>
-                    <span class="item-status" id="contribAmountTab">TSh 0</span>
+        <div id="tab-michango" class="tab-pane">
+            <div class="section-heading">Historia ya Michango Yako</div>
+            <div class="list-item-clean">
+                <div>
+                    <h4 style="font-size: 14px; font-weight: 700;">Mchango Mkuu</h4>
+                    <p style="font-size: 12px; color: var(--text-sub);">Imerekodiwa kwenye hifadhidata</p>
                 </div>
+                <span style="font-size: 14px; font-weight: 800; color: var(--success);" id="contribHistoryVal">TSh 0</span>
             </div>
         </div>
 
         <!-- Tab 3: Risiti -->
-        <div id="tab-risiti" class="tab-content">
-            <div class="section-title">Risiti za Kidigitali</div>
-            <div class="data-list">
-                <div class="list-item">
-                    <div class="item-info">
-                        <h4>Risiti #MW-PRO</h4>
-                        <p>Ushahidi wa mchango wako</p>
-                    </div>
-                    <span class="item-status" style="cursor:pointer;" onclick="alert('Risiti yako iko salama.')">Fungua</span>
+        <div id="tab-risiti" class="tab-pane">
+            <div class="section-heading">Risiti za Kidigitali</div>
+            <div class="list-item-clean">
+                <div>
+                    <h4 style="font-size: 14px; font-weight: 700;">Risiti #MW-PRO</h4>
+                    <p style="font-size: 12px; color: var(--text-sub);">Hati rasmi ya uthibitisho</p>
                 </div>
+                <span style="font-size: 12px; font-weight: 800; color: var(--primary); cursor: pointer;" onclick="alert('Risiti yako iko tayari.')">Fungua</span>
             </div>
         </div>
 
         <!-- Tab 4: Profile -->
-        <div id="tab-profile" class="tab-content">
-            <div class="section-title">Taarifa za Mwanachama</div>
-            <div class="profile-card">
-                <div class="profile-field">
-                    <div class="field-label">MAJINA KAMILI</div>
-                    <div class="field-value" id="profileFullName">Inapakia...</div>
+        <div id="tab-profile" class="tab-pane">
+            <div class="section-heading">Taarifa za Mwanachama</div>
+            <div class="profile-card-box">
+                <div class="profile-row">
+                    <div class="p-lbl">Majina Kamili</div>
+                    <div class="p-val" id="profileName">Inapakia...</div>
                 </div>
-                <div class="profile-field">
-                    <div class="field-label">BARUA PEPE (EMAIL)</div>
-                    <div class="field-value" id="profileEmail">Inapakia...</div>
+                <div class="profile-row">
+                    <div class="p-lbl">Barua Pepe (Email)</div>
+                    <div class="p-val" id="profileEmail">Inapakia...</div>
                 </div>
-                <div class="profile-field">
-                    <div class="field-label">NAMBA YA SIMU</div>
-                    <div class="field-value" id="profilePhone">Inapakia...</div>
+                <div class="profile-row">
+                    <div class="p-lbl">Namba ya Simu</div>
+                    <div class="p-val" id="profilePhone">Inapakia...</div>
                 </div>
-                <div class="profile-field">
-                    <div class="field-label">Hali ya Usalama</div>
-                    <div class="field-value" style="color:#34d399;">Supabase Session Active</div>
+                <div class="profile-row">
+                    <div class="p-lbl">Hali ya Mfumo</div>
+                    <div class="p-val" style="color: var(--success);">Supabase Auth Active</div>
                 </div>
             </div>
-            <button class="btn-logout" onclick="logoutUser()">🚪 Ondoka Kwenye Mfumo (Logout)</button>
+            <button class="logout-btn-custom" onclick="logoutSession()">🚪 Ondoka kwenye Mfumo (Logout)</button>
         </div>
-
     </div>
 
-    <!-- Navigation -->
-    <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('tab-home', this)">
-            <span class="nav-icon">🏠</span>
+    <!-- Navigation Bar -->
+    <nav class="bottom-nav-bar">
+        <div class="nav-link-item active" onclick="switchTab('tab-home', this)">
+            <span>🏠</span>
             <span>Nyumbani</span>
         </div>
-        <div class="nav-item" onclick="switchTab('tab-michango', this)">
-            <span class="nav-icon">💳</span>
+        <div class="nav-link-item" onclick="switchTab('tab-michango', this)">
+            <span>💳</span>
             <span>Michango</span>
         </div>
-        <div class="nav-item" onclick="switchTab('tab-risiti', this)">
-            <span class="nav-icon">📄</span>
+        <div class="nav-link-item" onclick="switchTab('tab-risiti', this)">
+            <span>📄</span>
             <span>Risiti</span>
         </div>
-        <div class="nav-item" onclick="switchTab('tab-profile', this)">
-            <span class="nav-icon">👤</span>
+        <div class="nav-link-item" onclick="switchTab('tab-profile', this)">
+            <span>👤</span>
             <span>Profile</span>
         </div>
     </nav>
 
-    <!-- Universal Flexible Session Parser (No Redirect Loop) -->
     <script>
-        document.addEventListener("DOMContentLoaded", async function() {
-            // Salamu za wakati
-            const h = new Date().getHours();
-            let g = "HABARI ZA LEO";
-            if (h < 12) g = "HABARI ZA ASUBUHI";
-            else if (h < 16) g = "HABARI ZA MCHANA";
-            else g = "HABARI ZA JIONI";
-            document.getElementById("greetingTime").innerText = g;
+        document.addEventListener("DOMContentLoaded", async () => {
+            const hour = new Date().getHours();
+            let greet = "Habari za Leo";
+            if (hour < 12) greet = "Habari za Asubuhi";
+            else if (hour < 16) greet = "Habari za Mchana";
+            else greet = "Habari za Jioni";
+            document.getElementById("timeGreeting").innerText = greet;
 
-            // Tafuta taarifa kupitia localStorage au Session bila kulazimisha redirect ya fujo
-            await resolveUserDataAndSession();
-            await fetchDashboardStats();
+            await loadUserDataAndStats();
         });
 
-        async function resolveUserDataAndSession() {
-            let userData = {
-                full_name: "Mwanachama",
-                email: "mwanachama@mchezowetu.com",
-                phone: "Imeunganishwa"
-            };
-
-            // 1. Kagua funguo zote za localStorage kupata session yoyote ya Supabase au App
-            for (let i = 0; i < localStorage.length; i++) {
-                let key = localStorage.key(i);
-                try {
-                    let val = JSON.parse(localStorage.getItem(key));
-                    if (val && typeof val === 'object') {
-                        // Supabase session structure or direct user object
-                        let currentObj = val.user || val.currentSession?.user || val;
-                        if (currentObj.email || currentObj.full_name || currentObj.name) {
-                            userData.full_name = currentObj.full_name || currentObj.name || currentObj.email?.split('@')[0];
-                            userData.email = currentObj.email || userData.email;
-                            userData.phone = currentObj.phone || currentObj.phone_number || userData.phone;
-                        }
-                    }
-                } catch(e) {}
-            }
-
-            // 2. Jaribu kuita backend kama kuna token yoyote
+        async function loadUserDataAndStats() {
+            const token = localStorage.getItem("token") || localStorage.getItem("sb-access-token");
             try {
-                let res = await fetch("/api/user/me");
-                if (res.ok) {
-                    let apiUser = await res.json();
-                    if (apiUser.full_name || apiUser.name || apiUser.email) {
-                        userData.full_name = apiUser.full_name || apiUser.name || userData.full_name;
-                        userData.email = apiUser.email || userData.email;
-                        userData.phone = apiUser.phone || userData.phone_number || userData.phone;
+                const resUser = await fetch("/api/user/me", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                if (resUser.ok) {
+                    const u = await resUser.json();
+                    document.getElementById("userNameDisplay").innerText = u.full_name;
+                    document.getElementById("profileName").innerText = u.full_name;
+                    document.getElementById("profileEmail").innerText = u.email;
+                    document.getElementById("profilePhone").innerText = u.phone;
+
+                    const parts = u.full_name.trim().split(" ");
+                    let initials = parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
+                    document.getElementById("userAvatar").innerText = initials;
+                } else {
+                    document.getElementById("userNameDisplay").innerText = "Mwanachama";
+                    document.getElementById("profileName").innerText = "Mwanachama";
+                }
+
+                const resStats = await fetch("/api/user/stats", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                if (resStats.ok) {
+                    const d = await resStats.json();
+                    if (d.myContribution !== undefined) {
+                        document.getElementById("myContribVal").innerText = "TSh " + Number(d.myContribution).toLocaleString();
+                        document.getElementById("contribHistoryVal").innerText = "TSh " + Number(d.myContribution).toLocaleString();
+                    }
+                    if (d.totalContribution !== undefined) {
+                        document.getElementById("totalGroupVal").innerText = "TSh " + Number(d.totalContribution).toLocaleString();
+                    }
+                    if (d.totalMembers) document.getElementById("statMembers").innerText = d.totalMembers;
+                    if (d.activeContributors) document.getElementById("statPaid").innerText = d.activeContributors;
+                    if (d.pendingMembers) document.getElementById("statPending").innerText = d.pendingMembers;
+                    if (d.groupName) document.getElementById("groupNameTitle").innerText = d.groupName;
+                    if (d.progress !== undefined) {
+                        document.getElementById("progressText").innerText = d.progress + "%";
+                        document.getElementById("progressBarFill").style.width = d.progress + "%";
                     }
                 }
-            } catch(e) {}
-
-            // Tumia majina yaliyopatikana
-            let finalName = userData.full_name || "Mwanachama Mpendwa";
-            let finalEmail = userData.email || "Imethibitishwa";
-            let finalPhone = userData.phone || "Namba ya Simu Imeunganishwa";
-
-            document.getElementById("userName").innerText = finalName;
-            document.getElementById("profileFullName").innerText = finalName;
-            document.getElementById("profileEmail").innerText = finalEmail;
-            document.getElementById("profilePhone").innerText = finalPhone;
-
-            // Avatar Initials
-            let initials = "MW";
-            let parts = finalName.trim().split(/\s+/);
-            if (parts.length >= 2) {
-                initials = (parts[0][0] + parts[1][0]).toUpperCase();
-            } else if (parts[0]) {
-                initials = parts[0].substring(0, 2).toUpperCase();
+            } catch (err) {
+                console.error(err);
             }
-            document.getElementById("userAvatar").innerText = initials;
         }
 
-        function switchTab(tabId, el) {
-            document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
-            document.querySelectorAll(".nav-item").forEach(nav => nav.classList.remove("active"));
-
-            document.getElementById(tabId).classList.add("active");
+        function switchTab(paneId, el) {
+            document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+            document.querySelectorAll(".nav-link-item").forEach(n => n.classList.remove("active"));
+            document.getElementById(paneId).classList.add("active");
             el.classList.add("active");
         }
 
-        async function fetchDashboardStats() {
-            try {
-                let res = await fetch("/api/user/stats");
-                if (res.ok) {
-                    let d = await res.json();
-                    if (d.myContribution !== undefined) {
-                        document.getElementById("myContributionHero").innerText = "TSh " + Number(d.myContribution).toLocaleString();
-                        document.getElementById("contribAmountTab").innerText = "TSh " + Number(d.myContribution).toLocaleString();
-                    }
-                    if (d.totalContribution !== undefined) {
-                        document.getElementById("totalGroupContrib").innerText = "TSh " + Number(d.totalContribution).toLocaleString();
-                    }
-                    if (d.totalMembers) document.getElementById("totalMembers").innerText = d.totalMembers;
-                    if (d.activeContributors) document.getElementById("activeContributors").innerText = d.activeContributors;
-                    if (d.pendingMembers) document.getElementById("pendingMembers").innerText = d.pendingMembers;
-                    if (d.groupName) document.getElementById("groupName").innerText = d.groupName;
-                    if (d.progress !== undefined) {
-                        document.getElementById("progressPercentage").innerText = d.progress + "% ya Lengo";
-                        document.getElementById("progressBar").style.width = d.progress + "%";
-                    }
-                }
-            } catch(e) {}
-        }
-
-        function logoutUser() {
+        function logoutSession() {
             if (confirm("Je, una uhakika unataka kuondoka?")) {
                 localStorage.clear();
                 sessionStorage.clear();
