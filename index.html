@@ -3,338 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mchezo Wetu - Fintech Platform</title>
+    <title>Mchezo Wetu - Ingia / Jisajili</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --bg-deep: #020617;
-            --card-glass: rgba(15, 23, 42, 0.85);
-            --border-glass: rgba(255, 255, 255, 0.1);
-            --primary: #2563eb;
-            --primary-glow: rgba(37, 99, 235, 0.4);
-            --accent: #10b981;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --bg-main: #0b0f19;
+            --card-bg: rgba(23, 32, 51, 0.75);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-main: #f9fafb;
+            --text-sub: #9ca3af;
         }
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         body {
-            background: var(--bg-deep);
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.22) 0%, transparent 65%),
-                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.15) 0%, transparent 55%);
+            background-color: var(--bg-main);
+            background-image: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.15), transparent 70%);
             color: var(--text-main);
-            margin: 0; min-height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-            padding: 20px; overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
-        .portal-card {
-            background: var(--card-glass);
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
-            border: 1px solid var(--border-glass);
-            border-radius: 28px;
-            padding: 36px 28px;
-            width: 100%; max-width: 420px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
-            position: relative;
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
-
-        .pro-emblem {
-            width: 64px; height: 64px; margin: 0 auto 16px auto;
-            border-radius: 20px;
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(16, 185, 129, 0.25));
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 30px rgba(37, 99, 235, 0.3);
+        .brand-logo { text-align: center; margin-bottom: 24px; }
+        .brand-logo h1 { font-size: 26px; font-weight: 800; color: #fff; }
+        .brand-logo p { font-size: 13px; color: var(--text-sub); margin-top: 4px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-sub); margin-bottom: 6px; }
+        .form-control {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            padding: 14px 16px;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
         }
-
-        .input-group { margin-bottom: 18px; }
-        .input-label {
-            font-size: 11px; font-weight: 800; color: var(--text-muted);
-            letter-spacing: 0.6px; margin-bottom: 8px; display: block;
-            text-transform: uppercase;
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: #fff;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+            margin-top: 10px;
         }
-        .input-field {
-            width: 100%; padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-glass);
-            border-radius: 16px; color: #fff;
-            font-size: 14px; outline: none; transition: all 0.25s ease;
-        }
-        .input-field:focus { 
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
-            background: rgba(255, 255, 255, 0.06);
-        }
-        .btn-action {
-            width: 100%; padding: 16px;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: white; border: none; border-radius: 16px;
-            font-size: 14px; font-weight: 800; cursor: pointer;
-            margin-top: 12px; transition: all 0.2s ease;
-            box-shadow: 0 8px 20px var(--primary-glow);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        .btn-action:disabled { opacity: 0.65; cursor: not-allowed; }
-
-        .btn-spinner {
-            width: 18px; height: 18px;
-            border: 2.5px solid rgba(255,255,255,0.3);
-            border-top-color: #ffffff;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .link-toggle {
-            color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 20px;
-        }
-        .link-toggle a { color: #60a5fa; text-decoration: none; font-weight: 800; }
-
-        /* MODERN FINTECH FLOATING WELCOME MODAL */
-        .welcome-modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 6, 23, 0.88);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            z-index: 9999; display: none; align-items: center; justify-content: center;
-            padding: 20px; transition: all 0.3s ease;
-        }
-        .welcome-modal-overlay.active { display: flex; }
-
-        .welcome-dialog {
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 30px; padding: 32px 24px; text-align: center;
-            max-width: 360px; width: 100%;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 40px rgba(37, 99, 235, 0.2);
-            transform: translateY(20px);
-            animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        @keyframes slideUpModal {
-            to { transform: translateY(0); }
-        }
-
-        .welcome-badge-icon {
-            width: 68px; height: 68px; margin: 0 auto 16px auto;
-            border-radius: 22px;
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(37, 99, 235, 0.2));
-            border: 1.5px solid rgba(16, 185, 129, 0.4);
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
-        }
-
-        .welcome-title-text { font-size: 20px; font-weight: 900; color: #fff; margin: 0 0 6px 0; }
-        .welcome-sub-text { font-size: 12px; color: var(--text-muted); margin: 0 0 20px 0; font-weight: 600; }
-
-        .loader-bar-track {
-            width: 100%; height: 5px; background: rgba(255,255,255,0.08);
-            border-radius: 10px; overflow: hidden;
-        }
-        .loader-bar-progress {
-            height: 100%; width: 0%;
-            background: linear-gradient(90deg, #2563eb, #10b981);
-            border-radius: 10px; transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        #notificationSheet {
-            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120px);
-            background: rgba(15, 23, 42, 0.92); color: #fff; padding: 14px 22px; border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.15); font-size: 13px; font-weight: 700;
-            z-index: 3000; transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-            display: flex; align-items: center; gap: 10px; pointer-events: none;
-            max-width: 90%; width: max-content;
-        }
-        #notificationSheet.active { transform: translateX(-50%) translateY(0); }
+        .toggle-text { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-sub); }
+        .toggle-text a { color: var(--primary); font-weight: 700; text-decoration: none; cursor: pointer; }
     </style>
 </head>
 <body>
-    <!-- MODERN FLOATING WELCOME MODAL -->
-    <div class="welcome-modal-overlay" id="welcomeModal">
-        <div class="welcome-dialog">
-            <div class="welcome-badge-icon">
-                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-            </div>
-            <h2 class="welcome-title-text" id="welcomeUserTitle">Umekaribishwa!</h2>
-            <p class="welcome-sub-text">Inaandaa Mfumo Wako Wa Kifedha...</p>
-            <div class="loader-bar-track">
-                <div class="loader-bar-progress" id="welcomeProgressBar"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="notificationSheet">
-        <span id="notifIcon">ℹ️</span>
-        <span id="notifText">Taarifa</span>
-    </div>
-
-    <div class="portal-card">
-        <div class="pro-emblem">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="5" width="20" height="14" rx="3"></rect>
-                <line x1="2" y1="10" x2="22" y2="10"></line>
-                <line x1="6" y1="15" x2="10" y2="15"></line>
-            </svg>
+    <div class="auth-container">
+        <div class="brand-logo">
+            <h1>Mchezo Wetu</h1>
+            <p id="subTitle">Ingia kwenye mfumo wa mchezo wa kikundi</p>
         </div>
 
-        <div style="text-align: center; margin-bottom: 24px;">
-            <h2 id="portalTitle" style="font-size: 22px; font-weight: 900; margin: 0 0 6px 0; color: #fff;">Mchezo Wetu</h2>
-            <p id="portalSub" style="font-size: 12px; color: var(--text-muted); margin: 0;">Ingia kwenye mfumo wa kifedha wa kikundi</p>
-        </div>
-
-        <!-- FORM YA LOGIN -->
-        <form id="loginForm" onsubmit="handleUserLogin(event)">
-            <div class="input-group">
-                <label class="input-label">Namba ya Simu / Jina / Member No.</label>
-                <input type="text" id="loginId" class="input-field" placeholder="Ingiza Simu, Jina au No. ya Mwanachama" required>
+        <form id="authForm">
+            <div class="form-group" id="fullNameGroup" style="display: none;">
+                <label>Majina Kamili</label>
+                <input type="text" id="fullNameInput" class="form-control" placeholder="Mfano: Makoitz Mako">
             </div>
-            <div class="input-group">
-                <label class="input-label">Nenosiri (Password)</label>
-                <input type="password" id="loginPass" class="input-field" placeholder="••••••••" required>
+            <div class="form-group">
+                <label>Barua Pepe (Email)</label>
+                <input type="email" id="emailInput" class="form-control" placeholder="jina@email.com" required>
             </div>
-            <button type="submit" id="btnLogin" class="btn-action">
-                <span>Ingia Kwenye Akaunti ➔</span>
-            </button>
-            <div class="link-toggle">
-                Huna akaunti? <a href="#" onclick="toggleMode('register')">Jisajili Hapa</a>
+            <div class="form-group">
+                <label>Nenosiri (Password)</label>
+                <input type="password" id="passwordInput" class="form-control" placeholder="••••••••" required>
             </div>
+            <button type="submit" class="btn-submit" id="submitBtn">Ingia Kwenye Akaunti →</button>
         </form>
 
-        <!-- FORM YA REGISTRATION -->
-        <form id="registerForm" style="display: none;" onsubmit="handleUserRegister(event)">
-            <div class="input-group">
-                <label class="input-label">Jina Kamili</label>
-                <input type="text" id="regName" class="input-field" placeholder="Mfano: Baraka Makoi" required>
-            </div>
-            <div class="input-group">
-                <label class="input-label">Namba ya Simu</label>
-                <input type="tel" id="regPhone" class="input-field" placeholder="07XXXXXXXX" required>
-            </div>
-            <div class="input-group">
-                <label class="input-label">Barua Pepe (Hiari)</label>
-                <input type="email" id="regEmail" class="input-field" placeholder="mwanachama@example.com">
-            </div>
-            <div class="input-group">
-                <label class="input-label">Nenosiri (Password)</label>
-                <input type="password" id="regPass" class="input-field" placeholder="••••••••" required>
-            </div>
-            <button type="submit" id="btnReg" class="btn-action" style="background: linear-gradient(135deg, #10b981, #059669);">
-                <span>Tuma Ombi la Usajili ➔</span>
-            </button>
-            <div class="link-toggle">
-                Unayo akaunti? <a href="#" onclick="toggleMode('login')">Ingia Hapa</a>
-            </div>
-        </form>
+        <div class="toggle-text">
+            <span id="toggleQuestion">Huna akaunti?</span>
+            <a id="toggleBtn" onclick="toggleAuthMode()">Jisajili Hapa</a>
+        </div>
     </div>
 
     <script>
-        function showNotification(msg, type = 'info') {
-            const sheet = document.getElementById('notificationSheet');
-            const icon = document.getElementById('notifIcon');
-            const text = document.getElementById('notifText');
+        let isSignUp = false;
+        const SUPABASE_URL = "YOUR_SUPABASE_URL";
+        const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            icon.innerText = type === 'success' ? '✅' : (type === 'error' ? '⚠️' : 'ℹ️');
-            text.innerText = msg;
-
-            sheet.classList.add('active');
-            setTimeout(() => sheet.classList.remove('active'), 3200);
+        function toggleAuthMode() {
+            isSignUp = !isSignUp;
+            document.getElementById("fullNameGroup").style.display = isSignUp ? "block" : "none";
+            document.getElementById("subTitle").innerText = isSignUp ? "Tengeneza akaunti mpya ya mchezo" : "Ingia kwenye mfumo wa mchezo wa kikundi";
+            document.getElementById("submitBtn").innerText = isSignUp ? "Jisajili Sasa →" : "Ingia Kwenye Akaunti →";
+            document.getElementById("toggleQuestion").innerText = isSignUp ? "Unayo akaunti tayari?" : "Huna akaunti?";
+            document.getElementById("toggleBtn").innerText = isSignUp ? "Ingia Hapa" : "Jisajili Hapa";
         }
 
-        function toggleMode(mode) {
-            if (mode === 'register') {
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('registerForm').style.display = 'block';
-                document.getElementById('portalTitle').innerText = 'Usajili wa Mwanachama';
-                document.getElementById('portalSub').innerText = 'Fungua akaunti mpya ya kikundi';
+        document.getElementById("authForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("emailInput").value.trim();
+            const password = document.getElementById("passwordInput").value;
+            const fullName = document.getElementById("fullNameInput").value.trim();
+
+            if (isSignUp) {
+                if (!fullName) { alert("Tafadhali ingiza Majina Yako Kamili."); return; }
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: fullName
+                        }
+                    }
+                });
+                if (error) {
+                    alert("Makosa ya Usajili: " + error.message);
+                } else {
+                    alert("Usajili umefanikiwa! Unaweza kuingia sasa.");
+                    toggleAuthMode();
+                }
             } else {
-                document.getElementById('registerForm').style.display = 'none';
-                document.getElementById('loginForm').style.display = 'block';
-                document.getElementById('portalTitle').innerText = 'Mchezo Wetu';
-                document.getElementById('portalSub').innerText = 'Ingia kwenye mfumo wa kifedha wa kikundi';
-            }
-        }
-
-        async function handleUserLogin(e) {
-            e.preventDefault();
-            const identifier = document.getElementById('loginId').value.trim();
-            const password = document.getElementById('loginPass').value.trim();
-
-            const btn = document.getElementById('btnLogin');
-            btn.disabled = true;
-            btn.innerHTML = `<div class="btn-spinner"></div> <span>Inathibitisha...</span>`;
-
-            try {
-                const res = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ identifier, password })
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
                 });
-
-                const data = await res.json();
-
-                if (data.success) {
-                    localStorage.setItem('userSession', JSON.stringify(data.user));
-                    
-                    // ONYESHA FLOATING WELCOME MODAL
-                    const userName = data.user.fullName || 'Mwanachama';
-                    document.getElementById('welcomeUserTitle').innerText = `Umekaribishwa, ${userName}!`;
-                    const modal = document.getElementById('welcomeModal');
-                    modal.classList.add('active');
-
-                    setTimeout(() => {
-                        document.getElementById('welcomeProgressBar').style.width = '100%';
-                    }, 50);
-
-                    setTimeout(() => {
-                        window.location.href = '/dashboard.html';
-                    }, 1300);
+                if (error) {
+                    alert("Ingio Limeshindikana: " + error.message);
                 } else {
-                    showNotification(data.message, 'error');
-                    btn.disabled = false;
-                    btn.innerHTML = `<span>Ingia Kwenye Akaunti ➔</span>`;
+                    localStorage.setItem("token", data.session.access_token);
+                    window.location.href = "dashboard.html";
                 }
-            } catch (err) {
-                showNotification('Hitilafu kwenye muunganisho wa Seva.', 'error');
-                btn.disabled = false;
-                btn.innerHTML = `<span>Ingia Kwenye Akaunti ➔</span>`;
             }
-        }
-
-        async function handleUserRegister(e) {
-            e.preventDefault();
-            const fullName = document.getElementById('regName').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const password = document.getElementById('regPass').value.trim();
-
-            const btn = document.getElementById('btnReg');
-            btn.disabled = true;
-            btn.innerHTML = `<div class="btn-spinner"></div> <span>Inatuma Ombi...</span>`;
-
-            try {
-                const res = await fetch('/api/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ fullName, phone, email, password })
-                });
-
-                const data = await res.json();
-
-                if (data.success) {
-                    showNotification(data.message, 'success');
-                } else {
-                    showNotification(data.message, 'error');
-                    btn.disabled = false;
-                    btn.innerHTML = `<span>Tuma Ombi la Usajili ➔</span>`;
-                }
-            } catch (err) {
-                showNotification('Imeshindikana kukamilisha usajili.', 'error');
-                btn.disabled = false;
-                btn.innerHTML = `<span>Tuma Ombi la Usajili ➔</span>`;
-            }
-        }
+        });
     </script>
 </body>
 </html>

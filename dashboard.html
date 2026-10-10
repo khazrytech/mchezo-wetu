@@ -3,476 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mchezo Wetu - Enterprise Portal</title>
+    <title>Mchezo Wetu - Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-base: #030712;
-            --card-bg: rgba(17, 24, 39, 0.85);
+            --bg-body: #090d16;
+            --card-bg: rgba(21, 30, 47, 0.75);
             --card-border: rgba(255, 255, 255, 0.08);
-            --primary: #3b82f6;
-            --success: #10b981;
-            --text-main: #f9fafb;
-            --text-sub: #9ca3af;
-            --glow-blue: 0 10px 30px -5px rgba(59, 130, 246, 0.35);
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         body {
-            background-color: var(--bg-base);
+            background-color: var(--bg-body);
             background-image: 
-                radial-gradient(circle at 10% 15%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 90% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 40%);
-            color: var(--text-main);
+                radial-gradient(circle at 20% 10%, rgba(59, 130, 246, 0.12), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.08), transparent 40%);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding-bottom: 100px;
+            padding-bottom: 90px;
         }
 
-        .app-container {
-            max-width: 480px;
+        .container {
+            max-width: 440px;
             margin: 0 auto;
             padding: 20px 16px;
         }
 
-        /* Header Styling */
-        .header {
+        /* Profile Top Header */
+        .header-box {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             margin-bottom: 24px;
         }
-
-        .user-profile-box {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .user-avatar {
+        .user-meta { display: flex; align-items: center; gap: 14px; }
+        .avatar-circle {
             width: 52px;
             height: 52px;
             border-radius: 16px;
-            background: linear-gradient(135deg, #2563eb, #8b5cf6);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            font-size: 20px;
-            color: #ffffff;
-            box-shadow: var(--glow-blue);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-        }
-
-        .user-avatar::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            width: 12px;
-            height: 12px;
-            background: var(--success);
-            border: 2.5px solid var(--bg-base);
-            border-radius: 50%;
-        }
-
-        .greeting-label {
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: #60a5fa;
-            letter-spacing: 0.8px;
-        }
-
-        .user-fullname {
             font-size: 19px;
             font-weight: 800;
-            color: #ffffff;
-            letter-spacing: -0.3px;
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
+        .greeting { font-size: 11px; font-weight: 800; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 0.5px; }
+        .user-name { font-size: 18px; font-weight: 800; color: #fff; }
 
-        .notif-icon-btn {
-            width: 44px;
-            height: 44px;
+        .notif-badge {
+            width: 42px;
+            height: 42px;
             border-radius: 14px;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
             font-size: 18px;
+            cursor: pointer;
         }
 
-        /* Hero Balance Card */
-        .main-balance-card {
-            background: linear-gradient(135deg, rgba(30, 58, 138, 0.75), rgba(17, 24, 39, 0.9));
+        /* Hero Financial Card */
+        .finance-card {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.6), rgba(17, 24, 39, 0.8));
             backdrop-filter: blur(16px);
-            border: 1px solid rgba(96, 165, 250, 0.3);
-            border-radius: 22px;
-            padding: 22px;
-            margin-bottom: 16px;
-            box-shadow: var(--glow-blue);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
         }
-
-        .card-title-sm {
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: #93c5fd;
-            letter-spacing: 0.8px;
-            margin-bottom: 6px;
-        }
-
-        .main-amount {
-            font-size: 32px;
-            font-weight: 800;
-            color: #ffffff;
-            letter-spacing: -1px;
-            margin-bottom: 18px;
-        }
-
-        .card-grid-split {
+        .f-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #93c5fd; letter-spacing: 0.5px; }
+        .f-amount { font-size: 32px; font-weight: 800; margin: 6px 0 18px; color: #fff; }
+        .f-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
             padding-top: 14px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
+        .f-sub-title { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; }
+        .f-sub-val { font-size: 15px; font-weight: 800; color: #fff; }
 
-        .split-val {
-            font-size: 16px;
-            font-weight: 800;
-            color: #ffffff;
-        }
-
-        .split-lbl {
-            font-size: 10px;
-            color: var(--text-sub);
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        /* Progress Card */
-        .progress-box {
+        /* Progress Box */
+        .card-box {
             background: var(--card-bg);
             backdrop-filter: blur(16px);
             border: 1px solid var(--card-border);
-            border-radius: 22px;
+            border-radius: 20px;
             padding: 20px;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
-
-        .progress-bar-wrap {
+        .progress-bar {
             width: 100%;
-            height: 10px;
+            height: 8px;
             background: rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
             margin-top: 10px;
-            padding: 2px;
         }
-
-        .progress-bar-inner {
+        .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #3b82f6, #10b981);
-            border-radius: 6px;
             width: 0%;
-            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: width 0.6s ease;
         }
 
-        /* Mini Stats Grid */
-        .mini-grid {
+        /* Stats Grid */
+        .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
             margin-bottom: 24px;
         }
-
-        .mini-card {
+        .stat-card {
             background: var(--card-bg);
-            backdrop-filter: blur(14px);
             border: 1px solid var(--card-border);
             border-radius: 16px;
             padding: 14px 10px;
             text-align: center;
         }
+        .stat-lbl { font-size: 10px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; }
+        .stat-num { font-size: 18px; font-weight: 800; margin-top: 4px; }
 
-        .mini-lbl {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--text-sub);
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-
-        .mini-num {
-            font-size: 18px;
-            font-weight: 800;
-        }
-
-        /* Section Title & Lists */
-        .section-heading {
-            font-size: 16px;
-            font-weight: 800;
-            margin-bottom: 14px;
-            letter-spacing: -0.2px;
-        }
-
-        .tab-pane {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-        .tab-pane.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .list-item-clean {
+        /* Profile Custom View */
+        .profile-container {
             background: var(--card-bg);
-            backdrop-filter: blur(14px);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        /* Profile Box */
-        .profile-card-box {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
             border: 1px solid var(--card-border);
             border-radius: 22px;
             padding: 22px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
+        .p-item {
+            padding-bottom: 14px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .p-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .p-label { font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; }
+        .p-value { font-size: 16px; font-weight: 800; color: #fff; margin-top: 2px; }
 
-        .profile-row {
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        .profile-row:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .p-lbl {
-            font-size: 11px;
-            color: var(--text-sub);
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-
-        .p-val {
-            font-size: 16px;
-            font-weight: 800;
-            color: #ffffff;
-        }
-
-        .logout-btn-custom {
+        .btn-logout {
             width: 100%;
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(220, 38, 38, 0.15));
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.4);
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
             padding: 16px;
-            border-radius: 18px;
+            border-radius: 16px;
+            font-size: 14px;
             font-weight: 800;
-            font-size: 15px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
         }
 
-        /* Bottom Fixed Navigation Bar */
-        .bottom-nav-bar {
+        /* Tab Visibility */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Navigation Bar */
+        .bottom-nav {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(3, 7, 18, 0.94);
+            bottom: 0; left: 0; right: 0;
+            background: rgba(9, 13, 22, 0.95);
             backdrop-filter: blur(20px);
             border-top: 1px solid var(--card-border);
             display: flex;
             justify-content: space-around;
             padding: 12px 0 16px;
-            z-index: 1000;
-            max-width: 480px;
+            max-width: 440px;
             margin: 0 auto;
         }
-
-        .nav-link-item {
+        .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
-            color: var(--text-sub);
-            text-decoration: none;
+            color: var(--text-secondary);
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
-            width: 25%;
         }
-
-        .nav-link-item.active {
-            color: #60a5fa;
-            transform: translateY(-2px);
-        }
-
-        .nav-link-item span:first-child {
-            font-size: 22px;
-        }
+        .nav-item.active { color: var(--accent-blue); }
+        .nav-item span:first-child { font-size: 20px; }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Header -->
-        <div class="header">
-            <div class="user-profile-box">
-                <div class="user-avatar" id="userAvatar">MW</div>
+
+    <div class="container">
+        <!-- Top Profile Header -->
+        <div class="header-box">
+            <div class="user-meta">
+                <div class="avatar-circle" id="userAvatar">MW</div>
                 <div>
-                    <div class="greeting-label" id="timeGreeting">Habari</div>
-                    <div class="user-fullname" id="userNameDisplay">Inapakia...</div>
+                    <div class="greeting" id="greetingText">Habari</div>
+                    <div class="user-name" id="userNameHeader">Inapakia...</div>
                 </div>
             </div>
-            <div class="notif-icon-btn" onclick="alert('Mfumo upo salama na hauna taarifa mpya.')">🔔</div>
+            <div class="notif-badge" onclick="alert('Hakuna taarifa mpya.')">🔔</div>
         </div>
 
-        <!-- Tab 1: Nyumbani -->
-        <div id="tab-home" class="tab-pane active">
-            <div class="main-balance-card">
-                <div class="card-title-sm">Mchango Wako Wote</div>
-                <div class="main-amount" id="myContribVal">TSh 0</div>
-                <div class="card-grid-split">
+        <!-- Tab 1: Home Dashboard -->
+        <div id="tab-home" class="tab-content active">
+            <div class="finance-card">
+                <div class="f-label">Mchango Wako Wote</div>
+                <div class="f-amount" id="myContrib">TSh 0</div>
+                <div class="f-row">
                     <div>
-                        <div class="split-val" id="totalGroupVal">TSh 0</div>
-                        <div class="split-lbl">Jumla ya Kikundi</div>
+                        <div class="f-sub-val" id="groupContrib">TSh 0</div>
+                        <div class="f-sub-title">Jumla Kikundi</div>
                     </div>
                     <div>
-                        <div class="split-val" style="color: var(--success);">Active</div>
-                        <div class="split-lbl">Hali ya Akaunti</div>
+                        <div class="f-sub-val" style="color: var(--accent-green);">Active</div>
+                        <div class="f-sub-title">Hali ya Akaunti</div>
                     </div>
                 </div>
             </div>
 
-            <div class="progress-box">
-                <div style="font-size: 11px; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin-bottom: 6px;">Lengo la Kikundi</div>
+            <div class="card-box">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 18px; font-weight: 800;" id="groupNameTitle">Mchezo Wetu Enterprise</span>
-                    <span style="font-size: 14px; font-weight: 800; color: var(--success);" id="progressText">0%</span>
+                    <span style="font-size: 15px; font-weight: 800;" id="groupTitle">Mchezo Wetu Enterprise</span>
+                    <span style="font-size: 13px; font-weight: 800; color: var(--accent-green);" id="progressText">0%</span>
                 </div>
-                <div class="progress-bar-wrap">
-                    <div class="progress-bar-inner" id="progressBarFill"></div>
-                </div>
-            </div>
-
-            <div class="mini-grid">
-                <div class="mini-card">
-                    <div class="mini-lbl">Wanachama</div>
-                    <div class="mini-num" id="statMembers">0</div>
-                </div>
-                <div class="mini-card">
-                    <div class="mini-lbl">Wamelipa</div>
-                    <div class="mini-num" style="color: var(--success);" id="statPaid">0</div>
-                </div>
-                <div class="mini-card">
-                    <div class="mini-lbl">Wadaiwa</div>
-                    <div class="mini-num" style="color: #ef4444;" id="statPending">0</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
                 </div>
             </div>
 
-            <div class="section-heading">Shughuli za Hivi Karibuni</div>
-            <div class="list-item-clean">
-                <div>
-                    <h4 style="font-size: 14px; font-weight: 700;">Usalama wa Akaunti</h4>
-                    <p style="font-size: 12px; color: var(--text-sub);">Imethibitishwa rasmi kupitia Supabase</p>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-lbl">Wanachama</div>
+                    <div class="stat-num" id="totalM">0</div>
                 </div>
-                <span style="font-size: 11px; font-weight: 800; color: var(--success); background: rgba(16,185,129,0.15); padding: 5px 10px; border-radius: 8px;">Safi</span>
+                <div class="stat-card">
+                    <div class="stat-lbl">Wamelipa</div>
+                    <div class="stat-num" style="color: var(--accent-green);" id="paidM">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-lbl">Wadaiwa</div>
+                    <div class="stat-num" style="color: #ef4444;" id="pendingM">0</div>
+                </div>
             </div>
         </div>
 
-        <!-- Tab 2: Michango -->
-        <div id="tab-michango" class="tab-pane">
-            <div class="section-heading">Historia ya Michango Yako</div>
-            <div class="list-item-clean">
-                <div>
-                    <h4 style="font-size: 14px; font-weight: 700;">Mchango Mkuu</h4>
-                    <p style="font-size: 12px; color: var(--text-sub);">Imerekodiwa kwenye hifadhidata</p>
+        <!-- Tab 2: Profile -->
+        <div id="tab-profile" class="tab-content">
+            <h3 style="margin-bottom: 14px; font-size: 16px; font-weight: 800;">Taarifa za Mwanachama</h3>
+            <div class="profile-container">
+                <div class="p-item">
+                    <div class="p-label">Majina Kamili</div>
+                    <div class="p-value" id="pFullName">Inapakia...</div>
                 </div>
-                <span style="font-size: 14px; font-weight: 800; color: var(--success);" id="contribHistoryVal">TSh 0</span>
-            </div>
-        </div>
-
-        <!-- Tab 3: Risiti -->
-        <div id="tab-risiti" class="tab-pane">
-            <div class="section-heading">Risiti za Kidigitali</div>
-            <div class="list-item-clean">
-                <div>
-                    <h4 style="font-size: 14px; font-weight: 700;">Risiti #MW-PRO</h4>
-                    <p style="font-size: 12px; color: var(--text-sub);">Hati rasmi ya uthibitisho</p>
+                <div class="p-item">
+                    <div class="p-label">Barua Pepe (Email)</div>
+                    <div class="p-value" id="pEmail">Inapakia...</div>
                 </div>
-                <span style="font-size: 12px; font-weight: 800; color: var(--primary); cursor: pointer;" onclick="alert('Risiti yako iko tayari.')">Fungua</span>
-            </div>
-        </div>
-
-        <!-- Tab 4: Profile -->
-        <div id="tab-profile" class="tab-pane">
-            <div class="section-heading">Taarifa za Mwanachama</div>
-            <div class="profile-card-box">
-                <div class="profile-row">
-                    <div class="p-lbl">Majina Kamili</div>
-                    <div class="p-val" id="profileName">Inapakia...</div>
+                <div class="p-item">
+                    <div class="p-label">Namba ya Simu</div>
+                    <div class="p-value" id="pPhone">Imeunganishwa</div>
                 </div>
-                <div class="profile-row">
-                    <div class="p-lbl">Barua Pepe (Email)</div>
-                    <div class="p-val" id="profileEmail">Inapakia...</div>
-                </div>
-                <div class="profile-row">
-                    <div class="p-lbl">Namba ya Simu</div>
-                    <div class="p-val" id="profilePhone">Inapakia...</div>
-                </div>
-                <div class="profile-row">
-                    <div class="p-lbl">Hali ya Mfumo</div>
-                    <div class="p-val" style="color: var(--success);">Supabase Auth Active</div>
+                <div class="p-item">
+                    <div class="p-label">Hali ya Mfumo</div>
+                    <div class="p-value" style="color: var(--accent-green);">Supabase Authenticated</div>
                 </div>
             </div>
-            <button class="logout-btn-custom" onclick="logoutSession()">🚪 Ondoka kwenye Mfumo (Logout)</button>
+            <button class="btn-logout" onclick="logout()">🚪 Ondoka Kwenye Mfumo (Logout)</button>
         </div>
     </div>
 
-    <!-- Navigation Bar -->
-    <nav class="bottom-nav-bar">
-        <div class="nav-link-item active" onclick="switchTab('tab-home', this)">
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('tab-home', this)">
             <span>🏠</span>
             <span>Nyumbani</span>
         </div>
-        <div class="nav-link-item" onclick="switchTab('tab-michango', this)">
-            <span>💳</span>
-            <span>Michango</span>
-        </div>
-        <div class="nav-link-item" onclick="switchTab('tab-risiti', this)">
-            <span>📄</span>
-            <span>Risiti</span>
-        </div>
-        <div class="nav-link-item" onclick="switchTab('tab-profile', this)">
+        <div class="nav-item" onclick="switchTab('tab-profile', this)">
             <span>👤</span>
             <span>Profile</span>
         </div>
@@ -480,74 +291,58 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
-            const hour = new Date().getHours();
-            let greet = "Habari za Leo";
-            if (hour < 12) greet = "Habari za Asubuhi";
-            else if (hour < 16) greet = "Habari za Mchana";
-            else greet = "Habari za Jioni";
-            document.getElementById("timeGreeting").innerText = greet;
+            const h = new Date().getHours();
+            let g = h < 12 ? "Habari za Asubuhi" : h < 16 ? "Habari za Mchana" : "Habari za Jioni";
+            document.getElementById("greetingText").innerText = g;
 
-            await loadUserDataAndStats();
+            await fetchProfileAndStats();
         });
 
-        async function loadUserDataAndStats() {
-            const token = localStorage.getItem("token") || localStorage.getItem("sb-access-token");
+        async function fetchProfileAndStats() {
+            const token = localStorage.getItem("token");
             try {
-                const resUser = await fetch("/api/user/me", {
+                const res = await fetch("/api/user/me", {
                     headers: { "Authorization": "Bearer " + token }
                 });
-                if (resUser.ok) {
-                    const u = await resUser.json();
-                    document.getElementById("userNameDisplay").innerText = u.full_name;
-                    document.getElementById("profileName").innerText = u.full_name;
-                    document.getElementById("profileEmail").innerText = u.email;
-                    document.getElementById("profilePhone").innerText = u.phone;
+                if (res.ok) {
+                    const user = await res.json();
+                    document.getElementById("userNameHeader").innerText = user.full_name;
+                    document.getElementById("pFullName").innerText = user.full_name;
+                    document.getElementById("pEmail").innerText = user.email;
+                    document.getElementById("pPhone").innerText = user.phone;
 
-                    const parts = u.full_name.trim().split(" ");
-                    let initials = parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
+                    const parts = user.full_name.split(" ");
+                    const initials = parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
                     document.getElementById("userAvatar").innerText = initials;
-                } else {
-                    document.getElementById("userNameDisplay").innerText = "Mwanachama";
-                    document.getElementById("profileName").innerText = "Mwanachama";
                 }
 
                 const resStats = await fetch("/api/user/stats", {
                     headers: { "Authorization": "Bearer " + token }
                 });
                 if (resStats.ok) {
-                    const d = await resStats.json();
-                    if (d.myContribution !== undefined) {
-                        document.getElementById("myContribVal").innerText = "TSh " + Number(d.myContribution).toLocaleString();
-                        document.getElementById("contribHistoryVal").innerText = "TSh " + Number(d.myContribution).toLocaleString();
-                    }
-                    if (d.totalContribution !== undefined) {
-                        document.getElementById("totalGroupVal").innerText = "TSh " + Number(d.totalContribution).toLocaleString();
-                    }
-                    if (d.totalMembers) document.getElementById("statMembers").innerText = d.totalMembers;
-                    if (d.activeContributors) document.getElementById("statPaid").innerText = d.activeContributors;
-                    if (d.pendingMembers) document.getElementById("statPending").innerText = d.pendingMembers;
-                    if (d.groupName) document.getElementById("groupNameTitle").innerText = d.groupName;
-                    if (d.progress !== undefined) {
-                        document.getElementById("progressText").innerText = d.progress + "%";
-                        document.getElementById("progressBarFill").style.width = d.progress + "%";
-                    }
+                    const st = await resStats.json();
+                    document.getElementById("myContrib").innerText = "TSh " + Number(st.myContribution).toLocaleString();
+                    document.getElementById("groupContrib").innerText = "TSh " + Number(st.totalContribution).toLocaleString();
+                    document.getElementById("totalM").innerText = st.totalMembers;
+                    document.getElementById("paidM").innerText = st.activeContributors;
+                    document.getElementById("pendingM").innerText = st.pendingMembers;
+                    document.getElementById("groupTitle").innerText = st.groupName;
+                    document.getElementById("progressText").innerText = st.progress + "%";
+                    document.getElementById("progressFill").style.width = st.progress + "%";
                 }
-            } catch (err) {
-                console.error(err);
-            }
+            } catch(e) { console.error(e); }
         }
 
-        function switchTab(paneId, el) {
-            document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
-            document.querySelectorAll(".nav-link-item").forEach(n => n.classList.remove("active"));
-            document.getElementById(paneId).classList.add("active");
+        function switchTab(tabId, el) {
+            document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+            document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+            document.getElementById(tabId).classList.add("active");
             el.classList.add("active");
         }
 
-        function logoutSession() {
+        function logout() {
             if (confirm("Je, una uhakika unataka kuondoka?")) {
                 localStorage.clear();
-                sessionStorage.clear();
                 window.location.href = "index.html";
             }
         }
