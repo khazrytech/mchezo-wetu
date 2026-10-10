@@ -41,7 +41,8 @@ app.post('/api/admin/action', async (req, res) => {
     }
 });
 
-// Njia kuu: Ukifungua link kuu, inaleta dashboard moja kwa moja
+// ROUTING SAHIHI KABISA:
+// 1. Anwani kuu na dashboard zinasoma dashboard.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
@@ -50,7 +51,7 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
-// Ukifungua /admin, inaleta admin panel moja kwa moja
+// 2. Anwani ya admin inasoma admin.html HALISI
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
