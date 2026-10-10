@@ -192,3 +192,30 @@ app.get('/api/admin/logs', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+// Endpoint rasmi ya kupata taarifa halisi za mtumiaji kutoka Supabase
+app.get('/api/user/me', async (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader) return res.status(401).json({ error: 'Unauthorized' });
+        const token = authHeader.split(' ')[1];
+        
+        // Ulizia Supabase Auth kwa ajili ya mtumiaji aliyelogin
+        const { data: { user }, error } = await supabase.auth.getUser(token);
+        if (error || !user) {
+            return.status(401).json({ error: 'Invalid token' });
+        }
+
+        // Vuta jina halisi kutoka user_metadata
+        let fullName = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0];
+        
+        res.json({
+            id: user.id,
+            email: user.email,
+            full_name: fullName,
+            phone: user.user_metadata?.phone || user.phone || 'Imeunganishwa'
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
