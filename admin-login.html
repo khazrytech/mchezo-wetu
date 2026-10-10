@@ -3,159 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mchezo Wetu - Super Admin Control Center</title>
+    <title>Mchezo Wetu - Mfumo Wazi</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-obsidian: #030712;
-            --surface-admin: rgba(24, 18, 48, 0.92);
-            --border-purple: rgba(168, 85, 247, 0.45);
-            --primary-purple: #9333ea;
-            --accent-pink: #ec4899;
+            --bg-deep: #030712;
+            --surface: rgba(15, 23, 42, 0.85);
+            --border: rgba(255, 255, 255, 0.15);
             --text-main: #f8fafc;
-            --text-sub: #c084fc;
+            --text-sub: #94a3b8;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
 
         body {
-            background-color: var(--bg-obsidian);
-            background-image: 
-                radial-gradient(circle at 50% 10%, rgba(147, 51, 234, 0.35) 0%, transparent 50%),
-                radial-gradient(circle at 10% 90%, rgba(236, 72, 153, 0.22) 0%, transparent 40%);
+            background-color: var(--bg-deep);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px 16px;
+            padding: 20px;
         }
 
-        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 90%; max-width: 360px; pointer-events: none; }
-        .custom-toast { background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px); color: #fff; padding: 14px 18px; border-radius: 16px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 12px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8); margin-bottom: 10px; transform: translateY(-20px); opacity: 0; transition: all 0.3s; pointer-events: auto; }
-        .custom-toast.show { transform: translateY(0); opacity: 1; }
-        .custom-toast.error { border-left: 4px solid #ef4444; }
-        .custom-toast.success { border-left: 4px solid #10b981; }
-
-        .admin-auth-wrapper { width: 100%; max-width: 420px; animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes scaleIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
-
-        .admin-header-box { text-align: center; margin-bottom: 26px; }
-        .shield-emblem {
-            width: 88px; height: 88px; border-radius: 28px;
-            background: linear-gradient(135deg, #9333ea 0%, #ec4899 100%);
-            display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;
-            box-shadow: 0 15px 35px rgba(147, 51, 234, 0.55); font-size: 42px;
-            border: 2px solid rgba(255, 255, 255, 0.25);
-        }
-        .admin-main-title { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
-        .admin-security-tag {
-            display: inline-block; margin-top: 8px; padding: 5px 14px; border-radius: 20px;
-            background: rgba(147, 51, 234, 0.25); border: 1px solid rgba(147, 51, 234, 0.5);
-            color: #e9d5ff; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;
+        .container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
         }
 
-        .admin-glass-panel {
-            background: var(--surface-admin); backdrop-filter: blur(30px);
-            border: 1px solid var(--border-purple); border-radius: 32px; padding: 28px 24px;
-            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.95);
-        }
+        h1 { font-size: 24px; font-weight: 800; margin-bottom: 10px; color: #fff; }
+        p { font-size: 14px; color: var(--text-sub); margin-bottom: 24px; }
 
-        .admin-notice {
-            background: rgba(147, 51, 234, 0.15); border: 1px solid rgba(147, 51, 234, 0.3);
-            border-radius: 16px; padding: 12px; font-size: 12px; color: #f472b6; font-weight: 700;
-            text-align: center; margin-bottom: 22px;
+        .btn-open {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: #fff;
+            padding: 16px;
+            border-radius: 16px;
+            font-weight: 800;
+            text-decoration: none;
+            margin-bottom: 12px;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
         }
-
-        .admin-field-grp { margin-bottom: 18px; }
-        .admin-input-wrap { position: relative; display: flex; align-items: center; }
-        .admin-icon { position: absolute; left: 16px; font-size: 16px; }
-
-        .admin-custom-input {
-            width: 100%; background: rgba(3, 7, 18, 0.85); border: 1px solid rgba(168, 85, 247, 0.3);
-            padding: 16px 16px 16px 48px; border-radius: 16px; color: #fff; font-size: 14px; outline: none;
-            transition: all 0.2s;
-        }
-        .admin-custom-input:focus { border-color: #9333ea; box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.35); }
-
-        .btn-admin-submit {
-            width: 100%; background: linear-gradient(135deg, #9333ea 0%, #db2777 100%);
-            color: #fff; border: none; padding: 17px; border-radius: 18px; font-weight: 800; font-size: 15px;
-            cursor: pointer; box-shadow: 0 12px 30px rgba(147, 51, 234, 0.55); transition: transform 0.2s; margin-top: 6px;
-        }
-        .btn-admin-submit:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
-
-    <div id="toast-container"></div>
-
-    <div class="admin-auth-wrapper">
-        <div class="admin-header-box">
-            <div class="shield-emblem">🛡️</div>
-            <h1 class="admin-main-title">Mchezo Wetu</h1>
-            <div class="admin-security-tag">👑 SUPER ADMIN CONTROL CENTER</div>
-        </div>
-
-        <div class="admin-glass-panel">
-            <div class="admin-notice">🔐 ENEO MAALUM LA UTAWALA MKUU (ADMIN ONLY)</div>
-
-            <form id="adminLoginForm">
-                <div class="admin-field-grp">
-                    <div class="admin-input-wrap">
-                        <span class="admin-icon">👤</span>
-                        <input type="text" id="adminIdentifier" class="admin-custom-input" placeholder="Admin Email au Username" autocomplete="username" required>
-                    </div>
-                </div>
-
-                <div class="admin-field-grp">
-                    <div class="admin-input-wrap">
-                        <span class="admin-icon">🔑</span>
-                        <input type="password" id="adminPassword" class="admin-custom-input" placeholder="Nenosiri la Admin (Secret Password)" autocomplete="current-password" required>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-admin-submit">
-                    Fungua Admin Control Panel 🚀
-                </button>
-            </form>
-        </div>
+    <div class="container">
+        <h1>Mchezo Wetu Hub</h1>
+        <p>Mfumo upo wazi bila vikwazo vya Login. Chagua sehemu unayotaka kwenda:</p>
+        
+        <a href="/dashboard" class="btn-open">Fungua Dashboard ya Wanachama</a>
+        <a href="/admin" class="btn-open" style="background: linear-gradient(135deg, #9333ea, #ec4899);">Fungua Admin Panel</a>
     </div>
-
-    <script>
-        function showToast(message, type = 'error') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `custom-toast ${type}`;
-            toast.innerHTML = `<span>${type === 'error' ? '⚠️' : '✅'}</span> <span>${message}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 4000);
-        }
-
-        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const identifier = document.getElementById('adminIdentifier').value.trim();
-            const password = document.getElementById('adminPassword').value;
-
-            if (!identifier || !password) { showToast('Jaza taarifa zote za Admin.', 'error'); return; }
-
-            try {
-                const res = await fetch('/api/auth/login-admin', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ identifier, password })
-                });
-                const data = await res.json();
-                if (!res.ok) {
-                    showToast(data.error || 'Ingia ya Admin imeshindikana.', 'error');
-                } else {
-                    localStorage.setItem('token', data.token);
-                    window.location.href = 'admin.html';
-                }
-            } catch(e) {
-                showToast('Shida ya mtandao.', 'error');
-            }
-        });
-    </script>
 </body>
 </html>
