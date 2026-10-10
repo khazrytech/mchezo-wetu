@@ -17,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
+// API za Admin
 app.get('/api/admin/users', async (req, res) => {
     try {
         let { data: profiles } = await supabase.from('profiles').select('*');
@@ -41,8 +42,8 @@ app.post('/api/admin/action', async (req, res) => {
     }
 });
 
-// ROUTING SAHIHI KABISA:
-// 1. Anwani kuu na dashboard zinasoma dashboard.html
+// ROUTING DIRECT:
+// 1. Anwani kuu na /dashboard zinafungua dashboard.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
@@ -51,7 +52,7 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
-// 2. Anwani ya admin inasoma admin.html HALISI
+// 2. Anwani ya /admin inafungua admin.html pekee
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
