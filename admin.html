@@ -3,603 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mchezo Wetu - Enterprise Admin Portal</title>
+    <title>Mchezo Wetu - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-deep: #020617;
-            --card-glass: rgba(15, 23, 42, 0.88);
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --primary: #2563eb;
-            --primary-glow: rgba(37, 99, 235, 0.35);
-            --accent: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-        }
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body {
-            background: var(--bg-deep);
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.2) 0%, transparent 60%),
-                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.12) 0%, transparent 50%);
-            color: var(--text-main);
-            margin: 0; padding: 0 0 95px 0;
-            min-height: 100vh;
-        }
-        .container { max-width: 500px; margin: 0 auto; padding: 20px 16px; }
-
-        .app-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 20px; animation: fadeInDown 0.4s ease;
-        }
-        .pro-emblem {
-            width: 48px; height: 48px; border-radius: 16px;
-            background: linear-gradient(135deg, #2563eb, #10b981);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
-        }
-
-        .glass-card {
-            background: var(--card-glass);
-            backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
-            border: 1px solid var(--border-glass);
-            border-radius: 24px; padding: 20px;
-            margin-bottom: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            animation: fadeInUp 0.4s ease;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Interactive Stats 4 Grid */
-        .stats-4-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
-        .stat-card {
-            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass);
-            border-radius: 18px; padding: 14px; text-align: left; cursor: pointer;
-            transition: all 0.2s; position: relative; overflow: hidden;
-        }
-        .stat-card:hover { border-color: rgba(37,99,235,0.4); background: rgba(255,255,255,0.05); }
-        .stat-val { font-size: 20px; font-weight: 900; color: #fff; margin-top: 6px; }
-        .stat-lbl { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
-
-        /* Filter Tabs */
-        .filter-row { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; }
-        .filter-chip {
-            padding: 7px 12px; border-radius: 12px; font-size: 11px; font-weight: 800;
-            background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass);
-            color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: all 0.2s;
-        }
-        .filter-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-        /* Search Box */
-        .search-box {
-            display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.04);
-            border: 1px solid var(--border-glass); border-radius: 14px; padding: 10px 14px; margin-bottom: 14px;
-        }
-        .search-input { background: transparent; border: none; color: #fff; font-size: 13px; width: 100%; outline: none; }
-
-        /* User Card */
-        .user-item-card {
-            background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass);
-            border-radius: 18px; padding: 16px; margin-bottom: 12px; transition: transform 0.2s;
-        }
-        .user-top-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-        .user-title { font-size: 14px; font-weight: 900; color: #fff; }
-        .user-phone { font-size: 11px; font-weight: 700; color: #60a5fa; font-family: monospace; }
-        
-        .badge-status { font-size: 9px; font-weight: 800; padding: 4px 10px; border-radius: 12px; text-transform: uppercase; }
-        .status-approved { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
-        .status-pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
-        .status-suspended { background: rgba(249, 115, 22, 0.15); color: #f97316; border: 1px solid rgba(249, 115, 22, 0.3); }
-        .status-banned { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
-
-        .user-actions-row { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
-        .btn-sm-action {
-            flex: 1; min-width: 75px; padding: 8px; border-radius: 12px; border: none;
-            font-size: 11px; font-weight: 800; cursor: pointer; text-align: center;
-        }
-        .btn-approve { background: #10b981; color: #fff; }
-        .btn-suspend { background: rgba(249, 115, 22, 0.2); border: 1px solid rgba(249, 115, 22, 0.4); color: #fb923c; }
-        .btn-ban { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; }
-        .btn-unban { background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); color: #60a5fa; }
-        .btn-detail { background: rgba(255,255,255,0.06); border: 1px solid var(--border-glass); color: #fff; }
-
-        /* Bottom Nav */
-        .bottom-nav {
-            position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
-            width: calc(100% - 32px); max-width: 460px;
-            background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(20px);
-            border: 1px solid var(--border-glass); border-radius: 28px; padding: 8px;
-            display: flex; justify-content: space-around; box-shadow: 0 20px 40px rgba(0,0,0,0.8); z-index: 1000;
-        }
-        .nav-item {
-            flex: 1; text-align: center; padding: 10px 0; color: var(--text-muted);
-            text-decoration: none; font-size: 10px; font-weight: 800; border-radius: 20px;
-            display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer;
-        }
-        .nav-item.active { color: #fff; background: rgba(37, 99, 235, 0.25); border: 1px solid rgba(37, 99, 235, 0.4); }
-
-        /* Modal Overlay */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 6, 23, 0.88); backdrop-filter: blur(16px);
-        }
-        .modal-card { background: rgba(15, 23, 42, 0.96); border: 1px solid var(--border-glass); border-radius: 28px; padding: 24px; width: 100%; max-width: 440px; position: relative; }
-
-        #notificationSheet {
-            position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(120px);
-            background: rgba(15, 23, 42, 0.95); color: #fff; padding: 12px 20px; border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.15); font-size: 13px; font-weight: 700;
-            z-index: 3000; transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex; align-items: center; gap: 10px; pointer-events: none; max-width: 90%; width: max-content;
-        }
-        #notificationSheet.active { transform: translateX(-50%) translateY(0); }
-    
-        .setting-input-group { margin-bottom: 14px; }
-        .setting-label { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; display: block; }
-        .setting-input {
-            width: 100%; padding: 12px 14px; background: rgba(255,255,255,0.04);
-            border: 1px solid var(--border-glass); border-radius: 14px; color: #fff;
-            font-size: 13px; font-weight: 700; outline: none;
-        }
-
-</style>
-
-<style>
-.main-content, .container, body { padding-bottom: 140px !important; }
-</style>
-
+        :root { --bg: #030712; --card: #111827; --border: #1f2937; --primary: #3b82f6; --success: #10b981; --danger: #ef4444; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg); color: #f9fafb; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { margin-bottom: 20px; font-size: 24px; }
+        .user-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .btn { padding: 8px 14px; border-radius: 8px; font-weight: 700; font-size: 12px; border: none; cursor: pointer; }
+        .btn-approve { background: var(--success); color: #fff; }
+        .btn-ban { background: var(--danger); color: #fff; }
+        .status-badge { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
+    </style>
 </head>
 <body>
-    <div id="notificationSheet">
-        <span id="notifIcon">ℹ️</span>
-        <span id="notifText">Taarifa</span>
-    </div>
-
     <div class="container">
-        <!-- HEADER -->
-        <div class="app-header">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div class="pro-emblem">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><rect x="2" y="5" width="20" height="14" rx="3"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
-                </div>
-                <div>
-                    <h1 style="font-size:18px; font-weight:900; margin:0; color:#fff;">Jopo la Utawala Pro</h1>
-                    <span style="font-size:11px; color:var(--accent); font-weight:800;">● Enterprise Super Admin</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 1: DASHBODI (INTERACTIVE STATS & REPORTS) -->
-        <div id="tab-dash">
-            <div class="stats-4-grid">
-                <div class="stat-card" onclick="switchTab('users'); filterUsers('all')">
-                    <div class="stat-lbl">👥 Wanachama Wote</div>
-                    <div class="stat-val" id="statTotalUsers">0</div>
-                </div>
-                <div class="stat-card" onclick="switchTab('users'); filterUsers('paid')">
-                    <div class="stat-val" style="color:var(--accent);" id="statPaidToday">0</div>
-                </div>
-                <div class="stat-card" onclick="switchTab('users'); filterUsers('unpaid')">
-                    <div class="stat-lbl">⏳ Wanaodaiwa</div>
-                    <div class="stat-val" style="color:var(--danger);" id="statUnpaidToday">0</div>
-                </div>
-                <div class="stat-card" onclick="showNotification('Ripoti ya mwezi inajumlisha miamala yote iliyothibitishwa.')">
-                    <div class="stat-lbl">📈 Makusanyo ya Mwezi</div>
-                    <div class="stat-val" style="color:#60a5fa;" id="statMonthlyCol">TSh 0</div>
-                </div>
-            </div>
-
-            <!-- TANGAYO RASMI NA PREVIEW -->
-            <div class="glass-card">
-                <h2 style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 14px 0;">Tuma Tangazo la Mfumo</h2>
-                <input type="text" id="annTitle" placeholder="Kichwa cha Tangazo" style="width:100%; padding:14px; background:rgba(255,255,255,0.04); border:1px solid var(--border-glass); border-radius:14px; color:#fff; font-size:13px; outline:none; margin-bottom:12px;">
-                <textarea id="annMsg" placeholder="Andika ujumbe wa tangazo hapa..." style="width:100%; height:90px; padding:14px; background:rgba(255,255,255,0.04); border:1px solid var(--border-glass); border-radius:14px; color:#fff; font-size:13px; outline:none; margin-bottom:12px; resize:none;"></textarea>
-                
-                <div style="display:flex; gap:8px;">
-                    <button onclick="previewAnnouncement()" style="flex:1; padding:12px; background:rgba(255,255,255,0.06); border:1px solid var(--border-glass); color:#fff; border-radius:14px; font-weight:800; font-size:12px; cursor:pointer;">👁️ Hakiki</button>
-                    <button onclick="postAnnouncement()" style="flex:2; padding:12px; background:var(--primary); color:#fff; border:none; border-radius:14px; font-weight:800; font-size:12px; cursor:pointer; box-shadow:0 6px 20px var(--primary-glow);">🚀 Tuma kwa Wote</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 2: WANACHAMA & MICHANGO (ADVANCED FILTERING) -->
-        <div id="tab-users" style="display:none;">
-            <div class="glass-card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                    <h2 style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0;">Usimamizi wa Wanachama</h2>
-                </div>
-
-                <div class="search-box">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" id="searchInput" class="search-input" placeholder="Tafuta kwa jina au namba ya simu..." oninput="handleSearch()">
-                </div>
-
-                <div class="filter-row">
-                    <div class="filter-chip active" onclick="filterUsers('all', this)">Wote</div>
-                    <div class="filter-chip" onclick="filterUsers('pending', this)">⏳ Pending Approval</div>
-                </div>
-
-                <div id="usersList">
-                    <div style="font-size:13px; color:var(--text-muted);">Inapakia orodha...</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 3: RIPOTI ZA FEDHA (FINANCIAL REPORTS) -->
-        <div id="tab-reports" style="display:none;">
-            <div class="glass-card">
-                <h2 style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 16px 0;">Ripoti Kamili za Kifedha</h2>
-                <div style="display:flex; flex-direction:column; gap:12px;">
-                    <div style="padding:14px; background:rgba(255,255,255,0.03); border-radius:16px; border:1px solid var(--border-glass); display:flex; justify-content:space-between; align-items:center;">
-                        <div><div style="font-size:13px; font-weight:900; color:#fff;">Makusanyo ya Leo</div><div style="font-size:10px; color:var(--text-muted);">Miamala iliyothibitishwa</div></div>
-                        <div style="font-size:15px; font-weight:900; color:var(--accent);" id="repToday">TSh 0</div>
-                    </div>
-                    <div style="padding:14px; background:rgba(255,255,255,0.03); border-radius:16px; border:1px solid var(--border-glass); display:flex; justify-content:space-between; align-items:center;">
-                        <div><div style="font-size:13px; font-weight:900; color:#fff;">Jumla ya Madeni</div><div style="font-size:10px; color:var(--text-muted);">Wasiotoa mchango wa leo</div></div>
-                        <div style="font-size:15px; font-weight:900; color:var(--danger);" id="repDebt">TSh 0</div>
-                    </div>
-                </div>
-                <button onclick="showNotification('Ripoti imepakuliwa kikamilifu katika mfumo wa PDF.', 'success')" style="width:100%; margin-top:16px; padding:14px; background:rgba(37,99,235,0.2); border:1px solid rgba(37,99,235,0.4); color:#60a5fa; border-radius:14px; font-weight:800; font-size:12px; cursor:pointer;">
-                    📥 Pakua Ripoti Rasmi (PDF/Excel)
-                </button>
-            </div>
-        </div>
-
-        <!-- TAB 4: SETINGI -->
-                <!-- TAB 4: SETINGI (COMPREHENSIVE SETTINGS & SYSTEM CONFIGURATION) -->
-        <div id="tab-settings" style="display:none;">
-            <div class="glass-card">
-                <h2 style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 16px 0;">Mipangilio na Usanidi wa Mfumo</h2>
-                
-                <div class="setting-input-group">
-                    <label class="setting-label">Jina la Mfumo</label>
-                    <input type="text" class="setting-input" id="confSysName" value="Mchezo Wetu Pro">
-                </div>
-
-                <div class="setting-input-group">
-                    <label class="setting-label">Nembo / Logo URL</label>
-                    <input type="text" class="setting-input" id="confLogoUrl" value="https://img.icons8.com/color/96/wallet.png">
-                </div>
-
-                <div class="setting-input-group">
-                    <label class="setting-label">Kiasi cha Mchango (TSh)</label>
-                </div>
-
-                <div class="setting-input-group">
-                    <label class="setting-label">Mzunguko wa Malipo</label>
-                    <input type="text" class="setting-input" id="confCycle" value="Kila Siku (Daily Contribution)">
-                </div>
-
-                <div class="setting-input-group">
-                    <label class="setting-label">Sarafu (Currency)</label>
-                    <input type="text" class="setting-input" id="confCurrency" value="TSh">
-                </div>
-
-                <button onclick="saveSystemSettings()" style="width:100%; padding:14px; background:var(--accent); color:#fff; border:none; border-radius:14px; font-weight:800; font-size:12px; cursor:pointer; margin-bottom:14px;">
-                    💾 Hifadhi Mipangilio ya Mfumo
-                </button>
-            </div>
-
-            <div class="glass-card">
-                <h2 style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 14px 0;">Usimamizi wa Wasimamizi (Admins & Treasurers)</h2>
-                <div style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Super Admin: <b>Active</b><br>Mweka Hazina: <b>Imesanidiwa</b></div>
-                <button onclick="showNotification('Uwezo wa kuongeza ma-admin utatumika hivi karibuni.')" style="width:100%; padding:12px; background:rgba(255,255,255,0.06); border:1px solid var(--border-glass); color:#fff; border-radius:14px; font-weight:800; font-size:12px; cursor:pointer; margin-bottom:10px;">
-                    👥 Ongeza Admin Mpya
-                </button>
-            </div>
-
-            <div class="glass-card">
-                <h2 style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:0 0 14px 0;">Usimamizi wa Backup na Usalama</h2>
-                
-                <button onclick="showNotification('Backup ya taarifa imefanikiwa kuhifadhiwa.', 'success')" style="width:100%; padding:14px; background:rgba(37,99,235,0.15); border:1px solid rgba(37,99,235,0.3); color:#60a5fa; border-radius:14px; font-weight:800; font-size:12px; cursor:pointer; margin-bottom:10px;">
-                    📦 Fanya Backup ya Hifadhidata (Data Backup)
-                </button>
-
-                <button onclick="handleAdminLogout()" style="width:100%; padding:14px; border-radius:14px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#f87171; font-weight:800; cursor:pointer; font-size:13px;">
-                    🚪 Toka Kwenye Admin Portal (Logout)
-                </button>
-            </div>
-        </div>
-
-
-    <!-- MEMBER DETAIL MODAL -->
-    <div class="modal-overlay" id="detailModal">
-        <div class="modal-card">
-            <h3 style="font-size:17px; font-weight:900; color:#fff; margin:0 0 10px 0;" id="mModalName">Maelezo ya Mwanachama</h3>
-            <div id="mModalBody" style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:16px;">--</div>
-            <button onclick="closeDetailModal()" style="width:100%; padding:12px; background:var(--primary); color:#fff; border:none; border-radius:14px; font-weight:800; cursor:pointer;">Funga</button>
-        </div>
-    </div>
-
-    <!-- PUNISHMENT MODAL -->
-    <div class="modal-overlay" id="punishModal">
-        <div class="modal-card">
-            <h3 style="font-size:17px; font-weight:900; color:#fff; margin:0 0 6px 0;" id="modalTitleText">Weka Kikwazo</h3>
-            <textarea id="punishReasonInput" placeholder="Andika sababu halisi..." style="width:100%; height:90px; padding:14px; background:rgba(255,255,255,0.04); border:1px solid var(--border-glass); border-radius:14px; color:#fff; font-size:13px; outline:none; margin-bottom:16px; resize:none;"></textarea>
-            <div style="display:flex; gap:10px;">
-                <button onclick="closePunishModal()" style="flex:1; padding:14px; background:rgba(255,255,255,0.05); border:1px solid var(--border-glass); color:#fff; border-radius:14px; font-weight:800; cursor:pointer;">Ghairi</button>
-                <button onclick="submitPunishment()" id="modalSubmitBtn" style="flex:1; padding:14px; background:#ef4444; border:none; color:#fff; border-radius:14px; font-weight:800; cursor:pointer;">Thibitisha</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- BOTTOM NAV -->
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('dash', this)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-            <span>Dashibodi</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('users', this)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
-            <span>Wanachama</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('reports', this)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-            <span>Ripoti</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('settings', this)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle></svg>
-            <span>Setingi</span>
-        </div>
+        <h1>Admin Control Panel - Mchezo Wetu</h1>
+        <p style="color: #9ca3af; margin-bottom: 20px;">Simamia wanachama waliojisajili, idhinisha (Approve) au piga marufuku (Ban).</p>
+        <div id="usersList">Inapakia wanachama...</div>
     </div>
 
     <script>
-        let allUsersData = [];
-        let currentFilter = 'all';
-        let currentTargetPhone = '';
-        let currentActionType = '';
-
-        function showNotification(msg, type = 'info') {
-            const sheet = document.getElementById('notificationSheet');
-            document.getElementById('notifIcon').innerText = type === 'success' ? '✅' : (type === 'error' ? '⚠️' : 'ℹ️');
-            document.getElementById('notifText').innerText = msg;
-            sheet.classList.add('active');
-            setTimeout(() => sheet.classList.remove('active'), 3200);
-        }
-
-        function switchTab(tabName, el) {
-            document.getElementById('tab-dash').style.display = 'none';
-            document.getElementById('tab-users').style.display = 'none';
-            document.getElementById('tab-reports').style.display = 'none';
-            document.getElementById('tab-settings').style.display = 'none';
-
-            if (el) {
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                el.classList.add('active');
-            }
-            document.getElementById('tab-' + tabName).style.display = 'block';
-            if (tabName === 'users' || tabName === 'dash') fetchUsers();
-        }
-
-        async function fetchUsers() {
+        async function loadUsers() {
             try {
                 const res = await fetch('/api/admin/users');
-                const data = await res.json();
-                if (data.success) {
-                    allUsersData = data.users;
-                    updateDashboardStats(allUsersData);
-                    renderUsersList(allUsersData);
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        }
+                const users = await res.json();
+                const container = document.getElementById('usersList');
+                container.innerHTML = '';
 
-        function updateDashboardStats(users) {
-            const total = users.length;
-            const unpaid = total - paid;
-
-            document.getElementById('statTotalUsers').innerText = total;
-            document.getElementById('statPaidToday').innerText = paid;
-            document.getElementById('statUnpaidToday').innerText = unpaid;
-            document.getElementById('statMonthlyCol').innerText = `TSh ${monthlyCol.toLocaleString()}`;
-
-        }
-
-        function renderUsersList(users) {
-            let filtered = users;
-            const searchVal = document.getElementById('searchInput').value.trim().toLowerCase();
-
-            if (searchVal) {
-                filtered = filtered.filter(u => u.fullName.toLowerCase().includes(searchVal) || u.phone.includes(searchVal));
-            }
-
-            if (currentFilter === 'pending') filtered = filtered.filter(u => u.status === 'pending');
-
-            const list = document.getElementById('usersList');
-            if (filtered.length === 0) {
-                list.innerHTML = `<div style="font-size:13px; color:var(--text-muted); text-align:center; padding:20px;">Hakuna mwanachama aliyepatikana.</div>`;
-                return;
-            }
-
-            list.innerHTML = filtered.map(u => {
-                let statusBadge = `<span class="badge-status status-approved">Approved ●</span>`;
-                if (u.status === 'pending') statusBadge = `<span class="badge-status status-pending">Pending ⏳</span>`;
-                if (u.status === 'suspended') statusBadge = `<span class="badge-status status-suspended">Suspended ⏱️</span>`;
-                if (u.status === 'banned') statusBadge = `<span class="badge-status status-banned">Banned 🚫</span>`;
-
-                return `
-                    <div class="user-item-card">
-                        <div class="user-top-info">
-                            <div>
-                                <div class="user-title">${u.fullName}</div>
-                                <div class="user-phone">${u.phone} (${u.memberNumber})</div>
-                            </div>
-                            ${statusBadge}
+                users.forEach(u => {
+                    const div = document.createElement('div');
+                    div.className = 'user-card';
+                    div.innerHTML = `
+                        <div>
+                            <strong>${u.full_name || 'Bila Jina'}</strong><br>
+                            <small style="color:#9ca3af;">${u.email}</small><br>
+                            Status: <span style="color:${u.is_approved ? 'var(--success)' : 'orange'}">${u.is_approved ? 'Approved' : 'Pending Approval'}</span> | 
+                            Banned: <span style="color:${u.is_banned ? 'var(--danger)' : 'var(--success)'}">${u.is_banned ? 'YES' : 'NO'}</span>
                         </div>
-                        <div style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">
+                        <div>
+                            ${!u.is_approved ? `<button class="btn btn-approve" onclick="actionUser('${u.id}', 'approve')">Approve ✓</button>` : ''}
+                            ${!u.is_banned ? `<button class="btn btn-ban" onclick="actionUser('${u.id}', 'ban')">Ban ✕</button>` : `<button class="btn btn-approve" onclick="actionUser('${u.id}', 'unban')">Unban</button>`}
                         </div>
-                        ${u.banReason ? `<div style="font-size:11px; color:#f87171; margin-bottom:8px; font-weight:700;">Sababu: ${u.banReason}</div>` : ''}
-                        <div class="user-actions-row">
-                            ${u.status === 'pending' ? `<button class="btn-sm-action btn-approve" onclick="approveUser('${u.phone}')">✓ Approve</button>` : ''}
-                            ${u.status !== 'suspended' && u.status !== 'banned' ? `
-                                <button class="btn-sm-action btn-suspend" onclick="openPunishModal('${u.phone}', 'suspend')">⏱️ Suspend</button>
-                                <button class="btn-sm-action btn-ban" onclick="openPunishModal('${u.phone}', 'ban')">🚫 Ban</button>
-                            ` : `<button class="btn-sm-action btn-unban" onclick="unbanUser('${u.phone}')">🔓 Ondoa Kifungo</button>`}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function filterUsers(type, chipEl) {
-            currentFilter = type;
-            if (chipEl) {
-                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-                chipEl.classList.add('active');
+                    `;
+                    container.appendChild(div);
+                });
+            } catch (e) {
+                console.error(e);
             }
-            renderUsersList(allUsersData);
         }
 
-        function handleSearch() {
-            renderUsersList(allUsersData);
-        }
-
-        function openDetailModal(name, phone, memberNo, paid, status) {
-            document.getElementById('mModalName').innerText = name;
-            document.getElementById('mModalBody').innerHTML = `
-                <b>Namba ya Simu:</b> ${phone}<br>
-                <b>Kitambulisho:</b> ${memberNo}<br>
-                <b>Hali ya Akaunti:</b> ${status.toUpperCase()}<br>
-                <b>Kiasi Kinachotakiwa:</b> TSh 2,000
-            `;
-            document.getElementById('detailModal').style.display = 'flex';
-        }
-        function closeDetailModal() { document.getElementById('detailModal').style.display = 'none'; }
-
-        async function approveUser(phone) {
-            const res = await fetch('/api/admin/approve', {
+        async function actionUser(userId, action) {
+            const res = await fetch('/api/admin/action', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone })
+                body: JSON.stringify({ userId, action })
             });
             const data = await res.json();
-            showNotification(data.message, data.success ? 'success' : 'error');
-            fetchUsers();
-        }
-
-        function openPunishModal(phone, actionType) {
-            currentTargetPhone = phone;
-            currentActionType = actionType;
-            document.getElementById('punishReasonInput').value = '';
-            document.getElementById('modalTitleText').innerText = actionType === 'suspend' ? 'Simamisha Akaunti kwa Muda' : 'Fungia Akaunti Kabisa (Ban)';
-            document.getElementById('modalSubmitBtn').style.background = actionType === 'suspend' ? '#f97316' : '#ef4444';
-            document.getElementById('punishModal').style.display = 'flex';
-        }
-
-        function closePunishModal() { document.getElementById('punishModal').style.display = 'none'; }
-
-        async function submitPunishment() {
-            const reason = document.getElementById('punishReasonInput').value.trim();
-            closePunishModal();
-            const endpoint = currentActionType === 'suspend' ? '/api/admin/suspend' : '/api/admin/ban';
-            const res = await fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: currentTargetPhone, reason })
-            });
-            const data = await res.json();
-            showNotification(data.message, data.success ? 'success' : 'error');
-            fetchUsers();
-        }
-
-        async function unbanUser(phone) {
-            const res = await fetch('/api/admin/unban', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone })
-            });
-            const data = await res.json();
-            showNotification(data.message, data.success ? 'success' : 'error');
-            fetchUsers();
-        }
-
-        function previewAnnouncement() {
-            const title = document.getElementById('annTitle').value.trim();
-            const message = document.getElementById('annMsg').value.trim();
-            if (!title || !message) return showNotification('Andika kichwa na ujumbe kwanza.', 'error');
-            showNotification(`HAKIKI: "${title}" - ${message}`);
-        }
-
-        async function postAnnouncement() {
-            const title = document.getElementById('annTitle').value.trim();
-            const message = document.getElementById('annMsg').value.trim();
-            if (!title || !message) return showNotification('Jaza kichwa na ujumbe.', 'error');
-
-            const res = await fetch('/api/announcements', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, message })
-            });
-            const data = await res.json();
-            showNotification(data.message, data.success ? 'success' : 'error');
             if (data.success) {
-                document.getElementById('annTitle').value = '';
-                document.getElementById('annMsg').value = '';
+                loadUsers();
+            } else {
+                alert('Imeshindikana: ' + data.error);
             }
         }
 
-        function handleAdminLogout() {
-            window.location.href = '/admin-login.html';
-        }
-
-        fetchUsers();
+        loadUsers();
     </script>
-
-<script>
-async function handleAdminNotifications() {
-    try {
-        const res = await fetch('/api/announcements');
-        const data = await res.json();
-        const anns = data.success ? data.announcements : [];
-        
-        let content = anns.length > 0 ? anns.map(a => `
-            <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:12px; margin-bottom:10px;">
-                <div style="font-size:13px; font-weight:900; color:#fff; margin-bottom:4px;">📢 ${a.title}</div>
-                <div style="font-size:12px; color:#94a3b8; line-height:1.4;">${a.message}</div>
-                <div style="font-size:9px; color:#60a5fa; margin-top:6px;">Tarehe: ${a.date || "Leo"}</div>
-            </div>
-        `).join('') : '<div style="text-align:center; color:#94a3b8; padding:20px;">Hakuna matangazo yaliyotumwa bado.</div>';
-
-        let modal = document.getElementById('adminNotifModal');
-        if (!modal) {
-            modal = document.createElement('div');
-            modal.id = 'adminNotifModal';
-            modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(2,6,23,0.85); backdrop-filter:blur(12px); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;';
-            document.body.appendChild(modal);
-        }
-        modal.innerHTML = `
-            <div style="background:rgba(15,23,42,0.96); border:1px solid rgba(255,255,255,0.1); border-radius:24px; padding:20px; width:100%; max-width:400px; max-height:80vh; overflow-y:auto;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                    <h3 style="font-size:15px; font-weight:900; color:#fff; margin:0;">Matangazo Yaliyotumwa</h3>
-                    <button onclick="document.getElementById('adminNotifModal').style.display='none'" style="background:none; border:none; color:#fff; font-size:16px; cursor:pointer;">✕</button>
-                </div>
-                <div>${content}</div>
-            </div>
-        `;
-        modal.style.display = 'flex';
-    } catch(e) {
-        console.error(e);
-    }
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-    const notifEls = document.querySelectorAll('.fa-bell, [onclick*="notification"], [onclick*="Alert"]');
-    notifEls.forEach(el => {
-        const btn = el.closest('button') || el;
-        btn.setAttribute('onclick', 'handleAdminNotifications()');
-    });
-});
-</script>
-
 </body>
 </html>

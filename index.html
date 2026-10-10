@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mchezo Wetu - Portal</title>
+    <title>Mchezo Wetu - Digital Contribution Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --bg-main: #020617;
+            --bg-main: #030712;
             --card-bg: rgba(15, 23, 42, 0.85);
             --border-color: rgba(255, 255, 255, 0.08);
             --primary: #3b82f6;
             --primary-hover: #2563eb;
+            --success: #10b981;
             --text-main: #f9fafb;
             --text-sub: #94a3b8;
         }
@@ -20,7 +21,7 @@
         body {
             background-color: var(--bg-main);
             background-image: 
-                radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.2) 0%, transparent 45%),
                 radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.12) 0%, transparent 45%);
             color: var(--text-main);
             min-height: 100vh;
@@ -33,121 +34,130 @@
             width: 100%;
             max-width: 420px;
             background: var(--card-bg);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(24px);
             border: 1px solid var(--border-color);
-            border-radius: 26px;
+            border-radius: 28px;
             padding: 32px 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
         }
         .brand-logo { text-align: center; margin-bottom: 24px; }
-        .brand-logo h1 { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
-        .brand-logo p { font-size: 13px; color: var(--text-sub); margin-top: 6px; }
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-sub); margin-bottom: 6px; letter-spacing: 0.5px; }
+        .logo-badge {
+            width: 64px; height: 64px; background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 20px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 24px; font-weight: 800; color: #fff; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        }
+        .brand-logo h1 { font-size: 26px; font-weight: 800; color: #fff; }
+        .brand-logo p { font-size: 12px; color: #60a5fa; font-weight: 700; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
+
+        .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 14px; margin-bottom: 22px; }
+        .tab-btn { background: none; border: none; padding: 10px; color: var(--text-sub); font-weight: 700; font-size: 13px; border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+        .tab-btn.active { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-sub); margin-bottom: 6px; }
         .form-control {
-            width: 100%;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid var(--border-color);
-            padding: 15px 16px;
-            border-radius: 16px;
-            color: #fff;
-            font-size: 15px;
-            outline: none;
-            transition: all 0.2s;
+            width: 100%; background: rgba(15, 23, 42, 0.9); border: 1px solid var(--border-color);
+            padding: 14px 16px; border-radius: 14px; color: #fff; font-size: 15px; outline: none; transition: all 0.2s;
         }
-        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2); }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+        
         .btn-submit {
-            width: 100%;
-            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-            color: #fff;
-            border: none;
-            padding: 16px;
-            border-radius: 16px;
-            font-weight: 800;
-            font-size: 16px;
-            cursor: pointer;
-            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
-            margin-top: 10px;
-            transition: transform 0.2s;
+            width: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: #fff; border: none; padding: 16px; border-radius: 14px; font-weight: 800; font-size: 15px;
+            cursor: pointer; box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4); margin-top: 10px;
         }
-        .btn-submit:active { transform: scale(0.98); }
-        .toggle-text { text-align: center; margin-top: 22px; font-size: 13px; color: var(--text-sub); }
-        .toggle-text a { color: #60a5fa; font-weight: 800; text-decoration: none; cursor: pointer; }
+        .notice-box { margin-top: 16px; font-size: 12px; color: var(--text-sub); text-align: center; line-height: 1.5; }
     </style>
 </head>
 <body>
     <div class="auth-container">
         <div class="brand-logo">
+            <div class="logo-badge">MW</div>
             <h1>Mchezo Wetu</h1>
-            <p id="subTitle">Ingia kwenye mfumo wa mchezo wa kikundi</p>
+            <p>Digital Contribution Hub</p>
+        </div>
+
+        <div class="auth-tabs">
+            <button class="tab-btn active" id="tabLogin" onclick="switchMode('login')">Ingia</button>
+            <button class="tab-btn" id="tabSignup" onclick="switchMode('signup')">Jisajili</button>
         </div>
 
         <form id="authForm">
-            <div class="form-group" id="fullNameGroup" style="display: none;">
+            <div class="form-group" id="nameGroup" style="display: none;">
                 <label>Majina Kamili</label>
-                <input type="text" id="fullNameInput" class="form-control" placeholder="Mfano: Baraka Makoi">
+                <input type="text" id="fullName" class="form-control" placeholder="Juma Ally">
             </div>
             <div class="form-group">
                 <label>Barua Pepe (Email)</label>
-                <input type="email" id="emailInput" class="form-control" placeholder="makoitz2020@gmail.com" required>
+                <input type="email" id="email" class="form-control" placeholder="juma@gmail.com" required>
             </div>
             <div class="form-group">
                 <label>Nenosiri (Password)</label>
-                <input type="password" id="passwordInput" class="form-control" placeholder="••••••••" required>
+                <input type="password" id="password" class="form-control" placeholder="••••••••" required>
             </div>
             <button type="submit" class="btn-submit" id="submitBtn">Ingia Kwenye Akaunti →</button>
         </form>
 
-        <div class="toggle-text">
-            <span id="toggleQuestion">Huna akaunti?</span>
-            <a id="toggleBtn" onclick="toggleAuthMode()">Jisajili Hapa</a>
+        <div class="notice-box" id="noticeText">
+            Kumbuka: Akaunti mpya zinahitaji idhini (Approval) ya Admin kabla ya kuingia mfumo.
         </div>
     </div>
 
     <script>
-        let isSignUp = false;
+        let mode = 'login';
         const SUPABASE_URL = "YOUR_SUPABASE_URL";
         const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        function toggleAuthMode() {
-            isSignUp = !isSignUp;
-            document.getElementById("fullNameGroup").style.display = isSignUp ? "block" : "none";
-            document.getElementById("subTitle").innerText = isSignUp ? "Tengeneza akaunti mpya" : "Ingia kwenye mfumo wa mchezo wa kikundi";
-            document.getElementById("submitBtn").innerText = isSignUp ? "Jisajili Sasa →" : "Ingia Kwenye Akaunti →";
-            document.getElementById("toggleQuestion").innerText = isSignUp ? "Unayo akaunti tayari?" : "Huna akaunti?";
-            document.getElementById("toggleBtn").innerText = isSignUp ? "Ingia Hapa" : "Jisajili Hapa";
+        function switchMode(m) {
+            mode = m;
+            if (m === 'login') {
+                document.getElementById('tabLogin').classList.add('active');
+                document.getElementById('tabSignup').classList.remove('active');
+                document.getElementById('nameGroup').style.display = 'none';
+                document.getElementById('submitBtn').innerText = 'Ingia Kwenye Akaunti →';
+            } else {
+                document.getElementById('tabSignup').classList.add('active');
+                document.getElementById('tabLogin').classList.remove('active');
+                document.getElementById('nameGroup').style.display = 'block';
+                document.getElementById('submitBtn').innerText = 'Jisajili Sasa →';
+            }
         }
 
-        document.getElementById("authForm").addEventListener("submit", async (e) => {
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById("emailInput").value.trim();
-            const password = document.getElementById("passwordInput").value;
-            const fullName = document.getElementById("fullNameInput").value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
 
-            if (isSignUp) {
-                if (!fullName) { alert("Tafadhali ingiza Majina Yako Kamili."); return; }
+            if (mode === 'signup') {
+                const fullName = document.getElementById('fullName').value.trim();
+                if (!fullName) { alert('Weka jina lako kamili.'); return; }
+                
                 const { data, error } = await supabase.auth.signUp({
-                    email: email,
-                    password: password,
-                    options: { data: { full_name: fullName } }
+                    email, password, options: { data: { full_name: fullName } }
                 });
-                if (error) {
-                    alert("Makosa ya Usajili: " + error.message);
-                } else {
-                    alert("Usajili umefanikiwa! Sasa unaweza kuingia.");
-                    toggleAuthMode();
+                if (error) alert(error.message);
+                else {
+                    alert('Usajili umefanikiwa! Tafadhali subiri Admin akupitishe (Approve) ndipo uingie.');
+                    switchMode('login');
                 }
             } else {
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) {
-                    alert("Kuingia kimeshindikana: Hakiki Email na Nenosiri lako.");
+                    alert('Kuingia kimeshindikana: ' + error.message);
                 } else {
-                    localStorage.setItem("token", data.session.access_token);
-                    window.location.href = "dashboard.html";
+                    localStorage.setItem('token', data.session.access_token);
+                    // Angalia kama ameruhusiwa
+                    const res = await fetch('/api/user/me', {
+                        headers: { 'Authorization': 'Bearer ' + data.session.access_token }
+                    });
+                    if (res.ok) {
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        const errData = await res.json();
+                        alert(errData.error || 'Akaunti yako bado haijaruhusiwa au imefungwa.');
+                        supabase.auth.signOut();
+                    }
                 }
             }
         });
