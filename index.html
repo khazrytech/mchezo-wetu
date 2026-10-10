@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mchezo Wetu - Ingia / Jisajili</title>
+    <title>Mchezo Wetu - Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -20,8 +20,8 @@
         body {
             background-color: var(--bg-main);
             background-image: 
-                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.15), transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1), transparent 50%);
+                radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.12) 0%, transparent 45%);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -88,8 +88,8 @@
                 <input type="text" id="fullNameInput" class="form-control" placeholder="Mfano: Baraka Makoi">
             </div>
             <div class="form-group">
-                <label>Barua Pepe au Jina (Email / Username)</label>
-                <input type="text" id="emailInput" class="form-control" placeholder="Weka email yako au jina" required>
+                <label>Barua Pepe (Email)</label>
+                <input type="email" id="emailInput" class="form-control" placeholder="makoitz2020@gmail.com" required>
             </div>
             <div class="form-group">
                 <label>Nenosiri (Password)</label>
@@ -113,7 +113,7 @@
         function toggleAuthMode() {
             isSignUp = !isSignUp;
             document.getElementById("fullNameGroup").style.display = isSignUp ? "block" : "none";
-            document.getElementById("subTitle").innerText = isSignUp ? "Tengeneza akaunti mpya ya mchezo" : "Ingia kwenye mfumo wa mchezo wa kikundi";
+            document.getElementById("subTitle").innerText = isSignUp ? "Tengeneza akaunti mpya" : "Ingia kwenye mfumo wa mchezo wa kikundi";
             document.getElementById("submitBtn").innerText = isSignUp ? "Jisajili Sasa →" : "Ingia Kwenye Akaunti →";
             document.getElementById("toggleQuestion").innerText = isSignUp ? "Unayo akaunti tayari?" : "Huna akaunti?";
             document.getElementById("toggleBtn").innerText = isSignUp ? "Ingia Hapa" : "Jisajili Hapa";
@@ -121,27 +121,16 @@
 
         document.getElementById("authForm").addEventListener("submit", async (e) => {
             e.preventDefault();
-            let inputVal = document.getElementById("emailInput").value.trim();
+            const email = document.getElementById("emailInput").value.trim();
             const password = document.getElementById("passwordInput").value;
             const fullName = document.getElementById("fullNameInput").value.trim();
 
-            let email = inputVal;
-            if (!email.includes("@") && !isSignUp) {
-                email = inputVal.toLowerCase().replace(/\s+/g, '') + "@mchezowetu.com";
-            }
-
             if (isSignUp) {
                 if (!fullName) { alert("Tafadhali ingiza Majina Yako Kamili."); return; }
-                if (!email.includes("@")) { email = email + "@gmail.com"; }
-                
                 const { data, error } = await supabase.auth.signUp({
                     email: email,
                     password: password,
-                    options: {
-                        data: {
-                            full_name: fullName
-                        }
-                    }
+                    options: { data: { full_name: fullName } }
                 });
                 if (error) {
                     alert("Makosa ya Usajili: " + error.message);
@@ -155,7 +144,7 @@
                     password: password
                 });
                 if (error) {
-                    alert("Ingio Limeshindikana: " + error.message);
+                    alert("Kuingia kimeshindikana: Hakiki Email na Nenosiri lako.");
                 } else {
                     localStorage.setItem("token", data.session.access_token);
                     window.location.href = "dashboard.html";
