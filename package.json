@@ -1,0 +1,13 @@
+{
+  "name": "mchezo-wetu",
+  "version": "1.0.0",
+  "description": "Mchezo Wetu App",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "express": "^4.19.2"
+  }
+}
