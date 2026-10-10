@@ -17,7 +17,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
-// 1. API ya Login
+// 1. Angalia kama Admin wa Kwanza Yupo (Lock Signup Logic)
+app.get('/api/system/status', async (req, res) => {
+    try {
+        const { data: profs } = await supabase.from('profiles').select('id, is_admin').eq('is_admin', true);
+        const hasAdmin = profs && profs.length > 0;
+        res.json({ allowSignup: !hasAdmin });
+    } catch (e) {
+        res.json({ allowSignup: false });
+    }
+});
+
+// 2. Login Endpoint
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { identifier, password } = req.body;
@@ -45,21 +56,6 @@ app.post('/api/auth/login', async (req, res) => {
                 if (found) matchedEmail = found.email;
             }
 
-            if (!matchedEmail) {
-                try {
-                    const { data: { users } } = await supabase.auth.admin.listUsers();
-                    if (users) {
-                        const u = users.find(usr => 
-                            usr.email.toLowerCase().includes(targetEmail.toLowerCase()) ||
-                            usr.user_metadata?.full_name?.toLowerCase() === targetEmail.toLowerCase() ||
-                            usr.user_metadata?.phone === targetEmail ||
-                            usr.email.split('@')[0].toLowerCase() === targetEmail.toLowerCase()
-                        );
-                        if (u) matchedEmail = u.email;
-                    }
-                } catch (e) {}
-            }
-
             if (matchedEmail) {
                 authResult = await supabase.auth.signInWithPassword({
                     email: matchedEmail,
@@ -69,7 +65,7 @@ app.post('/api/auth/login', async (req, res) => {
         }
 
         if (authResult.error || !authResult.data.session) {
-            return res.status(400).json({ error: 'Kuingia kimeshindikana. Hakiki nenosiri au jina/email yako.' });
+            return res.status(400).json({ error: 'Kuingia kimeshindikana. Hakiki nenosiri au taarifa zako.' });
         }
 
         const user = authResult.data.user;
@@ -80,28 +76,48 @@ app.post('/api/auth/login', async (req, res) => {
             .eq('id', user.id)
             .maybeSingle();
 
-        if (profile) {
-            if (profile.is_banned) {
-                return res.status(403).json({ error: 'Akaunti yako imepigwa marufuku (Banned).' });
-            }
-            if (!profile.is_approved) {
-                return res.status(403).json({ error: 'Akaunti yako inasubiri idhini (Approval) kutoka kwa Admin.' });
-            }
+        // Auto-assign first user as SuperAdmin if no profiles exist
+        if (!profile) {
+            const { data: allP } = await supabase.from('profiles').select('id');
+            const isFirst = !allP || allP.length === 0;
+
+            profile = {
+                id: user.id,
+                email: user.email,
+                full_name: user.user_metadata?.full_name || user.email.split('@')[0],
+                phone: user.user_metadata?.phone || '',
+                is_approved: true,
+                is_admin: isFirst,
+                is_banned: false
+            };
+            await supabase.from('profiles').upsert([profile]);
         }
 
-        res.json({ token: authResult.data.session.access_token, user });
+        if (profile.is_banned) {
+            return res.status(403).json({ error: 'Akaunti yako imepigwa marufuku (Banned).' });
+        }
+
+        res.json({ 
+            token: authResult.data.session.access_token, 
+            user: { ...user, is_admin: profile.is_admin } 
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// 2. API ya Signup
+// 3. Signup Endpoint (Disables if Admin exists)
 app.post('/api/auth/signup', async (req, res) => {
     try {
+        const { data: existingAdmins } = await supabase.from('profiles').select('id').eq('is_admin', true);
+        
+        const isFirstUser = !existingAdmins || existingAdmins.length === 0;
+
         const { email, password, fullName, phone } = req.body;
         const { data, error } = await supabase.auth.signUp({
             email, password, options: { data: { full_name: fullName, phone } }
         });
+
         if (error) return res.status(400).json({ error: error.message });
 
         if (data.user) {
@@ -110,53 +126,57 @@ app.post('/api/auth/signup', async (req, res) => {
                 email: email,
                 full_name: fullName,
                 phone: phone || '',
-                is_approved: false,
+                is_approved: isFirstUser,
+                is_admin: isFirstUser,
                 is_banned: false
             }]);
         }
 
-        res.json({ message: 'Usajili umefanikiwa.' });
+        res.json({ message: 'Usajili umefanikiwa. Subiri uthibitisho.' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// 3. Admin: Orodha ya Wanachama (Soma kutoka profiles + auth)
-app.get('/api/admin/users', async (req, res) => {
+// 4. Verification Check ya Admin Guard
+app.get('/api/admin/verify', async (req, res) => {
     try {
-        let { data: profiles, error } = await supabase.from('profiles').select('*');
-        
-        if (error || !profiles || profiles.length === 0) {
-            try {
-                const { data: { users } } = await supabase.auth.admin.listUsers();
-                if (users && users.length > 0) {
-                    profiles = users.map(u => ({
-                        id: u.id,
-                        email: u.email,
-                        full_name: u.user_metadata?.full_name || u.email.split('@')[0],
-                        phone: u.user_metadata?.phone || '07XXXXXXXX',
-                        is_approved: true,
-                        is_banned: false
-                    }));
-                }
-            } catch (e) {}
+        const authHeader = req.headers.authorization;
+        if (!authHeader) return res.status(401).json({ error: 'Unauthorised' });
+        const token = authHeader.split(' ')[1];
+
+        const { data: { user }, error } = await supabase.auth.getUser(token);
+        if (error || !user) return res.status(401).json({ error: 'Invalid Token' });
+
+        const { data: profile } = await supabase.from('profiles').select('is_admin').eq('id', user.id).maybeSingle();
+
+        if (!profile || !profile.is_admin) {
+            return res.status(403).json({ error: 'Sio Admin' });
         }
 
+        res.json({ isAdmin: true });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// 5. Admin User Management List
+app.get('/api/admin/users', async (req, res) => {
+    try {
+        let { data: profiles } = await supabase.from('profiles').select('*');
         res.json(profiles || []);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// 4. Admin: Hifadhi Mwanachama Mpya Kutoka Kadi ya Modal
+// 6. Add User via Admin Panel
 app.post('/api/admin/add-user', async (req, res) => {
     try {
         const { fullName, email, phone } = req.body;
-        const tempPassword = 'User@123456';
-
         const { data, error } = await supabase.auth.signUp({
             email,
-            password: tempPassword,
+            password: 'User@123456',
             options: { data: { full_name: fullName, phone } }
         });
 
@@ -167,17 +187,18 @@ app.post('/api/admin/add-user', async (req, res) => {
                 full_name: fullName,
                 phone: phone || '',
                 is_approved: true,
+                is_admin: false,
                 is_banned: false
             }]);
         }
 
-        res.json({ success: true, message: 'Mwanachama amehifadhiwa vizuri!' });
+        res.json({ success: true, message: 'Mwanachama ameongezwa.' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// 5. Admin: Approve / Ban Action
+// 7. Toggle Admin status or Ban status
 app.post('/api/admin/action', async (req, res) => {
     try {
         const { userId, action } = req.body;
@@ -185,10 +206,10 @@ app.post('/api/admin/action', async (req, res) => {
         if (action === 'approve') updateData = { is_approved: true };
         if (action === 'ban') updateData = { is_banned: true };
         if (action === 'unban') updateData = { is_banned: false };
+        if (action === 'make_admin') updateData = { is_admin: true };
+        if (action === 'remove_admin') updateData = { is_admin: false };
 
-        const { error } = await supabase.from('profiles').update(updateData).eq('id', userId);
-        if (error) throw error;
-
+        await supabase.from('profiles').update(updateData).eq('id', userId);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -204,17 +225,14 @@ app.get('/api/user/me', async (req, res) => {
         const { data: { user }, error } = await supabase.auth.getUser(token);
         if (error || !user) return res.status(401).json({ error: 'Token si sahihi' });
 
-        let { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', user.id)
-            .maybeSingle();
+        let { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
 
         res.json({
             id: user.id,
             email: user.email,
             full_name: profile?.full_name || user.user_metadata?.full_name || user.email.split('@')[0],
-            phone: profile?.phone || user.user_metadata?.phone || '07XXXXXXXX'
+            phone: profile?.phone || user.user_metadata?.phone || '07XXXXXXXX',
+            is_admin: profile?.is_admin || false
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
