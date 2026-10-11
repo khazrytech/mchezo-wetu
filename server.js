@@ -166,19 +166,35 @@ async function ensurePrimaryAdminProfile(user) {
     throw new Error('Akaunti hii si admin mkuu aliyeruhusiwa.');
   }
 
-  const { error } = await supabase
+  const { data: existing, error: lookupError } = await supabase
     .from('profiles')
-    .upsert({
-      id: user.id,
-      full_name: 'Mchezo Wetu Admin',
-      role: 'admin',
-      is_approved: true,
-      is_banned: false
-    }, { onConflict: 'id' });
+    .select('id, role, is_banned')
+    .eq('id', user.id)
+    .maybeSingle();
 
-  if (error) {
-    console.error('Admin profile repair error:', error.message);
-    throw error;
+  if (lookupError) throw lookupError;
+
+  if (existing) {
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        full_name: 'Mchezo Wetu Admin',
+        role: 'admin'
+      })
+      .eq('id', user.id);
+
+    if (error) throw error;
+  } else {
+    const { error } = await supabase
+      .from('profiles')
+      .insert({
+        id: user.id,
+        full_name: 'Mchezo Wetu Admin',
+        role: 'admin',
+        is_banned: false
+      });
+
+    if (error) throw error;
   }
 }
 
