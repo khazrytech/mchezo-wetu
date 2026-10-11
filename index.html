@@ -206,12 +206,21 @@ $('authForm').addEventListener('submit', async e => {
       throw Error('OTP lazima iwe na tarakimu 6.');
     }
 
-    const { data, error } = await client.auth.verifyOtp({
+    let verified = await client.auth.verifyOtp({
       email,
       token,
       type: otpType
     });
 
+    if (verified.error && !signup && otpType === 'magiclink') {
+      verified = await client.auth.verifyOtp({
+        email,
+        token,
+        type: 'email'
+      });
+    }
+
+    const { data, error } = verified;
     if (error) throw error;
 
     if (!data.session) {

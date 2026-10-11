@@ -195,7 +195,7 @@ app.post('/api/auth/send-otp', async (req, res) => {
 
     return res.json({
       success: true,
-      otpType: signup ? 'signup' : 'magiclink',
+      otpType: data?.properties?.verification_type || (signup ? 'signup' : 'magiclink'),
       message: 'OTP imetumwa kupitia Brevo.'
     });
   } catch (error) {
