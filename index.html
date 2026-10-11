@@ -170,3 +170,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const emailInput = document.getElementById('email') || document.querySelector('input[type="email"]');
+            if (!emailInput) return;
+
+            try {
+                const res = await fetch('/api/auth/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailInput.value })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('OTP imetumwa mafanikio kwenye email yako!');
+                } else {
+                    alert('Imeshindikana: ' + (data.error || 'Jaribu tena.'));
+                }
+            } catch (err) {
+                console.error('Hitilafu:', err);
+                alert('Kumetokea tatizo la mtandao.');
+            }
+        });
+    }
+});
+</script>
