@@ -539,3 +539,31 @@ app.post('/api/auth/send-otp', async (req, res) => {
     }
 });
 // --- MWISHO: Resend Integration ---
+
+// Ongeza uchunguzi kwenye route ya send-otp
+app.post('/api/auth/send-otp', async (req, res) => {
+    console.log('Ombi la OTP limepokewa kwa ajili ya:', req.body.email);
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ error: 'Email inahitajika.' });
+
+        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+        
+        if (resend) {
+            const data = await resend.emails.send({
+                from: 'Mchezo Wetu <onboarding@resend.dev>',
+                to: email,
+                subject: 'Namba yako ya Uthibitisho (OTP)',
+                html: `<div style="font-family:sans-serif; padding:20px;"><h2>Mchezo Wetu OTP</h2><p>Namba yako ya uthibitisho ni: <b style="font-size:20px; color:#3b82f6;">${otpCode}</b></p></div>`
+            });
+            console.log('Majibu ya Resend:', data);
+            res.json({ success: true, message: 'OTP imetumwa mafanikio!' });
+        } else {
+            console.log('Resend API key haipo!');
+            res.status(500).json({ error: 'Resend API key haijawekwa kwenye server.' });
+        }
+    } catch (err) {
+        console.error('Hitilafu ya Resend:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
