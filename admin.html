@@ -255,7 +255,7 @@ async function loadAll(){
   $('connectionStatus').textContent='Server imeunganishwa';
  }catch(e){
   $('connectionStatus').textContent='Hitilafu ya muunganisho';
-  note(e.message+' — Hakikisha akaunti yako ina role ya admin kwenye Supabase na Render ina SERVICE ROLE KEY.');
+  note(e.message+' — Kagua Render Logs na Supabase profiles ikiwa kosa linaendelea.');
  }finally{busy=false;$('refresh').disabled=false}
 }
 async function start(){
