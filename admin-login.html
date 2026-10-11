@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="sw">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090a16">
+<title>Mchezo Wetu | Admin Login</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 20% 10%,#7048ff33,transparent 40%),radial-gradient(ellipse at 90% 90%,#23d7d022,transparent 35%),#090a16;color:#f5f4ff;font:14px Arial,sans-serif}
+.card{width:100%;max-width:420px;padding:30px;border:1px solid #ffffff18;border-radius:24px;background:#111326eF;box-shadow:0 25px 90px #0008}
+.logo{width:52px;height:52px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(135deg,#a184ff,#4b55d8,#43d8d0);font-size:20px;font-weight:900}
+h1{font-size:25px;margin:22px 0 8px}p{color:#999db9;line-height:1.7;font-size:13px}
+label{display:block;margin:17px 0 8px;font-size:12px;color:#c8c8df}
+input{width:100%;padding:14px;border:1px solid #ffffff20;border-radius:12px;background:#090b19;color:white;outline:none}
+input:focus{border-color:#a184ff}
+button{width:100%;padding:14px;border:0;border-radius:12px;background:linear-gradient(100deg,#a184ff,#6558e8);color:white;font-weight:800;margin-top:18px;cursor:pointer}
+button:disabled{opacity:.55}
+.secondary{background:#ffffff0b;border:1px solid #ffffff20}
+.hidden{display:none!important}.message{display:none;padding:12px;border-radius:10px;background:#ff718415;color:#ffb0be;line-height:1.6;font-size:12px;margin-top:15px;overflow-wrap:anywhere}.message.show{display:block}.success{background:#42dca515;color:#8af0bf}
+.small{font-size:11px;text-align:center;margin-top:20px}
+</style>
+</head>
+<body>
+<main class="card">
+<div class="logo">MW</div>
+<h1 id="heading">Admin Control Center</h1>
+<p id="description">Ingia kwa akaunti ya msimamizi. OTP itatumwa kwenye barua pepe yako.</p>
+<div id="notice" class="message"></div>
+
+<section id="login">
+<label for="email">Barua pepe ya admin</label>
+<input id="email" type="email" autocomplete="username" value="hackertrick1997@gmail.com" readonly>
+<label for="password">Password</label>
+<input id="password" type="password" autocomplete="current-password" placeholder="Weka password yako">
+<button id="loginBtn">Ingia na utume OTP</button>
+<button id="showSetup" class="secondary hidden">Weka password ya admin kwa mara ya kwanza</button>
+</section>
+
+<section id="setup" class="hidden">
+<label for="newPassword">Password mpya (angalau herufi 10)</label>
+<input id="newPassword" type="password" autocomplete="new-password" minlength="10">
+<label for="confirmPassword">Rudia password</label>
+<input id="confirmPassword" type="password" autocomplete="new-password" minlength="10">
+<button id="setupBtn">Weka password ya admin</button>
+<button id="backLogin" class="secondary">Rudi login</button>
+</section>
+
+<section id="otpSection" class="hidden">
+<label for="otp">OTP ya tarakimu 6</label>
+<input id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000">
+<button id="verifyBtn">Thibitisha OTP na uingie</button>
+<button id="resendBtn" class="secondary">Tuma OTP tena</button>
+</section>
+<div class="small">Mchezo Wetu · Eneo salama la wasimamizi</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const email='hackertrick1997@gmail.com';
+const $=id=>document.getElementById(id);
+let client=null, stage='login';
+
+function message(text,good=false){
+ const el=$('notice');el.textContent=text;el.className='message show'+(good?' success':'');
+}
+function busy(id,on){$(id).disabled=on}
+function showStage(s){
+ stage=s;
+ $('login').classList.toggle('hidden',s!=='login');
+ $('setup').classList.toggle('hidden',s!=='setup');
+ $('otpSection').classList.toggle('hidden',s!=='otp');
+ $('showSetup').classList.toggle('hidden',s!=='login'||!window.setupAllowed);
+ $('heading').textContent=s==='setup'?'Weka Password ya Admin':s==='otp'?'Thibitisha Barua Pepe':'Admin Control Center';
+ $('description').textContent=s==='setup'?'Usajili wa admin unaruhusiwa mara moja tu.':s==='otp'?'Ingiza OTP iliyotumwa kwenye email yako.':'Ingia kwa akaunti ya msimamizi. OTP itatumwa kwenye barua pepe yako.';
+}
+async function requestOtp(){
+ const r=await fetch('/api/admin/auth/send-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:$('password').value})});
+ const d=await r.json();if(!r.ok)throw Error(d.error||'Imeshindikana kutuma OTP.');
+ showStage('otp');message('OTP imetumwa. Angalia inbox na spam.',true);
+}
+async function initialize(){
+ try{
+  const r=await fetch('/api/config',{cache:'no-store'}),c=await r.json();
+  if(!r.ok)throw Error(c.error||'Supabase configuration haipo.');
+  client=window.supabase.createClient(c.supabaseUrl,c.supabaseAnonKey);
+  const s=await fetch('/api/admin/auth/status');const d=await s.json();
+  if(s.ok&&d.setupAllowed)window.setupAllowed=true;
+  showStage('login');
+ }catch(e){message(e.message)}
+}
+$('loginBtn').onclick=async()=>{
+ busy('loginBtn',true);
+ try{await requestOtp()}catch(e){message(e.message)}
+ finally{busy('loginBtn',false)}
+};
+$('showSetup').onclick=()=>{showStage('setup');message('');};
+$('backLogin').onclick=()=>{showStage('login');message('');};
+$('setupBtn').onclick=async()=>{
+ const p=$('newPassword').value;
+ if(p.length<10)return message('Password iwe na angalau herufi 10.');
+ if(p!==$('confirmPassword').value)return message('Password hazifanani.');
+ busy('setupBtn',true);
+ try{
+  const r=await fetch('/api/admin/auth/setup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:p})});
+  const d=await r.json();if(!r.ok)throw Error(d.error||'Imeshindikana kuweka password.');
+  $('password').value=p;message('Password imewekwa. Sasa thibitisha OTP.',true);
+  await requestOtp();
+ }catch(e){message(e.message)}
+ finally{busy('setupBtn',false)}
+};
+$('verifyBtn').onclick=async()=>{
+ const token=$('otp').value.trim();
+ if(!/^\d{6}$/.test(token))return message('Weka OTP yenye tarakimu 6.');
+ busy('verifyBtn',true);
+ try{
+  const r=await fetch('/api/admin/auth/verify-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,token})});
+  const d=await r.json();if(!r.ok)throw Error(d.error||'OTP haijakubaliwa.');
+  const {error}=await client.auth.setSession({access_token:d.session.access_token,refresh_token:d.session.refresh_token});
+  if(error)throw error;
+  location.href='/admin/dashboard';
+ }catch(e){message(e.message)}
+ finally{busy('verifyBtn',false)}
+};
+$('resendBtn').onclick=async()=>{
+ busy('resendBtn',true);
+ try{await requestOtp()}catch(e){message(e.message)}
+ finally{busy('resendBtn',false)}
+};
+initialize();
+</script>
+</body>
+</html>
