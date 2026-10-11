@@ -138,6 +138,43 @@
     @media(prefers-reduced-motion:reduce){
       *,*:before,*:after{animation:none!important;transition:none!important}
     }
+  
+    /* Premium form transitions */
+    .card {
+      transform-origin: center;
+      will-change: transform, opacity;
+    }
+    .card.step-transition {
+      animation: mw-card-transition .42s cubic-bezier(.2,.75,.25,1) both;
+    }
+    .field:not([hidden]) {
+      animation: mw-field-enter .34s cubic-bezier(.2,.75,.25,1) both;
+    }
+    #heading {
+      animation: mw-heading-enter .35s ease both;
+    }
+    .primary:active {
+      transform: scale(.985);
+    }
+    .secondary {
+      transition: color .2s, transform .2s;
+    }
+    .secondary:active {
+      transform: scale(.985);
+    }
+    @keyframes mw-card-transition {
+      0% { opacity: .65; transform: translateY(9px) scale(.99); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes mw-field-enter {
+      0% { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes mw-heading-enter {
+      from { opacity: .45; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
   </style>
 </head>
 <body>
@@ -162,7 +199,7 @@
         <div class="mark">MW</div>
         <div><div class="brand-name">Mchezo Wetu</div><div class="brand-sub">MEMBER COMMUNITY</div></div>
       </div>
-      <div class="card">
+      <div class="card" id="authCard">
         <div class="section-label">Member access</div>
         <h2 id="heading">Karibu tena</h2>
         <p class="subtitle" id="description">Ingia kwenye akaunti yako kwa kutumia barua pepe.</p>
@@ -215,6 +252,14 @@
     $('notice').textContent = '';
     $('notice').className = 'notice';
   }
+
+  function animateCard() {
+    const card = $('authCard');
+    if (!card) return;
+    card.classList.remove('step-transition');
+    void card.offsetWidth;
+    card.classList.add('step-transition');
+  }
   function setBusy(value, text) {
     busy = value;
     $('submitBtn').disabled = value;
@@ -232,6 +277,7 @@
   }
   function setMode(isSignup) {
     signup = isSignup;
+    animateCard();
     resetOtpStage();
     clearMessage();
     $('authForm').reset();
@@ -297,7 +343,8 @@
         const result = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(result.error || 'Imeshindwa kutuma OTP.');
 
-        otpType = result.otpType || (signup ? 'signup' : 'magiclink');
+        otpType = result.otpType || 'email';
+        animateCard();
         otpStage = true;
         $('emailField').hidden = true;
         $('otpField').hidden = false;
@@ -342,6 +389,7 @@
     const email = $('email').value.trim();
     const name = $('fullName').value.trim();
     const phone = $('phone').value.trim();
+    animateCard();
     resetOtpStage();
     $('email').value = email;
     $('fullName').value = name;

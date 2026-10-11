@@ -195,7 +195,7 @@ app.post('/api/auth/send-otp', async (req, res) => {
 
     return res.json({
       success: true,
-      otpType: data?.properties?.verification_type || (signup ? 'signup' : 'magiclink'),
+      otpType: 'email',
       message: 'OTP imetumwa kupitia Brevo.'
     });
   } catch (error) {
@@ -238,11 +238,15 @@ app.post('/api/auth/verify-otp', async (req, res) => {
     const { data, error } = await supabase.auth.verifyOtp({
       email,
       token,
-      type
+      type: 'email'
     });
 
     if (error) {
-      console.warn('OTP verification rejected:', error.message);
+      console.warn('OTP verification rejected:', {
+        code: error.code || null,
+        status: error.status || null,
+        message: error.message
+      });
       return apiError(
         res,
         400,
