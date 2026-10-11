@@ -1,356 +1,360 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sw">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#080b16">
-<title>Mchezo Wetu | Ingia</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root{color-scheme:dark;--bg:#080b16;--card:#11182a;--line:#28334b;--blue:#6385ff;--cyan:#39dfcf;--muted:#97a4bd;--white:#f5f7ff}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 15% 10%,#203d7055,transparent 40%),radial-gradient(ellipse at 90% 90%,#5932a033,transparent 40%),var(--bg);color:var(--white);font-family:Inter,Arial,sans-serif;display:grid;place-items:center;padding:22px}
-.wrap{width:100%;max-width:440px;animation:rise .6s ease both}.brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}.logo{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),var(--cyan));color:#08101c;font-weight:900;font-size:22px;box-shadow:0 8px 30px #6385ff44}.brand h1{font-size:20px;margin:0}.brand p{font-size:12px;color:var(--muted);margin:5px 0 0}.card{background:linear-gradient(145deg,#141d31f2,#0e1423f5);border:1px solid #ffffff16;border-radius:27px;padding:28px;box-shadow:0 30px 90px #0007;backdrop-filter:blur(20px)}.eyebrow{color:var(--cyan);font-size:11px;letter-spacing:2px;font-weight:800;text-transform:uppercase}.card h2{font-size:27px;letter-spacing:-1px;margin:12px 0 8px}.desc{font-size:13px;color:var(--muted);line-height:1.7;margin:0 0 23px}.field{margin:15px 0}.field label{display:block;font-size:12px;color:#cbd5e8;margin-bottom:8px}.field input{width:100%;padding:14px 15px;border:1px solid var(--line);border-radius:13px;background:#090f1d;color:white;outline:none;font-size:14px}.field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #6385ff20}.btn{width:100%;padding:15px;border:0;border-radius:13px;background:linear-gradient(110deg,var(--blue),#4778e9 55%,var(--cyan));color:#07101b;font-size:14px;font-weight:800;cursor:pointer;margin-top:8px}.btn:disabled{opacity:.6;cursor:wait}.switch{background:none;border:0;color:#9cb6ff;font-weight:700;cursor:pointer;padding:12px 0 0}.notice{display:none;border:1px solid #ffffff20;border-radius:12px;padding:12px;font-size:12px;line-height:1.6;margin:14px 0;overflow-wrap:anywhere}.notice.show{display:block}.notice.error{color:#ff9aab;background:#ff33440c}.notice.ok{color:#75ead5;background:#20c9970c}.foot{text-align:center;color:#74829d;font-size:11px;margin:20px 0}@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}@media(max-width:420px){.card{padding:22px}.card h2{font-size:24px}}
-</style>
-
-<style id="mchezo-wetu-premium">
-:root {
-  color-scheme: dark;
-  --mw-bg: #080d18;
-  --mw-card: #111a2b;
-  --mw-border: #293750;
-  --mw-text: #f4f7ff;
-  --mw-muted: #9aaac2;
-  --mw-accent: #8ea0ff;
-  --mw-cyan: #5ce8d4;
-}
-* { box-sizing: border-box; }
-body {
-  min-height: 100vh;
-  margin: 0;
-  padding: 22px;
-  color: var(--mw-text);
-  background:
-    radial-gradient(ellipse at 12% 8%, #536aff27, transparent 38%),
-    radial-gradient(ellipse at 90% 90%, #24cbb31c, transparent 36%),
-    var(--mw-bg);
-  font-family: Inter, system-ui, -apple-system, Arial, sans-serif;
-}
-.wrap {
-  width: min(100%, 440px);
-  margin: 0 auto;
-  animation: mw-enter .45s ease both;
-}
-.brand { gap: 13px; margin-bottom: 23px; }
-.logo {
-  border-radius: 15px;
-  background: linear-gradient(135deg, #91a0ff, #5ce8d4);
-  color: #08111d;
-  box-shadow: 0 8px 28px #8296ff35;
-}
-.brand h1 { color: var(--mw-text); letter-spacing: -.5px; }
-.brand p, .desc { color: var(--mw-muted); line-height: 1.8; }
-.card {
-  padding: clamp(23px, 6vw, 34px);
-  border: 1px solid #ffffff19;
-  border-radius: 25px;
-  background: linear-gradient(145deg, #152036f5, #0e1625f7);
-  box-shadow: 0 25px 75px #0006;
-  backdrop-filter: blur(18px);
-}
-.card h2 { color: var(--mw-text); letter-spacing: -1px; }
-.field label {
-  display: block;
-  margin-bottom: 9px;
-  color: #d3dcef;
-  font-size: 12px;
-  font-weight: 650;
-}
-.field input {
-  width: 100%;
-  min-height: 49px;
-  padding: 13px 14px;
-  color: #fff;
-  background: #090f1d;
-  border: 1px solid var(--mw-border);
-  border-radius: 13px;
-  outline: none;
-  font: inherit;
-  transition: border-color .2s, box-shadow .2s;
-}
-.field input:focus {
-  border-color: var(--mw-accent);
-  box-shadow: 0 0 0 4px #8ea0ff1c;
-}
-.btn {
-  min-height: 50px;
-  border: 0;
-  border-radius: 13px;
-  background: linear-gradient(105deg, #96a4ff, #7188ff 55%, #5ce8d4);
-  color: #08111c;
-  font-weight: 800;
-  box-shadow: 0 9px 26px #7188ff25;
-  transition: filter .2s, transform .2s;
-}
-.btn:hover { filter: brightness(1.07); transform: translateY(-1px); }
-.btn:disabled { opacity: .65; cursor: wait; }
-.switch {
-  color: #aebdff;
-  font-weight: 700;
-  cursor: pointer;
-}
-.notice {
-  padding: 12px 14px;
-  border-radius: 12px;
-  line-height: 1.65;
-  overflow-wrap: anywhere;
-}
-.notice.error { color: #ffb2bf; background: #ff475d12; }
-.notice.ok { color: #83edda; background: #35d9b112; }
-@keyframes mw-enter {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@media (max-width: 480px) {
-  body { padding: 16px; }
-  .card { border-radius: 22px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-}
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080b14">
+  <meta name="description" content="Mchezo Wetu — akaunti ya mwanachama, michango na malipo.">
+  <title>Mchezo Wetu | Member Access</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg:#080b14;--panel:#101727;--line:#28344a;
+      --text:#f4f7ff;--muted:#96a5bd;
+      --blue:#91a1ff;--cyan:#58e7d0;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;padding:25px;
+      background:
+        radial-gradient(ellipse at 12% 14%,#566dff24,transparent 36%),
+        radial-gradient(ellipse at 88% 85%,#27d8bc18,transparent 35%),
+        var(--bg);
+      color:var(--text);font-family:"DM Sans",sans-serif;
+      display:grid;place-items:center
+    }
+    button,input{font:inherit}
+    button{cursor:pointer}
+    .layout{
+      width:min(1100px,100%);display:grid;
+      grid-template-columns:1fr 430px;gap:clamp(30px,6vw,80px);
+      align-items:center
+    }
+    .story{
+      min-height:620px;position:relative;overflow:hidden;
+      border:1px solid #ffffff16;border-radius:30px;padding:36px;
+      background:linear-gradient(145deg,#17243bdb,#0e1423ed);
+      display:flex;flex-direction:column;justify-content:space-between;
+      box-shadow:0 30px 100px #0005
+    }
+    .story:after{
+      content:"";position:absolute;width:350px;height:350px;
+      border-radius:50%;right:-130px;top:140px;
+      background:#758aff1c;filter:blur(8px);pointer-events:none
+    }
+    .brand{display:flex;align-items:center;gap:12px;position:relative;z-index:1}
+    .mark{
+      width:46px;height:46px;border-radius:15px;display:grid;
+      place-items:center;background:linear-gradient(135deg,var(--blue),var(--cyan));
+      color:#08111b;font-family:Manrope,sans-serif;font-weight:900
+    }
+    .brand-name{font-family:Manrope,sans-serif;font-weight:800;letter-spacing:.3px}
+    .brand-sub{font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:1.5px}
+    .story-copy{position:relative;z-index:1;margin:55px 0}
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:9px;border:1px solid #ffffff1d;
+      border-radius:100px;padding:9px 12px;font-size:9px;letter-spacing:1.8px;
+      font-weight:800;color:#d1dcf4
+    }
+    .dot{width:7px;height:7px;background:var(--cyan);border-radius:50%;box-shadow:0 0 15px var(--cyan)}
+    h1{
+      font-family:Manrope,sans-serif;font-size:clamp(38px,4.6vw,58px);
+      line-height:1.12;letter-spacing:-2.6px;margin:25px 0 18px
+    }
+    h1 span{
+      background:linear-gradient(100deg,#aab6ff,var(--cyan));
+      color:transparent;background-clip:text;-webkit-background-clip:text
+    }
+    .story-desc{max-width:400px;color:#a0afc7;font-size:14px;line-height:1.9}
+    .feature{display:flex;align-items:center;gap:13px;margin-top:24px}
+    .feature-icon{
+      width:43px;height:43px;display:grid;place-items:center;
+      border:1px solid #ffffff17;border-radius:14px;background:#ffffff08;
+      color:var(--cyan);font-size:19px
+    }
+    .feature strong{font-size:12px;display:block}
+    .feature small{font-size:11px;color:var(--muted);display:block;margin-top:5px}
+    .story-foot{
+      position:relative;z-index:1;display:flex;justify-content:space-between;
+      gap:10px;font-size:9px;letter-spacing:1.2px;color:#8999b3
+    }
+    .auth{width:100%;animation:appear .55s ease both}
+    .mobile-brand{display:none;margin-bottom:27px}
+    .card{
+      padding:31px;border:1px solid #ffffff19;border-radius:27px;
+      background:linear-gradient(145deg,#141e31f5,#0d1422f7);
+      box-shadow:0 28px 90px #0007;backdrop-filter:blur(22px)
+    }
+    .section-label{
+      color:var(--cyan);font-size:10px;letter-spacing:2px;font-weight:800;
+      text-transform:uppercase
+    }
+    h2{font-family:Manrope,sans-serif;font-size:29px;letter-spacing:-1.2px;margin:13px 0 8px}
+    .subtitle{font-size:12px;line-height:1.8;color:var(--muted);margin:0 0 24px}
+    .field{margin:17px 0}
+    label{display:block;margin-bottom:9px;font-size:11px;color:#d4dced;font-weight:700}
+    input{
+      width:100%;min-height:49px;padding:14px 15px;border:1px solid var(--line);
+      border-radius:13px;background:#090f1d;color:white;outline:none;
+      transition:border-color .2s,box-shadow .2s
+    }
+    input:focus{border-color:var(--blue);box-shadow:0 0 0 4px #91a1ff18}
+    input::placeholder{color:#65748d}
+    .primary{
+      width:100%;min-height:51px;margin-top:8px;border:0;border-radius:13px;
+      background:linear-gradient(105deg,#9ba8ff,#7188ff 55%,#58e7d0);
+      color:#07101a;font-weight:800;font-size:13px;
+      box-shadow:0 9px 28px #7188ff20;transition:filter .2s,transform .2s
+    }
+    .primary:hover{filter:brightness(1.08);transform:translateY(-1px)}
+    .primary:disabled{opacity:.6;cursor:wait;transform:none}
+    .secondary{
+      width:100%;margin-top:17px;background:none;border:0;
+      color:#aebdff;font-size:12px;font-weight:700;padding:7px
+    }
+    .secondary:hover{color:var(--cyan)}
+    .notice{
+      display:none;margin:15px 0 4px;padding:12px 13px;border-radius:12px;
+      font-size:11px;line-height:1.7;overflow-wrap:anywhere
+    }
+    .notice.show{display:block}
+    .notice.error{color:#ffb3c0;background:#ff475d12;border:1px solid #ff718022}
+    .notice.ok{color:#8aefdd;background:#35d9b110;border:1px solid #5ce8d522}
+    .secure{text-align:center;margin:19px 0 0;color:#71819b;font-size:10px;line-height:1.8}
+    .otp-help{font-size:11px;color:var(--muted);line-height:1.7;margin-top:10px}
+    [hidden]{display:none!important}
+    @keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:900px){
+      body{padding:20px}.layout{grid-template-columns:minmax(0,440px);justify-content:center}
+      .story{display:none}.mobile-brand{display:flex}
+    }
+    @media(max-width:480px){
+      body{padding:15px}.card{padding:23px;border-radius:23px}
+      h2{font-size:26px}.mobile-brand{margin-bottom:22px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      *,*:before,*:after{animation:none!important;transition:none!important}
+    }
+  </style>
 </head>
 <body>
-<main class="wrap">
-  <div class="brand"><div class="logo">MW</div><div><h1>Mchezo Wetu</h1><p>Michango. Uwazi. Maendeleo.</p></div></div>
-  <section class="card">
-    <div class="eyebrow">Member portal</div>
-    <h2 id="heading">Karibu tena 👋</h2>
-    <p class="desc" id="description">Ingia kwenye akaunti yako ili kuona michango, malipo na taarifa zako.</p>
-    <div id="notice" class="notice" role="status"></div>
-    <form id="authForm">
-      <div class="field" id="nameField" hidden>
-        <label for="fullName">Jina kamili</label>
-        <input id="fullName" autocomplete="name" maxlength="100">
+  <main class="layout">
+    <aside class="story">
+      <div class="brand">
+        <div class="mark">MW</div>
+        <div><div class="brand-name">Mchezo Wetu</div><div class="brand-sub">MEMBER COMMUNITY</div></div>
       </div>
-      <div class="field" id="phoneField" hidden>
-        <label for="phone">Namba ya simu</label>
-        <input id="phone" autocomplete="tel" maxlength="30" placeholder="+255...">
+      <div class="story-copy">
+        <div class="eyebrow"><i class="dot"></i> PAMOJA TUNAENDELEA</div>
+        <h1>Umoja wetu.<br><span>Maendeleo yetu.</span></h1>
+        <p class="story-desc">Fuatilia michango yako, angalia taarifa za malipo na simamia akaunti yako kwa urahisi sehemu moja.</p>
+        <div class="feature"><div class="feature-icon">↗</div><div><strong>Michango kwa uwazi</strong><small>Fuatilia taarifa zako kwa urahisi.</small></div></div>
+        <div class="feature"><div class="feature-icon">◇</div><div><strong>Akaunti yako sehemu moja</strong><small>Wasifu, malipo na taarifa za jumuiya.</small></div></div>
       </div>
-      <div class="field">
-        <label for="email">Barua pepe</label>
-        <input id="email" type="email" autocomplete="email"
-          required maxlength="254" placeholder="jina@example.com">
+      <div class="story-foot"><span>● UZOEFU SALAMA WA MWANACHAMA</span><span>MW / 2026</span></div>
+    </aside>
+
+    <section class="auth">
+      <div class="brand mobile-brand">
+        <div class="mark">MW</div>
+        <div><div class="brand-name">Mchezo Wetu</div><div class="brand-sub">MEMBER COMMUNITY</div></div>
       </div>
-      <div class="field" id="otpField" hidden>
-        <label for="otp">Namba ya OTP iliyotumwa kwenye email</label>
-        <input id="otp" inputmode="numeric" autocomplete="one-time-code"
-          pattern="[0-9]{6}" minlength="6" maxlength="6"
-          placeholder="Ingiza tarakimu 6">
+      <div class="card">
+        <div class="section-label">Member access</div>
+        <h2 id="heading">Karibu tena</h2>
+        <p class="subtitle" id="description">Ingia kwenye akaunti yako kwa kutumia barua pepe.</p>
+
+        <div id="notice" class="notice" role="status" aria-live="polite"></div>
+
+        <form id="authForm">
+          <div id="nameField" class="field" hidden>
+            <label for="fullName">Jina kamili</label>
+            <input id="fullName" name="full_name" autocomplete="name" placeholder="Andika jina lako">
+          </div>
+          <div id="phoneField" class="field" hidden>
+            <label for="phone">Namba ya simu</label>
+            <input id="phone" name="phone" autocomplete="tel" placeholder="Mfano: 07XXXXXXXX">
+          </div>
+          <div class="field" id="emailField">
+            <label for="email">Barua pepe</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="wewe@example.com" required maxlength="254">
+          </div>
+          <div id="otpField" class="field" hidden>
+            <label for="otp">Namba ya uthibitisho (OTP)</label>
+            <input id="otp" name="otp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="Ingiza tarakimu 6">
+            <div class="otp-help">Angalia inbox au spam. Tumia code ya mwisho uliyotumiwa; code za zamani zinaweza ku-expire.</div>
+          </div>
+          <button id="submitBtn" class="primary" type="submit">Endelea kwa email</button>
+        </form>
+        <button id="resendBtn" class="secondary" type="button" hidden>Tuma OTP mpya</button>
+        <button id="switchBtn" class="secondary" type="button">Huna akaunti? Jisajili</button>
       </div>
-      <button class="btn" id="submitBtn" type="submit">Tuma OTP kwenye email</button>
-    </form>
-    <button class="switch" id="switchBtn" type="button">Huna akaunti? Jisajili</button>
-  </section>
-  <p class="foot">© 2026 Mchezo Wetu · Akaunti yako, taarifa zako.</p>
-</main>
+      <p class="secure">Imetengenezwa kwa ajili ya jumuiya ya Mchezo Wetu.<br>Usimpe mtu mwingine namba yako ya uthibitisho.</p>
+    </section>
+  </main>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-let client = null;
-let signup = false;
-let otpSent = false;
-let otpType = 'magiclink';
+(() => {
+  const $ = id => document.getElementById(id);
+  let client = null;
+  let signup = false;
+  let otpStage = false;
+  let busy = false;
+  let otpType = 'magiclink';
 
-const $ = id => document.getElementById(id);
-
-function message(text, type = 'ok') {
-  const n = $('notice');
-  n.textContent = text;
-  n.className = 'notice show ' + type;
-}
-
-function clearMessage() {
-  $('notice').textContent = '';
-  $('notice').className = 'notice';
-}
-
-function resetOtpStage() {
-  otpSent = false;
-  $('email').readOnly = false;
-  $('otpField').hidden = true;
-  $('otp').required = false;
-  $('otp').value = '';
-  $('nameField').hidden = !signup;
-  $('phoneField').hidden = !signup;
-  $('submitBtn').disabled = false;
-  $('submitBtn').textContent = 'Tuma OTP kwenye email';
-}
-
-function setMode(value) {
-  signup = value;
-  resetOtpStage();
-
-  $('heading').textContent = signup
-    ? 'Fungua akaunti mpya'
-    : 'Karibu tena 👋';
-
-  $('description').textContent = signup
-    ? 'Jaza taarifa zako. Tutatuma OTP kwenye email yako.'
-    : 'Ingiza email yako ili upokee OTP ya kuingia.';
-
-  $('switchBtn').textContent = signup
-    ? 'Tayari una akaunti? Ingia'
-    : 'Huna akaunti? Jisajili';
-
-  clearMessage();
-}
-
-async function init() {
-  try {
-    const r = await fetch('/api/config', { cache: 'no-store' });
-    const c = await r.json().catch(() => ({}));
-
-    if (!r.ok) {
-      throw Error(c.error || 'Server haijatoa mipangilio ya Supabase.');
-    }
-
-    const url = c.supabaseUrl || c.url || c.SUPABASE_URL;
-    const key = c.supabaseAnonKey || c.supabasePublishableKey ||
-      c.anonKey || c.publishableKey || c.SUPABASE_ANON_KEY;
-
-    if (!url || !key) {
-      throw Error('Supabase URL au public key haipo kwenye Render.');
-    }
-
-    if (!window.supabase) {
-      throw Error('Supabase library haijapakia. Jaribu refresh.');
-    }
-
-    client = window.supabase.createClient(url, key);
-
-    const { data, error } = await client.auth.getSession();
-    if (error) throw error;
-
-    if (data.session) {
-      location.replace('/dashboard');
-      return;
-    }
-
-    message('Tayari. Ingiza email yako ili uanze.', 'ok');
-  } catch (e) {
-    console.error('Auth init:', e);
-    message(
-      'Mfumo haujaanza: ' + (e.message || 'Kosa lisilojulikana'),
-      'error'
-    );
+  function message(text, kind='ok') {
+    const box = $('notice');
+    box.textContent = text;
+    box.className = 'notice show ' + kind;
   }
-}
-
-$('switchBtn').addEventListener('click', () => setMode(!signup));
-
-$('authForm').addEventListener('submit', async e => {
-  e.preventDefault();
-
-  if (!client) {
-    message('Mfumo haujawa tayari. Refresh ukurasa ujaribu tena.', 'error');
-    return;
+  function clearMessage() {
+    $('notice').textContent = '';
+    $('notice').className = 'notice';
+  }
+  function setBusy(value, text) {
+    busy = value;
+    $('submitBtn').disabled = value;
+    $('submitBtn').textContent = text || (otpStage ? 'Thibitisha OTP' : 'Endelea kwa email');
+  }
+  function resetOtpStage() {
+    otpStage = false;
+    $('otpField').hidden = true;
+    $('emailField').hidden = false;
+    $('resendBtn').hidden = true;
+    $('otp').required = false;
+    $('email').readOnly = false;
+    $('otp').value = '';
+    $('submitBtn').textContent = signup ? 'Tuma OTP ya usajili' : 'Tuma OTP ya kuingia';
+  }
+  function setMode(isSignup) {
+    signup = isSignup;
+    resetOtpStage();
+    clearMessage();
+    $('authForm').reset();
+    $('heading').textContent = signup ? 'Fungua akaunti' : 'Karibu tena';
+    $('description').textContent = signup
+      ? 'Jaza taarifa zako ili kujiunga na Mchezo Wetu.'
+      : 'Ingia kwenye akaunti yako kwa kutumia barua pepe.';
+    $('nameField').hidden = !signup;
+    $('phoneField').hidden = !signup;
+    $('fullName').required = signup;
+    $('switchBtn').textContent = signup
+      ? 'Tayari una akaunti? Ingia'
+      : 'Huna akaunti? Jisajili';
+    $('submitBtn').textContent = signup ? 'Tuma OTP ya usajili' : 'Tuma OTP ya kuingia';
   }
 
-  const btn = $('submitBtn');
-  btn.disabled = true;
-  clearMessage();
-
-  try {
-    const email = $('email').value.trim().toLowerCase();
-
-    if (!email) throw Error('Weka barua pepe sahihi.');
-
-    if (!otpSent) {
-      let full_name = '';
-      let phone = '';
-
-      if (signup) {
-        full_name = $('fullName').value.trim();
-        phone = $('phone').value.trim();
-
-        if (!full_name) throw Error('Weka jina lako kamili.');
+  async function init() {
+    try {
+      const response = await fetch('/api/config', {cache:'no-store'});
+      const config = await response.json();
+      if (!response.ok || !config.supabaseUrl || !config.supabaseAnonKey) {
+        throw new Error(config.error || 'Mipangilio ya kuingia haijakamilika.');
       }
-
-      const response = await fetch('/api/auth/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        cache: 'no-store',
-        body: JSON.stringify({ email, signup, full_name, phone })
+      client = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey, {
+        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
       });
-
-      const result = await response.json().catch(() => ({}));
-
-      if (!response.ok || !result.success) {
-        throw Error(result.error || 'Imeshindikana kutuma OTP kupitia Brevo.');
-      }
-
-      otpType = result.otpType || (signup ? 'signup' : 'magiclink');
-
-      otpSent = true;
-      $('email').readOnly = true;
-      $('otpField').hidden = false;
-      $('otp').required = true;
-      $('nameField').hidden = true;
-      $('phoneField').hidden = true;
-      $('otp').focus();
-      btn.textContent = 'Thibitisha OTP';
-
-      message(
-        'OTP imetumwa kupitia Brevo. Angalia email yako pamoja na Spam/Junk, ' +
-        'kisha weka OTP ya tarakimu 6 hapa.',
-        'ok'
-      );
-      return;
+      const {data, error} = await client.auth.getSession();
+      if (error) throw error;
+      if (data.session) location.replace('/dashboard');
+    } catch (err) {
+      message('Imeshindwa kuanzisha mfumo wa login: ' + err.message, 'error');
     }
+  }
 
+  $('authForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    if (busy) return;
+    clearMessage();
+
+    const email = $('email').value.trim().toLowerCase();
     const token = $('otp').value.trim();
 
-    if (!/^[0-9]{6}$/.test(token)) {
-      throw Error('OTP lazima iwe na tarakimu 6.');
+    try {
+      if (!client) throw new Error('Mfumo bado unajiandaa. Subiri kidogo ujaribu tena.');
+
+      if (!otpStage) {
+        if (signup && !$('fullName').value.trim()) {
+          throw new Error('Weka jina lako kamili.');
+        }
+
+        setBusy(true, 'Inatuma OTP...');
+        const response = await fetch('/api/auth/send-otp', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          cache:'no-store',
+          body:JSON.stringify({
+            email,
+            signup,
+            full_name:$('fullName').value.trim(),
+            phone:$('phone').value.trim()
+          })
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || 'Imeshindwa kutuma OTP.');
+
+        otpType = result.otpType || (signup ? 'signup' : 'magiclink');
+        otpStage = true;
+        $('emailField').hidden = true;
+        $('otpField').hidden = false;
+        $('otp').required = true;
+        $('email').readOnly = true;
+        $('resendBtn').hidden = false;
+        $('heading').textContent = 'Thibitisha email';
+        $('description').textContent = 'Tumeomba OTP itumwe kwenye ' + email + '.';
+        setBusy(false, 'Thibitisha OTP');
+        $('otp').focus();
+        message('OTP imetumwa. Tumia code ya email ya mwisho uliyopokea.', 'ok');
+        return;
+      }
+
+      if (!/^\d{6}$/.test(token)) throw new Error('Ingiza OTP yenye tarakimu 6.');
+
+      setBusy(true, 'Inathibitisha...');
+      const response = await fetch('/api/auth/verify-otp', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        cache:'no-store',
+        body:JSON.stringify({email, token, type:otpType})
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'OTP si sahihi au ime-expire. Omba OTP mpya.');
+      }
+
+      const {data, error} = await client.auth.setSession(result.session);
+      if (error) throw error;
+      if (!data.session) throw new Error('Session haikupatikana. Jaribu tena.');
+      message('Umeingia kikamilifu. Inafungua akaunti...', 'ok');
+      location.replace('/dashboard');
+    } catch (err) {
+      message(err.message || 'Hitilafu imetokea. Jaribu tena.', 'error');
+      setBusy(false, otpStage ? 'Thibitisha OTP' : (signup ? 'Tuma OTP ya usajili' : 'Tuma OTP ya kuingia'));
     }
+  });
 
-    const verifyResponse = await fetch('/api/auth/verify-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      cache: 'no-store',
-      body: JSON.stringify({
-        email,
-        token,
-        type: otpType
-      })
-    });
+  $('resendBtn').addEventListener('click', () => {
+    if (busy) return;
+    const email = $('email').value.trim();
+    const name = $('fullName').value.trim();
+    const phone = $('phone').value.trim();
+    resetOtpStage();
+    $('email').value = email;
+    $('fullName').value = name;
+    $('phone').value = phone;
+    clearMessage();
+    message('Bonyeza kitufe cha kutuma OTP ili kupata code mpya.', 'ok');
+    $('submitBtn').focus();
+  });
 
-    const verifyResult = await verifyResponse.json().catch(() => ({}));
-
-    if (!verifyResponse.ok || !verifyResult.success) {
-      throw new Error(verifyResult.error || 'OTP imeshindwa kuthibitishwa.');
-    }
-
-    const { data: sessionData, error: sessionError } =
-      await client.auth.setSession(verifyResult.session);
-
-    if (sessionError) throw sessionError;
-
-    if (!sessionData?.session) {
-      throw new Error('Session haikupatikana. Omba OTP mpya.');
-    }
-
-    message('Uthibitisho umefanikiwa. Inafungua akaunti yako...', 'ok');
-    location.replace('/dashboard');
-  } catch (err) {
-    console.error('OTP error:', err);
-    message(err.message || 'OTP imeshindikana. Jaribu tena.', 'error');
-  } finally {
-    btn.disabled = false;
-  }
-});
-
-init();
+  $('switchBtn').addEventListener('click', () => setMode(!signup));
+  setMode(false);
+  init();
+})();
 </script>
 </body>
 </html>
