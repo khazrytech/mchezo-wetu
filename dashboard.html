@@ -538,12 +538,44 @@ body {
   .nav { border-radius:17px !important; }
 }
 
+
+
+/* MEMBER PROFILE + SETTINGS */
+html { scroll-padding-top: 22px; }
+.member-section { scroll-margin-top: 20px; margin-top: 16px; }
+.member-section[hidden] { display:none !important; }
+.section-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:18px; }
+.section-head h2 { margin:0; font-size:18px; letter-spacing:-.5px; }
+.section-head p { margin:7px 0 0; color:var(--muted); font-size:11px; line-height:1.8; }
+.profile-layout { display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:14px; }
+.profile-summary { padding:22px; border:1px solid #ffffff18; border-radius:20px; background:linear-gradient(145deg,#1b1929,#12121d); }
+.profile-avatar { width:66px; height:66px; display:grid; place-items:center; border-radius:22px; background:linear-gradient(135deg,#dfd2ff,#aa8aff 55%,#c7f36b); color:#171020; font-size:23px; font-weight:900; margin-bottom:17px; }
+.profile-summary h3 { margin:0; font-size:17px; overflow-wrap:anywhere; }
+.profile-summary .email { color:var(--muted); font-size:11px; overflow-wrap:anywhere; margin-top:7px; }
+.profile-meta { display:grid; gap:0; margin-top:18px; }
+.profile-meta div { display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-top:1px solid #ffffff12; font-size:11px; }
+.profile-meta span:first-child { color:var(--muted); }
+.profile-meta span:last-child { text-align:right; overflow-wrap:anywhere; }
+.settings-list { display:grid; gap:11px; }
+.setting-row { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:15px; border:1px solid #ffffff14; border-radius:14px; background:#ffffff04; }
+.setting-row strong { display:block; font-size:12px; }
+.setting-row small { display:block; margin-top:5px; color:var(--muted); font-size:10px; line-height:1.7; }
+.setting-row input[type=checkbox] { width:19px; height:19px; accent-color:#b8a2ff; flex-shrink:0; }
+.form-actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:14px; }
+.form-actions .btn { min-height:43px; }
+.nav a { cursor:pointer; }
+@media(max-width:720px) {
+  .profile-layout { grid-template-columns:1fr; }
+  .section-head h2 { font-size:16px; }
+  .setting-row { padding:13px; }
+}
+
 </style>
 </head>
 <body>
 <header class="top"><div class="brand">◈ <span>Mchezo</span> Wetu</div><button class="btn" id="logout">Toka ↗</button></header>
 <main class="main">
-<section class="hero"><div class="eyebrow">Member space / Akaunti yako</div><h1>Karibu, <span id="name">Mwanachama</span></h1><p>Simamia michango yako, fuatilia malipo na angalia historia yako sehemu moja.</p><div id="notice" class="notice" role="status"></div></section>
+<section class="hero" id="home"><div class="eyebrow">Member space / Akaunti yako</div><h1>Karibu, <span id="name">Mwanachama</span></h1><p>Simamia michango yako, fuatilia malipo na angalia historia yako sehemu moja.</p><div id="notice" class="notice" role="status"></div></section>
 <section class="grid">
 <div class="stat"><label>Michango iliyothibitishwa</label><strong id="paid">—</strong><small>Jumla ya malipo yaliyokubaliwa</small></div>
 <div class="stat"><label>Malipo yanayosubiri</label><strong id="pending">—</strong><small>Yanasubiri mapitio</small></div>
@@ -559,11 +591,72 @@ body {
 <div class="field"><label for="contribution">Mchango unaolipia (hiari)</label><select id="contribution"><option value="">Chagua ikiwa unajulikana</option></select></div>
 <button class="btn primary" id="paySubmit" type="submit">Tuma kwa uthibitisho</button>
 </form></div>
-<div class="panel"><h2>Historia ya michango</h2><p>Michango iliyowekwa kwenye akaunti yako.</p><div id="contributions" class="list"><div class="muted">Inapakia...</div></div></div>
+<div class="panel" id="contributionsSection"><h2>Historia ya michango</h2><p>Michango iliyowekwa kwenye akaunti yako.</p><div id="contributions" class="list"><div class="muted">Inapakia...</div></div></div>
 </section>
-<section class="panel" style="margin-top:15px"><h2>Historia ya malipo</h2><p>Hali ya kila taarifa ya muamala.</p><div id="payments" class="list"><div class="muted">Inapakia...</div></div></section>
+<section class="panel" id="payments" style="margin-top:15px"><h2>Historia ya malipo</h2><p>Hali ya kila taarifa ya muamala.</p><div id="payments" class="list"><div class="muted">Inapakia...</div></div></section>
+
+<section class="panel member-section" id="profileSection" hidden>
+  <div class="section-head">
+    <div><h2>Wasifu wangu</h2><p>Angalia na usasishe taarifa zako binafsi.</p></div>
+    <span class="pill">PROFILE</span>
+  </div>
+  <div class="profile-layout">
+    <div class="profile-summary">
+      <div class="profile-avatar" id="profileAvatar">MW</div>
+      <h3 id="profileDisplayName">Mwanachama</h3>
+      <div class="email" id="profileDisplayEmail">—</div>
+      <div class="profile-meta">
+        <div><span>Hali ya akaunti</span><span id="profileApproval">Inakaguliwa</span></div>
+        <div><span>Jukumu</span><span id="profileRole">Mwanachama</span></div>
+        <div><span>Alijiunga</span><span id="profileCreated">—</span></div>
+      </div>
+    </div>
+    <div>
+      <form id="profileForm">
+        <div class="field"><label for="profileFullName">Jina kamili</label><input id="profileFullName" name="full_name" minlength="2" maxlength="100" required></div>
+        <div class="field"><label for="profilePhone">Namba ya simu</label><input id="profilePhone" name="phone" type="tel" maxlength="30" placeholder="07XXXXXXXX"></div>
+        <div class="field"><label for="profileEmail">Barua pepe</label><input id="profileEmail" readonly aria-readonly="true"></div>
+        <button class="btn primary" id="saveProfile" type="submit">Hifadhi mabadiliko</button>
+      </form>
+      <div id="profileNotice" class="notice" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section class="panel member-section" id="settingsSection" hidden>
+  <div class="section-head">
+    <div><h2>Mipangilio</h2><p>Dhibiti mapendeleo na usalama wa akaunti yako.</p></div>
+    <span class="pill">SETTINGS</span>
+  </div>
+  <div class="settings-list">
+    <div class="setting-row">
+      <div><strong>Arifa ndani ya dashboard</strong><small>Onyesha ujumbe wa mfumo unapowasilisha malipo au kuhifadhi profile.</small></div>
+      <input id="prefDashboardNotices" type="checkbox" checked aria-label="Arifa za dashboard">
+    </div>
+    <div class="setting-row">
+      <div><strong>Muonekano wa dashboard</strong><small>Dashboard hii hutumia muonekano wa giza unaofaa simu.</small></div>
+      <span class="pill verified">Dark UI</span>
+    </div>
+    <div class="setting-row">
+      <div><strong>Usalama wa kuingia</strong><small>Unaingia kwa OTP ya barua pepe. Usishirikishe code yako na mtu mwingine.</small></div>
+      <span class="pill verified">Email OTP</span>
+    </div>
+    <div class="setting-row">
+      <div><strong>Ondoka kwenye akaunti</strong><small>Funga session ya sasa kwenye kifaa hiki.</small></div>
+      <button class="btn" id="settingsLogout" type="button">Toka kwenye akaunti</button>
+    </div>
+  </div>
+  <div id="settingsNotice" class="notice" role="status"></div>
+</section>
+
 </main>
-<nav class="nav"><a class="active" href="/dashboard">⌂ Nyumbani</a><a href="#paymentForm">＋ Malipo</a><a href="#payments">▤ Historia</a><a href="/login">Akaunti</a></nav>
+<nav class="nav" aria-label="Navigation ya mwanachama">
+  <a class="active" href="#home" data-section="home">⌂ Nyumbani</a>
+  <a href="#paymentForm" data-section="paymentForm">＋ Malipo</a>
+  <a href="#payments" data-section="payments">▤ Historia</a>
+  <a href="#profileSection" data-section="profileSection">♙ Profile</a>
+  <a href="#settingsSection" data-section="settingsSection">⚙ Settings</a>
+</nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 let client,token;
@@ -590,11 +683,25 @@ async function start(){
   const session=await client.auth.getSession();token=session.data.session?.access_token;
   if(!token){location.replace('/login');return}
   await refresh();
+  const requestedSection = location.hash.slice(1);
+  if (requestedSection === 'profileSection' || requestedSection === 'settingsSection') {
+    showMemberSection(requestedSection);
+  }
  }catch(e){note(e.message||'Imeshindikana kupakia akaunti.')}
 }
 async function refresh(){
  const me=await api('/api/me');
  $('name').textContent=me.profile.full_name||me.user.email||'Mwanachama';
+ $('profileFullName').value=me.profile.full_name||'';
+ $('profilePhone').value=me.profile.phone||'';
+ $('profileEmail').value=me.user.email||'';
+ $('profileDisplayEmail').textContent=me.user.email||'';
+ $('profileDisplayName').textContent=me.profile.full_name||'Mwanachama';
+ $('profileAvatar').textContent=(me.profile.full_name||'MW').split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
+ $('profileRole').textContent=me.profile.role==='admin'?'Admin':'Mwanachama';
+ $('profileApproval').textContent=me.profile.is_approved?'Imeidhinishwa':'Inasubiri idhini';
+ $('profileCreated').textContent=me.profile.created_at?date(me.profile.created_at):'—';
+
  if(!me.profile.is_approved)note('Akaunti yako inasubiri kuidhinishwa na admin. Unaweza kuona taarifa, lakini idhini inaweza kuhitajika kabla ya kushiriki kikamilifu.');
  const d=await api('/api/dashboard');
  $('paid').textContent=money(d.stats.paid);$('pending').textContent=money(d.stats.pending);
@@ -615,7 +722,90 @@ $('paymentForm').onsubmit=async e=>{
   note(result.message,true);$('paymentForm').reset();await refresh();
  }catch(e){note(e.message)}finally{b.disabled=false}
 };
-$('logout').onclick=async()=>{if(client)await client.auth.signOut();location.replace('/login')};
+
+function showMemberSection(id) {
+  const profile = $('profileSection');
+  const settings = $('settingsSection');
+  if (profile) profile.hidden = id !== 'profileSection';
+  if (settings) settings.hidden = id !== 'settingsSection';
+
+  document.querySelectorAll('.nav a[data-section]').forEach(a => {
+    a.classList.toggle('active', a.dataset.section === id);
+  });
+
+  const target = $(id);
+  if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.querySelectorAll('.nav a[data-section]').forEach(a => {
+  a.addEventListener('click', event => {
+    event.preventDefault();
+    const id = a.dataset.section;
+    showMemberSection(id);
+    if (id === 'profileSection' || id === 'settingsSection') {
+      history.replaceState(null, '', '#' + id);
+    } else {
+      history.replaceState(null, '', id === 'home' ? '/dashboard' : '#' + id);
+    }
+  });
+});
+
+function setProfileNotice(text, ok=false) {
+  const box = $('profileNotice');
+  box.textContent = text;
+  box.className = 'notice show';
+  box.style.color = ok ? '#dafa9c' : '#ffb6c1';
+}
+function setSettingsNotice(text, ok=false) {
+  const box = $('settingsNotice');
+  box.textContent = text;
+  box.className = 'notice show';
+  box.style.color = ok ? '#dafa9c' : '#ffb6c1';
+}
+
+$('profileForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  const button = $('saveProfile');
+  button.disabled = true;
+  button.textContent = 'Inahifadhi...';
+  try {
+    const result = await api('/api/me/profile', {
+      method:'PATCH',
+      body:JSON.stringify({
+        full_name:$('profileFullName').value.trim(),
+        phone:$('profilePhone').value.trim()
+      })
+    });
+    $('profileDisplayName').textContent = result.profile.full_name || 'Mwanachama';
+    $('profileAvatar').textContent = (result.profile.full_name || 'MW')
+      .split(/\s+/).slice(0,2).map(x => x[0] || '').join('').toUpperCase();
+    $('name').textContent = result.profile.full_name || 'Mwanachama';
+    setProfileNotice('Taarifa za profile zimehifadhiwa.', true);
+  } catch (error) {
+    setProfileNotice(error.message || 'Imeshindikana kuhifadhi profile.');
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Hifadhi mabadiliko';
+  }
+});
+
+function loadMemberPreferences() {
+  const saved = localStorage.getItem('mw_dashboard_notices');
+  $('prefDashboardNotices').checked = saved !== 'false';
+}
+$('prefDashboardNotices').addEventListener('change', event => {
+  localStorage.setItem('mw_dashboard_notices', String(event.target.checked));
+  setSettingsNotice('Mapendeleo yamehifadhiwa kwenye kifaa hiki.', true);
+});
+
+async function memberLogout() {
+  if (client) await client.auth.signOut();
+  location.replace('/login');
+}
+$('settingsLogout').addEventListener('click', memberLogout);
+loadMemberPreferences();
+
+$('logout').onclick=memberLogout;
 start();
 </script>
 </body>

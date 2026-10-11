@@ -281,9 +281,45 @@ app.get('/api/me', ready, requireUser, async (req, res) => {
                                                     if (error) {
     console.error('Profile query error:', error.message);                                               return apiError(res, 500, 'Imeshindikana kupata profile.');                                       }
 
+  
   if (!data) {
-    return apiError(res, 404, 'Profile haijapatikana. Jaribu kuingia tena.');
-  }                                               
+    // Profile haipo: tengeneza rekodi ya mwanachama huyu pekee.
+    const metadata = req.user.user_metadata || {};
+    const { data: created, error: createError } = await supabase
+      .from('profiles')
+      .insert({
+        id: req.user.id,
+        full_name: String(metadata.full_name || '').trim() || null,
+        phone: String(metadata.phone || '').trim() || null,
+        role: 'member',
+        is_approved: false,
+        is_banned: false
+      })
+      .select('id, full_name, phone, role, is_approved, is_banned, created_at')
+      .single();
+
+    if (createError) {
+      // Inawezekana rekodi iliundwa kwa wakati mmoja na ombi jingine.
+      const retry = await supabase
+        .from('profiles')
+        .select('id, full_name, phone, role, is_approved, is_banned, created_at')
+        .eq('id', req.user.id)
+        .maybeSingle();
+
+      if (retry.error || !retry.data) {
+        console.error('Profile creation error:', createError.message);
+        return apiError(
+          res, 500,
+          'Profile haipo na imeshindikana kuundwa. Kagua jedwali profiles na columns zake kwenye Supabase.'
+        );
+      }
+
+      data = retry.data;
+    } else {
+      data = created;
+    }
+  }
+                                               
   if (data.is_banned) {
     return apiError(res, 403, 'Akaunti yako imesimamishwa. Wasiliana na admin.');
   }
@@ -296,6 +332,52 @@ app.get('/api/me', ready, requireUser, async (req, res) => {
     profile: data
   });
 });                                               
+
+app.patch('/api/me/profile', ready, requireUser, async (req, res) => {
+  try {
+    const fullName = String(req.body?.full_name || '').trim();
+    const phone = String(req.body?.phone || '').trim();
+
+    if (fullName.length < 2 || fullName.length > 100) {
+      return apiError(res, 400, 'Jina liwe na herufi 2 hadi 100.');
+    }
+    if (phone.length > 30) {
+      return apiError(res, 400, 'Namba ya simu si sahihi.');
+    }
+
+    const { data: current, error: currentError } = await supabase
+      .from('profiles')
+      .select('id, is_banned, role')
+      .eq('id', req.user.id)
+      .maybeSingle();
+
+    if (currentError) throw currentError;
+    if (!current) {
+      return apiError(res, 404, 'Profile haipo. Toka kisha ingia tena.');
+    }
+    if (current.is_banned) {
+      return apiError(res, 403, 'Akaunti yako imesimamishwa.');
+    }
+
+    // User anaweza kubadilisha jina na simu yake tu.
+    // Role, idhini na hali ya kufungiwa haviwezi kubadilishwa hapa.
+    const { data, error } = await supabase
+      .from('profiles')
+      .update({ full_name: fullName, phone: phone || null })
+      .eq('id', req.user.id)
+      .select('id, full_name, phone, role, is_approved, is_banned, created_at')
+      .single();
+
+    if (error) throw error;
+
+    res.setHeader('Cache-Control', 'no-store');
+    return res.json({ success: true, profile: data });
+  } catch (error) {
+    console.error('Profile update error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kuhifadhi profile. Kagua columns za profiles.');
+  }
+});
+
 app.get('/api/dashboard', ready, requireUser, async (req, res) => {
   try {                                               const { data: profile, error: profileError } = await supabase
       .from('profiles')
