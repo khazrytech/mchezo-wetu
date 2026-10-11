@@ -508,3 +508,34 @@ app.use((req, res) => res.status(404).send('Ukurasa haujapatikana.'));
 app.listen(PORT, () => {
   console.log(`Mchezo Wetu server running on port ${PORT}`);
 });
+
+// --- ANSIZA: Resend Integration ---
+const { Resend } = require('resend');
+
+const resendApiKey = process.env.RESEND_API_KEY;
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
+
+// API ya Kutuma OTP kupitia Resend
+app.post('/api/auth/send-otp', async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ error: 'Email inahitajika.' });
+
+        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+        
+        if (resend) {
+            await resend.emails.send({
+                from: 'Mchezo Wetu <onboarding@resend.dev>',
+                to: email,
+                subject: 'Namba yako ya Uthibitisho (OTP)',
+                html: `<div style="font-family:sans-serif; padding:20px;"><h2>Mchezo Wetu OTP</h2><p>Namba yako ya uthibitisho ni: <b style="font-size:20px; color:#3b82f6;">${otpCode}</b></p></div>`
+            });
+            res.json({ success: true, message: 'OTP imetumwa mafanikio!' });
+        } else {
+            res.status(500).json({ error: 'Resend API key haijawekwa kwenye server.' });
+        }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+// --- MWISHO: Resend Integration ---
