@@ -212,6 +212,62 @@ app.post('/api/auth/send-otp', async (req, res) => {
   }
 });
 
+
+app.post('/api/auth/verify-otp', async (req, res) => {
+  const email = String(req.body?.email || '').trim().toLowerCase();
+  const token = String(req.body?.token || '').trim();
+  const type = String(req.body?.type || '');
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return apiError(res, 400, 'Weka barua pepe sahihi.');
+  }
+
+  if (!/^\d{6}$/.test(token)) {
+    return apiError(res, 400, 'OTP lazima iwe na tarakimu 6.');
+  }
+
+  if (!['signup', 'magiclink', 'email'].includes(type)) {
+    return apiError(res, 400, 'Aina ya OTP si sahihi. Omba OTP mpya.');
+  }
+
+  if (!supabase) {
+    return apiError(res, 503, 'Supabase admin haijawekwa kwenye server.');
+  }
+
+  try {
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type
+    });
+
+    if (error) {
+      console.warn('OTP verification rejected:', error.message);
+      return apiError(
+        res,
+        400,
+        'OTP si sahihi, imetumika au muda wake umeisha. Omba OTP mpya.'
+      );
+    }
+
+    if (!data?.session?.access_token || !data?.session?.refresh_token) {
+      return apiError(res, 401, 'Session haikupatikana. Omba OTP mpya.');
+    }
+
+    res.setHeader('Cache-Control', 'no-store');
+    return res.json({
+      success: true,
+      session: {
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token
+      }
+    });
+  } catch (err) {
+    console.error('OTP verification error:', err.message);
+    return apiError(res, 500, 'Hitilafu ya server wakati wa kuthibitisha OTP.');
+  }
+});
+
 app.get('/api/me', ready, requireUser, async (req, res) => {
   const { data, error } = await supabase
     .from('profiles')
