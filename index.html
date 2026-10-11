@@ -51,6 +51,7 @@
 let client = null;
 let signup = false;
 let otpSent = false;
+let otpType = 'magiclink';
 
 const $ = id => document.getElementById(id);
 
@@ -167,15 +168,20 @@ $('authForm').addEventListener('submit', async e => {
         if (!full_name) throw Error('Weka jina lako kamili.');
       }
 
-      const { error } = await client.auth.signInWithOtp({
-        email,
-        options: {
-          shouldCreateUser: signup,
-          data: signup ? { full_name, phone } : undefined
-        }
+      const response = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({ email, signup, full_name, phone })
       });
 
-      if (error) throw error;
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok || !result.success) {
+        throw Error(result.error || 'Imeshindikana kutuma OTP kupitia Brevo.');
+      }
+
+      otpType = result.otpType || (signup ? 'signup' : 'magiclink');
 
       otpSent = true;
       $('email').readOnly = true;
@@ -187,7 +193,7 @@ $('authForm').addEventListener('submit', async e => {
       btn.textContent = 'Thibitisha OTP';
 
       message(
-        'Ombi limepokelewa. Angalia email yako pamoja na Spam/Junk, ' +
+        'OTP imetumwa kupitia Brevo. Angalia email yako pamoja na Spam/Junk, ' +
         'kisha weka OTP ya tarakimu 6 hapa.',
         'ok'
       );
@@ -203,7 +209,7 @@ $('authForm').addEventListener('submit', async e => {
     const { data, error } = await client.auth.verifyOtp({
       email,
       token,
-      type: 'email'
+      type: otpType
     });
 
     if (error) throw error;

@@ -99,33 +99,116 @@ app.get('/api/config', (req, res) => {
 });
 
 app.post('/api/auth/send-otp', async (req, res) => {
-  const { email } = req.body;
-  if (!email) return apiError(res, 400, 'Email inahitajika.');
+  const email = String(req.body?.email || '').trim().toLowerCase();
+  const signup = req.body?.signup === true;
+  const full_name = String(req.body?.full_name || '').trim();
+  const phone = String(req.body?.phone || '').trim();
+
+  if (!email || email.length > 254 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return apiError(res, 400, 'Weka barua pepe sahihi.');
+  }
+
+  if (signup && !full_name) {
+    return apiError(res, 400, 'Jina kamili linahitajika.');
+  }
+
+  if (!supabase) {
+    return apiError(res, 503, 'Supabase admin haijawekwa kwenye server.');
+  }
 
   const brevoApiKey = process.env.BREVO_API_KEY;
+  const senderEmail = process.env.BREVO_SENDER_EMAIL || 'hackertrick1997@gmail.com';
+  const senderName = process.env.BREVO_SENDER_NAME || 'Mchezo Wetu';
+
   if (!brevoApiKey) {
     return apiError(res, 500, 'BREVO_API_KEY haijawekwa kwenye server.');
   }
 
-  const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-
   try {
-    await axios.post('https://api.brevo.com/v3/smtp/email', {
-      sender: { name: 'Mchezo Wetu', email: 'hackertrick1997@gmail.com' },
-      to: [{ email: email }],
-      subject: 'Namba yako ya Uthibitisho (OTP)',
-      htmlContent: `<p>Namba yako ya uthibitisho ya Mchezo Wetu ni: <b>${otpCode}</b></p>`
-    }, {
-      headers: {
-        'api-key': brevoApiKey,
-        'Content-Type': 'application/json'
-      }
-    });
+    // Supabase ndiyo inayozalisha na kuhifadhi OTP ya kuthibitisha.
+    const options = signup
+      ? {
+          type: 'signup',
+          email,
+          options: { data: { full_name, phone } }
+        }
+      : {
+          type: 'magiclink',
+          email
+        };
 
-    res.json({ success: true, message: 'OTP imetumwa kupitia Brevo!' });
+    const { data, error } = await supabase.auth.admin.generateLink(options);
+
+    if (error) {
+      console.error('OTP generation error:', error.message);
+      return apiError(
+        res,
+        400,
+        signup
+          ? 'Usajili umeshindikana. Hakikisha email hii haijasajiliwa tayari.'
+          : 'Imeshindikana kuanzisha kuingia. Hakikisha akaunti ipo.'
+      );
+    }
+
+    const otp = data?.properties?.email_otp;
+
+    if (!otp) {
+      console.error('Supabase did not return email_otp.');
+      return apiError(res, 500, 'Supabase haikutoa OTP. Jaribu tena.');
+    }
+
+    const greeting = signup
+      ? full_name.replace(/[<>]/g, '')
+      : 'Mwanachama';
+
+    await axios.post(
+      'https://api.brevo.com/v3/smtp/email',
+      {
+        sender: {
+          name: senderName,
+          email: senderEmail
+        },
+        to: [{ email }],
+        subject: 'OTP yako ya Mchezo Wetu',
+        htmlContent: `
+          <div style="font-family:Arial,sans-serif;color:#172033;max-width:520px;margin:auto">
+            <h2>Mchezo Wetu</h2>
+            <p>Habari ${greeting},</p>
+            <p>Tumia namba hii kuthibitisha akaunti yako:</p>
+            <div style="font-size:32px;font-weight:bold;letter-spacing:8px;padding:18px 0">${otp}</div>
+            <p>Usimshirikishe mtu mwingine namba hii.</p>
+            <p>Kama hukuomba OTP hii, puuza ujumbe huu.</p>
+          </div>
+        `
+      },
+      {
+        headers: {
+          'api-key': brevoApiKey,
+          'Content-Type': 'application/json'
+        },
+        timeout: 15000
+      }
+    );
+
+    res.setHeader('Cache-Control', 'no-store');
+
+    return res.json({
+      success: true,
+      otpType: signup ? 'signup' : 'magiclink',
+      message: 'OTP imetumwa kupitia Brevo.'
+    });
   } catch (error) {
-    console.error('Hitilafu ya Brevo:', error.response?.data || error.message);
-    return apiError(res, 500, 'Imeshindikana kutuma email.');
+    console.error(
+      'OTP/Brevo error:',
+      error.response?.data || error.message
+    );
+
+    return apiError(
+      res,
+      502,
+      'Imeshindikana kutuma OTP. Hakiki sender email na Brevo API key.'
+    );
   }
 });
 
