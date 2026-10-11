@@ -291,7 +291,7 @@ app.get('/api/me', ready, requireUser, async (req, res) => {
         id: req.user.id,
         full_name: String(metadata.full_name || '').trim() || null,
         phone: String(metadata.phone || '').trim() || null,
-        role: 'member',
+        role: 'user',
         is_approved: false,
         is_banned: false
       })
