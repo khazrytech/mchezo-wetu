@@ -842,65 +842,47 @@ app.get('/api/admin/summary', ready, requireUser, requireAdmin, async (req, res)
   res.json({ success: true, message: 'Mabadiliko yamehifadhiwa.' });                                });
 
 app.get('/api/admin/payments', ready, requireUser, requireAdmin, async (req, res) => {
-  const { data, error } = await supabase
-    .from('payments')
-    .select('id, user_id, contribution_id, amount, reference, method, status, created_at, verified_at, profiles(full_name, phone)')
-    .order('created_at', { ascending: false })
-    .limit(500);
+  try {
+    const { data: rows, error } = await supabase
+      .from('payments')
+      .select('id, user_id, contribution_id, amount, reference, method, status, created_at, verified_at')
+      .order('created_at', { ascending: false })
+      .limit(500);
 
-  if (error) {
-    console.error('Admin payments error:', error.message);
-    return apiError(res, 500, 'Imeshindikana kupata malipo.');                                        }                                               
-  res.setHeader('Cache-Control', 'no-store');
-  res.json({ success: true, payments: data || [] });                                                });
-
-app.post('/api/admin/payments/:id/review', ready, requireUser, requireAdmin, async (req, res) => {    const paymentId = req.params.id;
-  const action = String(req.body.action || '');
-                                                    if (!['verify', 'reject'].includes(action)) {
-    return apiError(res, 400, 'Kitendo cha malipo si sahihi.');
-  }
-                                                    const { data: payment, error: findError } = await supabase
-    .from('payments')                                 .select('id, status, user_id, amount, reference')                                                   .eq('id', paymentId)                              .maybeSingle();                                                                                   if (findError) {
-    console.error('Payment lookup error:', findError.message);
-    return apiError(res, 500, 'Imeshindikana kupata muamala.');                                       }
-
-  if (!payment) return apiError(res, 404, 'Muamala haujapatikana.');                                  if (payment.status !== 'pending') {
-    return apiError(res, 409, 'Muamala huu tayari umeshafanyiwa uamuzi.');
-  }
-
-  const newStatus = action === 'verify' ? 'verified' : 'rejected';
-  const { data, error } = await supabase
-    .from('payments')
-    .update({
-      status: newStatus,
-      verified_at: action === 'verify' ? new Date().toISOString() : null,
-      verified_by: req.user.id
-    })                                                .eq('id', paymentId)
-    .eq('status', 'pending')                          .select('id, status')
-    .maybeSingle();                               
-  if (error) {
-    console.error('Payment review error:', error.message);
-    return apiError(res, 500, 'Imeshindikana kuhifadhi uamuzi wa malipo.');
-  }
-                                                    if (!data) {
-    return apiError(res, 409, 'Muamala umebadilika. Pakia upya ukurasa.');
-  }                                               
-  await supabase.from('audit_logs').insert({
-    actor_id: req.user.id,
-    action: `payment_${newStatus}`,
-    target_id: payment.user_id,
-    details: {
-      payment_id: payment.id,
-      reference: payment.reference,                     amount: payment.amount
+    if (error) {
+      console.error('Admin payments error:', error);
+      return apiError(res, 500, 'Imeshindikana kupata malipo. Kagua Render Logs.');
     }
-  });
 
-  res.json({ success: true, message: `Muamala ${newStatus === 'verified' ? 'umethibitishwa' : 'umekataliwa'}.` });                                    });
+    const payments = rows || [];
+    const userIds = [...new Set(payments.map(x => x.user_id).filter(Boolean))];
+    let profiles = [];
 
-app.get('/login', (req, res) => {                   res.sendFile(path.join(__dirname, 'index.html'));                                                 });
+    if (userIds.length) {
+      const result = await supabase
+        .from('profiles')
+        .select('id, full_name, phone')
+        .in('id', userIds);
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+      if (result.error) {
+        console.error('Payment profiles lookup error:', result.error);
+      } else {
+        profiles = result.data || [];
+      }
+    }
+
+    const profileMap = Object.fromEntries(profiles.map(x => [x.id, x]));
+    const enriched = payments.map(payment => ({
+      ...payment,
+      profiles: profileMap[payment.user_id] || null
+    }));
+
+    res.setHeader('Cache-Control', 'no-store');
+    return res.json({ success: true, payments: enriched });
+  } catch (err) {
+    console.error('Admin payments exception:', err);
+    return apiError(res, 500, 'Hitilafu wakati wa kupata malipo.');
+  }
 });
                                                   app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'dashboard.html'));
