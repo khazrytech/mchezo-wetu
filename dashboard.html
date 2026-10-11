@@ -599,7 +599,7 @@ html { scroll-padding-top: 22px; }
 </form></div>
 <div class="panel" id="contributionsSection"><h2>Historia ya michango</h2><p>Michango iliyowekwa kwenye akaunti yako.</p><div id="contributions" class="list"><div class="muted">Inapakia...</div></div></div>
 </section>
-<section class="panel" id="payments" style="margin-top:15px"><h2>Historia ya malipo</h2><p>Hali ya kila taarifa ya muamala.</p><div id="payments" class="list"><div class="muted">Inapakia...</div></div></section>
+<section class="panel" id="paymentsSection" style="margin-top:15px"><h2>Historia ya malipo</h2><p>Hali ya kila taarifa ya muamala.</p><div id="paymentsList" class="list"><div class="muted">Inapakia...</div></div></section>
 
 <section class="panel member-section" id="profileSection" hidden>
   <div class="section-head">
@@ -658,9 +658,10 @@ html { scroll-padding-top: 22px; }
 </main>
 <nav class="nav" aria-label="Navigation ya mwanachama">
   <a class="active" href="#home" data-section="home">⌂ Nyumbani</a>
-  <a href="#paymentForm" data-section="paymentForm">＋ Malipo</a>
-  <a href="#payments" data-section="payments">▤ Historia</a>
-  <a href="#profileSection" data-section="profileSection">♙ Profile</a>
+  <a href="#contributionsSection" data-section="contributionsSection">▤ Michango</a>
+  <a href="#paymentForm" data-section="paymentForm">＋ Wasilisha malipo</a>
+  <a href="#paymentsSection" data-section="paymentsSection">◷ Historia</a>
+  <a href="#profileSection" data-section="profileSection">♙ Akaunti</a>
   <a href="#settingsSection" data-section="settingsSection">⚙ Settings</a>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -690,9 +691,7 @@ async function start(){
   if(!token){location.replace('/login');return}
   await refresh();
   const requestedSection = location.hash.slice(1);
-  if (requestedSection === 'profileSection' || requestedSection === 'settingsSection') {
-    showMemberSection(requestedSection);
-  }
+  if (requestedSection) showMemberSection(requestedSection);
  }catch(e){note(e.message||'Imeshindikana kupakia akaunti.')}
 }
 async function refresh(){
@@ -717,7 +716,7 @@ async function refresh(){
   const o=document.createElement('option');o.value=c.id;o.textContent=c.title+' — '+money(c.amount);$('contribution').appendChild(o);
   return '<div class="item"><div><b>'+escapeText(c.title)+'</b><small>'+money(c.amount)+' · Tarehe: '+(c.due_date||'Haijawekwa')+'</small></div>'+pill(c.status)+'</div>';
  }).join(''):'<div class="muted">Hakuna michango iliyowekwa kwenye akaunti yako bado.</div>';
- $('payments').innerHTML=d.payments.length?d.payments.map(p=>'<div class="item"><div><b>'+money(p.amount)+'</b><small>Ref: '+escapeText(p.reference)+' · '+date(p.created_at)+' · '+escapeText(p.method)+'</small></div>'+pill(p.status)+'</div>').join(''):'<div class="muted">Bado hakuna malipo yaliyotumwa.</div>';
+ $('paymentsList').innerHTML=d.payments.length?d.payments.map(p=>'<div class="item"><div><b>'+money(p.amount)+'</b><small>Ref: '+escapeText(p.reference)+' · '+date(p.created_at)+' · '+escapeText(p.method)+'</small></div>'+pill(p.status)+'</div>').join(''):'<div class="muted">Bado hakuna malipo yaliyotumwa.</div>';
 }
 function escapeText(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 $('paymentForm').onsubmit=async e=>{
@@ -730,54 +729,71 @@ $('paymentForm').onsubmit=async e=>{
 };
 
 function showMemberSection(id) {
-  const sectionIds = [
+  const validSections = [
+    'home',
+    'contributionsSection',
+    'paymentForm',
+    'paymentsSection',
     'profileSection',
     'settingsSection'
   ];
 
-  sectionIds.forEach(sectionId => {
-    const section = document.getElementById(sectionId);
-    if (section) section.hidden = sectionId !== id;
-  });
+  if (!validSections.includes(id)) id = 'home';
 
-  const mainSections = [
-    'dashboardSection',
-    'homeSection',
-    'memberDashboard'
-  ];
+  const hero = document.querySelector('.hero');
+  const stats = document.querySelector('.grid');
+  const columns = document.querySelector('.columns');
+  const paymentForm = document.getElementById('paymentForm');
+  const paymentPanel = paymentForm ? paymentForm.closest('.panel') : null;
+  const contributions = document.getElementById('contributionsSection');
+  const history = document.getElementById('paymentsSection');
+  const profile = document.getElementById('profileSection');
+  const settings = document.getElementById('settingsSection');
 
-  mainSections.forEach(sectionId => {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.hidden = id !== sectionId &&
-        id !== 'profileSection' &&
-        id !== 'settingsSection';
-    }
-  });
+  const isHome = id === 'home';
+  const showPayment = isHome || id === 'paymentForm';
+  const showContributions = isHome || id === 'contributionsSection';
+
+  if (hero) hero.hidden = !isHome;
+  if (stats) stats.hidden = !isHome;
+  if (columns) columns.hidden = !(showPayment || showContributions);
+
+  if (paymentPanel) paymentPanel.hidden = !showPayment;
+  if (contributions) contributions.hidden = !showContributions;
+  if (history) history.hidden = !(isHome || id === 'paymentsSection');
+  if (profile) profile.hidden = id !== 'profileSection';
+  if (settings) settings.hidden = id !== 'settingsSection';
 
   document.querySelectorAll('.nav a[data-section]').forEach(link => {
-    link.classList.toggle('active', link.dataset.section === id);
+    const active = link.dataset.section === id;
+    link.classList.toggle('active', active);
+    if (active) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
   });
 
-  const target = document.getElementById(id);
-  if (target) {
-    target.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
-  }
+  const targets = {
+    home: hero,
+    contributionsSection: contributions,
+    paymentForm: paymentPanel,
+    paymentsSection: history,
+    profileSection: profile,
+    settingsSection: settings
+  };
+
+  const target = targets[id];
+  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-document.querySelectorAll('.nav a[data-section]').forEach(a => {
-  a.addEventListener('click', event => {
+document.querySelectorAll('.nav a[data-section]').forEach(link => {
+  link.addEventListener('click', event => {
     event.preventDefault();
-    const id = a.dataset.section;
+    const id = link.dataset.section;
     showMemberSection(id);
-    if (id === 'profileSection' || id === 'settingsSection') {
-      history.replaceState(null, '', '#' + id);
-    } else {
-      history.replaceState(null, '', id === 'home' ? '/dashboard' : '#' + id);
-    }
+    history.replaceState(
+      null,
+      '',
+      id === 'home' ? '/dashboard' : '#' + id
+    );
   });
 });
 
@@ -1101,6 +1117,58 @@ tbody tr:hover td { background: #ffffff03; }
   .grid { grid-template-columns: 1fr !important; }
   .hero { padding: 20px !important; }
 }
+
+/* Mchezo Wetu: navigation na dashboard ya simu */
+.nav a {
+  text-decoration: none;
+  transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+.nav a:active { transform: scale(.97); }
+.nav a.active { font-weight: 700; }
+[hidden] { display: none !important; }
+.hero, .panel, .stat {
+  scroll-margin-top: 84px;
+}
+@media (max-width: 640px) {
+  body { padding-bottom: 92px; }
+  .nav {
+    position: fixed;
+    z-index: 999;
+    left: 10px;
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 5px;
+    padding: 8px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 18px;
+    background: rgba(13,17,30,.96);
+    box-shadow: 0 10px 35px rgba(0,0,0,.35);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+  .nav a {
+    flex: 0 0 auto;
+    min-width: max-content;
+    padding: 11px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .nav a.active {
+    background: rgba(0,229,255,.15);
+    color: #00e5ff;
+  }
+  .columns { grid-template-columns: minmax(0, 1fr); }
+  .panel { min-width: 0; }
+}
+
 </style>
 
 </body>
