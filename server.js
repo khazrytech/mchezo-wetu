@@ -884,7 +884,22 @@ app.get('/api/admin/payments', ready, requireUser, requireAdmin, async (req, res
     return apiError(res, 500, 'Hitilafu wakati wa kupata malipo.');
   }
 });
-                                                  app.get('/dashboard', (req, res) => {
+                                                  app.get('/', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/login', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/signup', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
                                                   app.get('/admin', (req, res) => {

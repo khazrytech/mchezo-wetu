@@ -572,17 +572,39 @@ html { scroll-padding-top: 22px; }
 
 </style>
 
-<style id="mchezo-premium-refresh">
-:root{color-scheme:dark}
-body{background:radial-gradient(ellipse at 10% 0%,#242052 0,transparent 42%),linear-gradient(145deg,#080b16,#101327 55%,#0b1220)!important;color:#f4f5ff}
-header,nav,aside,.sidebar,.topbar,.navbar,.panel,.card,.stat-card,.section,.content-card,form,.modal-content{backdrop-filter:blur(18px)}
-.card,.panel,.stat-card,.section,.content-card,form,.modal-content{background:rgba(20,24,46,.82)!important;border:1px solid rgba(166,153,255,.19)!important;border-radius:18px!important;box-shadow:0 12px 36px #0003}
-button,.btn,[type=submit]{border:0;border-radius:12px;cursor:pointer;transition:transform .2s,filter .2s}
-button:hover,.btn:hover,[type=submit]:hover{transform:translateY(-2px);filter:brightness(1.12)}
-input,select,textarea{max-width:100%;background:#0d1225!important;color:#f4f5ff!important;border:1px solid #343b60!important;border-radius:11px!important;padding:11px!important}
-table{width:100%;border-collapse:collapse}th,td{padding:12px 10px;border-bottom:1px solid #ffffff15;text-align:left}th{color:#b8b5ff}
-img{max-width:100%;height:auto}
-@media(max-width:700px){body{overflow-x:hidden}.container,.main,.content,.dashboard,.page-content{width:100%!important;max-width:100%!important;padding:12px!important}.stats,.stat-grid,.cards,.grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}.card,.panel,.stat-card{padding:13px!important}table{display:block;overflow-x:auto;white-space:nowrap}h1{font-size:24px!important}}
+<style id="mw-member-layout-fix">
+.main{width:min(1120px,100%);margin-inline:auto;padding:0 26px}
+.top{width:100%;max-width:1170px;margin-inline:auto}
+.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.columns{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.panel{min-width:0}
+#paymentForm{border:0;background:transparent;box-shadow:none;padding:0;margin:0}
+#paymentForm .field{width:100%}
+#paymentForm button{width:100%}
+.field input,.field select{width:100%;min-width:0}
+.item{min-width:0}
+.nav{z-index:50}
+.nav a{cursor:pointer}
+.member-section[hidden]{display:none!important}
+@media(max-width:850px){
+ .main{padding:0 18px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .columns{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+ body{overflow-x:hidden}
+ .main{padding:0 13px}
+ .top{padding:15px 13px}
+ .hero{padding:25px 0 18px}
+ .hero h1{font-size:29px}
+ .grid{gap:9px}
+ .stat{padding:15px!important;min-height:125px}
+ .stat strong{font-size:20px}
+ .panel{padding:17px 14px!important}
+ .columns{gap:12px}
+ .nav{width:calc(100% - 12px);max-width:none;bottom:6px;gap:2px;padding:5px}
+ .nav a{flex:1;min-width:0;padding:9px 2px;font-size:9px;white-space:normal}
+}
 </style>
 
 </head>
