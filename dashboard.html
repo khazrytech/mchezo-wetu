@@ -1169,6 +1169,61 @@ tbody tr:hover td { background: #ffffff03; }
   .panel { min-width: 0; }
 }
 
+
+
+/* MW NAV POSITION FIX — MOBILE FIRST */
+.nav {
+  box-sizing: border-box !important;
+  transform: none !important;
+  z-index: 999 !important;
+}
+
+/* Simu: navigation ibaki ndani ya screen na item zote zipatikane */
+@media (max-width: 640px) {
+  .nav {
+    position: fixed !important;
+    left: 8px !important;
+    right: 8px !important;
+    bottom: max(8px, env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    gap: 4px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 6px !important;
+  }
+
+  .nav a {
+    flex: 0 0 auto !important;
+    min-width: max-content !important;
+    white-space: nowrap !important;
+    padding: 11px 12px !important;
+    font-size: 12px !important;
+  }
+
+  body { padding-bottom: 100px !important; }
+}
+
+/* Desktop: menyu ionekane katikati na isiishie nje ya screen */
+@media (min-width: 641px) {
+  .nav {
+    left: 16px !important;
+    right: 16px !important;
+    bottom: 16px !important;
+    width: auto !important;
+    max-width: 1180px !important;
+    margin: 0 auto !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+  }
+}
+
 </style>
 
 </body>
