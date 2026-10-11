@@ -157,6 +157,31 @@ async function sendAdminOtp(email) {
   );
 }
 
+
+// Rekebisha profile ya admin mkuu kwa email iliyowekwa kwenye server.
+// Hii hairuhusu email nyingine kujipandisha kuwa admin.
+async function ensurePrimaryAdminProfile(user) {
+  if (!user ||
+      String(user.email || '').trim().toLowerCase() !== ADMIN_EMAIL) {
+    throw new Error('Akaunti hii si admin mkuu aliyeruhusiwa.');
+  }
+
+  const { error } = await supabase
+    .from('profiles')
+    .upsert({
+      id: user.id,
+      full_name: 'Mchezo Wetu Admin',
+      role: 'admin',
+      is_approved: true,
+      is_banned: false
+    }, { onConflict: 'id' });
+
+  if (error) {
+    console.error('Admin profile repair error:', error.message);
+    throw error;
+  }
+}
+
 app.get('/api/admin/auth/status', ready, async (req, res) => {
   try {
     const user = await findAdminAuthUser(ADMIN_EMAIL);
@@ -168,6 +193,7 @@ app.get('/api/admin/auth/status', ready, async (req, res) => {
       });
     }
 
+    await ensurePrimaryAdminProfile(user);
     const profile = await checkAdminProfile(user.id);
     const allowed = profile?.role === 'admin' &&
       !profile?.is_banned &&
@@ -198,6 +224,7 @@ app.post('/api/admin/auth/setup', ready, async (req, res) => {
         'Tengeneza kwanza akaunti hii kwenye Supabase Authentication: ' + ADMIN_EMAIL);
     }
 
+    await ensurePrimaryAdminProfile(user);
     const profile = await checkAdminProfile(user.id);
     if (!profile || profile.role !== 'admin' || profile.is_banned) {
       return apiError(res, 403,
@@ -247,6 +274,7 @@ app.post('/api/admin/auth/send-otp', ready, async (req, res) => {
     const user = await findAdminAuthUser(email);
     if (!user) return apiError(res, 401, 'Akaunti ya admin haipo Supabase.');
 
+    await ensurePrimaryAdminProfile(user);
     const profile = await checkAdminProfile(user.id);
     if (!profile || profile.role !== 'admin' || profile.is_banned) {
       return apiError(res, 403, 'Akaunti hii haina ruhusa ya admin.');
@@ -292,6 +320,7 @@ app.post('/api/admin/auth/verify-otp', ready, async (req, res) => {
     const user = await findAdminAuthUser(email);
     if (!user) return apiError(res, 401, 'Akaunti ya admin haipo.');
 
+    await ensurePrimaryAdminProfile(user);
     const profile = await checkAdminProfile(user.id);
     if (!profile || profile.role !== 'admin' || profile.is_banned) {
       return apiError(res, 403, 'Akaunti hii haina ruhusa ya admin.');
