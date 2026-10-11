@@ -579,7 +579,13 @@ html { scroll-padding-top: 22px; }
 
 </head>
 <body>
-<header class="top"><div class="brand">◈ <span>Mchezo</span> Wetu</div><button class="btn" id="logout">Toka ↗</button></header>
+<header class="top">
+  <div class="brand">◈ <span>Mchezo</span> Wetu</div>
+  <div class="top-actions">
+    <button class="btn menu-trigger" id="openMemberMenu" type="button" aria-controls="memberSidebar" aria-expanded="false">☰ Menu</button>
+    <button class="btn" id="logout">Toka ↗</button>
+  </div>
+</header>
 <main class="main">
 <section class="hero" id="home"><div class="eyebrow">Member space / Akaunti yako</div><h1>Karibu, <span id="name">Mwanachama</span></h1><p>Simamia michango yako, fuatilia malipo na angalia historia yako sehemu moja.</p><div id="notice" class="notice" role="status"></div></section>
 <section class="grid">
@@ -656,14 +662,27 @@ html { scroll-padding-top: 22px; }
 </section>
 
 </main>
-<nav class="nav" aria-label="Navigation ya mwanachama">
+<nav class="nav" aria-label="Navigation kuu">
   <a class="active" href="#home" data-section="home">⌂ Nyumbani</a>
   <a href="#contributionsSection" data-section="contributionsSection">▤ Michango</a>
-  <a href="#paymentForm" data-section="paymentForm">＋ Wasilisha malipo</a>
-  <a href="#paymentsSection" data-section="paymentsSection">◷ Historia</a>
-  <a href="#profileSection" data-section="profileSection">♙ Akaunti</a>
-  <a href="#settingsSection" data-section="settingsSection">⚙ Settings</a>
+  <a href="#paymentForm" data-section="paymentForm">＋ Malipo</a>
 </nav>
+
+<div class="sidebar-overlay" id="memberSidebarOverlay" hidden></div>
+<aside class="member-sidebar" id="memberSidebar" aria-label="Menu ya ziada" aria-hidden="true">
+  <div class="sidebar-head">
+    <div>
+      <strong>Mchezo Wetu</strong>
+      <small>Menu ya akaunti</small>
+    </div>
+    <button class="sidebar-close" id="closeMemberMenu" type="button" aria-label="Funga menu">✕</button>
+  </div>
+  <div class="sidebar-label">AKAUNTI YAKO</div>
+  <a href="#paymentsSection" data-section="paymentsSection">◷ Historia ya malipo</a>
+  <a href="#profileSection" data-section="profileSection">♙ Profile / Akaunti</a>
+  <a href="#settingsSection" data-section="settingsSection">⚙ Settings</a>
+  <div class="sidebar-foot">Simamia taarifa zako kwa urahisi.</div>
+</aside>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 let client,token;
@@ -764,7 +783,7 @@ function showMemberSection(id) {
   if (profile) profile.hidden = id !== 'profileSection';
   if (settings) settings.hidden = id !== 'settingsSection';
 
-  document.querySelectorAll('.nav a[data-section]').forEach(link => {
+  document.querySelectorAll('.nav a[data-section], .member-sidebar a[data-section]').forEach(link => {
     const active = link.dataset.section === id;
     link.classList.toggle('active', active);
     if (active) link.setAttribute('aria-current', 'page');
@@ -784,7 +803,7 @@ function showMemberSection(id) {
   if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-document.querySelectorAll('.nav a[data-section]').forEach(link => {
+document.querySelectorAll('.nav a[data-section], .member-sidebar a[data-section]').forEach(link => {
   link.addEventListener('click', event => {
     event.preventDefault();
     const id = link.dataset.section;
@@ -795,6 +814,33 @@ document.querySelectorAll('.nav a[data-section]').forEach(link => {
       id === 'home' ? '/dashboard' : '#' + id
     );
   });
+});
+
+
+// Sidebar ya mwanachama: kufungua, kufunga na kufunga kwa Escape
+const memberSidebar = document.getElementById('memberSidebar');
+const memberOverlay = document.getElementById('memberSidebarOverlay');
+const openMemberMenu = document.getElementById('openMemberMenu');
+
+function setMemberMenu(open) {
+  if (!memberSidebar || !memberOverlay || !openMemberMenu) return;
+  memberSidebar.classList.toggle('open', open);
+  memberOverlay.hidden = !open;
+  memberSidebar.setAttribute('aria-hidden', String(!open));
+  openMemberMenu.setAttribute('aria-expanded', String(open));
+  document.body.classList.toggle('member-menu-open', open);
+}
+
+openMemberMenu?.addEventListener('click', () => setMemberMenu(true));
+document.getElementById('closeMemberMenu')?.addEventListener('click', () => setMemberMenu(false));
+memberOverlay?.addEventListener('click', () => setMemberMenu(false));
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') setMemberMenu(false);
+});
+
+memberSidebar?.querySelectorAll('a[data-section]').forEach(link => {
+  link.addEventListener('click', () => setMemberMenu(false));
 });
 
 function setProfileNotice(text, ok=false) {
@@ -1222,6 +1268,156 @@ tbody tr:hover td { background: #ffffff03; }
     justify-content: center !important;
     flex-wrap: wrap !important;
   }
+}
+
+
+
+/* MW SIDEBAR NAVIGATION — MOBILE FIRST */
+.top-actions {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.menu-trigger {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+.nav {
+  position:fixed !important;
+  z-index:100 !important;
+  left:8px !important;
+  right:8px !important;
+  bottom:max(8px, env(safe-area-inset-bottom)) !important;
+  transform:none !important;
+  width:auto !important;
+  max-width:1180px !important;
+  margin:0 auto !important;
+  display:flex !important;
+  flex-direction:row !important;
+  justify-content:stretch !important;
+  flex-wrap:nowrap !important;
+  gap:6px !important;
+}
+.nav a {
+  flex:1 1 0 !important;
+  min-width:0 !important;
+  padding:12px 5px !important;
+  text-align:center !important;
+  white-space:normal !important;
+  line-height:1.35 !important;
+}
+.member-sidebar {
+  position:fixed;
+  z-index:1002;
+  top:0;
+  right:0;
+  width:min(340px, 88vw);
+  height:100dvh;
+  padding:24px 18px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  overflow-y:auto;
+  background:#141321;
+  border-left:1px solid #ffffff22;
+  box-shadow:-20px 0 60px #0008;
+  transform:translateX(105%);
+  visibility:hidden;
+  transition:transform .25s ease, visibility .25s ease;
+}
+.member-sidebar.open {
+  transform:translateX(0);
+  visibility:visible;
+}
+.sidebar-overlay {
+  position:fixed;
+  z-index:1001;
+  inset:0;
+  background:rgba(3,4,12,.65);
+  backdrop-filter:blur(3px);
+}
+.sidebar-overlay[hidden] { display:none !important; }
+.sidebar-head {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding-bottom:20px;
+  border-bottom:1px solid #ffffff18;
+}
+.sidebar-head strong { display:block;font-size:17px; }
+.sidebar-head small {
+  display:block;
+  margin-top:6px;
+  color:#a0a1b7;
+  font-size:11px;
+}
+.sidebar-close {
+  width:40px;
+  height:40px;
+  border:1px solid #ffffff20;
+  border-radius:12px;
+  background:#ffffff0a;
+  color:#fff;
+  font-size:17px;
+}
+.sidebar-label {
+  margin-top:15px;
+  padding:8px 10px;
+  color:#a0a1b7;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.5px;
+}
+.member-sidebar a {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-height:49px;
+  padding:13px 14px;
+  border:1px solid transparent;
+  border-radius:13px;
+  color:#e8e4f4;
+  font-size:13px;
+  font-weight:600;
+  text-decoration:none;
+}
+.member-sidebar a:hover,
+.member-sidebar a.active {
+  border-color:#b8a2ff45;
+  background:linear-gradient(110deg,#b8a2ff22,#c7f36b0c);
+}
+.sidebar-foot {
+  margin-top:auto;
+  padding:18px 10px 8px;
+  color:#a0a1b7;
+  font-size:11px;
+  line-height:1.8;
+}
+body.member-menu-open { overflow:hidden; }
+
+@media(min-width:641px) {
+  .nav {
+    left:16px !important;
+    right:16px !important;
+    bottom:16px !important;
+    width:calc(100% - 32px) !important;
+  }
+}
+@media(max-width:640px) {
+  .top { gap:8px; }
+  .top-actions { gap:6px; }
+  .top-actions .btn { padding:9px 10px; }
+  .nav { width:auto !important; }
+  .nav a { font-size:11px !important; }
+}
+@media(max-width:360px) {
+  .brand { font-size:13px; }
+  .brand:before { width:31px;height:31px; }
+  .top-actions .btn { font-size:10px;padding:8px; }
+  .nav a { font-size:10px !important;padding:11px 3px !important; }
 }
 
 </style>
