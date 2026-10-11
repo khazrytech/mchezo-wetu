@@ -607,6 +607,34 @@ html { scroll-padding-top: 22px; }
 }
 </style>
 
+
+<style id="mw-member-audit-responsive">
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+input,select,textarea,button{max-width:100%;font:inherit}
+.field input,.field select{width:100%;min-width:0}
+.panel,.stat,.item{min-width:0}
+@media(max-width:760px){
+ body{overflow-x:hidden}
+ .main{width:100%;max-width:100%;padding-inline:14px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .columns{grid-template-columns:minmax(0,1fr)}
+ .panel{width:100%;max-width:100%}
+ .nav{max-width:calc(100% - 12px)}
+ .nav a{min-width:0;white-space:normal;text-align:center}
+}
+@media(max-width:360px){
+ .main{padding-inline:10px}
+ .grid{gap:8px}
+ .stat{padding:12px!important}
+ .stat strong{font-size:18px}
+ .nav a{font-size:9px;padding-inline:2px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+
 </head>
 <body>
 <header class="top"><div class="brand">◈ <span>Mchezo</span> Wetu</div><button class="btn" id="logout">Toka ↗</button></header>

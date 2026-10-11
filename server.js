@@ -554,7 +554,7 @@ app.post('/api/auth/verify-otp', async (req, res) => {
 });
 
 app.get('/api/me', ready, requireUser, async (req, res) => {
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from('profiles')
     .select('id, full_name, phone, role, is_approved, is_banned, created_at')
     .eq('id', req.user.id)
