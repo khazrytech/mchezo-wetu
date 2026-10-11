@@ -390,6 +390,89 @@ button { cursor:pointer; }
   *,*::before,*::after { animation:none!important;transition:none!important;scroll-behavior:auto!important; }
 }
 
+
+
+/* MW LOGIN UI REFRESH */
+:root {
+  --bg:#080910;
+  --panel:#151421;
+  --line:#302d43;
+  --blue:#b8a2ff;
+  --cyan:#c7f36b;
+  --muted:#a0a1b7;
+}
+body {
+  background:
+    radial-gradient(ellipse at 8% 10%,#9865ff30,transparent 34%),
+    radial-gradient(ellipse at 95% 90%,#c7f36b18,transparent 32%),
+    #080910 !important;
+}
+.story,.card {
+  border:1px solid #ffffff20 !important;
+  border-radius:30px !important;
+  background:linear-gradient(145deg,#1b1929f5,#10111bf8) !important;
+  box-shadow:0 30px 90px #0009,inset 0 1px #ffffff0c !important;
+}
+.story { border-radius:36px !important; }
+.mark {
+  color:#171020 !important;
+  background:linear-gradient(135deg,#e0d4ff,#aa8aff 55%,#c7f36b) !important;
+  border-radius:16px !important;
+  box-shadow:0 10px 30px #aa8aff40 !important;
+}
+.brand-sub { color:#b9b4d0 !important; }
+.story h1 span {
+  background:linear-gradient(100deg,#e0d4ff,#aa8aff 52%,#c7f36b) !important;
+  -webkit-background-clip:text !important;
+  background-clip:text !important;
+}
+.eyebrow {
+  border-color:#ffffff20 !important;
+  background:#ffffff09 !important;
+}
+.dot,.section-label:before { background:#c7f36b !important; }
+.section-label { color:#c7f36b !important; }
+.feature-icon {
+  color:#c7f36b !important;
+  border-color:#ffffff20 !important;
+  background:#ffffff08 !important;
+}
+.field label { color:#e8e4f4 !important; }
+.field input {
+  color:#fff !important;
+  background:#0b0b14 !important;
+  border:1px solid #38354c !important;
+  border-radius:15px !important;
+  min-height:52px !important;
+}
+.field input:focus {
+  border-color:#b8a2ff !important;
+  box-shadow:0 0 0 4px #b8a2ff25 !important;
+}
+.primary {
+  color:#171020 !important;
+  border:0 !important;
+  border-radius:15px !important;
+  background:linear-gradient(105deg,#dfd2ff,#aa8aff 52%,#c7f36b) !important;
+  box-shadow:0 12px 32px #aa8aff30 !important;
+}
+.primary:hover { filter:brightness(1.08) !important; }
+.secondary { color:#c6b5ff !important; }
+.secondary:hover { color:#dafa9c !important; }
+.notice.ok {
+  color:#dafa9c !important;
+  background:#c7f36b0d !important;
+  border-color:#c7f36b40 !important;
+}
+@media(max-width:900px) {
+  body {
+    background:
+      radial-gradient(ellipse at 50% 0%,#9865ff30,transparent 38%),
+      radial-gradient(ellipse at 100% 100%,#c7f36b16,transparent 35%),
+      #080910 !important;
+  }
+}
+
 </style>
 </head>
 <body>
