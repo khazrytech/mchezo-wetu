@@ -21,78 +21,209 @@
     <p class="desc" id="description">Ingia kwenye akaunti yako ili kuona michango, malipo na taarifa zako.</p>
     <div id="notice" class="notice" role="status"></div>
     <form id="authForm">
-      <div class="field" id="nameField" hidden><label for="fullName">Jina kamili</label><input id="fullName" autocomplete="name" maxlength="100"></div>
-      <div class="field" id="phoneField" hidden><label for="phone">Namba ya simu</label><input id="phone" autocomplete="tel" maxlength="30" placeholder="+255..."></div>
-      <div class="field"><label for="email">Barua pepe</label><input id="email" type="email" autocomplete="email" required maxlength="254" placeholder="jina@example.com"></div>
-      <div class="field"><label for="password">Nenosiri</label><input id="password" type="password" autocomplete="current-password" required minlength="8" maxlength="128" placeholder="Angalau herufi 8"></div>
-      <button class="btn" id="submitBtn" type="submit">Ingia kwenye akaunti</button>
+      <div class="field" id="nameField" hidden>
+        <label for="fullName">Jina kamili</label>
+        <input id="fullName" autocomplete="name" maxlength="100">
+      </div>
+      <div class="field" id="phoneField" hidden>
+        <label for="phone">Namba ya simu</label>
+        <input id="phone" autocomplete="tel" maxlength="30" placeholder="+255...">
+      </div>
+      <div class="field">
+        <label for="email">Barua pepe</label>
+        <input id="email" type="email" autocomplete="email"
+          required maxlength="254" placeholder="jina@example.com">
+      </div>
+      <div class="field" id="otpField" hidden>
+        <label for="otp">Namba ya OTP iliyotumwa kwenye email</label>
+        <input id="otp" inputmode="numeric" autocomplete="one-time-code"
+          pattern="[0-9]{6}" minlength="6" maxlength="6"
+          placeholder="Ingiza tarakimu 6">
+      </div>
+      <button class="btn" id="submitBtn" type="submit">Tuma OTP kwenye email</button>
     </form>
     <button class="switch" id="switchBtn" type="button">Huna akaunti? Jisajili</button>
-    <button class="switch" id="forgotBtn" type="button" style="float:right">Umesahau nenosiri?</button>
   </section>
   <p class="foot">© 2026 Mchezo Wetu · Akaunti yako, taarifa zako.</p>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-let client, signup=false;
-const $=id=>document.getElementById(id);
-function message(text,type='ok'){const n=$('notice');n.textContent=text;n.className='notice show '+type}
-function clearMessage(){$('notice').className='notice'}
-function setMode(value){
- signup=value;
- $('heading').textContent=value?'Fungua akaunti mpya':'Karibu tena 👋';
- $('description').textContent=value?'Jaza taarifa zako kujiunga na Mchezo Wetu.':'Ingia kwenye akaunti yako ili kuona michango, malipo na taarifa zako.';
- $('nameField').hidden=!value;$('phoneField').hidden=!value;
- $('password').autocomplete=value?'new-password':'current-password';
- $('submitBtn').textContent=value?'Tengeneza akaunti':'Ingia kwenye akaunti';
- $('switchBtn').textContent=value?'Tayari una akaunti? Ingia':'Huna akaunti? Jisajili';
- clearMessage();
+let client = null;
+let signup = false;
+let otpSent = false;
+
+const $ = id => document.getElementById(id);
+
+function message(text, type = 'ok') {
+  const n = $('notice');
+  n.textContent = text;
+  n.className = 'notice show ' + type;
 }
-async function init(){
- try{
-  const r=await fetch('/api/config',{cache:'no-store'});
-  const c=await r.json().catch(()=>({}));
-  if(!r.ok)throw Error(c.error||'Supabase configuration haijapatikana.');
-  const url=c.supabaseUrl||c.url||c.SUPABASE_URL;
-  const key=c.supabaseAnonKey||c.supabasePublishableKey||c.anonKey||c.publishableKey||c.SUPABASE_ANON_KEY;
-  if(!url||!key)throw Error('Supabase URL au public key haijarudishwa na server.');
-  if(!window.supabase)throw Error('Supabase library haijapakia. Kagua intaneti kisha jaribu tena.');
-  client=window.supabase.createClient(url,key);
-  const {data}=await client.auth.getSession();
-  if(data.session)location.replace('/dashboard');
- }catch(e){message('Imeshindikana kuanzisha mfumo. Hakikisha Supabase URL na anon key zimewekwa kwenye server.','error')}
+
+function clearMessage() {
+  $('notice').textContent = '';
+  $('notice').className = 'notice';
 }
-$('switchBtn').onclick=()=>setMode(!signup);
-$('authForm').addEventListener('submit',async e=>{
- e.preventDefault();if(!client)return message('Mfumo bado haujawa tayari. Jaribu tena.','error');
- const btn=$('submitBtn');btn.disabled=true;clearMessage();
- try{
-  const email=$('email').value.trim(),password=$('password').value;
-  if(signup){
-   const full_name=$('fullName').value.trim(),phone=$('phone').value.trim();
-   if(!full_name)return message('Weka jina lako kamili.','error');
-   const {data,error}=await client.auth.signUp({email,password,options:{data:{full_name,phone}}});
-   if(error)throw error;
-   if(data.session)location.replace('/dashboard');
-   else message('Usajili umepokelewa. Angalia barua pepe yako kuthibitisha akaunti, kisha ingia.','ok');
-  }else{
-   const {data,error}=await client.auth.signInWithPassword({email,password});
-   if(error)throw error;
-   if(data.session)location.replace('/dashboard');
+
+function resetOtpStage() {
+  otpSent = false;
+  $('email').readOnly = false;
+  $('otpField').hidden = true;
+  $('otp').required = false;
+  $('otp').value = '';
+  $('nameField').hidden = !signup;
+  $('phoneField').hidden = !signup;
+  $('submitBtn').disabled = false;
+  $('submitBtn').textContent = 'Tuma OTP kwenye email';
+}
+
+function setMode(value) {
+  signup = value;
+  resetOtpStage();
+
+  $('heading').textContent = signup
+    ? 'Fungua akaunti mpya'
+    : 'Karibu tena 👋';
+
+  $('description').textContent = signup
+    ? 'Jaza taarifa zako. Tutatuma OTP kwenye email yako.'
+    : 'Ingiza email yako ili upokee OTP ya kuingia.';
+
+  $('switchBtn').textContent = signup
+    ? 'Tayari una akaunti? Ingia'
+    : 'Huna akaunti? Jisajili';
+
+  clearMessage();
+}
+
+async function init() {
+  try {
+    const r = await fetch('/api/config', { cache: 'no-store' });
+    const c = await r.json().catch(() => ({}));
+
+    if (!r.ok) {
+      throw Error(c.error || 'Server haijatoa mipangilio ya Supabase.');
+    }
+
+    const url = c.supabaseUrl || c.url || c.SUPABASE_URL;
+    const key = c.supabaseAnonKey || c.supabasePublishableKey ||
+      c.anonKey || c.publishableKey || c.SUPABASE_ANON_KEY;
+
+    if (!url || !key) {
+      throw Error('Supabase URL au public key haipo kwenye Render.');
+    }
+
+    if (!window.supabase) {
+      throw Error('Supabase library haijapakia. Jaribu refresh.');
+    }
+
+    client = window.supabase.createClient(url, key);
+
+    const { data, error } = await client.auth.getSession();
+    if (error) throw error;
+
+    if (data.session) {
+      location.replace('/dashboard');
+      return;
+    }
+
+    message('Tayari. Ingiza email yako ili uanze.', 'ok');
+  } catch (e) {
+    console.error('Auth init:', e);
+    message(
+      'Mfumo haujaanza: ' + (e.message || 'Kosa lisilojulikana'),
+      'error'
+    );
   }
- }catch(err){message(err.message||'Imeshindikana. Jaribu tena.','error')}
- finally{btn.disabled=false}
+}
+
+$('switchBtn').addEventListener('click', () => setMode(!signup));
+
+$('authForm').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  if (!client) {
+    message('Mfumo haujawa tayari. Refresh ukurasa ujaribu tena.', 'error');
+    return;
+  }
+
+  const btn = $('submitBtn');
+  btn.disabled = true;
+  clearMessage();
+
+  try {
+    const email = $('email').value.trim().toLowerCase();
+
+    if (!email) throw Error('Weka barua pepe sahihi.');
+
+    if (!otpSent) {
+      let full_name = '';
+      let phone = '';
+
+      if (signup) {
+        full_name = $('fullName').value.trim();
+        phone = $('phone').value.trim();
+
+        if (!full_name) throw Error('Weka jina lako kamili.');
+      }
+
+      const { error } = await client.auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: signup,
+          data: signup ? { full_name, phone } : undefined
+        }
+      });
+
+      if (error) throw error;
+
+      otpSent = true;
+      $('email').readOnly = true;
+      $('otpField').hidden = false;
+      $('otp').required = true;
+      $('nameField').hidden = true;
+      $('phoneField').hidden = true;
+      $('otp').focus();
+      btn.textContent = 'Thibitisha OTP';
+
+      message(
+        'Ombi limepokelewa. Angalia email yako pamoja na Spam/Junk, ' +
+        'kisha weka OTP ya tarakimu 6 hapa.',
+        'ok'
+      );
+      return;
+    }
+
+    const token = $('otp').value.trim();
+
+    if (!/^[0-9]{6}$/.test(token)) {
+      throw Error('OTP lazima iwe na tarakimu 6.');
+    }
+
+    const { data, error } = await client.auth.verifyOtp({
+      email,
+      token,
+      type: 'email'
+    });
+
+    if (error) throw error;
+
+    if (!data.session) {
+      throw Error(
+        'OTP imepokelewa lakini session haijapatikana. Jaribu tena.'
+      );
+    }
+
+    message('Uthibitisho umefanikiwa. Inafungua akaunti yako...', 'ok');
+    location.replace('/dashboard');
+  } catch (err) {
+    console.error('OTP error:', err);
+    message(err.message || 'OTP imeshindikana. Jaribu tena.', 'error');
+  } finally {
+    btn.disabled = false;
+  }
 });
-$('forgotBtn').onclick=async()=>{
- if(!client)return message('Mfumo bado haujawa tayari.','error');
- const email=$('email').value.trim();
- if(!email)return message('Weka barua pepe yako kwanza.','error');
- try{
-  const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:location.origin+'/login'});
-  if(error)throw error;
-  message('Ikiwa akaunti inaruhusu kurejesha nenosiri, angalia barua pepe yako.','ok');
- }catch(e){message(e.message,'error')}
-};
+
 init();
 </script>
 </body>
