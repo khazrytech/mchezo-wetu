@@ -263,10 +263,10 @@ async function start(){
  $('year').textContent=new Date().getFullYear();
  try{
   const cr=await fetch('/api/config',{cache:'no-store'});
-  if(!cr.ok)throw new Error('Imeshindikana kupata mipangilio ya Supabase kutoka server.');
-  const cfg=await cr.json();
+  const cfg=await cr.json().catch(()=>({}));
+  if(!cr.ok)throw new Error(cfg.error||'Server imeshindwa kurudisha mipangilio ya Supabase. Kagua Render Environment Variables.');
   const url=cfg.supabaseUrl||cfg.url||cfg.SUPABASE_URL;
-  const key=cfg.supabaseAnonKey||cfg.anonKey||cfg.publishableKey||cfg.SUPABASE_ANON_KEY;
+  const key=cfg.supabaseAnonKey||cfg.supabasePublishableKey||cfg.anonKey||cfg.publishableKey||cfg.SUPABASE_ANON_KEY;
   if(!url||!key)throw new Error('Supabase URL au anon/publishable key haijarudishwa na /api/config.');
   if(!window.supabase)throw new Error('Supabase client haijapakia. Kagua muunganisho wa intaneti.');
   supabaseClient=window.supabase.createClient(url,key);

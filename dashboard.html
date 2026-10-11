@@ -47,8 +47,14 @@ function pill(s){return '<span class="pill '+(s==='verified'||s==='paid'?'verifi
 function date(v){return v?new Date(v).toLocaleString('sw-TZ',{dateStyle:'medium',timeStyle:'short'}):'—'}
 async function start(){
  try{
-  const c=await fetch('/api/config').then(r=>r.json());
-  client=window.supabase.createClient(c.supabaseUrl,c.supabaseAnonKey);
+  const r=await fetch('/api/config',{cache:'no-store'});
+  const c=await r.json().catch(()=>({}));
+  if(!r.ok)throw Error(c.error||'Supabase configuration haijapatikana.');
+  const url=c.supabaseUrl||c.url||c.SUPABASE_URL;
+  const key=c.supabaseAnonKey||c.supabasePublishableKey||c.anonKey||c.publishableKey||c.SUPABASE_ANON_KEY;
+  if(!url||!key)throw Error('Supabase URL au public key haijarudishwa na server.');
+  if(!window.supabase)throw Error('Supabase library haijapakia. Kagua intaneti.');
+  client=window.supabase.createClient(url,key);
   const session=await client.auth.getSession();token=session.data.session?.access_token;
   if(!token){location.replace('/login');return}
   await refresh();

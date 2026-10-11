@@ -6,12 +6,27 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const SUPABASE_URL =
-  process.env.SUPABASE_URL || process.env.SUPABASE_PROJECT_URL;
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  process.env.SUPABASE_URL ||
+  process.env.SUPABASE_PROJECT_URL ||
+  process.env.NEXT_PUBLIC_SUPABASE_URL;
 
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !SUPABASE_SERVICE_ROLE_KEY) {
-  console.error('Missing required Supabase environment variables.');
+const SUPABASE_ANON_KEY =
+  process.env.SUPABASE_ANON_KEY ||
+  process.env.SUPABASE_PUBLISHABLE_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+const SUPABASE_SERVICE_ROLE_KEY =
+  process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!SUPABASE_URL) {
+  console.error('Missing Supabase project URL.');
+}
+if (!SUPABASE_ANON_KEY) {
+  console.error('Missing Supabase public anon/publishable key.');
+}
+if (!SUPABASE_SERVICE_ROLE_KEY) {
+  console.error('Missing SUPABASE_SERVICE_ROLE_KEY; admin database actions will not work.');
 }
 
 const supabase = SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY
@@ -486,11 +501,6 @@ app.get('/dashboard', (req, res) => {
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
-
-app.use(express.static(__dirname, {
-  index: false,
-  dotfiles: 'deny'
-}));
 
 app.use('/api', (req, res) => apiError(res, 404, 'API haijapatikana.'));
 app.use((req, res) => res.status(404).send('Ukurasa haujapatikana.'));

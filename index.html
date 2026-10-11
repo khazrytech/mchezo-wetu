@@ -50,9 +50,14 @@ function setMode(value){
 }
 async function init(){
  try{
-  const r=await fetch('/api/config',{cache:'no-store'}), c=await r.json();
-  if(!r.ok)throw Error(c.error||'Configuration haijapatikana');
-  client=window.supabase.createClient(c.supabaseUrl,c.supabaseAnonKey);
+  const r=await fetch('/api/config',{cache:'no-store'});
+  const c=await r.json().catch(()=>({}));
+  if(!r.ok)throw Error(c.error||'Supabase configuration haijapatikana.');
+  const url=c.supabaseUrl||c.url||c.SUPABASE_URL;
+  const key=c.supabaseAnonKey||c.supabasePublishableKey||c.anonKey||c.publishableKey||c.SUPABASE_ANON_KEY;
+  if(!url||!key)throw Error('Supabase URL au public key haijarudishwa na server.');
+  if(!window.supabase)throw Error('Supabase library haijapakia. Kagua intaneti kisha jaribu tena.');
+  client=window.supabase.createClient(url,key);
   const {data}=await client.auth.getSession();
   if(data.session)location.replace('/dashboard');
  }catch(e){message('Imeshindikana kuanzisha mfumo. Hakikisha Supabase URL na anon key zimewekwa kwenye server.','error')}
