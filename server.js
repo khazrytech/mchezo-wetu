@@ -3,7 +3,7 @@ const { createClient } = require('@supabase/supabase-js');
 const axios = require('axios');
 
 const app = express();
-const PORT = process.env.PORT || 3000;            
+const PORT = process.env.PORT || 3000;
 const SUPABASE_URL =
   process.env.SUPABASE_URL ||
   process.env.SUPABASE_PROJECT_URL ||
@@ -15,7 +15,7 @@ const SUPABASE_ANON_KEY =                           process.env.SUPABASE_ANON_KE
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
 const SUPABASE_SERVICE_ROLE_KEY =
-  process.env.SUPABASE_SERVICE_ROLE_KEY;          
+  process.env.SUPABASE_SERVICE_ROLE_KEY;
 if (!SUPABASE_URL) {
   console.error('Missing Supabase project URL.');
 }
@@ -32,14 +32,14 @@ const supabase = SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY
         autoRefreshToken: false,                          persistSession: false
       }
     })
-  : null;                                         
+  : null;
 app.disable('x-powered-by');
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');         res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');                    next();
-});                                               
-app.use(express.json({ limit: '20kb' }));         app.use(express.urlencoded({ extended: false, limit: '20kb' }));                                    
+});
+app.use(express.json({ limit: '20kb' }));         app.use(express.urlencoded({ extended: false, limit: '20kb' }));
 function apiError(res, status, message) {
   return res.status(status).json({ success: false, error: message });                               }
                                                   function ready(req, res, next) {
@@ -54,24 +54,24 @@ function apiError(res, status, message) {
                                                       if (!token) {
       return apiError(res, 401, 'Ingia kwenye akaunti yako kwanza.');
     }
-                                                      const { data, error } = await supabase.auth.getUser(token);                                     
+                                                      const { data, error } = await supabase.auth.getUser(token);
     if (error || !data?.user) {                         return apiError(res, 401, 'Session imeisha. Ingia tena.');
-    }                                             
+    }
     req.user = data.user;                             next();                                         } catch (error) {
     console.error('Authentication error:', error.message);
     return apiError(res, 401, 'Imeshindikana kuthibitisha akaunti.');
   }
-}                                                 
+}
 async function requireAdmin(req, res, next) {
   try {
     const { data, error } = await supabase              .from('profiles')
       .select('id, full_name, phone, role, is_approved, is_banned')
       .eq('id', req.user.id)                            .maybeSingle();
 
-    if (error) {                                        console.error('Admin profile error:', error.message);                                               return apiError(res, 500, 'Imeshindikana kuthibitisha ruhusa za admin.');                         }                                             
+    if (error) {                                        console.error('Admin profile error:', error.message);                                               return apiError(res, 500, 'Imeshindikana kuthibitisha ruhusa za admin.');                         }
     if (!data || data.role !== 'admin' || data.is_banned) {
       return apiError(res, 403, 'Huna ruhusa ya kutumia Admin Panel.');
-    }                                             
+    }
     req.profile = data;
     next();
   } catch (error) {
@@ -562,7 +562,7 @@ app.get('/api/me', ready, requireUser, async (req, res) => {
                                                     if (error) {
     console.error('Profile query error:', error.message);                                               return apiError(res, 500, 'Imeshindikana kupata profile.');                                       }
 
-  
+
   if (!data) {
     // Profile haipo: tengeneza rekodi ya mwanachama huyu pekee.
     const metadata = req.user.user_metadata || {};
@@ -600,7 +600,7 @@ app.get('/api/me', ready, requireUser, async (req, res) => {
       data = created;
     }
   }
-                                               
+
   if (data.is_banned) {
     return apiError(res, 403, 'Akaunti yako imesimamishwa. Wasiliana na admin.');
   }
@@ -612,7 +612,7 @@ app.get('/api/me', ready, requireUser, async (req, res) => {
     },
     profile: data
   });
-});                                               
+});
 
 app.patch('/api/me/profile', ready, requireUser, async (req, res) => {
   try {
@@ -664,7 +664,7 @@ app.get('/api/dashboard', ready, requireUser, async (req, res) => {
       .from('profiles')
       .select('id, full_name, phone, role, is_approved, is_banned')
       .eq('id', req.user.id)
-      .maybeSingle();                             
+      .maybeSingle();
     if (profileError) throw profileError;
     if (!profile) return apiError(res, 404, 'Profile haijapatikana.');
     if (profile.is_banned) return apiError(res, 403, 'Akaunti imesimamishwa.');
@@ -681,7 +681,7 @@ app.get('/api/dashboard', ready, requireUser, async (req, res) => {
       .from('payments')
       .select('id, contribution_id, amount, reference, method, status, created_at, verified_at')
       .eq('user_id', req.user.id)                       .order('created_at', { ascending: false })
-      .limit(50);                                 
+      .limit(50);
     if (paymentError) throw paymentError;
 
     const allContributions = contributions || [];
@@ -711,16 +711,16 @@ app.get('/api/dashboard', ready, requireUser, async (req, res) => {
                                                   app.post('/api/payments', ready, requireUser, async (req, res) => {                                   try {
     const amount = Number(req.body.amount);           const reference = String(req.body.reference || '').trim();
     const method = String(req.body.method || '').trim();
-    const contributionId = req.body.contributionId || null;                                         
+    const contributionId = req.body.contributionId || null;
     if (!Number.isFinite(amount) || amount <= 0 || amount > 100000000) {                                  return apiError(res, 400, 'Kiasi cha malipo si sahihi.');
-    }                                             
+    }
     if (reference.length < 4 || reference.length > 100) {
       return apiError(res, 400, 'Weka reference sahihi ya muamala.');
     }
 
     const allowedMethods = ['mobile_money', 'bank', 'cash'];                                            if (!allowedMethods.includes(method)) {
       return apiError(res, 400, 'Chagua njia sahihi ya malipo.');
-    }                                             
+    }
     const { data: profile, error: profileError } = await supabase
       .from('profiles')                                 .select('id, is_banned, is_approved')
       .eq('id', req.user.id)                            .maybeSingle();
@@ -775,11 +775,11 @@ app.get('/api/admin/summary', ready, requireUser, requireAdmin, async (req, res)
       supabase.from('profiles').select('id, is_approved, is_banned, role'),
       supabase.from('payments').select('id, amount, status, created_at'),
       supabase.from('contributions').select('id, amount, status')
-    ]);                                           
+    ]);
     for (const result of [usersResult, paymentsResult, contributionsResult]) {
       if (result.error) throw result.error;           }
                                                       const users = usersResult.data || [];
-    const payments = paymentsResult.data || [];       const contributions = contributionsResult.data || [];                                           
+    const payments = paymentsResult.data || [];       const contributions = contributionsResult.data || [];
     res.setHeader('Cache-Control', 'no-store');       res.json({
       success: true,                                    stats: {
         users: users.length,
@@ -810,7 +810,7 @@ app.get('/api/admin/summary', ready, requireUser, requireAdmin, async (req, res)
                                                     if (error) {
     console.error('Admin users error:', error.message);
     return apiError(res, 500, 'Imeshindikana kupata wanachama.');
-  }                                               
+  }
   res.setHeader('Cache-Control', 'no-store');
   res.json({ success: true, users: data || [] }); });
                                                   app.post('/api/admin/users/:id/action', ready, requireUser, requireAdmin, async (req, res) => {       const userId = req.params.id;
@@ -823,22 +823,22 @@ app.get('/api/admin/summary', ready, requireUser, requireAdmin, async (req, res)
 
   if (userId === req.user.id && action === 'ban') {
     return apiError(res, 400, 'Huwezi kusimamisha akaunti yako mwenyewe.');
-  }                                               
+  }
   const updates = {                                   approve: { is_approved: true },
     ban: { is_banned: true },                         unban: { is_banned: false }
-  };                                              
+  };
   const { data, error } = await supabase              .from('profiles')
     .update(updates[action])                          .eq('id', userId)
     .select('id')                                     .maybeSingle();
                                                     if (error) {
     console.error('Admin user action error:', error.message);
     return apiError(res, 500, 'Imeshindikana kubadilisha akaunti.');
-  }                                               
+  }
   if (!data) return apiError(res, 404, 'Mwanachama hajapatikana.');
                                                     await supabase.from('audit_logs').insert({
     actor_id: req.user.id,
     action: `user_${action}`,
-    target_id: userId,                                details: {}                                     });                                             
+    target_id: userId,                                details: {}                                     });
   res.json({ success: true, message: 'Mabadiliko yamehifadhiwa.' });                                });
 
 app.get('/api/admin/payments', ready, requireUser, requireAdmin, async (req, res) => {
@@ -884,7 +884,61 @@ app.get('/api/admin/payments', ready, requireUser, requireAdmin, async (req, res
     return apiError(res, 500, 'Hitilafu wakati wa kupata malipo.');
   }
 });
-                                                  app.get('/', (req, res) => {
+
+// Mchezo Wetu: admin payment review
+app.post('/api/admin/payments/:id/review', ready, requireUser, requireAdmin, async (req, res) => {
+  try {
+    const paymentId = req.params.id;
+    const action = String(req.body?.action || '').toLowerCase();
+
+    if (!paymentId || !['verify', 'reject'].includes(action)) {
+      return res.status(400).json({
+        error: 'Payment ID au action si sahihi.'
+      });
+    }
+
+    const newStatus = action === 'verify' ? 'verified' : 'rejected';
+
+    const { data, error } = await supabase
+      .from('payments')
+      .update({
+        status: newStatus
+      })
+      .eq('id', paymentId)
+      .eq('status', 'pending')
+      .select('*')
+      .maybeSingle();
+
+    if (error) {
+      console.error('Payment review error:', error);
+      return res.status(500).json({
+        error: 'Imeshindikana kuhakiki malipo.',
+        details: error.message
+      });
+    }
+
+    if (!data) {
+      return res.status(409).json({
+        error: 'Malipo hayapo au tayari yameshakaguliwa.'
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: action === 'verify'
+        ? 'Malipo yamethibitishwa.'
+        : 'Malipo yamekataliwa.',
+      payment: data
+    });
+  } catch (error) {
+    console.error('Payment review exception:', error);
+    return res.status(500).json({
+      error: 'Hitilafu ya ndani wakati wa kuhakiki malipo.'
+    });
+  }
+});
+
+app.get('/', (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   res.sendFile(path.join(__dirname, 'index.html'));
 });
