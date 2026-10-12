@@ -570,6 +570,20 @@ html { scroll-padding-top: 22px; }
   .setting-row { padding:13px; }
 }
 
+
+.profile-avatar{overflow:hidden;cursor:pointer;position:relative}
+.profile-avatar img,.directory-avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit}
+.avatar-pick:after{content:'✎';position:absolute;right:-2px;bottom:-2px;background:#8066ff;color:white;border-radius:50%;width:22px;height:22px;display:grid;place-items:center;font-size:12px;border:2px solid #101122}
+.member-directory{margin:0 0 16px;padding:16px;border:1px solid #ffffff12;border-radius:16px;background:#111426}
+.directory-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.directory-head h2{font-size:15px;margin:0}.directory-count{font-size:11px;color:#a99aff}
+.directory-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px}
+.directory-person{display:flex;align-items:center;gap:8px;min-width:0;padding:8px;border:1px solid #ffffff0c;border-radius:11px;background:#ffffff04}
+.directory-avatar{width:34px;height:34px;flex-shrink:0;border-radius:10px;display:grid;place-items:center;overflow:hidden;background:linear-gradient(135deg,#7555d9,#26375b);font-size:11px;font-weight:800}
+.directory-name{font-size:11px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.directory-caption{font-size:9px;color:#888da9;margin-top:3px}
+@media(max-width:480px){.directory-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 </style>
 
 
@@ -594,6 +608,7 @@ html { scroll-padding-top: 22px; }
 <div class="stat"><label>Michango iliyopangiwa</label><strong id="assigned">—</strong><small>Jumla ya michango yako</small></div>
 <div class="stat"><label>Salio linalokadiriwa</label><strong id="balance">—</strong><small>Hukokotolewa kwa malipo yaliyothibitishwa</small></div>
 </section>
+<section class="member-directory"><div class="directory-head"><h2>Wanachama wenzangu</h2><span class="directory-count" id="memberDirectoryCount">0 wanachama</span></div><div class="directory-list" id="memberDirectoryList"><div class="muted">Inapakia...</div></div></section>
 <section class="columns">
 <div class="panel"><h2>Wasilisha taarifa ya malipo</h2><p>Weka reference halisi ya muamala. Taarifa hii itasubiri kuthibitishwa; kutuma fomu si uthibitisho wa kupokea fedha.</p>
 <form id="paymentForm">
@@ -614,7 +629,7 @@ html { scroll-padding-top: 22px; }
   </div>
   <div class="profile-layout">
     <div class="profile-summary">
-      <div class="profile-avatar" id="profileAvatar">MW</div>
+      <label class="profile-avatar avatar-pick" id="profileAvatar" for="memberAvatarFile">MW</label><input id="memberAvatarFile" type="file" accept="image/jpeg,image/png,image/webp" hidden>
       <h3 id="profileDisplayName">Mwanachama</h3>
       <div class="email" id="profileDisplayEmail">—</div>
       <div class="profile-meta">
@@ -709,6 +724,7 @@ async function start(){
   const session=await client.auth.getSession();token=session.data.session?.access_token;
   if(!token){location.replace('/login');return}
   await refresh();
+  await loadMemberDirectory();
   const requestedSection = location.hash.slice(1);
   if (requestedSection) showMemberSection(requestedSection);
  }catch(e){note(e.message||'Imeshindikana kupakia akaunti.')}
@@ -721,7 +737,7 @@ async function refresh(){
  $('profileEmail').value=me.user.email||'';
  $('profileDisplayEmail').textContent=me.user.email||'';
  $('profileDisplayName').textContent=me.profile.full_name||'Mwanachama';
- $('profileAvatar').textContent=(me.profile.full_name||'MW').split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
+ setMemberAvatar(me.profile.avatar_url,me.profile.full_name||'MW');
  $('profileRole').textContent=me.profile.role==='admin'?'Admin':'Mwanachama';
  $('profileApproval').textContent=me.profile.is_approved?'Imeidhinishwa':'Inasubiri idhini';
  $('profileCreated').textContent=me.profile.created_at?date(me.profile.created_at):'—';
@@ -738,6 +754,31 @@ async function refresh(){
  $('paymentsList').innerHTML=d.payments.length?d.payments.map(p=>'<div class="item"><div><b>'+money(p.amount)+'</b><small>Ref: '+escapeText(p.reference)+' · '+date(p.created_at)+' · '+escapeText(p.method)+'</small></div>'+pill(p.status)+'</div>').join(''):'<div class="muted">Bado hakuna malipo yaliyotumwa.</div>';
 }
 function escapeText(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+function initialsName(v){return String(v||'MW').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'MW'}
+function setMemberAvatar(url,name){const el=$('profileAvatar');if(!el)return;if(url)el.innerHTML='<img src="'+escapeText(url)+'" alt="Picha ya profile">';else el.textContent=initialsName(name)}
+async function loadMemberDirectory(){
+ const box=$('memberDirectoryList');
+ try{
+  const r=await api('/api/members'),list=r.members||[];
+  $('memberDirectoryCount').textContent=(r.count??list.length)+' wanachama';
+  box.innerHTML=list.length?list.map(m=>'<div class="directory-person"><div class="directory-avatar">'+(m.avatar_url?'<img src="'+escapeText(m.avatar_url)+'" alt="">':escapeText(initialsName(m.full_name)))+'</div><div style="min-width:0"><div class="directory-name">'+escapeText(m.full_name)+'</div><div class="directory-caption">Mwanachama</div></div></div>').join(''):'<div class="muted">Bado hakuna wanachama.</div>';
+ }catch(e){box.innerHTML='<div class="muted">Imeshindikana kupakia wanachama.</div>'}
+}
+$('memberAvatarFile').addEventListener('change',async e=>{
+ const f=e.target.files?.[0];if(!f)return;
+ try{
+  const img=await new Promise((ok,no)=>{const x=new Image(),u=URL.createObjectURL(f);x.onload=()=>{URL.revokeObjectURL(u);ok(x)};x.onerror=no;x.src=u});
+  const c=document.createElement('canvas'),scale=Math.min(1,700/Math.max(img.width,img.height));
+  c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);
+  c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  const r=await api('/api/me/profile/avatar',{method:'POST',body:JSON.stringify({image:c.toDataURL('image/jpeg',.78)})});
+  setMemberAvatar(r.avatar_url,$('profileDisplayName').textContent);
+  setProfileNotice('Picha imebadilishwa.',true);await loadMemberDirectory();
+ }catch(err){setProfileNotice(err.message||'Imeshindikana kupakia picha.')}
+ finally{e.target.value=''}
+});
+
 $('paymentForm').onsubmit=async e=>{
  e.preventDefault();const b=$('paySubmit');b.disabled=true;
  try{
@@ -870,8 +911,7 @@ $('profileForm').addEventListener('submit', async event => {
       })
     });
     $('profileDisplayName').textContent = result.profile.full_name || 'Mwanachama';
-    $('profileAvatar').textContent = (result.profile.full_name || 'MW')
-      .split(/\s+/).slice(0,2).map(x => x[0] || '').join('').toUpperCase();
+    setMemberAvatar(result.profile.avatar_url,$('profileDisplayName').textContent);
     $('name').textContent = result.profile.full_name || 'Mwanachama';
     setProfileNotice('Taarifa za profile zimehifadhiwa.', true);
   } catch (error) {

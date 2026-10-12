@@ -39,7 +39,7 @@ app.use((req, res, next) => {
   res.setHeader('X-Frame-Options', 'DENY');         res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');                    next();
 });
-app.use(express.json({ limit: '20kb' }));         app.use(express.urlencoded({ extended: false, limit: '20kb' }));
+app.use(express.json({ limit: '3mb' }));         app.use(express.urlencoded({ extended: false, limit: '20kb' }));
 function apiError(res, status, message) {
   return res.status(status).json({ success: false, error: message });                               }
                                                   function ready(req, res, next) {
@@ -620,7 +620,8 @@ app.get('/api/me', ready, requireUser, async (req, res) => {
   if (data.is_banned) {
     return apiError(res, 403, 'Akaunti yako imesimamishwa. Wasiliana na admin.');
   }
-                                                    res.setHeader('Cache-Control', 'no-store');
+                                                    data.avatar_url = req.user.user_metadata?.avatar_url || null;
+  res.setHeader('Cache-Control', 'no-store');
   res.json({                                          success: true,
     user: {
       id: req.user.id,
@@ -674,6 +675,77 @@ app.patch('/api/me/profile', ready, requireUser, async (req, res) => {
     return apiError(res, 500, 'Imeshindikana kuhifadhi profile. Kagua columns za profiles.');
   }
 });
+
+
+app.post('/api/me/profile/avatar', ready, requireUser, async (req, res) => {
+  try {
+    const m = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/
+      .exec(String(req.body?.image || ''));
+    if (!m) return apiError(res, 400, 'Chagua picha JPG, PNG au WEBP.');
+
+    const bytes = Buffer.from(m[2], 'base64');
+    if (!bytes.length || bytes.length > 1800000)
+      return apiError(res, 413, 'Picha ni kubwa sana. Punguza ukubwa wake.');
+
+    const bucket = 'avatars';
+    const created = await supabase.storage.createBucket(bucket, {
+      public: true,
+      fileSizeLimit: '2MB',
+      allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp']
+    });
+    if (created.error) {
+      const existing = await supabase.storage.getBucket(bucket);
+      if (existing.error) throw created.error;
+    }
+
+    const ext = m[1] === 'image/png' ? 'png' : m[1] === 'image/webp' ? 'webp' : 'jpg';
+    const path = req.user.id + '/profile-' + Date.now() + '.' + ext;
+    const upload = await supabase.storage.from(bucket).upload(path, bytes, {
+      contentType: m[1], upsert: true, cacheControl: '3600'
+    });
+    if (upload.error) throw upload.error;
+
+    const url = supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+    const updated = await supabase.auth.admin.updateUserById(req.user.id, {
+      user_metadata: { ...(req.user.user_metadata || {}), avatar_url: url }
+    });
+    if (updated.error) throw updated.error;
+
+    res.setHeader('Cache-Control', 'no-store');
+    return res.json({ success: true, avatar_url: url });
+  } catch (error) {
+    console.error('Avatar upload error:', error.message);
+    return apiError(res, 500, 'Picha haikupakiwa. Kagua SUPABASE_SERVICE_ROLE_KEY na Supabase Storage.');
+  }
+});
+
+app.get('/api/members', ready, requireUser, async (req, res) => {
+  try {
+    const { data, error } = await supabase.from('profiles')
+      .select('id, full_name, created_at')
+      .neq('role', 'admin')
+      .order('created_at', { ascending: true }).limit(1000);
+    if (error) throw error;
+
+    const auth = await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
+    if (auth.error) throw auth.error;
+    const avatars = Object.fromEntries(
+      (auth.data.users || []).map(u => [u.id, u.user_metadata?.avatar_url || null])
+    );
+    const members = (data || []).map(u => ({
+      id: u.id,
+      full_name: u.full_name || 'Mwanachama',
+      avatar_url: avatars[u.id] || null
+    }));
+
+    res.setHeader('Cache-Control', 'no-store');
+    return res.json({ success: true, count: members.length, members });
+  } catch (error) {
+    console.error('Members endpoint error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kupata orodha ya wanachama.');
+  }
+});
+
 
 app.get('/api/dashboard', ready, requireUser, async (req, res) => {
   try {                                               const { data: profile, error: profileError } = await supabase
@@ -794,14 +866,15 @@ app.get('/api/admin/summary', ready, requireUser, requireAdmin, async (req, res)
     ]);
     for (const result of [usersResult, paymentsResult, contributionsResult]) {
       if (result.error) throw result.error;           }
-                                                      const users = usersResult.data || [];
+                                                      const allUsers = usersResult.data || [];
+    const users = allUsers.filter(u => u.role !== 'admin');
     const payments = paymentsResult.data || [];       const contributions = contributionsResult.data || [];
     res.setHeader('Cache-Control', 'no-store');       res.json({
       success: true,                                    stats: {
         users: users.length,
         active: users.filter(u => u.is_approved && !u.is_banned).length,
         blocked: users.filter(u => u.is_banned).length,
-        admins: users.filter(u => u.role === 'admin').length,
+        admins: allUsers.filter(u => u.role === 'admin').length,
         pendingPayments: payments.filter(p => p.status === 'pending').length,
         verifiedPayments: payments.filter(p => p.status === 'verified').length,
         rejectedPayments: payments.filter(p => p.status === 'rejected').length,
@@ -818,18 +891,33 @@ app.get('/api/admin/summary', ready, requireUser, requireAdmin, async (req, res)
     return apiError(res, 500, 'Imeshindikana kupata takwimu za admin.');
   }
 });
-                                                  app.get('/api/admin/users', ready, requireUser, requireAdmin, async (req, res) => {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('id, full_name, phone, role, is_approved, is_banned, created_at')
-    .order('created_at', { ascending: false })        .limit(500);
-                                                    if (error) {
+
+app.get('/api/admin/users', ready, requireUser, requireAdmin, async (req, res) => {
+  try {
+    const { data, error } = await supabase.from('profiles')
+      .select('id, full_name, phone, role, is_approved, is_banned, created_at')
+      .neq('role', 'admin')
+      .order('created_at', { ascending: false }).limit(500);
+    if (error) throw error;
+
+    const auth = await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
+    if (auth.error) throw auth.error;
+    const avatars = Object.fromEntries(
+      (auth.data.users || []).map(u => [u.id, u.user_metadata?.avatar_url || null])
+    );
+
+    res.setHeader('Cache-Control', 'no-store');
+    res.json({
+      success: true,
+      users: (data || []).map(u => ({ ...u, avatar_url: avatars[u.id] || null }))
+    });
+  } catch (error) {
     console.error('Admin users error:', error.message);
     return apiError(res, 500, 'Imeshindikana kupata wanachama.');
   }
-  res.setHeader('Cache-Control', 'no-store');
-  res.json({ success: true, users: data || [] }); });
-                                                  app.post('/api/admin/users/:id/action', ready, requireUser, requireAdmin, async (req, res) => {       const userId = req.params.id;
+});
+
+app.post('/api/admin/users/:id/action', ready, requireUser, requireAdmin, async (req, res) => {       const userId = req.params.id;
   const action = String(req.body.action || '');
   const allowed = ['approve', 'ban', 'unban'];
 
