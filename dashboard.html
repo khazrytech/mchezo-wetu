@@ -584,6 +584,60 @@ html { scroll-padding-top: 22px; }
 .directory-caption{font-size:9px;color:#888da9;margin-top:3px}
 @media(max-width:480px){.directory-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+
+/* Mchezo Wetu - SonicPesa premium checkout */
+.payment-shell{position:relative;overflow:hidden}
+.payment-shell:before{content:"";position:absolute;top:-110px;right:-100px;width:230px;height:230px;border-radius:50%;background:#58e7d312;filter:blur(8px);pointer-events:none}
+.payment-heading{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.payment-kicker{display:inline-block;margin-bottom:10px;color:#67e7d1;font-size:9px;font-weight:800;letter-spacing:1.5px}
+.payment-heading h2{font-size:22px;letter-spacing:-.8px}
+.payment-lock{display:grid;place-items:center;width:43px;height:43px;flex-shrink:0;border:1px solid #58e7d132;border-radius:15px;background:linear-gradient(145deg,#58e7d11c,#8298ff13);color:#78ead8;font-size:23px}
+.payment-tabs{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:23px 0}
+.payment-type{display:flex;align-items:center;gap:10px;min-width:0;padding:13px 10px;border:1px solid #ffffff14;border-radius:15px;background:#080e1a;cursor:pointer;transition:.22s ease}
+.payment-type input{position:absolute;opacity:0;pointer-events:none}
+.payment-type.active,.payment-type:has(input:checked){border-color:#58e7d17a;background:linear-gradient(135deg,#58e7d119,#8298ff0b);box-shadow:0 0 0 2px #58e7d10a}
+.type-icon{display:grid;place-items:center;flex-shrink:0;width:35px;height:35px;border-radius:11px;background:#8298ff18;color:#9eafff;font-size:19px}
+.payment-type b,.payment-type small{display:block}
+.payment-type b{font-size:10px;line-height:1.5}
+.payment-type small{margin-top:4px;color:#899bb6;font-size:9px;line-height:1.5}
+.network-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.network-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0;min-height:116px;padding:13px;border:1px solid #ffffff17;border-radius:16px;background:linear-gradient(145deg,#121d30,#0b1220);color:#f4f7ff;text-align:left;transition:transform .22s,border-color .22s,box-shadow .22s;overflow:hidden}
+.network-card:hover{transform:translateY(-3px);border-color:#8298ff80}
+.network-card.selected{border-color:#58e7d1a8;box-shadow:0 0 0 2px #58e7d115,0 10px 26px #0003;background:linear-gradient(145deg,#142a32,#101729)}
+.network-logo{display:grid;place-items:center;width:31px;height:31px;border-radius:10px;background:#ffffff12;font-size:17px;font-weight:900}
+.mpesa .network-logo{background:#e326361d;color:#ff6876}
+.mixx .network-logo{background:#ffdb2e1d;color:#ffdf57}
+.airtel .network-logo{background:#ed26371d;color:#ff6674}
+.halo .network-logo{background:#e6a62b1d;color:#f5c35d}
+.network-card b{font-size:11px;line-height:1.4}
+.network-card small{font-size:9px;color:#9aabc2}
+.network-check{position:absolute;right:10px;top:10px;display:grid;place-items:center;width:19px;height:19px;border-radius:50%;background:#58e7d1;color:#06151b;font-size:11px;font-weight:900;opacity:0;transform:scale(.7);transition:.2s}
+.network-card.selected .network-check{opacity:1;transform:scale(1)}
+.payment-secure-note{display:flex;align-items:center;gap:7px;margin-top:12px;color:#92a7c0;font-size:9px}
+.payment-secure-note span{color:#58e7d1;font-size:11px}
+.amount-wrap,.phone-wrap{display:flex;align-items:center;gap:10px;min-height:54px;padding:0 13px;border:1px solid #2b3951;border-radius:14px;background:#090f1c;transition:border-color .2s,box-shadow .2s}
+.amount-wrap:focus-within,.phone-wrap:focus-within{border-color:#58e7d1;box-shadow:0 0 0 4px #58e7d112}
+.amount-wrap>span,.phone-wrap>span{flex-shrink:0;color:#94a8c2;font-size:11px;font-weight:700}
+.amount-wrap input,.phone-wrap input{min-width:0;min-height:48px;padding:10px 0;border:0;background:transparent;box-shadow:none!important;font-size:16px;font-weight:750}
+.amount-wrap input:focus,.phone-wrap input:focus{border:0}
+.quick-amounts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:9px}
+.quick-amounts button{min-width:0;padding:9px 3px;border:1px solid #ffffff15;border-radius:9px;background:#ffffff06;color:#b6c5dc;font-size:10px;font-weight:700;transition:.2s}
+.quick-amounts button:hover,.quick-amounts button.active{border-color:#58e7d180;background:#58e7d115;color:#75ead5}
+.field-hint{display:block;margin-top:8px;color:#8194af;font-size:10px;line-height:1.7}
+.payment-total{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 0 14px;padding:16px;border:1px solid #ffffff12;border-radius:14px;background:linear-gradient(100deg,#8298ff0b,#58e7d10d)}
+.payment-total span{color:#9daec6;font-size:11px}
+.payment-total strong{font-size:19px;letter-spacing:-.5px;color:#70ead5}
+.payment-submit{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:53px;border-radius:14px;font-size:12px;font-weight:850;box-shadow:0 10px 28px #58e7d11c;transition:transform .2s,filter .2s}
+.payment-submit:hover{transform:translateY(-2px);filter:brightness(1.07)}
+.payment-submit:disabled{opacity:.65;cursor:wait;transform:none}
+.pay-arrow{font-size:17px}
+.payment-footnote{display:flex;align-items:flex-start;gap:7px;margin-top:13px;color:#8192ac;font-size:9px;line-height:1.8}
+.payment-feedback{display:none;margin-top:13px;padding:12px 13px;border:1px solid #58e7d132;border-radius:12px;background:#58e7d10b;color:#8debd9;font-size:11px;line-height:1.7;overflow-wrap:anywhere}
+.payment-feedback.show{display:block;animation:mw-dash-in .3s ease both}
+.payment-feedback.error{border-color:#ff718544;background:#ff52600d;color:#ffacba}
+@media(max-width:520px){.payment-heading h2{font-size:20px}.payment-tabs{gap:7px}.payment-type{padding:11px 8px;gap:7px}.type-icon{width:31px;height:31px}.payment-type b{font-size:9px}.network-card{min-height:108px;padding:12px}.quick-amounts button{font-size:9px}.payment-total strong{font-size:18px}}
+@media(prefers-reduced-motion:reduce){.network-card,.network-check,.payment-submit,.payment-type{transition:none}}
+
 </style>
 
 
@@ -610,14 +664,81 @@ html { scroll-padding-top: 22px; }
 </section>
 <section class="member-directory"><div class="directory-head"><h2>Wanachama wenzangu</h2><span class="directory-count" id="memberDirectoryCount">0 wanachama</span></div><div class="directory-list" id="memberDirectoryList"><div class="muted">Inapakia...</div></div></section>
 <section class="columns">
-<div class="panel"><h2>Wasilisha taarifa ya malipo</h2><p>Weka reference halisi ya muamala. Taarifa hii itasubiri kuthibitishwa; kutuma fomu si uthibitisho wa kupokea fedha.</p>
-<form id="paymentForm">
-<div class="field"><label for="amount">Kiasi (TSh)</label><input id="amount" type="number" min="1" max="100000000" step="1" required placeholder="Mfano: 2000"></div>
-<div class="field"><label for="method">Njia ya malipo</label><select id="method" required><option value="mobile_money">Mobile money</option><option value="bank">Benki</option><option value="cash">Taslimu — wasiliana na admin</option></select></div>
-<div class="field"><label for="reference">Reference ya muamala</label><input id="reference" required minlength="4" maxlength="100" placeholder="Mfano: ABC123XYZ"></div>
-<div class="field"><label for="contribution">Mchango unaolipia (hiari)</label><select id="contribution"><option value="">Chagua ikiwa unajulikana</option></select></div>
-<button class="btn primary" id="paySubmit" type="submit">Tuma kwa uthibitisho</button>
-</form></div>
+<div class="panel payment-shell">
+  <div class="payment-heading">
+    <div>
+      <span class="payment-kicker">SONICPESA SECURE CHECKOUT</span>
+      <h2>Lipa kwa urahisi</h2>
+      <p>Chagua mtandao wako, weka kiasi na uthibitishe ombi kwenye simu yako.</p>
+    </div>
+    <div class="payment-lock">⌑</div>
+  </div>
+
+  <div class="payment-tabs">
+    <label class="payment-type active">
+      <input type="radio" name="paymentType" value="contribution" checked>
+      <span class="type-icon">◈</span>
+      <span><b>Lipa Mchango</b><small>Michango ya wanachama</small></span>
+    </label>
+    <label class="payment-type">
+      <input type="radio" name="paymentType" value="game_fee">
+      <span class="type-icon">⚽</span>
+      <span><b>Hela ya Mchezo</b><small>Malipo ya mchezo</small></span>
+    </label>
+  </div>
+
+  <div class="field">
+    <label>Chagua mtandao wa simu</label>
+    <div class="network-grid">
+      <button class="network-card mpesa selected" type="button" data-channel="MPESA" aria-pressed="true">
+        <span class="network-logo">M</span><b>M-Pesa</b><small>Vodacom</small><span class="network-check">✓</span>
+      </button>
+      <button class="network-card mixx" type="button" data-channel="MIXX" aria-pressed="false">
+        <span class="network-logo">Y</span><b>Mixx by Yas</b><small>Yas</small><span class="network-check">✓</span>
+      </button>
+      <button class="network-card airtel" type="button" data-channel="AIRTELMONEY" aria-pressed="false">
+        <span class="network-logo">A</span><b>Airtel Money</b><small>Airtel</small><span class="network-check">✓</span>
+      </button>
+      <button class="network-card halo" type="button" data-channel="HALOPESA" aria-pressed="false">
+        <span class="network-logo">H</span><b>HaloPesa</b><small>Halotel</small><span class="network-check">✓</span>
+      </button>
+    </div>
+    <div class="payment-secure-note"><span>●</span> Malipo salama kupitia SonicPesa · TZS</div>
+  </div>
+
+  <form id="paymentForm">
+    <div class="field">
+      <label for="amount">Kiasi cha kulipa (TSh)</label>
+      <div class="amount-wrap"><span>TSh</span><input id="amount" type="number" min="100" max="100000000" step="1" required placeholder="5,000"></div>
+      <div class="quick-amounts">
+        <button type="button" data-amount="2000">2,000</button>
+        <button type="button" data-amount="5000">5,000</button>
+        <button type="button" data-amount="10000">10,000</button>
+        <button type="button" data-amount="20000">20,000</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="paymentPhone">Namba ya simu ya malipo</label>
+      <div class="phone-wrap"><span>🇹🇿 +255</span><input id="paymentPhone" type="tel" inputmode="tel" autocomplete="tel-national" required maxlength="16" placeholder="712 345 678"></div>
+      <small class="field-hint">Weka namba ya mtandao uliochagua. Ombi la malipo litatumwa kwenye simu hiyo.</small>
+    </div>
+
+    <div class="field contribution-field">
+      <label for="contribution">Mchango unaolipia (hiari)</label>
+      <select id="contribution"><option value="">Chagua mchango ikiwa unajulikana</option></select>
+    </div>
+
+    <div class="payment-total">
+      <span>Jumla ya kulipa</span><strong id="paymentTotal">TSh 0</strong>
+    </div>
+    <button class="btn primary payment-submit" id="paySubmit" type="submit">
+      <span id="payButtonText">Endelea kulipa</span><span class="pay-arrow">↗</span>
+    </button>
+    <div class="payment-footnote"><span>🔒</span> Usalama wa malipo unathibitishwa na SonicPesa. Usishiriki PIN yako na mtu yeyote.</div>
+  </form>
+  <div id="paymentFeedback" class="payment-feedback" role="status" aria-live="polite"></div>
+</div>
 <div class="panel" id="contributionsSection"><h2>Historia ya michango</h2><p>Michango iliyowekwa kwenye akaunti yako.</p><div id="contributions" class="list"><div class="muted">Inapakia...</div></div></div>
 </section>
 <section class="panel" id="paymentsSection" style="margin-top:15px"><h2>Historia ya malipo</h2><p>Hali ya kila taarifa ya muamala.</p><div id="paymentsList" class="list"><div class="muted">Inapakia...</div></div></section>
@@ -779,14 +900,57 @@ $('memberAvatarFile').addEventListener('change',async e=>{
  finally{e.target.value=''}
 });
 
+let selectedSonicChannel='MPESA';
+document.querySelectorAll('.network-card').forEach(card=>{
+ card.addEventListener('click',()=>{
+  selectedSonicChannel=card.dataset.channel;
+  document.querySelectorAll('.network-card').forEach(c=>{
+   const active=c===card;c.classList.toggle('selected',active);c.setAttribute('aria-pressed',String(active));
+  });
+ });
+});
+document.querySelectorAll('.payment-type').forEach(label=>{
+ label.addEventListener('click',()=>{
+  document.querySelectorAll('.payment-type').forEach(x=>x.classList.toggle('active',x===label));
+ });
+});
+function updatePaymentTotal(){
+ const n=Number($('amount').value||0);
+ $('paymentTotal').textContent='TSh '+new Intl.NumberFormat('en-TZ',{maximumFractionDigits:0}).format(n);
+}
+$('amount').addEventListener('input',updatePaymentTotal);
+document.querySelectorAll('[data-amount]').forEach(btn=>btn.addEventListener('click',()=>{
+ $('amount').value=btn.dataset.amount;
+ document.querySelectorAll('[data-amount]').forEach(x=>x.classList.toggle('active',x===btn));
+ updatePaymentTotal();
+}));
+function paymentFeedback(message,ok){
+ const el=$('paymentFeedback');el.textContent=message;
+ el.className='payment-feedback show'+(ok?'':' error');
+}
 $('paymentForm').onsubmit=async e=>{
- e.preventDefault();const b=$('paySubmit');b.disabled=true;
+ e.preventDefault();
+ const b=$('paySubmit'),label=$('payButtonText');
+ const amount=Number($('amount').value);
+ const phone=$('paymentPhone').value.trim();
+ const paymentType=document.querySelector('input[name="paymentType"]:checked')?.value||'contribution';
+ if(!Number.isSafeInteger(amount)||amount<100){paymentFeedback('Kiasi cha chini ni TSh 100.',false);return}
+ if(!/^(0\d{9}|255\d{9}|\d{9})$/.test(phone.replace(/[\s()+.-]/g,''))){paymentFeedback('Weka namba sahihi ya Tanzania, mfano 0712345678.',false);return}
+ b.disabled=true;label.textContent='Inatuma ombi...';
  try{
-  const body={amount:Number($('amount').value),reference:$('reference').value.trim(),method:$('method').value,contributionId:$('contribution').value||null};
-  const result=await api('/api/payments',{method:'POST',body:JSON.stringify(body)});
-  note(result.message,true);$('paymentForm').reset();await refresh();
- }catch(e){note(e.message)}finally{b.disabled=false}
+  const body={amount,phone,channel:selectedSonicChannel,paymentType,contributionId:paymentType==='contribution'?($('contribution').value||null):null};
+  const result=await api('/api/payments/sonicpesa',{method:'POST',body:JSON.stringify(body)});
+  paymentFeedback(result.message||'Ombi limetumwa. Fuata maelekezo kwenye simu yako.',true);
+  label.textContent='Ombi limetumwa ✓';
+  await refresh();
+ }catch(err){
+  paymentFeedback(err.message||'Imeshindikana kuanzisha malipo. Jaribu tena.',false);
+  label.textContent='Jaribu tena';
+ }finally{
+  b.disabled=false;
+ }
 };
+updatePaymentTotal();
 
 function showMemberSection(id) {
   const validSections = [

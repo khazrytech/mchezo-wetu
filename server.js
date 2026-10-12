@@ -1,6 +1,7 @@
 const express = require('express');               const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 const axios = require('axios');
+const crypto = require('crypto');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -39,7 +40,10 @@ app.use((req, res, next) => {
   res.setHeader('X-Frame-Options', 'DENY');         res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');                    next();
 });
-app.use(express.json({ limit: '3mb' }));         app.use(express.urlencoded({ extended: false, limit: '20kb' }));
+app.use(express.json({
+  limit: '3mb',
+  verify: (req, res, buf) => { req.rawBody = Buffer.from(buf); }
+}));         app.use(express.urlencoded({ extended: false, limit: '20kb' }));
 function apiError(res, status, message) {
   return res.status(status).json({ success: false, error: message });                               }
                                                   function ready(req, res, next) {
@@ -1066,6 +1070,171 @@ app.get('/dashboard', (req, res) => {
 app.get('/admin/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
-                                                  app.use('/api', (req, res) => apiError(res, 404, 'API haijapatikana.'));                            app.use((req, res) => res.status(404).send('Ukurasa haujapatikana.'));
-                                                  app.listen(PORT, () => {
-  console.log(`Mchezo Wetu server running on port ${PORT}`);                                        });
+
+app.post('/api/payments/sonicpesa', ready, requireUser, async (req, res) => {
+  try {
+    const apiKey = process.env.SONICPESA_API_KEY;
+    if (!apiKey) return apiError(res, 503, 'SonicPesa API key haijawekwa.');
+
+    const amount = Number(req.body.amount);
+    let phone = String(req.body.phone || '').replace(/[\s()+-]/g, '');
+    if (phone.startsWith('0')) phone = '255' + phone.slice(1);
+
+    const channel = String(req.body.channel || '').toUpperCase();
+    const paymentType = String(req.body.paymentType || '');
+    const contributionId = req.body.contributionId || null;
+
+    if (!Number.isSafeInteger(amount) || amount < 100 || amount > 100000000)
+      return apiError(res, 400, 'Kiasi si sahihi.');
+    if (!/^255\d{9}$/.test(phone))
+      return apiError(res, 400, 'Tumia namba ya Tanzania, mfano 255712345678.');
+    if (!['MPESA','MIXX','AIRTELMONEY','HALOPESA'].includes(channel))
+      return apiError(res, 400, 'Chagua mtandao sahihi.');
+    if (!['contribution','game_fee'].includes(paymentType))
+      return apiError(res, 400, 'Chagua aina ya malipo.');
+
+    const { data: profile, error: pe } = await supabase
+      .from('profiles')
+      .select('id,full_name,is_banned,is_approved')
+      .eq('id', req.user.id).maybeSingle();
+
+    if (pe) throw pe;
+    if (!profile || profile.is_banned || !profile.is_approved)
+      return apiError(res, 403, 'Akaunti yako inahitaji kuidhinishwa na admin.');
+    if (!req.user.email)
+      return apiError(res, 400, 'Akaunti yako haina email.');
+
+    if (contributionId) {
+      const { data: c, error: ce } = await supabase
+        .from('contributions').select('id,status,user_id')
+        .eq('id', contributionId).eq('user_id', req.user.id).maybeSingle();
+      if (ce) throw ce;
+      if (!c || c.status === 'cancelled')
+        return apiError(res, 400, 'Mchango haupatikani.');
+    }
+
+    const reference = 'MW-' + Date.now() + '-' +
+      crypto.randomBytes(4).toString('hex').toUpperCase();
+
+    const { data: payment, error: ie } = await supabase.from('payments').insert({
+      user_id: req.user.id,
+      contribution_id: contributionId,
+      amount, reference, method: 'sonicpesa', status: 'pending',
+      provider: 'sonicpesa', payment_type: paymentType,
+      phone, channel, provider_status: 'PENDING'
+    }).select('id').single();
+
+    if (ie) throw ie;
+
+    try {
+      const r = await axios.post(
+        'https://api.sonicpesa.com/api/v1/payment/create_order',
+        {
+          buyer_email: req.user.email,
+          buyer_name: profile.full_name || req.user.email,
+          buyer_phone: phone,
+          amount,
+          currency: 'TZS'
+        },
+        {
+          headers: { 'Content-Type': 'application/json', 'X-API-KEY': apiKey },
+          timeout: 15000
+        }
+      );
+
+      const d = r.data || {};
+      const order = d.data || {};
+      if (String(d.status || '').toLowerCase() !== 'success' || !order.order_id) {
+        await supabase.from('payments').update({
+          status: 'rejected', provider_status: 'ORDER_FAILED',
+          failure_reason: String(d.message || 'Order creation failed').slice(0,300)
+        }).eq('id', payment.id);
+        return apiError(res, 502, 'SonicPesa haikukubali ombi la malipo.');
+      }
+
+      const { error: ue } = await supabase.from('payments').update({
+        sonicpesa_order_id: String(order.order_id),
+        provider_status: String(order.payment_status || order.status || 'PENDING')
+      }).eq('id', payment.id);
+      if (ue) throw ue;
+
+      return res.status(201).json({
+        success: true,
+        message: 'Ombi limetumwa. Fuata maelekezo kwenye simu yako.',
+        payment: { id: payment.id, reference, order_id: order.order_id, amount, status: 'pending' }
+      });
+    } catch (e) {
+      console.error('SonicPesa create-order error:', e.response?.data || e.message);
+      await supabase.from('payments').update({
+        status: 'rejected', provider_status: 'ORDER_FAILED',
+        failure_reason: String(e.message || 'Provider error').slice(0,300)
+      }).eq('id', payment.id);
+      return apiError(res, 502, 'Ombi la SonicPesa limeshindwa. Kagua Render Logs.');
+    }
+  } catch (e) {
+    console.error('SonicPesa route error:', e.message);
+    return apiError(res, 500, 'Hitilafu ya kuanzisha malipo.');
+  }
+});
+
+app.post('/webhook/sonicpesa', async (req, res) => {
+  try {
+    const secret = process.env.SONICPESA_API_SECRET;
+    if (!supabase || !secret) return res.status(503).send('Webhook not configured');
+
+    const sig = String(req.headers['x-sonicpesa-signature'] || '').replace(/^sha256=/i,'');
+    if (!req.rawBody || !/^[a-f0-9]{64}$/i.test(sig))
+      return res.status(401).send('Invalid signature');
+
+    const expected = crypto.createHmac('sha256', secret).update(req.rawBody).digest();
+    const received = Buffer.from(sig, 'hex');
+    if (received.length !== expected.length || !crypto.timingSafeEqual(received, expected))
+      return res.status(401).send('Invalid signature');
+
+    const b = req.body || {};
+    const orderId = String(b.order_id || '');
+    if (!orderId) return res.status(400).send('Missing order_id');
+
+    const { data: p, error: pe } = await supabase.from('payments')
+      .select('id,amount,status').eq('sonicpesa_order_id', orderId).maybeSingle();
+    if (pe) throw pe;
+    if (!p) return res.status(200).send('Unknown order ignored');
+    if (p.status === 'verified') return res.status(200).send('Already processed');
+
+    if (String(b.currency || '').toUpperCase() !== 'TZS' ||
+        Number(b.amount) !== Number(p.amount))
+      return res.status(400).send('Amount or currency mismatch');
+
+    if (b.event === 'payment.completed' && String(b.status).toUpperCase() === 'SUCCESS') {
+      const { error } = await supabase.from('payments').update({
+        status: 'verified', verified_at: new Date().toISOString(),
+        provider_status: 'SUCCESS',
+        provider_transid: b.transid ? String(b.transid) : null
+      }).eq('id', p.id).eq('status','pending');
+      if (error) throw error;
+    } else if (
+      ['payment.failed','payment.cancelled'].includes(String(b.event)) ||
+      ['REJECTED','CANCELLED','USERCANCELLED'].includes(String(b.status).toUpperCase())
+    ) {
+      const { error } = await supabase.from('payments').update({
+        status: 'rejected',
+        provider_status: String(b.status || b.event),
+        failure_reason: String(b.event || 'Payment failed')
+      }).eq('id', p.id).eq('status','pending');
+      if (error) throw error;
+    }
+    return res.status(200).send('OK');
+  } catch (e) {
+    console.error('SonicPesa webhook error:', e.message);
+    return res.status(500).send('Webhook processing failed');
+  }
+});
+
+
+app.use('/api', (req, res) => apiError(res, 404, 'API haijapatikana.'));
+
+app.use((req, res) => res.status(404).send('Ukurasa haujapatikana.'));
+
+app.listen(PORT, () => {
+  console.log(`Mchezo Wetu server running on port ${PORT}`);
+});
