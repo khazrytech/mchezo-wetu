@@ -1119,7 +1119,7 @@ app.post('/api/payments/sonicpesa', ready, requireUser, async (req, res) => {
     const { data: payment, error: ie } = await supabase.from('payments').insert({
       user_id: req.user.id,
       contribution_id: contributionId,
-      amount, reference, method: 'sonicpesa', status: 'pending',
+      amount, reference, method: 'mobile_money', status: 'pending',
       provider: 'sonicpesa', payment_type: paymentType,
       phone, channel, provider_status: 'PENDING'
     }).select('id').single();
