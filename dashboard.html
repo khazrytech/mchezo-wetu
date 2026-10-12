@@ -664,81 +664,7 @@ html { scroll-padding-top: 22px; }
 </section>
 <section class="member-directory"><div class="directory-head"><h2>Wanachama wenzangu</h2><span class="directory-count" id="memberDirectoryCount">0 wanachama</span></div><div class="directory-list" id="memberDirectoryList"><div class="muted">Inapakia...</div></div></section>
 <section class="columns">
-<div class="panel payment-shell">
-  <div class="payment-heading">
-    <div>
-      <span class="payment-kicker">SONICPESA SECURE CHECKOUT</span>
-      <h2>Lipa kwa urahisi</h2>
-      <p>Chagua mtandao wako, weka kiasi na uthibitishe ombi kwenye simu yako.</p>
-    </div>
-    <div class="payment-lock">⌑</div>
-  </div>
-
-  <div class="payment-tabs">
-    <label class="payment-type active">
-      <input type="radio" name="paymentType" value="contribution" checked>
-      <span class="type-icon">◈</span>
-      <span><b>Lipa Mchango</b><small>Michango ya wanachama</small></span>
-    </label>
-    <label class="payment-type">
-      <input type="radio" name="paymentType" value="game_fee">
-      <span class="type-icon">⚽</span>
-      <span><b>Hela ya Mchezo</b><small>Malipo ya mchezo</small></span>
-    </label>
-  </div>
-
-  <div class="field">
-    <label>Chagua mtandao wa simu</label>
-    <div class="network-grid">
-      <button class="network-card mpesa selected" type="button" data-channel="MPESA" aria-pressed="true">
-        <span class="network-logo">M</span><b>M-Pesa</b><small>Vodacom</small><span class="network-check">✓</span>
-      </button>
-      <button class="network-card mixx" type="button" data-channel="MIXX" aria-pressed="false">
-        <span class="network-logo">Y</span><b>Mixx by Yas</b><small>Yas</small><span class="network-check">✓</span>
-      </button>
-      <button class="network-card airtel" type="button" data-channel="AIRTELMONEY" aria-pressed="false">
-        <span class="network-logo">A</span><b>Airtel Money</b><small>Airtel</small><span class="network-check">✓</span>
-      </button>
-      <button class="network-card halo" type="button" data-channel="HALOPESA" aria-pressed="false">
-        <span class="network-logo">H</span><b>HaloPesa</b><small>Halotel</small><span class="network-check">✓</span>
-      </button>
-    </div>
-    <div class="payment-secure-note"><span>●</span> Malipo salama kupitia SonicPesa · TZS</div>
-  </div>
-
-  <form id="paymentForm">
-    <div class="field">
-      <label for="amount">Kiasi cha kulipa (TSh)</label>
-      <div class="amount-wrap"><span>TSh</span><input id="amount" type="number" min="100" max="100000000" step="1" required placeholder="5,000"></div>
-      <div class="quick-amounts">
-        <button type="button" data-amount="2000">2,000</button>
-        <button type="button" data-amount="5000">5,000</button>
-        <button type="button" data-amount="10000">10,000</button>
-        <button type="button" data-amount="20000">20,000</button>
-      </div>
-    </div>
-
-    <div class="field">
-      <label for="paymentPhone">Namba ya simu ya malipo</label>
-      <div class="phone-wrap"><span>🇹🇿 +255</span><input id="paymentPhone" type="tel" inputmode="tel" autocomplete="tel-national" required maxlength="16" placeholder="712 345 678"></div>
-      <small class="field-hint">Weka namba ya mtandao uliochagua. Ombi la malipo litatumwa kwenye simu hiyo.</small>
-    </div>
-
-    <div class="field contribution-field">
-      <label for="contribution">Mchango unaolipia (hiari)</label>
-      <select id="contribution"><option value="">Chagua mchango ikiwa unajulikana</option></select>
-    </div>
-
-    <div class="payment-total">
-      <span>Jumla ya kulipa</span><strong id="paymentTotal">TSh 0</strong>
-    </div>
-    <button class="btn primary payment-submit" id="paySubmit" type="submit">
-      <span id="payButtonText">Endelea kulipa</span><span class="pay-arrow">↗</span>
-    </button>
-    <div class="payment-footnote"><span>🔒</span> Usalama wa malipo unathibitishwa na SonicPesa. Usishiriki PIN yako na mtu yeyote.</div>
-  </form>
-  <div id="paymentFeedback" class="payment-feedback" role="status" aria-live="polite"></div>
-</div>
+<div id="mwCheckoutPlaceholder"></div>
 <div class="panel" id="contributionsSection"><h2>Historia ya michango</h2><p>Michango iliyowekwa kwenye akaunti yako.</p><div id="contributions" class="list"><div class="muted">Inapakia...</div></div></div>
 </section>
 <section class="panel" id="paymentsSection" style="margin-top:15px"><h2>Historia ya malipo</h2><p>Hali ya kila taarifa ya muamala.</p><div id="paymentsList" class="list"><div class="muted">Inapakia...</div></div></section>
@@ -1104,6 +1030,139 @@ loadMemberPreferences();
 
 $('logout').onclick=memberLogout;
 start();
+
+(() => {
+ const panel = document.createElement('div');
+ panel.innerHTML = `<div class="panel payment-shell">
+  <div class="payment-heading">
+    <div>
+      <span class="payment-kicker">SONICPESA SECURE CHECKOUT</span>
+      <h2>Lipa kwa urahisi</h2>
+      <p>Chagua mtandao wako, weka kiasi na uthibitishe ombi kwenye simu yako.</p>
+    </div>
+    <div class="payment-lock">⌑</div>
+  </div>
+
+  <div class="payment-tabs">
+    <label class="payment-type active">
+      <input type="radio" name="paymentType" value="contribution" checked>
+      <span class="type-icon">◈</span>
+      <span><b>Lipa Mchango</b><small>Michango ya wanachama</small></span>
+    </label>
+    <label class="payment-type">
+      <input type="radio" name="paymentType" value="game_fee">
+      <span class="type-icon">⚽</span>
+      <span><b>Hela ya Mchezo</b><small>Malipo ya mchezo</small></span>
+    </label>
+  </div>
+
+  <div class="field">
+    <label>Chagua mtandao wa simu</label>
+    <div class="network-grid">
+      <button class="network-card mpesa selected" type="button" data-channel="MPESA" aria-pressed="true">
+        <span class="network-logo">M</span><b>M-Pesa</b><small>Vodacom</small><span class="network-check">✓</span>
+      </button>
+      <button class="network-card mixx" type="button" data-channel="MIXX" aria-pressed="false">
+        <span class="network-logo">Y</span><b>Mixx by Yas</b><small>Yas</small><span class="network-check">✓</span>
+      </button>
+      <button class="network-card airtel" type="button" data-channel="AIRTELMONEY" aria-pressed="false">
+        <span class="network-logo">A</span><b>Airtel Money</b><small>Airtel</small><span class="network-check">✓</span>
+      </button>
+      <button class="network-card halo" type="button" data-channel="HALOPESA" aria-pressed="false">
+        <span class="network-logo">H</span><b>HaloPesa</b><small>Halotel</small><span class="network-check">✓</span>
+      </button>
+    </div>
+    <div class="payment-secure-note"><span>●</span> Malipo salama kupitia SonicPesa · TZS</div>
+  </div>
+
+  <form id="paymentForm">
+    <div class="field">
+      <label for="amount">Kiasi cha kulipa (TSh)</label>
+      <div class="amount-wrap"><span>TSh</span><input id="amount" type="number" min="100" max="100000000" step="1" required placeholder="5,000"></div>
+      <div class="quick-amounts">
+        <button type="button" data-amount="2000">2,000</button>
+        <button type="button" data-amount="5000">5,000</button>
+        <button type="button" data-amount="10000">10,000</button>
+        <button type="button" data-amount="20000">20,000</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="paymentPhone">Namba ya simu ya malipo</label>
+      <div class="phone-wrap"><span>🇹🇿 +255</span><input id="paymentPhone" type="tel" inputmode="tel" autocomplete="tel-national" required maxlength="16" placeholder="712 345 678"></div>
+      <small class="field-hint">Weka namba ya mtandao uliochagua. Ombi la malipo litatumwa kwenye simu hiyo.</small>
+    </div>
+
+    <div class="field contribution-field">
+      <label for="contribution">Mchango unaolipia (hiari)</label>
+      <select id="contribution"><option value="">Chagua mchango ikiwa unajulikana</option></select>
+    </div>
+
+    <div class="payment-total">
+      <span>Jumla ya kulipa</span><strong id="paymentTotal">TSh 0</strong>
+    </div>
+    <button class="btn primary payment-submit" id="paySubmit" type="submit">
+      <span id="payButtonText">Endelea kulipa</span><span class="pay-arrow">↗</span>
+    </button>
+    <div class="payment-footnote"><span>🔒</span> Usalama wa malipo unathibitishwa na SonicPesa. Usishiriki PIN yako na mtu yeyote.</div>
+  </form>
+  <div id="paymentFeedback" class="payment-feedback" role="status" aria-live="polite"></div>
+</div>
+`;
+ const checkout = panel.firstElementChild;
+ if (!checkout) return;
+ checkout.id = 'mwCheckoutPanel';
+ const placeholder = document.getElementById('mwCheckoutPlaceholder');
+ if (!placeholder) return;
+
+ const style = document.createElement('style');
+ style.textContent = `
+ #mwCheckoutModal[hidden]{display:none!important}
+ #mwCheckoutModal{position:fixed;inset:0;z-index:99999;background:#020610d9;
+ backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;
+ padding:14px;overflow:auto}
+ #mwCheckoutModal .mw-box{width:min(620px,100%);max-height:92dvh;overflow:auto;
+ background:#080e1a;border:1px solid #ffffff22;border-radius:20px}
+ #mwCheckoutModal .mw-top{display:flex;justify-content:flex-end;padding:10px}
+ #mwCheckoutModal .mw-close{width:38px;height:38px;border-radius:12px;
+ background:#ffffff10;border:1px solid #ffffff22;color:white;font-size:23px}
+ #mwCheckoutModal .payment-shell{display:block!important;margin:0;border:0;
+ box-shadow:none;max-width:none;width:100%}
+ #mwOpenCheckout{display:flex;align-items:center;gap:12px;width:100%;
+ margin:16px 0;padding:15px;border-radius:14px;border:1px solid #58e7d155;
+ background:#58e7d118;color:inherit;font-weight:800;cursor:pointer;text-align:left}
+ #mwOpenCheckout small{display:block;font-weight:400;opacity:.7;margin-top:4px}
+ `;
+ document.head.appendChild(style);
+
+ const open = document.createElement('button');
+ open.type = 'button'; open.id = 'mwOpenCheckout';
+ open.innerHTML = '＋ <span>Lipa Sasa<small>Chagua mtandao wa malipo</small></span> ›';
+ placeholder.replaceWith(open);
+
+ const modal = document.createElement('div');
+ modal.id = 'mwCheckoutModal'; modal.hidden = true;
+ modal.setAttribute('role','dialog'); modal.setAttribute('aria-modal','true');
+ const box = document.createElement('div'); box.className = 'mw-box';
+ const top = document.createElement('div'); top.className = 'mw-top';
+ const close = document.createElement('button');
+ close.type = 'button'; close.className = 'mw-close';
+ close.setAttribute('aria-label','Funga'); close.innerHTML = '&times;';
+ top.appendChild(close); box.appendChild(top); box.appendChild(checkout);
+ modal.appendChild(box); document.body.appendChild(modal);
+
+ function show(){modal.hidden=false;document.body.style.overflow='hidden';close.focus()}
+ function hide(){modal.hidden=true;document.body.style.overflow='';open.focus()}
+ open.addEventListener('click',show);
+ close.addEventListener('click',hide);
+ modal.addEventListener('click',e=>{if(e.target===modal)hide()});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)hide()});
+
+ document.querySelectorAll('[data-section="paymentForm"]').forEach(a=>{
+   a.addEventListener('click',()=>setTimeout(show,0));
+ });
+})();
+
 </script>
 
 
