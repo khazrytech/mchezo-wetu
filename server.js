@@ -1062,6 +1062,9 @@ app.get('/signup', (req, res) => {
 });
 
 app.get('/dashboard', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
   res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
                                                   app.get('/admin', (req, res) => {
