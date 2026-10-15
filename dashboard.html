@@ -1,729 +1,610 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sw">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080b16">
-<title>Mchezo Wetu | Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-
-
-
-
-
-
-
-
-
-
-
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f3f6f4">
+<title>Mchezo Wetu | Member Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-
-/* Mchezo Wetu — Neon Green Glass Responsive Design */
-:root {
-  color-scheme: dark;
-  --bg: #07100c;
-  --panel: rgba(17, 31, 24, .88);
-  --panel2: #101e17;
-  --green: #7cff6b;
-  --green2: #31e981;
-  --text: #f2fff5;
-  --muted: #91a99a;
-  --border: rgba(124,255,107,.17);
-  --radius: 20px;
-  --shadow: 0 16px 50px rgba(0,0,0,.28);
-}
-* { box-sizing: border-box; }
-html { min-height: 100%; scroll-behavior: smooth; }
-body {
-  margin: 0;
-  min-height: 100vh;
-  color: var(--text);
-  background:
-    radial-gradient(ellipse at 8% 0%, rgba(49,233,129,.12), transparent 35%),
-    radial-gradient(ellipse at 95% 15%, rgba(124,255,107,.08), transparent 30%),
-    var(--bg);
-  font-family: Inter, "Segoe UI", Arial, sans-serif;
-  line-height: 1.6;
-}
-button, input, select, textarea { font: inherit; }
-button, a { -webkit-tap-highlight-color: transparent; }
-a { color: var(--green); }
-button {
-  cursor: pointer;
-  transition: transform .2s ease, filter .2s ease, border-color .2s ease;
-}
-button:hover { filter: brightness(1.12); }
-button:active { transform: scale(.98); }
-input, select, textarea {
-  width: 100%;
-  min-height: 45px;
-  padding: 12px 14px;
-  color: var(--text);
-  background: rgba(4,13,8,.8);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  outline: none;
-}
-input:focus, select:focus, textarea:focus {
-  border-color: var(--green);
-  box-shadow: 0 0 0 3px rgba(124,255,107,.1);
-}
-label { display: block; margin-bottom: 7px; color: #c7dfce; }
-button, .btn, [type=submit] {
-  border-radius: 12px;
-}
-.btn-primary, button.primary, .primary-btn,
-button[type=submit], input[type=submit] {
-  color: #061109;
-  background: linear-gradient(135deg, var(--green), var(--green2));
-  border: 0;
-  font-weight: 800;
-}
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 13px 15px; border-bottom: 1px solid var(--border); text-align: left; }
-th { color: var(--green); font-size: .82rem; text-transform: uppercase; letter-spacing: .05em; }
-tr:hover td { background: rgba(124,255,107,.035); }
-img { max-width: 100%; }
-header, nav, aside, main, section, footer { min-width: 0; }
-header, nav, aside {
-  border-color: var(--border);
-}
-header {
-  background: rgba(7,16,12,.88);
-  backdrop-filter: blur(18px);
-}
-nav a, aside a {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 10px 13px;
-  border-radius: 12px;
-  color: #c8d9ce;
-  text-decoration: none;
-  transition: .2s ease;
-}
-nav a:hover, aside a:hover, nav a.active, aside a.active {
-  color: var(--green);
-  background: rgba(124,255,107,.09);
-}
-main, .container, .dashboard, .dashboard-content, .main-content {
-  min-width: 0;
-}
-.card, .panel, .stat-card, .stat-box, .settings-card,
-.profile-card, .payment-card, .contribution-card, .content-card,
-[class*="card"], [class*="panel"] {
-  border-color: var(--border);
-}
-.card, .panel, .stat-card, .stat-box, .settings-card,
-.profile-card, .payment-card, .contribution-card, .content-card {
-  background: linear-gradient(145deg, rgba(20,39,28,.92), rgba(10,22,15,.92));
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-h1, h2, h3 { line-height: 1.25; letter-spacing: -.025em; }
-h1 { font-size: clamp(1.65rem, 4vw, 2.5rem); }
-h2 { font-size: clamp(1.2rem, 3vw, 1.65rem); }
-small, .muted, .subtitle, .description { color: var(--muted); }
-.badge, .status, .chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: rgba(124,255,107,.08);
-  color: var(--green);
-  font-size: .8rem;
-}
-button:not([type=submit]) {
-  border-color: var(--border);
-}
-hr { border: 0; border-top: 1px solid var(--border); }
-table { display: table; }
-.table-wrap, .table-responsive, .overflow-auto {
-  max-width: 100%;
-  overflow-x: auto;
-  border-radius: 14px;
-}
-::-webkit-scrollbar { width: 7px; height: 7px; }
-::-webkit-scrollbar-thumb { background: #31523b; border-radius: 99px; }
-:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
-@media (max-width: 1050px) {
-  .sidebar, aside { max-width: 100%; }
-  .dashboard-layout, .admin-layout { grid-template-columns: 1fr !important; }
-  .stats-grid, .stats, .stat-grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
-}
-@media (max-width: 720px) {
-  body { font-size: 14px; }
-  main, .container, .dashboard-content, .main-content {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding-left: 14px !important;
-    padding-right: 14px !important;
-  }
-  header { padding-left: 14px; padding-right: 14px; }
-  .sidebar, aside {
-    width: 100% !important;
-    position: relative !important;
-    height: auto !important;
-  }
-  .stats-grid, .stats, .stat-grid, .grid-2, .grid-3, .grid-4 {
-    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
-  }
-  .card, .panel, .stat-card, .stat-box, .settings-card,
-  .profile-card, .payment-card, .contribution-card, .content-card {
-    border-radius: 16px;
-  }
-  table { min-width: 600px; }
-  form { max-width: 100%; }
-  button, .btn, [type=submit] { max-width: 100%; }
-}
-@media (max-width: 390px) {
-  main, .container, .dashboard-content, .main-content {
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-  }
-  .stats-grid, .stats, .stat-grid, .grid-2, .grid-3, .grid-4 {
-    grid-template-columns: 1fr !important;
-  }
-}
-
+:root{--ink:#172a25;--muted:#74857d;--soft:#f3f6f4;--line:#e3eae5;--white:#fff;--green:#12805a;--deep:#112b23;--mint:#e6f3eb;--gold:#aa762e;--gold-bg:#fbf3e5;--red:#b24b50;--red-bg:#fbeeee;--blue:#527db1;--shadow:0 8px 24px rgba(24,48,35,.045);font-family:"DM Sans",sans-serif;color:var(--ink)}
+*{box-sizing:border-box}html{min-height:100%;scroll-behavior:smooth}body{margin:0;min-height:100vh;background:var(--soft);line-height:1.5}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:wait;opacity:.6}img{max-width:100%}[hidden]{display:none!important}
+.sidebar{position:fixed;inset:0 auto 0 0;z-index:10;width:254px;display:flex;flex-direction:column;padding:24px 17px 16px;background:#142920;color:#f2f7f3}
+.brand{display:flex;align-items:center;gap:11px;padding:0 9px 25px;color:#f5faf6;font:800 16px Manrope,sans-serif;letter-spacing:-.5px}.brand-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#b4e4c4;color:#173c2c;font-size:17px}.brand small{display:block;margin-top:2px;color:#a0b8a9;font:700 9px "DM Sans";letter-spacing:1.2px}
+.workspace{margin:0 9px 22px;padding:10px 11px;border:1px solid #365044;border-radius:11px;color:#adc0b4;font-size:10px}.workspace b{color:#f5faf6;font-size:11px}.workspace span{float:right;color:#8de3ac}
+.nav-label{padding:0 11px 8px;color:#91a99a;font-size:9px;font-weight:800;letter-spacing:1.2px}.nav{display:grid;gap:3px}.nav button{display:flex;align-items:center;gap:11px;width:100%;min-height:41px;padding:9px 11px;border:0;border-radius:9px;background:transparent;color:#b5c4ba;text-align:left;font-size:11px;font-weight:650}.nav button .ico{width:17px;color:#a9c4b1;text-align:center;font-size:14px}.nav button.active{background:#294639;color:#d2f1db}.nav button:hover:not(.active){background:#1d382c;color:#eef6f0}.nav .count{margin-left:auto;padding:2px 6px;border-radius:99px;background:#faeee0;color:var(--gold);font-size:9px}
+.side-bottom{margin-top:auto;padding-top:13px;border-top:1px solid #365044}.user-mini{display:flex;align-items:center;gap:10px;padding:7px}.avatar{display:grid;place-items:center;width:36px;height:36px;flex:0 0 auto;overflow:hidden;border-radius:50%;background:#d9eddf;color:#1b5238;font-size:11px;font-weight:800}.avatar img{width:100%;height:100%;object-fit:cover}.user-mini b,.user-mini small{display:block}.user-mini b{color:#f3f8f4;font-size:10px}.user-mini small{margin-top:2px;color:#a0b4a7;font-size:9px}
+.main{width:min(1640px,calc(100% - 254px));margin-left:254px;padding:0 clamp(25px,3.2vw,50px) 50px}.topbar{position:sticky;top:0;z-index:7;display:flex;align-items:center;justify-content:space-between;min-height:70px;border-bottom:1px solid var(--line);background:#f3f6f4f2;backdrop-filter:blur(12px)}.crumb{color:var(--muted);font-size:11px}.crumb b{color:var(--ink)}.top-actions{display:flex;align-items:center;gap:11px}.icon-btn{position:relative;display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#607168}.top-name{font-size:11px;font-weight:700}.unread{position:absolute;top:6px;right:6px;width:6px;height:6px;border:1px solid white;border-radius:50%;background:#dc785f}
+.content{padding-top:30px}.page{display:none}.page.active{display:block}.welcome{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}.eyebrow{margin-bottom:6px;color:var(--green);font-size:9px;font-weight:800;letter-spacing:1.7px}.welcome h1{margin:0;font:800 clamp(25px,2.5vw,34px) Manrope,sans-serif;letter-spacing:-1.3px}.welcome p{margin:6px 0 0;color:var(--muted);font-size:12px}.date-chip{padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--muted);font-size:10px;white-space:nowrap}
+.notice{display:none;margin:0 0 15px;padding:10px 13px;border:1px solid #f1dfbd;border-radius:9px;background:#fff8ed;color:#80581f;font-size:10px}.notice.show{display:block}.notice.error{border-color:#efd1d1;background:#fff1f1;color:#963f46}.notice.success{border-color:#cce5d4;background:#eff8f1;color:#286944}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:17px}.stat,.card{min-width:0;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:var(--shadow)}.stat{padding:17px 18px}.stat-top{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px;font-weight:600}.stat-icon{display:grid;place-items:center;width:29px;height:29px;border-radius:9px;background:#eaf4ed;color:var(--green);font-size:13px}.stat strong{display:block;margin-top:13px;font:800 clamp(17px,1.8vw,22px) Manrope;letter-spacing:-.7px;overflow-wrap:anywhere}.stat-foot{display:flex;align-items:center;gap:5px;margin-top:6px;color:#8b9891;font-size:9px}.trend{color:var(--green);font-weight:700}
+.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(290px,.8fr);align-items:start;gap:16px}.left-stack,.right-stack{display:grid;gap:15px}.card{padding:19px}.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}.card-head h2{margin:0;font:750 14px Manrope;letter-spacing:-.25px}.subtle{color:var(--muted);font-size:10px}.link-btn{padding:5px 7px;border:0;background:transparent;color:var(--green);font-size:10px;font-weight:750}.link-btn:hover{text-decoration:underline}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:99px;background:var(--gold-bg);color:var(--gold);font-size:8px;font-weight:750;white-space:nowrap}.pill.good{background:#eaf4ec;color:#398052}.pill.blue{background:#eef3fa;color:var(--blue)}.pill.red{background:var(--red-bg);color:var(--red)}
+.contribution{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:12px 0;border-bottom:1px solid #eef1ef}.contribution:last-child{border-bottom:0;padding-bottom:0}.c-left{display:flex;align-items:center;gap:9px;min-width:0}.c-icon{display:grid;place-items:center;width:36px;height:36px;flex:0 0 auto;border-radius:10px;background:#eff5f1;color:var(--green);font-size:13px}.c-title{overflow:hidden;font-size:11px;font-weight:750;text-overflow:ellipsis;white-space:nowrap}.c-meta{margin-top:3px;color:var(--muted);font-size:9px}.c-right{text-align:right;white-space:nowrap}.c-right b{display:block;font-size:11px}.empty-state{padding:22px 12px;color:var(--muted);font-size:10px;text-align:center}.empty-state strong{display:block;margin-bottom:4px;color:var(--ink);font-size:11px}
+.pay-card{position:relative;overflow:hidden;padding:21px;border:0;background:linear-gradient(145deg,#164a37,#103528 88%);color:#fff;box-shadow:0 10px 24px rgba(17,65,45,.15)}.pay-card:after{position:absolute;top:-48px;right:-38px;width:150px;height:150px;border:1px solid #ffffff14;border-radius:50%;box-shadow:0 0 0 22px #ffffff08,0 0 0 44px #ffffff05;content:""}.pay-card .card-head{position:relative;z-index:1;margin-bottom:11px}.pay-card h2{color:#fff}.pay-card p{position:relative;z-index:1;max-width:290px;margin:0;color:#c4dcd2;font-size:10px;line-height:1.6}.pay-amount{position:relative;z-index:1;display:flex;justify-content:space-between;gap:10px;margin:17px 0;padding:12px 0;border-top:1px solid #ffffff23;border-bottom:1px solid #ffffff23;color:#d3e4dc;font-size:10px}.pay-amount strong{font:800 19px Manrope;color:#fff}.primary{position:relative;z-index:1;width:100%;padding:12px;border:0;border-radius:8px;background:#aee3c2;color:#104333;font-size:11px;font-weight:800}.primary:hover{background:#c2efd2}.secure{position:relative;z-index:1;margin-top:8px;color:#bfd6cb;font-size:9px;text-align:center}
+.progress-head{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:9px}.progress-head b{color:var(--ink)}.progress{height:7px;margin:10px 0;border-radius:99px;background:#edf1ee}.progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#218b65,#78c99d)}.legend{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:9px}
+.payment-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #eef1ef}.payment-row:last-child{padding-bottom:0;border-bottom:0}.payment-row b{display:block;font-size:10px}.payment-row small{display:block;margin-top:3px;color:var(--muted);font-size:9px}.payment-row .amount{text-align:right;font-size:10px;font-weight:750}
+.chart{display:flex;align-items:flex-end;justify-content:space-around;height:105px;padding:7px 8px 0;border-bottom:1px solid var(--line);background:repeating-linear-gradient(to bottom,transparent 0,transparent 21px,#f0f3f1 22px)}.chart-group{display:flex;align-items:flex-end;gap:4px;height:100%}.bar{width:12px;min-height:3px;border-radius:4px 4px 0 0;background:#8fceb0}.bar.alt{background:#d1e4d7}.chart-labels{display:flex;justify-content:space-around;margin-top:5px;color:var(--muted);font-size:9px}.chart-legend{display:flex;gap:11px;margin-top:9px;color:var(--muted);font-size:8px}.chart-legend i{display:inline-block;width:7px;height:7px;margin-right:4px;border-radius:2px;background:#8fceb0}.chart-legend .alt{background:#d1e4d7}
+.section-card{margin-top:13px}.filters{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}.filters button{padding:6px 9px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--muted);font-size:9px}.filters button.active{border-color:#b9d8c6;background:#eff6f1;color:var(--deep);font-weight:700}.table-wrap{max-width:100%;overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th{padding:9px 8px;border-bottom:1px solid var(--line);color:#87938d;font-size:8px;text-align:left}td{padding:11px 8px;border-bottom:1px solid #eef1ef;font-size:9px}tr:last-child td{border-bottom:0}.table-status{font-size:8px}.outline-btn{padding:8px 11px;border:1px solid #d9e2dc;border-radius:8px;background:#fff;color:#456257;font-size:9px;font-weight:700}.outline-btn:hover{background:#f4f8f5}
+.profile-layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:13px;align-items:start}.profile-summary{text-align:center}.big-avatar{display:grid;place-items:center;width:67px;height:67px;margin:0 auto 10px;border-radius:22px;background:#eaf4ed;color:var(--deep);font:800 19px Manrope}.profile-summary h2{margin:0;font:800 15px Manrope}.profile-summary>p{margin:4px 0 12px;color:var(--muted);font-size:9px;overflow-wrap:anywhere}.profile-meta{padding-top:6px;border-top:1px solid var(--line)}.profile-line{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #f0f2f1;font-size:9px;text-align:left}.profile-line:last-child{border:0}.profile-line span{color:var(--muted)}.profile-line b{font-size:9px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{margin-bottom:12px}.field label{display:block;margin-bottom:5px;font-size:10px;font-weight:750}.field input,.field select{width:100%;height:39px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:#fbfcfb;color:var(--ink);font-size:10px}.field input:focus,.field select:focus{outline:2px solid #c6e6d3;border-color:#76b895}.field input:disabled{color:#88958e;background:#f4f6f5}.section-note{margin:12px 0 0;padding:10px;border-radius:8px;background:#f3f7f4;color:var(--muted);font-size:8px;line-height:1.6}
+.directory-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:9px}.directory-person{display:flex;align-items:center;gap:9px;min-width:0;padding:9px;border:1px solid var(--line);border-radius:9px}.directory-avatar{display:grid;place-items:center;width:32px;height:32px;flex:0 0 auto;overflow:hidden;border-radius:50%;background:#eaf4ed;color:var(--deep);font-size:9px;font-weight:800}.directory-avatar img{width:100%;height:100%;object-fit:cover}.directory-name{overflow:hidden;font-size:9px;font-weight:700;text-overflow:ellipsis;white-space:nowrap}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #edf1ee}.settings-row:last-child{border:0}.settings-row b{display:block;font-size:10px}.settings-row small{display:block;margin-top:3px;color:var(--muted);font-size:8px}.toggle{position:relative;width:31px;height:17px;flex:0 0 auto;border:0;border-radius:99px;background:#ccd7d0}.toggle.on{background:#4da77c}.toggle:after{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;content:"";transition:left .15s}.toggle.on:after{left:16px}.settings-group{margin-top:13px}.settings-group h3{margin:0 0 7px;font:750 11px Manrope}.help-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.help-item{padding:12px;border:1px solid var(--line);border-radius:9px}.help-item b{display:block;font-size:9px}.help-item small{display:block;margin-top:4px;color:var(--muted);font-size:8px;line-height:1.5}.notice-item{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid #eef1ef}.notice-item:last-child{border:0}.notice-icon{display:grid;place-items:center;width:29px;height:29px;flex:0 0 auto;border-radius:9px;background:#edf5ef;color:var(--green)}.notice-item b{display:block;font-size:9px}.notice-item small{display:block;margin-top:3px;color:var(--muted);font-size:8px}
+.top-pay{padding:8px 12px;border:0;border-radius:9px;background:var(--green);color:#fff;font-size:10px;font-weight:800;box-shadow:0 5px 14px #12805a22}.top-pay:hover{background:#0f6d4c}.mobile-more-toggle,.mobile-more-menu{display:none}.nav .mobile-more-toggle{width:auto}
+.payment-state{padding:25px 12px 7px;text-align:center;animation:state-in .35s ease both}.state-icon{display:grid;place-items:center;width:64px;height:64px;margin:0 auto 16px;border-radius:22px;background:#edf6ef;color:var(--green);font-size:25px;font-weight:800;box-shadow:0 0 0 8px #edf6ef80}.payment-state[data-state="pending"] .state-icon{background:#fbf4e7;color:#a6742d;box-shadow:0 0 0 8px #fbf4e780;animation:state-pulse 1.8s ease-in-out infinite}.payment-state[data-state="error"] .state-icon,.payment-state[data-state="rejected"] .state-icon{background:#fbeeee;color:#b24b50;box-shadow:0 0 0 8px #fbeeee80}.payment-state h3{margin:0;font:800 19px Manrope}.payment-state p{max-width:340px;margin:8px auto;color:var(--muted);font-size:11px;line-height:1.65}.state-reference{margin:17px auto;padding:11px;border:1px solid var(--line);border-radius:10px;background:#f8faf8;color:var(--muted);font-size:9px}.state-reference b{display:block;margin-top:3px;color:var(--ink);font-size:12px;letter-spacing:.3px}.state-actions{display:flex;justify-content:center;gap:8px;margin-top:15px}.state-actions button{width:auto;padding:10px 15px}.state-brand{margin-top:18px;color:#8b9891;font-size:8px;font-weight:750;letter-spacing:1.2px}.spinner{display:inline-block;width:13px;height:13px;margin-right:7px;border:2px solid #ffffff70;border-top-color:#fff;border-radius:50%;vertical-align:-2px;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes state-in{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}@keyframes state-pulse{50%{box-shadow:0 0 0 13px #fbf4e740}}
+.modal-backdrop{position:fixed;inset:0;z-index:25;display:none;align-items:center;justify-content:center;padding:16px;background:#153429a8;backdrop-filter:blur(4px)}.modal-backdrop.open{display:flex}.modal{width:min(470px,100%);max-height:92vh;overflow:auto;padding:20px;border-radius:16px;background:#fff;box-shadow:0 22px 70px #102b1e45}.modal-head{display:flex;justify-content:space-between;gap:12px}.modal-head h2{margin:0;font:800 17px Manrope}.modal-head p{margin:5px 0 0;color:var(--muted);font-size:9px}.close{width:29px;height:29px;border:0;border-radius:8px;background:#f0f4f1;color:#52645a}.steps{display:flex;gap:5px;margin:15px 0}.steps span{height:3px;flex:1;border-radius:99px;background:#e8eeea}.steps span.active{background:var(--green)}.modal-label{margin:13px 0 7px;color:#63756b;font-size:8px;font-weight:800;letter-spacing:.8px}.networks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.network{display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--line);border-radius:8px;background:white;color:var(--ink);text-align:left;font-size:9px;font-weight:700}.network.selected{border-color:#70ad8c;background:#eff7f1}.network-logo{display:grid;place-items:center;width:27px;height:27px;flex:0 0 auto;overflow:hidden;border-radius:7px;background:#f0f4f1;color:var(--deep);font-size:9px;font-weight:800}.network-logo img{display:block;width:20px;height:20px;object-fit:contain}.network-fallback{display:grid;place-items:center;width:100%;height:100%}.network-logo.mpesa{background:#e7f4e9;color:#16833e}.network-logo.mixx{background:#f1eafb;color:#6b39a7}.network-logo.airtel{background:#fff0f0;color:#e21e2b}.network-logo.halo{background:#fff2e6;color:#d37424}.network.selected:after{content:"✓";margin-left:auto;color:var(--green)}.modal .field{margin-top:11px}.modal .pay-amount{display:flex;justify-content:space-between;margin:12px 0;padding:10px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);color:var(--muted);font-size:9px}.modal .pay-amount strong{color:var(--ink);font:800 15px Manrope}.modal .primary{background:var(--green);color:#fff}.modal .secure{color:var(--muted)}.feedback{display:none;margin-top:10px;padding:9px;border-radius:8px;background:#eff8f1;color:#286944;font-size:9px}.feedback.show{display:block}.feedback.error{background:#fff1f1;color:#963f46}
+@media(max-width:1100px){.main{padding-right:24px;padding-left:24px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-grid{grid-template-columns:1fr}.right-stack{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.pay-card{grid-row:span 2}}
+@media(max-width:700px){.sidebar{width:72px;padding:18px 7px}.brand{justify-content:center;padding:0 0 21px}.brand-copy,.workspace,.nav-label,.nav .nav-text,.side-bottom .user-copy,.nav .count{display:none}.nav button{justify-content:center;padding:12px 4px}.nav button .ico{font-size:15px}.nav button.active{background:#294639;color:#dbf2e1}.user-mini{justify-content:center;padding:5px 0}.main{width:calc(100% - 72px);margin-left:72px;padding:0 18px 35px}.content{padding-top:24px}.profile-layout{grid-template-columns:1fr}.profile-summary{padding:17px}.right-stack{grid-template-columns:1fr 1fr}.pay-card{grid-row:auto}}
+@media(max-width:480px){.sidebar{inset:auto 0 0;width:100%;height:66px;padding:4px 6px;background:#142920;border-top:1px solid #365044;border-right:0}.sidebar .brand,.workspace,.side-bottom,.nav-label{display:none}.sidebar .nav{display:flex;justify-content:space-around;height:100%}.nav button[data-page="notices"],.nav button[data-page="profile"],.nav button[data-page="settings"],.nav button[data-page="help"]{display:none}.nav button{display:grid;justify-items:center;gap:1px;min-width:55px;width:auto;min-height:0;padding:5px 3px;color:#c1d0c5;font-size:8px}.nav .nav-text{display:block!important;font-size:8px}.nav button .ico{font-size:14px}.mobile-more-toggle{display:grid!important;justify-items:center;align-content:center;gap:1px;min-width:55px;height:100%;padding:5px 3px;border:0;border-radius:8px;background:transparent;color:#c1d0c5;font-size:8px}.mobile-more-toggle .ico{font-size:15px}.mobile-more-menu{position:fixed;right:12px;bottom:75px;z-index:30;width:min(250px,calc(100vw - 24px));padding:7px;border:1px solid #e3eae5;border-radius:14px;background:#fff;box-shadow:0 15px 45px #172a2530}.mobile-more-menu:not([hidden]){display:grid;gap:3px;animation:state-in .2s ease both}.mobile-more-menu button{display:flex;align-items:center;gap:10px;padding:10px;border:0;border-radius:8px;background:#fff;color:var(--ink);text-align:left;font-size:11px;font-weight:650}.mobile-more-menu button:hover{background:#f1f6f2}.mobile-more-menu .ico{width:18px;color:var(--green);text-align:center}.main{width:100%;margin:0;padding:0 14px 105px}.topbar{min-height:59px;margin:0 -14px;padding:0 14px}.top-name,.crumb{font-size:9px}.top-actions{gap:6px}.top-pay{padding:8px 10px}.content{padding-top:19px}.welcome{align-items:flex-start;flex-direction:column;gap:10px}.stats{gap:8px}.stat{padding:12px}.stat-top{font-size:8px}.stat strong{font-size:17px}.stat-foot{font-size:8px}.stat-icon{width:23px;height:23px}.card{padding:14px}.card-head h2{font-size:12px}.dashboard-grid,.left-stack,.right-stack{gap:10px}.right-stack{grid-template-columns:1fr}.payment-row{grid-template-columns:minmax(0,1fr) auto;gap:6px}.payment-row .status-cell{grid-column:1/-1}.payment-row .amount{font-size:9px}.form-grid{grid-template-columns:1fr;gap:0}.date-chip{font-size:9px}.filters{flex-wrap:nowrap;overflow-x:auto}.filters button{white-space:nowrap}.help-grid{grid-template-columns:1fr}.directory-list{grid-template-columns:1fr}.modal{padding:16px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+<style>
+[data-theme="dark"]{color-scheme:dark;--ink:#e8eee9;--muted:#a2b0a7;--soft:#101713;--line:#293b30;--white:#18231c;--green:#79c89a;--deep:#d8eee0;--mint:#1e3327;--gold-bg:#352b1c;--red-bg:#351f21;--shadow:0 8px 24px rgba(0,0,0,.16)}
+[data-theme="dark"] body{background:var(--soft)}
+[data-theme="dark"] .main .topbar{background:#101713ed;border-color:var(--line)}
+[data-theme="dark"] .stat,[data-theme="dark"] .card{background:#18231c;border-color:var(--line);color:var(--ink)}
+[data-theme="dark"] .date-chip,[data-theme="dark"] .icon-btn,[data-theme="dark"] .outline-btn,[data-theme="dark"] .filters button{background:#1d2a22;border-color:var(--line);color:#c6d5ca}
+[data-theme="dark"] .outline-btn:hover,[data-theme="dark"] .filters button.active{background:#263b2d;color:#d8eee0}
+[data-theme="dark"] .settings-row,[data-theme="dark"] .payment-row,[data-theme="dark"] .notice-item,[data-theme="dark"] .profile-line,[data-theme="dark"] td{border-color:#293b30}
+[data-theme="dark"] .field input,[data-theme="dark"] .field select,[data-theme="dark"] .language-select{background:#111a14;color:var(--ink);border-color:#34483a}
+[data-theme="dark"] .progress{background:#293b30}
+[data-theme="dark"] .chart{background:repeating-linear-gradient(to bottom,transparent 0,transparent 21px,#293b30 22px);border-color:var(--line)}
+[data-theme="dark"] .chart .bar{background:#69af83}
+[data-theme="dark"] .chart .bar.alt{background:#385943}
+[data-theme="dark"] .section-note,[data-theme="dark"] .state-reference{background:#1d2a22;color:var(--muted)}
+[data-theme="dark"] .mobile-more-menu,[data-theme="dark"] .mobile-more-menu button{background:#18231c;border-color:var(--line);color:var(--ink)}
+[data-theme="dark"] .mobile-more-menu button:hover{background:#263b2d}
+[data-theme="dark"] .modal{background:#18231c;color:var(--ink)}
+[data-theme="dark"] .close{background:#26372c;color:#d0ded4}
+[data-theme="dark"] .steps span{background:#304237}
+[data-theme="dark"] .network{background:#1d2a22;color:var(--ink)}
+[data-theme="dark"] .network.selected{background:#263b2d;border-color:#528b65}
+[data-theme="dark"] .network-logo{background:#26372c}
+[data-theme="dark"] .network-logo.mpesa{background:#20372a}
+[data-theme="dark"] .network-logo.mixx{background:#322540}
+[data-theme="dark"] .network-logo.airtel{background:#3a2526}
+[data-theme="dark"] .network-logo.halo{background:#3a2b1e}
+[data-theme="dark"] .feedback{background:#20372a;color:#b8e3c5}
+[data-theme="dark"] .feedback.error{background:#3a2526;color:#f2b7ba}
+.payment-state[data-state="pending"] .state-icon{background:#fbf4e7;color:#a6742d}
+[data-theme="dark"] .payment-state[data-state="pending"] .state-icon{background:#3a301f;color:#e8bb70}
+[data-theme="dark"] .payment-state[data-state="error"] .state-icon,[data-theme="dark"] .payment-state[data-state="rejected"] .state-icon{background:#3a2526;color:#f2a5aa}
+.payment-state[data-state="error"] .state-icon,.payment-state[data-state="rejected"] .state-icon{background:#fbeeee;color:#b24b50}
+.language-select{min-height:34px;padding:6px 28px 6px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);font-size:10px}
 </style>
 </head>
 <body>
-<header class="top">
-  <div class="brand">◈ <span>Mchezo</span> Wetu</div>
-  <div class="top-actions">
-    <button class="btn menu-trigger" id="openMemberMenu" type="button" aria-controls="memberSidebar" aria-expanded="false">☰ Menu</button>
-    <button class="btn" id="logout">Toka ↗</button>
+<aside class="sidebar" aria-label="Menyu ya mwanachama">
+  <div class="brand"><div class="brand-icon">M</div><div class="brand-copy">Mchezo Wetu<small>MEMBER PORTAL</small></div></div>
+  <div class="workspace">Kikundi<br><b>Mchezo Wetu</b><span>●</span></div>
+  <div class="nav-label">AKAUNTI</div>
+  <nav class="nav" aria-label="Member portal">
+    <button class="active" data-page="home" type="button"><span class="ico">⌂</span><span class="nav-text">Muhtasari</span></button>
+    <button data-page="contributions" type="button"><span class="ico">▤</span><span class="nav-text">Michango</span><span class="count" id="contributionCount">0</span></button>
+    <button data-page="payments" type="button"><span class="ico">↗</span><span class="nav-text">Malipo</span></button>
+    <button data-page="notices" type="button"><span class="ico">♧</span><span class="nav-text">Arifa</span></button>
+    <button data-page="profile" type="button"><span class="ico">♙</span><span class="nav-text">Wasifu</span></button>
+    <button data-page="settings" type="button"><span class="ico">⚙</span><span class="nav-text">Mipangilio</span></button>
+    <button data-page="help" type="button"><span class="ico">?</span><span class="nav-text">Msaada</span></button>
+    <button class="mobile-more-toggle" id="mobileMoreToggle" type="button" aria-expanded="false" aria-controls="mobileMoreMenu"><span class="ico">•••</span><span>Zaidi</span></button>
+  </nav>
+  <div class="mobile-more-menu" id="mobileMoreMenu" hidden>
+    <button data-page="notices" type="button"><span class="ico">♧</span>Arifa na hali</button>
+    <button data-page="profile" type="button"><span class="ico">♙</span>Wasifu wangu</button>
+    <button data-page="settings" type="button"><span class="ico">⚙</span>Mipangilio</button>
+    <button data-page="help" type="button"><span class="ico">?</span>Msaada</button>
   </div>
-</header>
-<main class="main">
-<section class="hero" id="home"><div class="eyebrow">Member space / Akaunti yako</div><h1>Karibu, <span id="name">Mwanachama</span></h1><p>Simamia michango yako, fuatilia malipo na angalia historia yako sehemu moja.</p><div id="notice" class="notice" role="status"></div></section>
-<section class="grid">
-<div class="stat"><label>Michango iliyothibitishwa</label><strong id="paid">—</strong><small>Jumla ya malipo yaliyokubaliwa</small></div>
-<div class="stat"><label>Malipo yanayosubiri</label><strong id="pending">—</strong><small>Yanasubiri mapitio</small></div>
-<div class="stat"><label>Michango iliyopangiwa</label><strong id="assigned">—</strong><small>Jumla ya michango yako</small></div>
-<div class="stat"><label>Salio linalokadiriwa</label><strong id="balance">—</strong><small>Hukokotolewa kwa malipo yaliyothibitishwa</small></div>
-</section>
-<section class="member-directory"><div class="directory-head"><h2>Wanachama wenzangu</h2><span class="directory-count" id="memberDirectoryCount">0 wanachama</span></div><div class="directory-list" id="memberDirectoryList"><div class="muted">Inapakia...</div></div></section>
-<section class="columns">
-<div id="mwCheckoutPlaceholder"></div>
-<div class="panel" id="contributionsSection"><h2>Historia ya michango</h2><p>Michango iliyowekwa kwenye akaunti yako.</p><div id="contributions" class="list"><div class="muted">Inapakia...</div></div></div>
-</section>
-<section class="panel" id="paymentsSection" style="margin-top:15px"><h2>Historia ya malipo</h2><p>Hali ya kila taarifa ya muamala.</p><div id="paymentsList" class="list"><div class="muted">Inapakia...</div></div></section>
-
-<section class="panel member-section" id="profileSection" hidden>
-  <div class="section-head">
-    <div><h2>Wasifu wangu</h2><p>Angalia na usasishe taarifa zako binafsi.</p></div>
-    <span class="pill">PROFILE</span>
-  </div>
-  <div class="profile-layout">
-    <div class="profile-summary">
-      <label class="profile-avatar avatar-pick" id="profileAvatar" for="memberAvatarFile">MW</label><input id="memberAvatarFile" type="file" accept="image/jpeg,image/png,image/webp" hidden>
-      <h3 id="profileDisplayName">Mwanachama</h3>
-      <div class="email" id="profileDisplayEmail">—</div>
-      <div class="profile-meta">
-        <div><span>Hali ya akaunti</span><span id="profileApproval">Inakaguliwa</span></div>
-        <div><span>Jukumu</span><span id="profileRole">Mwanachama</span></div>
-        <div><span>Alijiunga</span><span id="profileCreated">—</span></div>
-      </div>
-    </div>
-    <div>
-      <form id="profileForm">
-        <div class="field"><label for="profileFullName">Jina kamili</label><input id="profileFullName" name="full_name" minlength="2" maxlength="100" required></div>
-        <div class="field"><label for="profilePhone">Namba ya simu</label><input id="profilePhone" name="phone" type="tel" maxlength="30" placeholder="07XXXXXXXX"></div>
-        <div class="field"><label for="profileEmail">Barua pepe</label><input id="profileEmail" readonly aria-readonly="true"></div>
-        <button class="btn primary" id="saveProfile" type="submit">Hifadhi mabadiliko</button>
-      </form>
-      <div id="profileNotice" class="notice" role="status"></div>
-    </div>
-  </div>
-</section>
-
-<section class="panel member-section" id="settingsSection" hidden>
-  <div class="section-head">
-    <div><h2>Mipangilio</h2><p>Dhibiti mapendeleo na usalama wa akaunti yako.</p></div>
-    <span class="pill">SETTINGS</span>
-  </div>
-  <div class="settings-list">
-    <div class="setting-row">
-      <div><strong>Arifa ndani ya dashboard</strong><small>Onyesha ujumbe wa mfumo unapowasilisha malipo au kuhifadhi profile.</small></div>
-      <input id="prefDashboardNotices" type="checkbox" checked aria-label="Arifa za dashboard">
-    </div>
-    <div class="setting-row">
-      <div><strong>Muonekano wa dashboard</strong><small>Dashboard hii hutumia muonekano wa giza unaofaa simu.</small></div>
-      <span class="pill verified">Dark UI</span>
-    </div>
-    <div class="setting-row">
-      <div><strong>Usalama wa kuingia</strong><small>Unaingia kwa OTP ya barua pepe. Usishirikishe code yako na mtu mwingine.</small></div>
-      <span class="pill verified">Email OTP</span>
-    </div>
-    <div class="setting-row">
-      <div><strong>Ondoka kwenye akaunti</strong><small>Funga session ya sasa kwenye kifaa hiki.</small></div>
-      <button class="btn" id="settingsLogout" type="button">Toka kwenye akaunti</button>
-    </div>
-  </div>
-  <div id="settingsNotice" class="notice" role="status"></div>
-</section>
-
-</main>
-<nav class="nav" aria-label="Navigation kuu">
-  <a class="active" href="#home" data-section="home">⌂ Nyumbani</a>
-  <a href="#contributionsSection" data-section="contributionsSection">▤ Michango</a>
-  <a href="#paymentForm" data-section="paymentForm">＋ Malipo</a>
-</nav>
-
-<div class="sidebar-overlay" id="memberSidebarOverlay" hidden></div>
-<aside class="member-sidebar" id="memberSidebar" aria-label="Menu ya ziada" aria-hidden="true">
-  <div class="sidebar-head">
-    <div>
-      <strong>Mchezo Wetu</strong>
-      <small>Menu ya akaunti</small>
-    </div>
-    <button class="sidebar-close" id="closeMemberMenu" type="button" aria-label="Funga menu">✕</button>
-  </div>
-  <div class="sidebar-label">AKAUNTI YAKO</div>
-  <a href="#paymentsSection" data-section="paymentsSection">◷ Historia ya malipo</a>
-  <a href="#profileSection" data-section="profileSection">♙ Profile / Akaunti</a>
-  <a href="#settingsSection" data-section="settingsSection">⚙ Settings</a>
-  <div class="sidebar-foot">Simamia taarifa zako kwa urahisi.</div>
+  <div class="side-bottom"><div class="user-mini"><div class="avatar" id="sidebarAvatar">MW</div><div class="user-copy"><b id="sidebarName">Mwanachama</b><small id="sidebarRole">Mwanachama</small></div></div></div>
 </aside>
+<main class="main">
+  <header class="topbar"><div class="crumb">Member Portal &nbsp;›&nbsp; <b id="crumbPage">Muhtasari</b></div><div class="top-actions"><button class="top-pay" id="openPayment" type="button">+ Lipa</button><button class="icon-btn" aria-label="Msaada" data-go="help" type="button">?</button><button class="icon-btn" aria-label="Arifa" data-go="notices" type="button">♧<i class="unread" id="noticeDot" hidden></i></button><span class="top-name" id="topName">Mwanachama</span><div class="avatar" id="topAvatar">MW</div></div></header>
+  <div class="content">
+    <div class="notice" id="notice" role="status" aria-live="polite"></div>
+    <section class="page active" id="home">
+      <div class="welcome"><div><div class="eyebrow" id="welcomeDate">AKAUNTI YAKO</div><h1>Habari, <span id="name">Mwanachama</span> 👋</h1><p>Muhtasari wa michango, malipo na shughuli za akaunti yako.</p></div><div class="date-chip" id="accountStatus">Inakagua akaunti...</div></div>
+      <div class="stats">
+        <article class="stat"><div class="stat-top"><span>Jumla iliyolipwa</span><span class="stat-icon">✓</span></div><strong id="paid">—</strong><div class="stat-foot">Malipo yaliyothibitishwa</div></article>
+        <article class="stat"><div class="stat-top"><span>Malipo yanayosubiri</span><span class="stat-icon" style="color:var(--gold)">◷</span></div><strong id="pending">—</strong><div class="stat-foot"><span id="pendingCountText">Ombi 0</span> linakaguliwa</div></article>
+        <article class="stat"><div class="stat-top"><span>Michango iliyopangwa</span><span class="stat-icon">▤</span></div><strong id="assigned">—</strong><div class="stat-foot"><span id="assignedCountText">Michango 0</span> kwenye akaunti</div></article>
+        <article class="stat"><div class="stat-top"><span>Bado kulipa</span><span class="stat-icon" style="color:var(--blue)">◌</span></div><strong id="balance">—</strong><div class="stat-foot">Salio la michango yako</div></article>
+      </div>
+      <div class="dashboard-grid">
+        <div class="left-stack">
+          <article class="card"><div class="card-head"><div><h2>Michango yangu</h2><div class="subtle">Ufuatiliaji wa wajibu wako</div></div><button class="link-btn" data-go="contributions" type="button">Ona yote →</button></div><div id="homeContributions"><div class="empty-state">Inapakia michango...</div></div></article>
+          <article class="card"><div class="card-head"><div><h2>Malipo ya hivi karibuni</h2><div class="subtle">Miamala na hatua zake</div></div><button class="link-btn" data-go="payments" type="button">Historia kamili →</button></div><div id="recentPayments"><div class="empty-state">Inapakia malipo...</div></div></article>
+        </div>
+        <div class="right-stack">
+          <article class="card"><div class="card-head"><div><h2>Maendeleo ya michango</h2><div class="subtle">Malipo yaliyothibitishwa pekee</div></div><span class="pill good" id="progressPercent">0%</span></div><div class="progress-head"><span>Umelipa <b id="progressPaid">—</b></span><b id="progressTotals">— / —</b></div><div class="progress"><span id="progressBar" style="width:0"></span></div><div class="legend"><span>Salio <b id="progressBalance">—</b></span><span>Kwa sasa</span></div></article>
+          <article class="card"><div class="card-head"><div><h2>Mwenendo wa malipo</h2><div class="subtle">Miezi 6 · Kutokana na historia iliyopokelewa</div></div></div><div class="chart" id="paymentChart" role="img" aria-label="Chati ya malipo ya miezi sita"></div><div class="chart-labels" id="chartLabels"></div><div class="chart-legend"><span><i></i>Imethibitishwa</span><span><i class="alt"></i>Inasubiri</span></div></article>
+        </div>
+      </div>
+    </section>
+    <section class="page" id="contributions"><div class="welcome"><div><div class="eyebrow">FEDHA ZANGU</div><h1>Michango yangu</h1><p>Michango iliyowekwa kwenye akaunti yako na salio lake.</p></div><button class="outline-btn" data-open-payment type="button">Lipa mchango +</button></div><div class="stats"><article class="stat"><div class="stat-top">Jumla ya michango</div><strong id="contribTotal">—</strong><div class="stat-foot" id="contribTotalCount">Michango 0</div></article><article class="stat"><div class="stat-top">Imelipwa</div><strong id="contribPaid">—</strong><div class="stat-foot">Malipo yaliyothibitishwa</div></article><article class="stat"><div class="stat-top">Salio</div><strong id="contribBalance">—</strong><div class="stat-foot">Bado kulipa</div></article><article class="stat"><div class="stat-top">Inasubiri malipo</div><strong id="contribPending">—</strong><div class="stat-foot">Ombi linalokaguliwa</div></article></div><article class="card"><div class="card-head"><div><h2>Michango yote</h2><div class="subtle">Taarifa za michango zilizo kwenye akaunti yako</div></div></div><div id="allContributions"><div class="empty-state">Inapakia michango...</div></div></article></section>
+    <section class="page" id="payments"><div class="welcome"><div><div class="eyebrow">MIAMALA</div><h1>Historia ya malipo</h1><p>Fuatilia kila ombi na upitie marejeo ya miamala yako.</p></div><button class="outline-btn" id="exportPayments" type="button">Pakua historia ↓</button></div><div class="stats"><article class="stat"><div class="stat-top">Yaliyothibitishwa</div><strong id="historyVerified">—</strong><div class="stat-foot">Jumla iliyokubaliwa</div></article><article class="stat"><div class="stat-top">Yanasubiri</div><strong id="historyPending">—</strong><div class="stat-foot">Yanahitaji mapitio</div></article><article class="stat"><div class="stat-top">Yaliyokataliwa</div><strong id="historyRejected">—</strong><div class="stat-foot">Angalia maelezo ya muamala</div></article><article class="stat"><div class="stat-top">Miamala yote</div><strong id="historyCount">—</strong><div class="stat-foot">Rekodi zilizopokelewa</div></article></div><article class="card"><div class="card-head"><div><h2>Miamala yako</h2><div class="subtle">Hali na reference ya malipo</div></div></div><div class="filters" role="group" aria-label="Chuja historia ya malipo"><button class="active" data-filter="all" type="button">Yote</button><button data-filter="verified" type="button">Yaliyothibitishwa</button><button data-filter="pending" type="button">Yanasubiri</button><button data-filter="rejected" type="button">Yaliyokataliwa</button></div><div class="table-wrap"><table><thead><tr><th>MAELEZO</th><th>REFERENCE</th><th>TAREHE</th><th>NJIA</th><th>KIASI</th><th>HALI</th><th></th></tr></thead><tbody id="paymentsTable"><tr><td colspan="7" class="empty-state">Inapakia malipo...</td></tr></tbody></table></div></article></section>
+    <section class="page" id="notices"><div class="welcome"><div><div class="eyebrow">TAARIFA ZA AKAUNTI</div><h1>Arifa na hali</h1><p>Muhtasari unaotokana na hali ya akaunti na miamala yako.</p></div></div><article class="card"><div id="notificationsList"><div class="empty-state">Inapakia taarifa...</div></div></article></section>
+    <section class="page" id="profile"><div class="welcome"><div><div class="eyebrow">TAARIFA BINAFSI</div><h1>Wasifu wangu</h1><p>Simamia maelezo yanayotumika kwenye akaunti yako.</p></div></div><div class="profile-layout"><article class="card profile-summary"><label class="big-avatar" id="profileAvatar" for="memberAvatarFile">MW</label><input id="memberAvatarFile" type="file" accept="image/jpeg,image/png,image/webp" hidden><h2 id="profileDisplayName">Mwanachama</h2><p id="profileDisplayEmail">—</p><div class="profile-meta"><div class="profile-line"><span>Hali ya akaunti</span><b id="profileApproval">—</b></div><div class="profile-line"><span>Jukumu</span><b id="profileRole">Mwanachama</b></div><div class="profile-line"><span>Alijiunga</span><b id="profileCreated">—</b></div></div></article><div class="left-stack"><article class="card"><div class="card-head"><div><h2>Taarifa za binafsi</h2><div class="subtle">Badilisha jina au namba ya simu</div></div><button class="outline-btn" id="chooseAvatar" type="button">Badilisha picha</button></div><form id="profileForm"><div class="form-grid"><div class="field"><label for="profileFullName">Jina kamili</label><input id="profileFullName" name="full_name" minlength="2" maxlength="100" required></div><div class="field"><label for="profilePhone">Namba ya simu</label><input id="profilePhone" name="phone" type="tel" maxlength="30" placeholder="07XXXXXXXX"></div></div><div class="field"><label for="profileEmail">Barua pepe ya kuingia</label><input id="profileEmail" readonly aria-readonly="true"></div><button class="primary" id="saveProfile" style="width:auto;padding:10px 15px" type="submit">Hifadhi mabadiliko</button><div class="notice" id="profileNotice" role="status"></div></form><div class="section-note">Barua pepe ya kuingia inasimamiwa na mfumo wa uthibitishaji. Huwezi kuibadilisha kutoka kwenye wasifu huu.</div></article><article class="card"><div class="card-head"><div><h2>Wanachama wenzangu</h2><div class="subtle">Orodha ya wanachama wa kikundi</div></div><span class="pill blue" id="memberDirectoryCount">Inapakia...</span></div><div class="directory-list" id="memberDirectoryList"><div class="empty-state">Inapakia orodha ya wanachama...</div></div></article></div></div></section>
+    <section class="page" id="settings"><div class="welcome"><div><div class="eyebrow">AKAUNTI NA USALAMA</div><h1>Mipangilio</h1><p>Dhibiti mapendeleo ya dashboard na taarifa za usalama.</p></div></div><div class="dashboard-grid"><div class="left-stack"><article class="card"><div class="card-head"><div><h2>Arifa za dashboard</h2><div class="subtle">Mapendeleo yanahifadhiwa kwenye kifaa hiki</div></div></div><div class="settings-row"><div><b>Ujumbe wa mafanikio</b><small>Onyesha uthibitisho baada ya kuhifadhi taarifa au kutuma ombi.</small></div><button class="toggle on" id="prefDashboardNotices" type="button" role="switch" aria-checked="true" aria-label="Arifa za dashboard"></button></div><div class="settings-row"><div><b>Muonekano</b><small>Chagua mandhari nyepesi au ya giza kwenye kifaa hiki.</small></div><button class="toggle" id="prefDarkMode" type="button" role="switch" aria-checked="false" aria-label="Hali ya giza"></button></div><div class="settings-row"><div><b>Lugha / Language</b><small>Badilisha lugha ya dashboard yako.</small></div><select class="language-select" id="prefLanguage" aria-label="Lugha / Language"><option value="sw">Kiswahili</option><option value="en">English</option></select></div></article><article class="card"><div class="card-head"><div><h2>Faragha na taarifa</h2><div class="subtle">Matumizi ya taarifa zako ndani ya kikundi</div></div></div><p class="subtle">Taarifa za wasifu na miamala huonyeshwa kulingana na ruhusa za akaunti yako. Mabadiliko ya malipo hushughulikiwa na server.</p></article></div><div class="left-stack"><article class="card"><div class="card-head"><div><h2>Usalama wa akaunti</h2><div class="subtle">Linda akaunti yako</div></div><span class="pill good">Salama</span></div><div class="settings-row"><div><b>Uthibitisho wa kuingia</b><small>OTP ya barua pepe hutumika kuingia.</small></div><span class="pill good">Imewashwa</span></div><div class="settings-row"><div><b>Barua pepe</b><small id="settingsEmail">—</small></div><span class="pill good">Akaunti ya sasa</span></div><div class="settings-row"><div><b>Session ya kifaa</b><small>Ondoka ikiwa hutumii kifaa hiki.</small></div><button class="outline-btn" id="settingsLogout" type="button">Toka&nbsp; ↗</button></div></article><article class="card"><div class="card-head"><h2>Unahitaji msaada?</h2></div><p class="subtle">Angalia maswali ya kawaida au wasiliana na msimamizi wa kikundi.</p><button class="link-btn" data-go="help" type="button">Fungua msaada →</button></article></div></div></section>
+    <section class="page" id="help"><div class="welcome"><div><div class="eyebrow">TUKO TAYARI KUSAIDIA</div><h1>Msaada</h1><p>Majibu ya haraka kuhusu akaunti na malipo yako.</p></div></div><div class="dashboard-grid"><div class="left-stack"><article class="card"><div class="card-head"><h2>Maswali yanayoulizwa mara kwa mara</h2></div><div class="settings-row"><div><b>Malipo yanathibitishwa kwa muda gani?</b><small>Muamala utaonekana kama unasubiri hadi admin aukague na kuthibitisha kwenye historia ya malipo.</small></div></div><div class="settings-row"><div><b>Ombi la simu halijafika, nifanye nini?</b><small>Hakiki namba na mtandao. Angalia historia ya malipo kabla ya kuanzisha ombi jingine.</small></div></div><div class="settings-row"><div><b>Nibadilisheje taarifa zangu?</b><small>Fungua Wasifu, sasisha jina au simu, kisha hifadhi mabadiliko.</small></div></div><div class="settings-row"><div><b>Nina tatizo la idhini ya akaunti.</b><small>Wasiliana na msimamizi wa kikundi chako kwa uhakiki wa uanachama.</small></div></div></article></div><div class="left-stack"><article class="card"><div class="card-head"><h2>Usalama wa malipo</h2></div><div class="help-grid"><div class="help-item"><b>PIN ni ya simu yako</b><small>Weka PIN kwenye dirisha rasmi la mtandao wa simu tu. Dashboard haiombi PIN.</small></div><div class="help-item"><b>Thibitisha reference</b><small>Hifadhi reference ya muamala na usitume ombi lilelile mara mbili.</small></div></div><div class="section-note">Kwa msaada wa akaunti au malipo, wasiliana na msimamizi wako kupitia njia rasmi ya kikundi.</div></article></div></div></section>
+  </div>
+</main>
+<div class="modal-backdrop" id="paymentModal" hidden>
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="paymentTitle">
+    <div class="modal-head"><div><h2 id="paymentTitle">Lipa mchango</h2><p>Chagua mtandao, kiasi na namba ya simu.</p></div><button class="close" id="closePayment" aria-label="Funga" type="button">×</button></div>
+    <div class="steps" aria-label="Hatua 1 kati ya 2"><span class="active"></span><span></span></div>
+    <form id="paymentForm">
+      <div class="modal-label">1 · AINA YA MALIPO</div>
+      <div class="networks payment-types"><label class="network selected"><input type="radio" name="paymentType" value="contribution" checked> Lipa mchango</label><label class="network"><input type="radio" name="paymentType" value="game_fee"> Hela ya mchezo</label></div>
+      <div class="modal-label">2 · MTANDAO WA SIMU</div>
+      <div class="networks">
+        <button class="network selected" data-channel="MPESA" type="button"><span class="network-logo mpesa"><img src="https://upload.wikimedia.org/wikipedia/commons/1/15/M-PESA_LOGO-01.svg" alt="" loading="lazy"><span class="network-fallback" hidden>MP</span></span>M-Pesa</button>
+        <button class="network" data-channel="MIXX" type="button"><span class="network-logo mixx"><span class="network-fallback">Y</span></span>Mixx by Yas</button>
+        <button class="network" data-channel="AIRTELMONEY" type="button"><span class="network-logo airtel"><img src="https://cdn.simpleicons.org/airtel/FF0000" alt="" loading="lazy"><span class="network-fallback" hidden>A</span></span>Airtel Money</button>
+        <button class="network" data-channel="HALOPESA" type="button"><span class="network-logo halo"><span class="network-fallback">H</span></span>HaloPesa</button>
+      </div>
+      <div class="field" id="contributionField"><label for="paymentContribution">Mchango unaolipia</label><select id="paymentContribution"><option value="">Malipo ya jumla / hakuna mchango maalum</option></select></div>
+      <div class="form-grid"><div class="field"><label for="paymentAmount">Kiasi (TSh)</label><input id="paymentAmount" type="number" min="100" max="100000000" step="1" inputmode="numeric" required></div><div class="field"><label for="paymentPhone">Namba ya simu</label><input id="paymentPhone" type="tel" inputmode="tel" autocomplete="tel-national" maxlength="16" placeholder="0712 345 678" required></div></div>
+      <div class="pay-amount"><span>Jumla ya kulipa</span><strong id="paymentTotal">TSh 0</strong></div>
+      <button class="primary" id="paySubmit" type="submit"><span id="payButtonText">Endelea na malipo →</span></button>
+      <div class="secure">🔒 Ombi litatumwa kwenye simu yako. PIN inaingizwa kwenye simu pekee—usiishiriki.</div>
+      <div class="feedback" id="paymentFeedback" role="status" aria-live="polite"></div>
+    </form>
+    <section class="payment-state" id="paymentState" data-state="pending" aria-live="polite" hidden>
+      <div class="state-icon" id="paymentStateIcon" aria-hidden="true">◷</div>
+      <h3 id="paymentStateTitle">Ombi linasubiri</h3>
+      <p id="paymentStateMessage"></p>
+      <div class="state-reference" id="paymentStateReference" hidden>Reference ya malipo<b id="paymentReference"></b></div>
+      <div class="state-actions">
+        <button class="outline-btn" id="refreshPaymentStatus" type="button" hidden>Angalia hali</button>
+        <button class="outline-btn" id="retryPayment" type="button" hidden>Jaribu tena</button>
+        <button class="primary" id="closePaymentState" type="button">Funga</button>
+      </div>
+      <div class="state-brand">Mchezo Wetu · MALIPO SALAMA</div>
+    </section>
+  </section>
+</div>
+<div class="modal-backdrop" id="paymentDetailModal" hidden>
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="modal-head"><div><h2 id="detailTitle">Maelezo ya muamala</h2><p>Rekodi kutoka kwenye historia ya akaunti yako.</p></div><button class="close" data-close-detail aria-label="Funga" type="button">×</button></div><div id="paymentDetails"></div></section>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-let client,token;
+'use strict';
+let client=null,token=null,member=null,dashboardData=null,selectedChannel='MPESA',paymentFilter='all',activePaymentReference=null,currentLanguage='sw',currentLocale='sw-TZ';
 const $=id=>document.getElementById(id);
-const money=n=>'TSh '+Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2});
-function note(t,ok=false){const n=$('notice');n.textContent=t;n.className='notice show';n.style.color=ok?'#73e8ca':'#ffb6c1'}
-async function api(url,options={}){
- const r=await fetch(url,{...options,headers:{'Content-Type':'application/json','Authorization':'Bearer '+token,...options.headers}});
- const d=await r.json();if(!r.ok)throw Error(d.error||'Ombi halikufanikiwa.');return d;
+const escapeText=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const money=value=>'TSh '+Number(value||0).toLocaleString(currentLocale,{maximumFractionDigits:0});
+const initials=value=>String(value||'MW').trim().split(/\s+/).slice(0,2).map(part=>part[0]||'').join('').toUpperCase()||'MW';
+const statusLabel=value=>currentLanguage==='en'?({verified:'Verified',rejected:'Rejected',pending:'Pending',paid:'Paid',cancelled:'Cancelled'})[value]||'Due':({verified:'Imethibitishwa',rejected:'Imekataliwa',pending:'Inasubiri',paid:'Imelipwa',cancelled:'Imefutwa'})[value]||'Inadaiwa';
+const statusClass=value=>value==='verified'||value==='paid'?'good':value==='rejected'?'red':'';
+const dateLabel=value=>{if(!value)return '—';const parsed=new Date(value);return Number.isNaN(parsed.getTime())?'—':parsed.toLocaleDateString(currentLocale,{day:'2-digit',month:'short',year:'numeric'})};
+const paymentMethodLabel=value=>value==='mobile_money'?(currentLanguage==='en'?'Mobile money':'Pesa ya simu'):value||'—';
+const translationPairs=[
+ ['Muhtasari','Overview'],['Michango yangu','My contributions'],['Michango','Contributions'],['Malipo','Payments'],['Historia ya malipo','Payment history'],['Arifa na hali','Notifications and status'],['Arifa','Notifications'],['Wasifu wangu','My profile'],['Wasifu','Profile'],['Mipangilio','Settings'],['Msaada','Help'],['Zaidi','More'],
+ ['AKAUNTI','ACCOUNT'],['AKAUNTI YAKO','YOUR ACCOUNT'],['AKAUNTI NA USALAMA','ACCOUNT & SECURITY'],['FEDHA ZANGU','MY FUNDS'],['MIAMALA','TRANSACTIONS'],['TAARIFA ZA AKAUNTI','ACCOUNT NOTICES'],['TAARIFA BINAFSI','PERSONAL DETAILS'],['TUKO TAYARI KUSAIDIA','HERE TO HELP'],
+ ['Habari,','Hello,'],['Muhtasari wa michango, malipo na shughuli za akaunti yako.','An overview of your contributions, payments, and account activity.'],['Jumla iliyolipwa','Total paid'],['Malipo yanayosubiri','Pending payments'],['Michango iliyopangwa','Assigned contributions'],['Bado kulipa','Remaining balance'],['Malipo yaliyothibitishwa','Verified payments'],['Ombi','Request'],['linakaguliwa','under review'],['Michango','Contributions'],['kwenye akaunti','in your account'],['Salio la michango yako','Your contribution balance'],
+ ['Ufuatiliaji wa wajibu wako','Track your commitments'],['Ona yote →','View all →'],['Malipo ya hivi karibuni','Recent payments'],['Miamala na hatua zake','Transactions and their status'],['Historia kamili →','Full history →'],['Maendeleo ya michango','Contribution progress'],['Malipo yaliyothibitishwa pekee','Verified payments only'],['Umelipa','Paid'],['Kwa sasa','Current'],['Mwenendo wa malipo','Payment activity'],['Miezi 6 · Kutokana na historia iliyopokelewa','6 months · Based on received history'],
+ ['Dhibiti mapendeleo ya dashboard na taarifa za usalama.','Manage dashboard preferences and security information.'],['Arifa za dashboard','Dashboard notifications'],['Mapendeleo yanahifadhiwa kwenye kifaa hiki','Preferences are saved on this device'],['Ujumbe wa mafanikio','Success messages'],['Onyesha uthibitisho baada ya kuhifadhi taarifa au kutuma ombi.','Show confirmations after saving details or submitting a request.'],['Muonekano','Appearance'],['Chagua mandhari nyepesi au ya giza kwenye kifaa hiki.','Choose light or dark appearance on this device.'],['Lugha / Language','Language'],['Badilisha lugha ya dashboard yako.','Change your dashboard language.'],['Faragha na taarifa','Privacy and information'],['Matumizi ya taarifa zako ndani ya kikundi','Use of your information in the group'],['Taarifa za wasifu na miamala huonyeshwa kulingana na ruhusa za akaunti yako. Mabadiliko ya malipo hushughulikiwa na server.','Profile and transaction details are shown according to your account permissions. Payment changes are handled by the server.'],['Usalama wa akaunti','Account security'],['Linda akaunti yako','Protect your account'],['Salama','Secure'],['Uthibitisho wa kuingia','Sign-in verification'],['OTP ya barua pepe hutumika kuingia.','Email OTP is used to sign in.'],['Imewashwa','Enabled'],['Barua pepe','Email'],['Akaunti ya sasa','Current account'],['Session ya kifaa','Device session'],['Ondoka ikiwa hutumii kifaa hiki.','Sign out if you are not using this device.'],['Toka','Sign out'],['Unahitaji msaada?','Need help?'],['Angalia maswali ya kawaida au wasiliana na msimamizi wa kikundi.','See common questions or contact your group administrator.'],['Fungua msaada →','Open help →'],
+ ['Habari za hivi punde','Recent activity'],['Fungua ukurasa','Open page'],['Lipa mchango +','Pay contribution +'],['Pakua historia ↓','Download history ↓'],['Yote','All'],['Yaliyothibitishwa','Verified'],['Yanasubiri','Pending'],['Yaliyokataliwa','Rejected'],['MAELEZO','DETAILS'],['REFERENCE','REFERENCE'],['TAREHE','DATE'],['NJIA','METHOD'],['KIASI','AMOUNT'],['HALI','STATUS'],['Maelezo','Details'],['Lipa','Pay'],['+ Lipa','+ Pay'],['Funga','Close'],['Hifadhi mabadiliko','Save changes'],['Badilisha picha','Change photo'],['Fungua akaunti yako','Open your account'],['Imeidhinishwa','Approved'],['Inasubiri idhini','Awaiting approval'],['Akaunti imeidhinishwa','Account approved'],['Jumla ya michango','Total contributions'],['Imelipwa','Paid'],['Salio','Balance'],['Inasubiri malipo','Payment pending'],['MIAMALA YAKO','YOUR TRANSACTIONS'],['TAARIFA ZA AKAUNTI','ACCOUNT NOTICES'],['Malipo ya hivi karibuni','Recent payments'],['Mchango unaolipia','Contribution to pay'],['Kiasi (TSh)','Amount (TSh)'],['Namba ya simu','Phone number'],['Jumla ya kulipa','Total to pay'],['Lipa mchango','Pay contribution'],['Chagua mtandao, kiasi na namba ya simu.','Choose a network, amount, and phone number.'],['Akaunti yako inasubiri kuidhinishwa na admin. Malipo yatafunguliwa baada ya idhini.','Your account is awaiting administrator approval. Payments will be enabled after approval.'],['Kikundi','Group'],['Inakagua akaunti...','Checking account...'],['Inapakia michango...','Loading contributions...'],['Inapakia malipo...','Loading payments...'],['Inapakia taarifa...','Loading notifications...'],['Inapakia orodha ya wanachama...','Loading member directory...'],['Bado huna michango','No contributions yet'],['Michango utakayopangiwa itaonekana hapa.','Contributions assigned to you will appear here.'],['Bado hakuna malipo','No payments yet'],['Malipo utakayotuma yataonekana hapa.','Payments you submit will appear here.'],['Bado hakuna malipo yaliyorekodiwa.','No payments have been recorded yet.'],['Hakuna muamala unaolingana na kichujio.','No transactions match this filter.'],['Orodha ya wanachama haijapatikana','Member list is unavailable'],['Bado hakuna wanachama kwenye orodha.','There are no members in the list yet.'],['Email imethibitishwa','Email verified'],['Usajili umekamilika. Akaunti yako inasubiri idhini ya msimamizi.','Registration complete. Your account is awaiting administrator approval.'],['Chati ya malipo ya miezi sita','Six-month payment chart'],['Imethibitishwa','Verified'],['Inasubiri','Pending'],['Akaunti yako imeidhinishwa','Your account is approved'],['Idhini ya akaunti inasubiri','Account approval is pending'],['Unaweza kutumia huduma za akaunti yako.','You can use your account services.'],['Msimamizi akishaidhinisha akaunti, utaruhusiwa kuanzisha malipo.','You can make payments after an administrator approves your account.'],['Hakuna malipo yanayosubiri','No pending payments'],['Hakuna ombi la malipo linalohitaji mapitio kwa sasa.','There are no payment requests awaiting review.']
+];
+const protectedTextRoots='#name,#topName,#sidebarName,#sidebarRole,#profileDisplayName,#profileDisplayEmail,#settingsEmail,#profileFullName,#profilePhone,#profileEmail,#memberDirectoryList,#homeContributions,#allContributions,#recentPayments,#paymentsTable,#paymentDetails,#paymentContribution,#notificationsList,#paymentPhone,#paymentAmount,#paymentReference';
+function translatedText(value,language){
+ let result=value;
+ const trimmed=value.trim();
+ if(language==='en'){
+  const pair=translationPairs.find(([sw])=>sw===trimmed);
+  if(pair)return value.replace(trimmed,pair[1]);
+ }else{
+  const pair=translationPairs.find(([,en])=>en===trimmed);
+  if(pair)return value.replace(trimmed,pair[0]);
+ }
+ return result;
 }
-function status(s){return s==='verified'?'Imethibitishwa':s==='rejected'?'Imekataliwa':s==='pending'?'Inasubiri':s==='paid'?'Imelipwa':s==='cancelled'?'Imefutwa':'Inadaiwa'}
-function pill(s){return '<span class="pill '+(s==='verified'||s==='paid'?'verified':s==='rejected'?'rejected':'')+'">'+status(s)+'</span>'}
-function date(v){return v?new Date(v).toLocaleString('sw-TZ',{dateStyle:'medium',timeStyle:'short'}):'—'}
-async function start(){
- try{
-  const r=await fetch('/api/config',{cache:'no-store'});
-  const c=await r.json().catch(()=>({}));
-  if(!r.ok)throw Error(c.error||'Supabase configuration haijapatikana.');
-  const url=c.supabaseUrl||c.url||c.SUPABASE_URL;
-  const key=c.supabaseAnonKey||c.supabasePublishableKey||c.anonKey||c.publishableKey||c.SUPABASE_ANON_KEY;
-  if(!url||!key)throw Error('Supabase URL au public key haijarudishwa na server.');
-  if(!window.supabase)throw Error('Supabase library haijapakia. Kagua intaneti.');
-  client=window.supabase.createClient(url,key);
-  const session=await client.auth.getSession();token=session.data.session?.access_token;
-  if(!token){location.replace('/login');return}
-  await refresh();
-  await loadMemberDirectory();
-  const requestedSection = location.hash.slice(1);
-  if (requestedSection) showMemberSection(requestedSection);
- }catch(e){note(e.message||'Imeshindikana kupakia akaunti.')}
+function translateTextNode(node,force=false){
+ if(!force&&node.parentElement?.closest(protectedTextRoots))return;
+ const translated=translatedText(node.data,currentLanguage);
+ if(translated!==node.data)node.data=translated;
+}
+function applyLanguage(language){
+ currentLanguage=language==='en'?'en':'sw';currentLocale=currentLanguage==='en'?'en-TZ':'sw-TZ';
+ document.documentElement.lang=currentLanguage;
+ const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+ let node;
+ while((node=walker.nextNode()))translateTextNode(node);
+ document.querySelectorAll('.empty-state,.chart-legend').forEach(container=>{
+  const staticWalker=document.createTreeWalker(container,NodeFilter.SHOW_TEXT);let textNode;
+  while((textNode=staticWalker.nextNode()))translateTextNode(textNode,true);
+ });
+ $('paymentChart').setAttribute('aria-label',currentLanguage==='en'?'Six-month payment chart':'Chati ya malipo ya miezi sita');
+ $('prefLanguage').value=currentLanguage;
+ $('prefDarkMode').setAttribute('aria-label',currentLanguage==='en'?'Dark mode':'Hali ya giza');
+ $('prefDashboardNotices').setAttribute('aria-label',currentLanguage==='en'?'Dashboard notifications':'Arifa za dashboard');
+ document.querySelector('[data-go="help"].icon-btn').setAttribute('aria-label',currentLanguage==='en'?'Help':'Msaada');
+ document.querySelector('[data-go="notices"].icon-btn').setAttribute('aria-label',currentLanguage==='en'?'Notifications':'Arifa');
+}
+const textObserver=new MutationObserver(records=>records.forEach(record=>{
+ if(record.type==='characterData')translateTextNode(record.target);
+ else record.addedNodes.forEach(added=>{
+  if(added.nodeType===Node.TEXT_NODE)translateTextNode(added);
+  else if(added.nodeType===Node.ELEMENT_NODE){
+   const walker=document.createTreeWalker(added,NodeFilter.SHOW_TEXT);let node;
+   while((node=walker.nextNode()))translateTextNode(node);
+  }
+ });
+}));
+textObserver.observe(document.body,{childList:true,characterData:true,subtree:true});
+function paymentTitle(payment){
+ if(payment.payment_type==='game_fee')return 'Hela ya mchezo';
+ const contribution=(dashboardData?.contributions||[]).find(item=>String(item.id)===String(payment.contribution_id));
+ return contribution?.title||'Malipo ya jumla';
+}
+function setNotice(message,type='error'){const el=$('notice');el.textContent=message;el.className='notice show '+type}
+function setLocalNotice(element,message,type='success'){element.textContent=message;element.className='notice show '+type}
+async function api(url,options={}){
+ const headers={Authorization:'Bearer '+token,...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})};
+ const response=await fetch(url,{...options,headers,cache:'no-store'});
+ let data={};
+ try{data=await response.json()}catch{}
+ if(!response.ok)throw new Error(data.error||data.message||'Ombi halikufanikiwa. HTTP '+response.status);
+ return data;
+}
+function pill(value){return '<span class="pill '+statusClass(value)+'">'+escapeText(statusLabel(value))+'</span>'}
+function safeAvatarUrl(value){return /^https:\/\//i.test(String(value||''))?escapeText(value):''}
+function renderAvatar(element,url,name){const safeUrl=safeAvatarUrl(url);element.innerHTML=safeUrl?'<img src="'+safeUrl+'" alt="">':escapeText(initials(name))}
+function setActivePage(name,updateUrl=true){
+ const pages=['home','contributions','payments','notices','profile','settings','help'];
+ if(!pages.includes(name))name='home';
+ document.querySelectorAll('.page').forEach(page=>page.classList.toggle('active',page.id===name));
+ document.querySelectorAll('.nav button[data-page]').forEach(button=>button.classList.toggle('active',button.dataset.page===name));
+ const labels={home:'Muhtasari',contributions:'Michango yangu',payments:'Historia ya malipo',notices:'Arifa na hali',profile:'Wasifu wangu',settings:'Mipangilio',help:'Msaada'};
+ $('crumbPage').textContent=labels[name];
+ $('mobileMoreMenu').hidden=true;$('mobileMoreToggle').setAttribute('aria-expanded','false');
+ if(updateUrl)history.replaceState(null,'',name==='home'?'/dashboard':'#'+name);
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderProfile(){
+ const profile=member.profile,user=member.user||{};
+ const name=profile.full_name||user.email||'Mwanachama',email=user.email||'';
+ $('name').textContent=name;$('topName').textContent=name.split(/\s+/)[0];$('sidebarName').textContent=name;
+ $('sidebarRole').textContent=profile.role==='admin'?'Admin':'Mwanachama';
+ $('profileFullName').value=profile.full_name||'';$('profilePhone').value=profile.phone||'';
+ $('profileEmail').value=email;$('profileDisplayEmail').textContent=email||'Barua pepe haijawekwa';
+ $('profileDisplayName').textContent=name;
+ $('profileRole').textContent=profile.role==='admin'?'Admin':'Mwanachama';
+ $('profileApproval').innerHTML=profile.is_approved?'<span class="pill good">Imeidhinishwa</span>':'<span class="pill">Inasubiri idhini</span>';
+ $('profileCreated').textContent=dateLabel(profile.created_at);
+ $('settingsEmail').textContent=email||'Barua pepe haijawekwa';
+ renderAvatar($('profileAvatar'),profile.avatar_url,name);
+ renderAvatar($('topAvatar'),profile.avatar_url,name);
+ renderAvatar($('sidebarAvatar'),profile.avatar_url,name);
+ $('accountStatus').innerHTML=profile.is_approved?'<span style="color:var(--green)">●</span> &nbsp;Akaunti imeidhinishwa':'<span style="color:var(--gold)">●</span> &nbsp;Inasubiri idhini';
+}
+function renderContributions(contributions){
+ const rows=contributions||[];
+ $('contributionCount').textContent=String(rows.length);
+ const active=rows.filter(item=>item.status!=='cancelled');
+ const total=active.reduce((sum,item)=>sum+Number(item.amount||0),0);
+ const verified=dashboardData?.stats?.paid||0,pending=dashboardData?.stats?.pending||0;
+ $('contribTotal').textContent=money(total);$('contribTotalCount').textContent=currentLanguage==='en'?'Contributions '+rows.length:'Michango '+rows.length;
+ $('contribPaid').textContent=money(verified);$('contribBalance').textContent=money(dashboardData?.stats?.balance);
+ $('contribPending').textContent=money(pending);
+ const markup=rows.length?rows.map(item=>'<div class="contribution"><div class="c-left"><div class="c-icon">▤</div><div><div class="c-title">'+escapeText(item.title||'Mchango')+'</div><div class="c-meta">Mwisho '+escapeText(dateLabel(item.due_date))+' · Umewekwa '+escapeText(dateLabel(item.created_at))+'</div></div></div><div class="c-right"><b>'+money(item.amount)+'</b>'+pill(item.status)+'</div></div>').join(''):'<div class="empty-state"><strong>Bado huna michango</strong>Michango utakayopangiwa itaonekana hapa.</div>';
+ $('homeContributions').innerHTML=rows.length?rows.slice(0,3).map(item=>'<div class="contribution"><div class="c-left"><div class="c-icon">▤</div><div><div class="c-title">'+escapeText(item.title||'Mchango')+'</div><div class="c-meta">Mwisho '+escapeText(dateLabel(item.due_date))+'</div></div></div><div class="c-right"><b>'+money(item.amount)+'</b>'+pill(item.status)+'</div></div>').join(''):markup;
+ $('allContributions').innerHTML=markup;
+ const select=$('paymentContribution'),selected=select.value;
+ select.innerHTML='<option value="">Malipo ya jumla / hakuna mchango maalum</option>'+active.map(item=>'<option value="'+escapeText(item.id)+'">'+escapeText(item.title||'Mchango')+' — '+money(item.amount)+'</option>').join('');
+ if(active.some(item=>item.id===selected))select.value=selected;
+}
+function renderPaymentRows(payments){
+ const rows=payments||[];
+ const filtered=paymentFilter==='all'?rows:rows.filter(payment=>payment.status===paymentFilter);
+ $('historyVerified').textContent=money(rows.filter(payment=>payment.status==='verified').reduce((sum,payment)=>sum+Number(payment.amount||0),0));
+ $('historyPending').textContent=money(rows.filter(payment=>payment.status==='pending').reduce((sum,payment)=>sum+Number(payment.amount||0),0));
+ $('historyRejected').textContent=money(rows.filter(payment=>payment.status==='rejected').reduce((sum,payment)=>sum+Number(payment.amount||0),0));
+ $('historyCount').textContent=String(rows.length);
+ const table=$('paymentsTable');
+ if(!filtered.length){table.innerHTML='<tr><td colspan="7" class="empty-state">'+(rows.length?'Hakuna muamala unaolingana na kichujio.':'Bado hakuna malipo yaliyorekodiwa.')+'</td></tr>';return}
+ table.innerHTML=filtered.map(payment=>'<tr><td>'+escapeText(paymentTitle(payment))+'</td><td>'+escapeText(payment.reference||'—')+'</td><td>'+escapeText(dateLabel(payment.created_at))+'</td><td>'+escapeText(paymentMethodLabel(payment.method))+'</td><td><b>'+money(payment.amount)+'</b></td><td><span class="pill table-status '+statusClass(payment.status)+'">'+escapeText(statusLabel(payment.status))+'</span></td><td><button class="link-btn" type="button" data-payment-detail="'+escapeText(payment.id)+'">Maelezo</button></td></tr>').join('');
+ $('recentPayments').innerHTML=rows.length?rows.slice(0,3).map(payment=>'<div class="payment-row"><div><b>'+escapeText(paymentTitle(payment))+'</b><small>'+escapeText(dateLabel(payment.created_at))+' · '+escapeText(paymentMethodLabel(payment.method))+' · '+escapeText(payment.reference||'Bila reference')+'</small></div><div class="amount">'+money(payment.amount)+'</div><div class="status-cell">'+pill(payment.status)+'</div></div>').join(''):'<div class="empty-state"><strong>Bado hakuna malipo</strong>Malipo utakayotuma yataonekana hapa.</div>';
+ renderNotifications();
+}
+function renderProgress(stats){
+ const assigned=Number(stats.assigned||0),paid=Number(stats.paid||0),balance=Number(stats.balance||0);
+ const percent=assigned?Math.max(0,Math.min(100,Math.round(paid/assigned*100))):0;
+ $('progressPercent').textContent=percent+'%';$('progressPaid').textContent=money(paid);
+ $('progressTotals').textContent=money(paid)+' / '+money(assigned);$('progressBalance').textContent=money(balance);
+ $('progressBar').style.width=percent+'%';
+ $('assignedCountText').textContent=(currentLanguage==='en'?'Contributions ':'Michango ')+(dashboardData?.contributions?.length||0);
+ const pendingCount=(dashboardData?.payments||[]).filter(payment=>payment.status==='pending').length;
+ $('pendingCountText').textContent=(currentLanguage==='en'?'Requests ':'Ombi ')+pendingCount;
+}
+function renderChart(payments){
+ const now=new Date(),months=[];
+ for(let offset=5;offset>=0;offset--){months.push(new Date(now.getFullYear(),now.getMonth()-offset,1))}
+ const totals=months.map(month=>({month,verified:0,pending:0}));
+ (payments||[]).forEach(payment=>{
+  const date=new Date(payment.created_at);if(Number.isNaN(date.getTime()))return;
+  const bucket=totals.find(item=>item.month.getFullYear()===date.getFullYear()&&item.month.getMonth()===date.getMonth());
+  if(bucket&&['verified','pending'].includes(payment.status))bucket[payment.status]+=Number(payment.amount||0);
+ });
+ const max=Math.max(1,...totals.flatMap(item=>[item.verified,item.pending]));
+ $('paymentChart').innerHTML=totals.map(item=>'<div class="chart-group"><i class="bar" title="Imethibitishwa: '+money(item.verified)+'" style="height:'+Math.max(3,item.verified/max*100)+'%"></i><i class="bar alt" title="Inasubiri: '+money(item.pending)+'" style="height:'+Math.max(3,item.pending/max*100)+'%"></i></div>').join('');
+ $('chartLabels').innerHTML=totals.map(item=>'<span>'+escapeText(item.month.toLocaleDateString(currentLocale,{month:'short'}))+'</span>').join('');
+}
+function renderNotifications(){
+ const items=[];
+ if(member?.profile?.is_approved)items.push({icon:'✓',title:currentLanguage==='en'?'Your account is approved':'Akaunti yako imeidhinishwa',text:currentLanguage==='en'?'You can use your account services.':'Unaweza kutumia huduma za akaunti yako.'});
+ else items.push({icon:'◷',title:currentLanguage==='en'?'Account approval is pending':'Idhini ya akaunti inasubiri',text:currentLanguage==='en'?'You can make payments after an administrator approves your account.':'Msimamizi akishaidhinisha akaunti, utaruhusiwa kuanzisha malipo.'});
+ const pending=(dashboardData?.payments||[]).filter(payment=>payment.status==='pending');
+ if(pending.length)items.push({icon:'◷',title:pending.length+' '+(pending.length===1?'malipo yanasubiri':'malipo yanasubiri'),text:pending.slice(0,3).map(payment=>(payment.reference||'Bila reference')+' · '+money(payment.amount)).join(' | ')});
+ const recent=dashboardData?.payments?.[0];
+ if(recent)items.push({icon:recent.status==='verified'?'✓':'↗',title:'Muamala wa hivi karibuni: '+statusLabel(recent.status),text:(recent.reference?'Reference '+recent.reference+' · ':'')+dateLabel(recent.created_at)+' · '+money(recent.amount)});
+ if(!pending.length&&member?.profile?.is_approved)items.push({icon:'✓',title:currentLanguage==='en'?'No pending payments':'Hakuna malipo yanayosubiri',text:currentLanguage==='en'?'There are no payment requests awaiting review.':'Hakuna ombi la malipo linalohitaji mapitio kwa sasa.'});
+ $('notificationsList').innerHTML=items.map(item=>'<div class="notice-item"><div class="notice-icon">'+escapeText(item.icon)+'</div><div><b>'+escapeText(item.title)+'</b><small>'+escapeText(item.text)+'</small></div></div>').join('');
+ $('noticeDot').hidden=!pending.length;
 }
 async function refresh(){
- const me=await api('/api/me');
- $('name').textContent=me.profile.full_name||me.user.email||'Mwanachama';
- $('profileFullName').value=me.profile.full_name||'';
- $('profilePhone').value=me.profile.phone||'';
- $('profileEmail').value=me.user.email||'';
- $('profileDisplayEmail').textContent=me.user.email||'';
- $('profileDisplayName').textContent=me.profile.full_name||'Mwanachama';
- setMemberAvatar(me.profile.avatar_url,me.profile.full_name||'MW');
- $('profileRole').textContent=me.profile.role==='admin'?'Admin':'Mwanachama';
- $('profileApproval').textContent=me.profile.is_approved?'Imeidhinishwa':'Inasubiri idhini';
- $('profileCreated').textContent=me.profile.created_at?date(me.profile.created_at):'—';
-
- if(!me.profile.is_approved)note('Akaunti yako inasubiri kuidhinishwa na admin. Unaweza kuona taarifa, lakini idhini inaweza kuhitajika kabla ya kushiriki kikamilifu.');
- const d=await api('/api/dashboard');
- $('paid').textContent=money(d.stats.paid);$('pending').textContent=money(d.stats.pending);
- $('assigned').textContent=money(d.stats.assigned);$('balance').textContent=money(d.stats.balance);
- $('contribution').innerHTML='<option value="">Chagua ikiwa unajulikana</option>';
- $('contributions').innerHTML=d.contributions.length?d.contributions.map(c=>{
-  const o=document.createElement('option');o.value=c.id;o.textContent=c.title+' — '+money(c.amount);$('contribution').appendChild(o);
-  return '<div class="item"><div><b>'+escapeText(c.title)+'</b><small>'+money(c.amount)+' · Tarehe: '+(c.due_date||'Haijawekwa')+'</small></div>'+pill(c.status)+'</div>';
- }).join(''):'<div class="muted">Hakuna michango iliyowekwa kwenye akaunti yako bado.</div>';
- $('paymentsList').innerHTML=d.payments.length?d.payments.map(p=>'<div class="item"><div><b>'+money(p.amount)+'</b><small>Ref: '+escapeText(p.reference)+' · '+date(p.created_at)+' · '+escapeText(p.method)+'</small></div>'+pill(p.status)+'</div>').join(''):'<div class="muted">Bado hakuna malipo yaliyotumwa.</div>';
+ const [me,data]=await Promise.all([api('/api/me'),api('/api/dashboard')]);
+ member=me;dashboardData=data;renderProfile();
+ $('paid').textContent=money(data.stats.paid);$('pending').textContent=money(data.stats.pending);
+ $('assigned').textContent=money(data.stats.assigned);$('balance').textContent=money(data.stats.balance);
+ renderContributions(data.contributions||[]);renderPaymentRows(data.payments||[]);
+ renderProgress(data.stats||{});renderChart(data.payments||[]);
+ if(activePaymentReference)updatePaymentStateFromRecords(data.payments||[]);
+ if(!me.profile.is_approved)setNotice('Akaunti yako inasubiri kuidhinishwa na admin. Malipo yatafunguliwa baada ya idhini.');
+ else $('notice').className='notice';
 }
-function escapeText(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-
-function initialsName(v){return String(v||'MW').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'MW'}
-function setMemberAvatar(url,name){const el=$('profileAvatar');if(!el)return;if(url)el.innerHTML='<img src="'+escapeText(url)+'" alt="Picha ya profile">';else el.textContent=initialsName(name)}
 async function loadMemberDirectory(){
  const box=$('memberDirectoryList');
  try{
-  const r=await api('/api/members'),list=r.members||[];
-  $('memberDirectoryCount').textContent=(r.count??list.length)+' wanachama';
-  box.innerHTML=list.length?list.map(m=>'<div class="directory-person"><div class="directory-avatar">'+(m.avatar_url?'<img src="'+escapeText(m.avatar_url)+'" alt="">':escapeText(initialsName(m.full_name)))+'</div><div style="min-width:0"><div class="directory-name">'+escapeText(m.full_name)+'</div><div class="directory-caption">Mwanachama</div></div></div>').join(''):'<div class="muted">Bado hakuna wanachama.</div>';
- }catch(e){box.innerHTML='<div class="muted">Imeshindikana kupakia wanachama.</div>'}
+  const result=await api('/api/members'),members=result.members||[];
+  $('memberDirectoryCount').textContent=(result.count??members.length)+' wanachama';
+  box.innerHTML=members.length?members.map(person=>'<div class="directory-person"><div class="directory-avatar">'+(safeAvatarUrl(person.avatar_url)?'<img src="'+safeAvatarUrl(person.avatar_url)+'" alt="">':escapeText(initials(person.full_name)))+'</div><div style="min-width:0"><div class="directory-name">'+escapeText(person.full_name||'Mwanachama')+'</div><div class="subtle">Mwanachama</div></div></div>').join(''):'<div class="empty-state">Bado hakuna wanachama kwenye orodha.</div>';
+ }catch(error){box.innerHTML='<div class="empty-state"><strong>Orodha ya wanachama haijapatikana</strong>'+escapeText(error.message||'Jaribu tena baadaye.')+'</div>';$('memberDirectoryCount').textContent='Haipatikani'}
 }
-$('memberAvatarFile').addEventListener('change',async e=>{
- const f=e.target.files?.[0];if(!f)return;
+async function start(){
+ $('welcomeDate').textContent=new Date().toLocaleDateString(currentLocale,{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();
  try{
-  const img=await new Promise((ok,no)=>{const x=new Image(),u=URL.createObjectURL(f);x.onload=()=>{URL.revokeObjectURL(u);ok(x)};x.onerror=no;x.src=u});
-  const c=document.createElement('canvas'),scale=Math.min(1,700/Math.max(img.width,img.height));
-  c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);
-  c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-  const r=await api('/api/me/profile/avatar',{method:'POST',body:JSON.stringify({image:c.toDataURL('image/jpeg',.78)})});
-  setMemberAvatar(r.avatar_url,$('profileDisplayName').textContent);
-  setProfileNotice('Picha imebadilishwa.',true);await loadMemberDirectory();
- }catch(err){setProfileNotice(err.message||'Imeshindikana kupakia picha.')}
- finally{e.target.value=''}
-});
-
-(() => {
- const panel = document.createElement('div');
- panel.innerHTML = `<div class="panel payment-shell">
-  <div class="payment-heading">
-    <div>
-      <span class="payment-kicker">SONICPESA SECURE CHECKOUT</span>
-      <h2>Lipa kwa urahisi</h2>
-      <p>Chagua mtandao wako, weka kiasi na uthibitishe ombi kwenye simu yako.</p>
-    </div>
-    <div class="payment-lock">⌑</div>
-  </div>
-
-  <div class="payment-tabs">
-    <label class="payment-type active">
-      <input type="radio" name="paymentType" value="contribution" checked>
-      <span class="type-icon">◈</span>
-      <span><b>Lipa Mchango</b><small>Michango ya wanachama</small></span>
-    </label>
-    <label class="payment-type">
-      <input type="radio" name="paymentType" value="game_fee">
-      <span class="type-icon">⚽</span>
-      <span><b>Hela ya Mchezo</b><small>Malipo ya mchezo</small></span>
-    </label>
-  </div>
-
-  <div class="field">
-    <label>Chagua mtandao wa simu</label>
-    <div class="network-grid">
-      <button class="network-card mpesa selected" type="button" data-channel="MPESA" aria-pressed="true">
-        <span class="network-logo">M</span><b>M-Pesa</b><small>Vodacom</small><span class="network-check">✓</span>
-      </button>
-      <button class="network-card mixx" type="button" data-channel="MIXX" aria-pressed="false">
-        <span class="network-logo">Y</span><b>Mixx by Yas</b><small>Yas</small><span class="network-check">✓</span>
-      </button>
-      <button class="network-card airtel" type="button" data-channel="AIRTELMONEY" aria-pressed="false">
-        <span class="network-logo">A</span><b>Airtel Money</b><small>Airtel</small><span class="network-check">✓</span>
-      </button>
-      <button class="network-card halo" type="button" data-channel="HALOPESA" aria-pressed="false">
-        <span class="network-logo">H</span><b>HaloPesa</b><small>Halotel</small><span class="network-check">✓</span>
-      </button>
-    </div>
-    <div class="payment-secure-note"><span>●</span> Malipo salama kupitia SonicPesa · TZS</div>
-  </div>
-
-  <form id="paymentForm">
-    <div class="field">
-      <label for="amount">Kiasi cha kulipa (TSh)</label>
-      <div class="amount-wrap"><span>TSh</span><input id="amount" type="number" min="100" max="100000000" step="1" required placeholder="5,000"></div>
-      <div class="quick-amounts">
-        <button type="button" data-amount="2000">2,000</button>
-        <button type="button" data-amount="5000">5,000</button>
-        <button type="button" data-amount="10000">10,000</button>
-        <button type="button" data-amount="20000">20,000</button>
-      </div>
-    </div>
-
-    <div class="field">
-      <label for="paymentPhone">Namba ya simu ya malipo</label>
-      <div class="phone-wrap"><span>🇹🇿 +255</span><input id="paymentPhone" type="tel" inputmode="tel" autocomplete="tel-national" required maxlength="16" placeholder="712 345 678"></div>
-      <small class="field-hint">Weka namba ya mtandao uliochagua. Ombi la malipo litatumwa kwenye simu hiyo.</small>
-    </div>
-
-    <div class="field contribution-field">
-      <label for="contribution">Mchango unaolipia (hiari)</label>
-      <select id="contribution"><option value="">Chagua mchango ikiwa unajulikana</option></select>
-    </div>
-
-    <div class="payment-total">
-      <span>Jumla ya kulipa</span><strong id="paymentTotal">TSh 0</strong>
-    </div>
-    <button class="btn primary payment-submit" id="paySubmit" type="submit">
-      <span id="payButtonText">Endelea kulipa</span><span class="pay-arrow">↗</span>
-    </button>
-    <div class="payment-footnote"><span>🔒</span> Usalama wa malipo unathibitishwa na SonicPesa. Usishiriki PIN yako na mtu yeyote.</div>
-  </form>
-  <div id="paymentFeedback" class="payment-feedback" role="status" aria-live="polite"></div>
-</div>
-`;
- const checkout = panel.firstElementChild;
- if (!checkout) return;
- checkout.id = 'mwCheckoutPanel';
- const placeholder = document.getElementById('mwCheckoutPlaceholder');
- if (!placeholder) return;
-
- const style = document.createElement('style');
- style.textContent = `
- #mwCheckoutModal[hidden]{display:none!important}
- #mwCheckoutModal{position:fixed;inset:0;z-index:99999;background:#020610d9;
- backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;
- padding:14px;overflow:auto}
- #mwCheckoutModal .mw-box{width:min(620px,100%);max-height:92dvh;overflow:auto;
- background:#080e1a;border:1px solid #ffffff22;border-radius:20px}
- #mwCheckoutModal .mw-top{display:flex;justify-content:flex-end;padding:10px}
- #mwCheckoutModal .mw-close{width:38px;height:38px;border-radius:12px;
- background:#ffffff10;border:1px solid #ffffff22;color:white;font-size:23px}
- #mwCheckoutModal .payment-shell{display:block!important;margin:0;border:0;
- box-shadow:none;max-width:none;width:100%}
- #mwOpenCheckout{display:flex;align-items:center;gap:12px;width:100%;
- margin:16px 0;padding:15px;border-radius:14px;border:1px solid #58e7d155;
- background:#58e7d118;color:inherit;font-weight:800;cursor:pointer;text-align:left}
- #mwOpenCheckout small{display:block;font-weight:400;opacity:.7;margin-top:4px}
- `;
- document.head.appendChild(style);
-
- const open = document.createElement('button');
- open.type = 'button'; open.id = 'mwOpenCheckout';
- open.innerHTML = '＋ <span>Lipa Sasa<small>Chagua mtandao wa malipo</small></span> ›';
- placeholder.replaceWith(open);
-
- const modal = document.createElement('div');
- modal.id = 'mwCheckoutModal'; modal.hidden = true;
- modal.setAttribute('role','dialog'); modal.setAttribute('aria-modal','true');
- const box = document.createElement('div'); box.className = 'mw-box';
- const top = document.createElement('div'); top.className = 'mw-top';
- const close = document.createElement('button');
- close.type = 'button'; close.className = 'mw-close';
- close.setAttribute('aria-label','Funga'); close.innerHTML = '&times;';
- top.appendChild(close); box.appendChild(top); box.appendChild(checkout);
- modal.appendChild(box); document.body.appendChild(modal);
-
- function show(){modal.hidden=false;document.body.style.overflow='hidden';close.focus()}
- function hide(){modal.hidden=true;document.body.style.overflow='';open.focus()}
- open.addEventListener('click',show);
- close.addEventListener('click',hide);
- modal.addEventListener('click',e=>{if(e.target===modal)hide()});
- document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)hide()});
-
- document.querySelectorAll('[data-section="paymentForm"]').forEach(a=>{
-   a.addEventListener('click',()=>setTimeout(show,0));
- });
-})();
-
-let selectedSonicChannel='MPESA';
-document.querySelectorAll('.network-card').forEach(card=>{
- card.addEventListener('click',()=>{
-  selectedSonicChannel=card.dataset.channel;
-  document.querySelectorAll('.network-card').forEach(c=>{
-   const active=c===card;c.classList.toggle('selected',active);c.setAttribute('aria-pressed',String(active));
-  });
- });
-});
-document.querySelectorAll('.payment-type').forEach(label=>{
- label.addEventListener('click',()=>{
-  document.querySelectorAll('.payment-type').forEach(x=>x.classList.toggle('active',x===label));
- });
-});
-function updatePaymentTotal(){
- const n=Number($('amount').value||0);
- $('paymentTotal').textContent='TSh '+new Intl.NumberFormat('en-TZ',{maximumFractionDigits:0}).format(n);
-}
-$('amount').addEventListener('input',updatePaymentTotal);
-document.querySelectorAll('[data-amount]').forEach(btn=>btn.addEventListener('click',()=>{
- $('amount').value=btn.dataset.amount;
- document.querySelectorAll('[data-amount]').forEach(x=>x.classList.toggle('active',x===btn));
- updatePaymentTotal();
-}));
-function paymentFeedback(message,ok){
- const el=$('paymentFeedback');el.textContent=message;
- el.className='payment-feedback show'+(ok?'':' error');
-}
-$('paymentForm').onsubmit=async e=>{
- e.preventDefault();
- const b=$('paySubmit'),label=$('payButtonText');
- const amount=Number($('amount').value);
- const phone=$('paymentPhone').value.trim();
- const paymentType=document.querySelector('input[name="paymentType"]:checked')?.value||'contribution';
- if(!Number.isSafeInteger(amount)||amount<100){paymentFeedback('Kiasi cha chini ni TSh 100.',false);return}
- if(!/^(0\d{9}|255\d{9}|\d{9})$/.test(phone.replace(/[\s()+.-]/g,''))){paymentFeedback('Weka namba sahihi ya Tanzania, mfano 0712345678.',false);return}
- b.disabled=true;label.textContent='Inatuma ombi...';
- try{
-  const body={amount,phone,channel:selectedSonicChannel,paymentType,contributionId:paymentType==='contribution'?($('contribution').value||null):null};
-  const result=await api('/api/payments/sonicpesa',{method:'POST',body:JSON.stringify(body)});
-  paymentFeedback(result.message||'Ombi limetumwa. Fuata maelekezo kwenye simu yako.',true);
-  label.textContent='Ombi limetumwa ✓';
+  const configResponse=await fetch('/api/config',{cache:'no-store'});
+  const config=await configResponse.json().catch(()=>({}));
+  if(!configResponse.ok)throw new Error(config.error||'Supabase configuration haijapatikana.');
+  const url=config.supabaseUrl||config.url||config.SUPABASE_URL;
+  const key=config.supabaseAnonKey||config.supabasePublishableKey||config.anonKey||config.publishableKey||config.SUPABASE_ANON_KEY;
+  if(!url||!key)throw new Error('Supabase URL au public key haijarudishwa na server.');
+  if(!window.supabase)throw new Error('Supabase library haijapakia. Kagua intaneti.');
+  client=window.supabase.createClient(url,key);
+  const {data,error}=await client.auth.getSession();
+  if(error)throw error;
+  token=data.session?.access_token;
+  if(!token){location.replace('/login');return}
   await refresh();
- }catch(err){
-  paymentFeedback(err.message||'Imeshindikana kuanzisha malipo. Jaribu tena.',false);
-  label.textContent='Jaribu tena';
- }finally{
-  b.disabled=false;
+  loadMemberDirectory();
+  loadPreferences();
+  const requested=location.hash.slice(1);
+  if(requested)setActivePage(requested,false);
+ }catch(error){setNotice(error.message||'Imeshindikana kupakia akaunti.','error')}
+}
+function loadPreferences(){
+ let enabled=true;
+ try{enabled=localStorage.getItem('mw_dashboard_notices')!=='false'}
+ catch(error){setNotice('Mapendeleo hayawezi kusomwa kwenye kifaa hiki: '+error.message,'error')}
+ $('prefDashboardNotices').classList.toggle('on',enabled);
+ $('prefDashboardNotices').setAttribute('aria-checked',String(enabled));
+}
+function showPaymentFeedback(message,error=false){
+ const el=$('paymentFeedback');el.textContent=message;el.className='feedback show'+(error?' error':'');
+}
+function setPaymentStateError(message){
+ $('paymentStateMessage').textContent=message;
+ $('paymentStateMessage').setAttribute('role','alert');
+}
+function showPaymentState(state,reference='',message=''){
+ const states={
+  pending:{icon:'◷',title:'Ombi linasubiri',message:'Ombi limepokelewa. Thibitisha malipo kwenye simu yako; hali itabadilika baada ya server kuthibitisha muamala.',refresh:true,retry:false},
+  verified:{icon:'✓',title:'Malipo yamethibitishwa',message:'Server imethibitisha malipo haya. Asante kwa kuchangia Mchezo Wetu.',refresh:false,retry:true,retryLabel:'Lipa tena'},
+  rejected:{icon:'!',title:'Malipo hayajakamilika',message:'Ombi hili limekataliwa au limefutwa. Hakuna uthibitisho wa malipo uliopokelewa.',refresh:false,retry:true,retryLabel:'Jaribu tena'}
+ };
+ const view=states[state];if(!view)return;
+ $('paymentForm').hidden=true;$('paymentState').hidden=false;$('paymentState').dataset.state=state;
+ $('paymentStateIcon').textContent=view.icon;$('paymentStateTitle').textContent=view.title;
+ $('paymentStateMessage').textContent=message||view.message;
+ $('paymentStateMessage').removeAttribute('role');
+ $('paymentStateReference').hidden=!reference;$('paymentReference').textContent=reference;
+ $('refreshPaymentStatus').hidden=!view.refresh;$('retryPayment').hidden=!view.retry;
+ $('retryPayment').textContent=view.retryLabel||'Jaribu tena';
+}
+function updatePaymentStateFromRecords(payments){
+ const payment=(payments||[]).find(item=>String(item.reference||'')===String(activePaymentReference));
+ if(!payment)return false;
+ if(payment.status==='verified'){
+  activePaymentReference=null;showPaymentState('verified',payment.reference);return true;
  }
-};
-updatePaymentTotal();
-
-function showMemberSection(id) {
-  const validSections = [
-    'home',
-    'contributionsSection',
-    'paymentForm',
-    'paymentsSection',
-    'profileSection',
-    'settingsSection'
-  ];
-
-  if (!validSections.includes(id)) id = 'home';
-
-  const hero = document.querySelector('.hero');
-  const stats = document.querySelector('.grid');
-  const columns = document.querySelector('.columns');
-  const paymentForm = document.getElementById('paymentForm');
-  const paymentPanel = paymentForm ? paymentForm.closest('.panel') : null;
-  const contributions = document.getElementById('contributionsSection');
-  const history = document.getElementById('paymentsSection');
-  const profile = document.getElementById('profileSection');
-  const settings = document.getElementById('settingsSection');
-
-  const isHome = id === 'home';
-  const showPayment = isHome || id === 'paymentForm';
-  const showContributions = isHome || id === 'contributionsSection';
-
-  if (hero) hero.hidden = !isHome;
-  if (stats) stats.hidden = !isHome;
-  if (columns) columns.hidden = !(showPayment || showContributions);
-
-  if (paymentPanel) paymentPanel.hidden = !showPayment;
-  if (contributions) contributions.hidden = !showContributions;
-  if (history) history.hidden = !(isHome || id === 'paymentsSection');
-  if (profile) profile.hidden = id !== 'profileSection';
-  if (settings) settings.hidden = id !== 'settingsSection';
-
-  document.querySelectorAll('.nav a[data-section], .member-sidebar a[data-section]').forEach(link => {
-    const active = link.dataset.section === id;
-    link.classList.toggle('active', active);
-    if (active) link.setAttribute('aria-current', 'page');
-    else link.removeAttribute('aria-current');
-  });
-
-  const targets = {
-    home: hero,
-    contributionsSection: contributions,
-    paymentForm: paymentPanel,
-    paymentsSection: history,
-    profileSection: profile,
-    settingsSection: settings
-  };
-
-  const target = targets[id];
-  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+ if(payment.status==='rejected'||payment.status==='cancelled'){
+  activePaymentReference=null;showPaymentState('rejected',payment.reference);return true;
+ }
+ return false;
 }
-
-document.querySelectorAll('.nav a[data-section], .member-sidebar a[data-section]').forEach(link => {
-  link.addEventListener('click', event => {
-    event.preventDefault();
-    const id = link.dataset.section;
-    showMemberSection(id);
-    history.replaceState(
-      null,
-      '',
-      id === 'home' ? '/dashboard' : '#' + id
-    );
-  });
+async function watchPaymentStatus(reference){
+ for(let attempt=0;attempt<12&&activePaymentReference===reference;attempt++){
+  await new Promise(resolve=>setTimeout(resolve,5000));
+  if(activePaymentReference!==reference)return;
+  try{await refresh()}
+  catch(error){setNotice('Ombi limetumwa, lakini hali ya malipo haikuweza kukaguliwa: '+error.message,'error')}
+ }
+ if(activePaymentReference===reference)showPaymentState('pending',reference,'Bado tunasubiri uthibitisho kutoka kwa mtandao. Thibitisha kwenye simu yako au angalia hali tena baadaye kwenye Historia ya malipo.');
+}
+function normalizePhone(value){
+ let phone=String(value||'').replace(/[\s()+.-]/g,'');
+ if(/^0\d{9}$/.test(phone))phone='255'+phone.slice(1);
+ else if(/^\d{9}$/.test(phone))phone='255'+phone;
+ return /^255\d{9}$/.test(phone)?phone:null;
+}
+function openPayment(){
+ if(!member?.profile?.is_approved){setNotice('Akaunti inahitaji kuidhinishwa kabla ya kuanzisha malipo.','error');return}
+ if($('paymentState').hidden){$('paymentFeedback').className='feedback';$('paySubmit').disabled=false;$('payButtonText').textContent='Endelea na malipo →'}
+ $('paymentModal').hidden=false;$('paymentModal').classList.add('open');document.body.style.overflow='hidden';$('closePayment').focus();
+}
+function closePayment(){ $('paymentModal').hidden=true;$('paymentModal').classList.remove('open');document.body.style.overflow='';$('openPayment').focus() }
+function openPaymentDetail(paymentId){
+ const payment=(dashboardData?.payments||[]).find(item=>String(item.id)===String(paymentId));
+ if(!payment)return;
+ $('paymentDetails').innerHTML='<div class="settings-row"><div><b>Mchango</b></div><span>'+escapeText(paymentTitle(payment))+'</span></div><div class="settings-row"><div><b>Kiasi</b></div><strong>'+money(payment.amount)+'</strong></div><div class="settings-row"><div><b>Reference</b></div><strong>'+escapeText(payment.reference||'—')+'</strong></div><div class="settings-row"><div><b>Hali</b></div>'+pill(payment.status)+'</div><div class="settings-row"><div><b>Njia</b></div><span>'+escapeText(paymentMethodLabel(payment.method))+'</span></div><div class="settings-row"><div><b>Tarehe</b></div><span>'+escapeText(dateLabel(payment.created_at))+'</span></div>';
+ $('paymentDetailModal').hidden=false;$('paymentDetailModal').classList.add('open');document.body.style.overflow='hidden';
+}
+function downloadHistory(){
+ const rows=dashboardData?.payments||[];
+ if(!rows.length){setNotice('Hakuna historia ya malipo ya kupakua.','error');return}
+ const csvRows=[['Reference','Tarehe','Njia','Kiasi TSh','Hali'],...rows.map(payment=>[payment.reference||'',dateLabel(payment.created_at),paymentMethodLabel(payment.method),Number(payment.amount||0),statusLabel(payment.status)])];
+ const csv='\uFEFF'+csvRows.map(row=>row.map(value=>'"'+String(value).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+ const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+ const link=document.createElement('a');link.href=url;link.download='mchezo-wetu-malipo.csv';link.click();URL.revokeObjectURL(url);
+}
+document.querySelectorAll('[data-page]').forEach(button=>button.addEventListener('click',()=>setActivePage(button.dataset.page)));
+document.querySelectorAll('[data-go]').forEach(button=>button.addEventListener('click',()=>setActivePage(button.dataset.go)));
+document.querySelectorAll('[data-open-payment]').forEach(button=>button.addEventListener('click',openPayment));
+$('openPayment').addEventListener('click',openPayment);
+$('mobileMoreToggle').addEventListener('click',()=>{
+ const open=$('mobileMoreMenu').hidden;
+ $('mobileMoreMenu').hidden=!open;$('mobileMoreToggle').setAttribute('aria-expanded',String(open));
 });
-
-
-// Sidebar ya mwanachama: kufungua, kufunga na kufunga kwa Escape
-const memberSidebar = document.getElementById('memberSidebar');
-const memberOverlay = document.getElementById('memberSidebarOverlay');
-const openMemberMenu = document.getElementById('openMemberMenu');
-
-function setMemberMenu(open) {
-  if (!memberSidebar || !memberOverlay || !openMemberMenu) return;
-  memberSidebar.classList.toggle('open', open);
-  memberOverlay.hidden = !open;
-  memberSidebar.setAttribute('aria-hidden', String(!open));
-  openMemberMenu.setAttribute('aria-expanded', String(open));
-  document.body.classList.toggle('member-menu-open', open);
-}
-
-openMemberMenu?.addEventListener('click', () => setMemberMenu(true));
-document.getElementById('closeMemberMenu')?.addEventListener('click', () => setMemberMenu(false));
-memberOverlay?.addEventListener('click', () => setMemberMenu(false));
-
-document.addEventListener('keydown', event => {
-  if (event.key === 'Escape') setMemberMenu(false);
+document.addEventListener('click',event=>{
+ if(!$('mobileMoreMenu').hidden&&!event.target.closest('#mobileMoreMenu, #mobileMoreToggle')){
+  $('mobileMoreMenu').hidden=true;$('mobileMoreToggle').setAttribute('aria-expanded','false');
+ }
 });
-
-memberSidebar?.querySelectorAll('a[data-section]').forEach(link => {
-  link.addEventListener('click', () => setMemberMenu(false));
+$('closePayment').addEventListener('click',closePayment);
+$('closePaymentState').addEventListener('click',closePayment);
+$('retryPayment').addEventListener('click',()=>{
+ $('paymentState').hidden=true;$('paymentForm').hidden=false;$('paymentFeedback').className='feedback';
+ $('paySubmit').disabled=false;$('payButtonText').textContent='Endelea na malipo →';
 });
-
-function setProfileNotice(text, ok=false) {
-  const box = $('profileNotice');
-  box.textContent = text;
-  box.className = 'notice show';
-  box.style.color = ok ? '#dafa9c' : '#ffb6c1';
+$('refreshPaymentStatus').addEventListener('click',async event=>{
+ const button=event.currentTarget;button.disabled=true;button.textContent='Inakagua...';
+ try{await refresh();if(activePaymentReference)showPaymentState('pending',activePaymentReference,'Bado tunasubiri uthibitisho. Hali hii hubadilika baada ya server kupokea uthibitisho wa muamala.')}
+ catch(error){setPaymentStateError(error.message||'Hali ya malipo haikuweza kukaguliwa.')}
+ finally{button.disabled=false;button.textContent='Angalia hali'}
+});
+document.querySelectorAll('.network-logo img').forEach(image=>{
+ const useFallback=()=>{image.hidden=true;const fallback=image.nextElementSibling;if(fallback)fallback.hidden=false};
+ image.addEventListener('error',useFallback);
+ if(image.complete&&image.naturalWidth===0)useFallback();
+});
+$('paymentModal').addEventListener('click',event=>{if(event.target===$('paymentModal'))closePayment()});
+$('paymentDetailModal').addEventListener('click',event=>{if(event.target===$('paymentDetailModal')||event.target.closest('[data-close-detail]')){$('paymentDetailModal').hidden=true;$('paymentDetailModal').classList.remove('open');document.body.style.overflow=''}});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'){if(!$('paymentModal').hidden)closePayment();if(!$('paymentDetailModal').hidden){$('paymentDetailModal').hidden=true;$('paymentDetailModal').classList.remove('open');document.body.style.overflow=''}}});
+$('chooseAvatar').addEventListener('click',()=>$('memberAvatarFile').click());
+$('memberAvatarFile').addEventListener('change',async event=>{
+ const file=event.target.files?.[0];if(!file)return;
+ try{
+  if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Chagua picha JPG, PNG au WEBP.');
+  const image=await new Promise((resolve,reject)=>{const img=new Image(),objectUrl=URL.createObjectURL(file);img.onload=()=>{URL.revokeObjectURL(objectUrl);resolve(img)};img.onerror=()=>{URL.revokeObjectURL(objectUrl);reject(new Error('Picha haikuweza kufunguliwa.'))};img.src=objectUrl});
+  const canvas=document.createElement('canvas'),scale=Math.min(1,700/Math.max(image.width,image.height));
+  canvas.width=Math.round(image.width*scale);canvas.height=Math.round(image.height*scale);
+  const context=canvas.getContext('2d');if(!context)throw new Error('Imeshindikana kuchakata picha kwenye kifaa hiki.');
+  context.drawImage(image,0,0,canvas.width,canvas.height);
+  const result=await api('/api/me/profile/avatar',{method:'POST',body:JSON.stringify({image:canvas.toDataURL('image/jpeg',.78)})});
+  member.profile.avatar_url=result.avatar_url;renderProfile();
+  if(localStorage.getItem('mw_dashboard_notices')!=='false')setLocalNotice($('profileNotice'),'Picha ya wasifu imebadilishwa.','success');
+  await loadMemberDirectory();
+ }catch(error){setLocalNotice($('profileNotice'),error.message||'Imeshindikana kubadilisha picha.','error')}
+ finally{event.target.value=''}
+});
+$('profileForm').addEventListener('submit',async event=>{
+ event.preventDefault();const button=$('saveProfile');button.disabled=true;button.textContent='Inahifadhi...';
+ try{
+  const result=await api('/api/me/profile',{method:'PATCH',body:JSON.stringify({full_name:$('profileFullName').value.trim(),phone:$('profilePhone').value.trim()})});
+  member.profile={...member.profile,...result.profile};renderProfile();
+  if(localStorage.getItem('mw_dashboard_notices')!=='false')setLocalNotice($('profileNotice'),'Taarifa za wasifu zimehifadhiwa.','success');
+ }catch(error){setLocalNotice($('profileNotice'),error.message||'Imeshindikana kuhifadhi wasifu.','error')}
+ finally{button.disabled=false;button.textContent='Hifadhi mabadiliko'}
+});
+$('prefDashboardNotices').addEventListener('click',event=>{
+ const enabled=event.currentTarget.getAttribute('aria-checked')!=='true';
+ try{
+  localStorage.setItem('mw_dashboard_notices',String(enabled));
+  event.currentTarget.classList.toggle('on',enabled);event.currentTarget.setAttribute('aria-checked',String(enabled));
+ }catch(error){setNotice('Mapendeleo hayakuweza kuhifadhiwa kwenye kifaa hiki: '+error.message,'error')}
+});
+document.querySelectorAll('.filters button[data-filter]').forEach(button=>button.addEventListener('click',()=>{
+ paymentFilter=button.dataset.filter;document.querySelectorAll('.filters button[data-filter]').forEach(item=>item.classList.toggle('active',item===button));renderPaymentRows(dashboardData?.payments||[]);
+}));
+document.addEventListener('click',event=>{const button=event.target.closest('[data-payment-detail]');if(button)openPaymentDetail(button.dataset.paymentDetail)});
+$('exportPayments').addEventListener('click',downloadHistory);
+document.querySelectorAll('.network[data-channel]').forEach(button=>button.addEventListener('click',()=>{
+ selectedChannel=button.dataset.channel;document.querySelectorAll('.network[data-channel]').forEach(item=>item.classList.toggle('selected',item===button));
+}));
+document.querySelectorAll('input[name="paymentType"]').forEach(input=>input.addEventListener('change',()=>{
+ $('contributionField').hidden=input.value==='game_fee';
+ document.querySelectorAll('input[name="paymentType"]').forEach(item=>item.closest('.network').classList.toggle('selected',item.checked));
+}));
+$('paymentContribution').addEventListener('change',updatePaymentTotal);
+function updatePaymentTotal(){$('paymentTotal').textContent=money($('paymentAmount').value)}
+$('paymentAmount').addEventListener('input',updatePaymentTotal);
+$('paymentForm').addEventListener('submit',async event=>{
+ event.preventDefault();
+ const amount=Number($('paymentAmount').value),phone=normalizePhone($('paymentPhone').value);
+ const type=document.querySelector('input[name="paymentType"]:checked')?.value||'contribution';
+ if(!Number.isSafeInteger(amount)||amount<100||amount>100000000){showPaymentFeedback('Kiasi kiwe kati ya TSh 100 na TSh 100,000,000.',true);return}
+ if(!phone){showPaymentFeedback('Weka namba sahihi ya Tanzania, mfano 0712345678.',true);return}
+ const button=$('paySubmit');button.disabled=true;$('payButtonText').innerHTML='<span class="spinner" aria-hidden="true"></span>Inatuma ombi...';showPaymentFeedback('Inaunganishwa na mtandao wa malipo kwa usalama. Subiri kidogo.');
+ try{
+  const result=await api('/api/payments/sonicpesa',{method:'POST',body:JSON.stringify({amount,phone,channel:selectedChannel,paymentType:type,contributionId:type==='contribution'?($('paymentContribution').value||null):null})});
+  const reference=String(result.payment?.reference||'');
+  $('paymentFeedback').className='feedback';
+  if(result.payment?.status==='verified'){activePaymentReference=null;showPaymentState('verified',reference)}
+  else if(result.payment?.status==='rejected'||result.payment?.status==='cancelled'){activePaymentReference=null;showPaymentState('rejected',reference)}
+  else{activePaymentReference=reference||null;showPaymentState('pending',reference)}
+  try{await refresh()}catch(error){setNotice('Ombi limetumwa, lakini historia haikuweza kusasishwa: '+error.message,'error')}
+  if(activePaymentReference)watchPaymentStatus(activePaymentReference);
+ }catch(error){showPaymentFeedback(error.message||'Imeshindikana kuanzisha malipo.',true);button.disabled=false;$('payButtonText').textContent='Jaribu tena →'}
+});
+async function memberLogout(){
+ const buttons=[$('settingsLogout'),$('logout')].filter(Boolean);buttons.forEach(button=>button.disabled=true);
+ try{if(client){const {error}=await client.auth.signOut();if(error)throw error}location.replace('/login')}
+ catch(error){setNotice(error.message||'Imeshindikana kutoka kwenye akaunti.','error');buttons.forEach(button=>button.disabled=false)}
 }
-function setSettingsNotice(text, ok=false) {
-  const box = $('settingsNotice');
-  box.textContent = text;
-  box.className = 'notice show';
-  box.style.color = ok ? '#dafa9c' : '#ffb6c1';
+$('settingsLogout').addEventListener('click',memberLogout);
+function initializePreferences(){
+ try{
+  const theme=localStorage.getItem('mw_dashboard_theme')||'light';
+  const dark=theme==='dark';
+  document.documentElement.dataset.theme=dark?'dark':'light';
+  $('prefDarkMode').classList.toggle('on',dark);
+  $('prefDarkMode').setAttribute('aria-checked',String(dark));
+  const notices=localStorage.getItem('mw_dashboard_notices')!=='false';
+  $('prefDashboardNotices').classList.toggle('on',notices);
+  $('prefDashboardNotices').setAttribute('aria-checked',String(notices));
+  applyLanguage(localStorage.getItem('mw_dashboard_language')||'sw');
+ }catch(error){
+  console.error('Dashboard preferences could not be loaded:',error.message);
+  setNotice('Mapendeleo hayakuweza kusomwa kwenye kifaa hiki: '+error.message,'error');
+ }
 }
-
-$('profileForm').addEventListener('submit', async event => {
-  event.preventDefault();
-  const button = $('saveProfile');
-  button.disabled = true;
-  button.textContent = 'Inahifadhi...';
-  try {
-    const result = await api('/api/me/profile', {
-      method:'PATCH',
-      body:JSON.stringify({
-        full_name:$('profileFullName').value.trim(),
-        phone:$('profilePhone').value.trim()
-      })
-    });
-    $('profileDisplayName').textContent = result.profile.full_name || 'Mwanachama';
-    setMemberAvatar(result.profile.avatar_url,$('profileDisplayName').textContent);
-    $('name').textContent = result.profile.full_name || 'Mwanachama';
-    setProfileNotice('Taarifa za profile zimehifadhiwa.', true);
-  } catch (error) {
-    setProfileNotice(error.message || 'Imeshindikana kuhifadhi profile.');
-  } finally {
-    button.disabled = false;
-    button.textContent = 'Hifadhi mabadiliko';
+$('prefDarkMode').addEventListener('click',event=>{
+ const enabled=event.currentTarget.getAttribute('aria-checked')!=='true';
+ try{
+  localStorage.setItem('mw_dashboard_theme',enabled?'dark':'light');
+  document.documentElement.dataset.theme=enabled?'dark':'light';
+  event.currentTarget.classList.toggle('on',enabled);
+  event.currentTarget.setAttribute('aria-checked',String(enabled));
+ }catch(error){setNotice('Muonekano haukuweza kuhifadhiwa kwenye kifaa hiki: '+error.message,'error')}
+});
+$('prefLanguage').addEventListener('change',event=>{
+ const language=event.currentTarget.value==='en'?'en':'sw';
+ try{
+  localStorage.setItem('mw_dashboard_language',language);
+  applyLanguage(language);
+  $('welcomeDate').textContent=new Date().toLocaleDateString(currentLocale,{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();
+  if(dashboardData){
+   $('paid').textContent=money(dashboardData.stats.paid);$('pending').textContent=money(dashboardData.stats.pending);
+   $('assigned').textContent=money(dashboardData.stats.assigned);$('balance').textContent=money(dashboardData.stats.balance);
+   renderContributions(dashboardData.contributions||[]);renderPaymentRows(dashboardData.payments||[]);
+   renderProgress(dashboardData.stats||{});renderChart(dashboardData.payments||[]);
+   renderProfile();
   }
+ }catch(error){setNotice('Lugha haikuweza kuhifadhiwa kwenye kifaa hiki: '+error.message,'error')}
 });
-
-function loadMemberPreferences() {
-  const saved = localStorage.getItem('mw_dashboard_notices');
-  $('prefDashboardNotices').checked = saved !== 'false';
-}
-$('prefDashboardNotices').addEventListener('change', event => {
-  localStorage.setItem('mw_dashboard_notices', String(event.target.checked));
-  setSettingsNotice('Mapendeleo yamehifadhiwa kwenye kifaa hiki.', true);
-});
-
-async function memberLogout() {
-  if (client) await client.auth.signOut();
-  location.replace('/login');
-}
-$('settingsLogout').addEventListener('click', memberLogout);
-loadMemberPreferences();
-
-$('logout').onclick=memberLogout;
+initializePreferences();
 start();
-
-
-
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
 </body>
 </html>

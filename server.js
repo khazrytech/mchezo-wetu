@@ -496,7 +496,7 @@ app.post('/api/auth/send-otp', async (req, res) => {
 
     return res.json({
       success: true,
-      otpType: 'email',
+      otpType: signup ? 'signup' : 'magiclink',
       message: 'OTP imetumwa kupitia Brevo.'
     });
   } catch (error) {
@@ -539,7 +539,7 @@ app.post('/api/auth/verify-otp', async (req, res) => {
     const { data, error } = await supabase.auth.verifyOtp({
       email,
       token,
-      type: 'email'
+      type
     });
 
     if (error) {
@@ -557,6 +557,49 @@ app.post('/api/auth/verify-otp', async (req, res) => {
 
     if (!data?.session?.access_token || !data?.session?.refresh_token) {
       return apiError(res, 401, 'Session haikupatikana. Omba OTP mpya.');
+    }
+
+    if (type === 'signup') {
+      const verifiedUser = data.user;
+      if (!verifiedUser?.id) {
+        return apiError(res, 401, 'Akaunti iliyothibitishwa haikupatikana. Jaribu tena.');
+      }
+
+      const { data: existingProfile, error: lookupError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', verifiedUser.id)
+        .maybeSingle();
+      if (lookupError) {
+        console.error('Signup profile lookup error:', lookupError.message);
+        return apiError(res, 500, 'Imeshindikana kuandaa akaunti kwa idhini ya admin.');
+      }
+
+      if (!existingProfile) {
+        const metadata = verifiedUser.user_metadata || {};
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({
+            id: verifiedUser.id,
+            full_name: String(metadata.full_name || '').trim() || null,
+            phone: String(metadata.phone || '').trim() || null,
+            role: 'user',
+            is_approved: false,
+            is_banned: false
+          });
+
+        if (profileError) {
+          const retry = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('id', verifiedUser.id)
+            .maybeSingle();
+          if (retry.error || !retry.data) {
+            console.error('Signup profile creation error:', profileError.message);
+            return apiError(res, 500, 'Usajili umethibitishwa lakini akaunti haikuandaliwa kwa idhini. Wasiliana na admin.');
+          }
+        }
+      }
     }
 
     res.setHeader('Cache-Control', 'no-store');

@@ -489,6 +489,12 @@ body {
         <div class="feature"><div class="feature-icon">↗</div><div><strong>Michango kwa uwazi</strong><small>Fuatilia taarifa zako kwa urahisi.</small></div></div>
         <div class="feature"><div class="feature-icon">◇</div><div><strong>Akaunti yako sehemu moja</strong><small>Wasifu, malipo na taarifa za jumuiya.</small></div></div>
       </div>
+      <div class="community-preview" aria-hidden="true">
+        <div class="preview-top"><span>MWANACHAMA PORTAL</span><i></i></div>
+        <div class="preview-main"><div><small>JUMUIYA YAKO</small><strong>Mchezo Wetu</strong></div><span class="preview-mark">MW</span></div>
+        <div class="preview-progress"><span></span></div>
+        <div class="preview-foot"><span>Umoja wetu</span><b>Maendeleo yetu</b></div>
+      </div>
       <div class="story-foot"><span>● UZOEFU SALAMA WA MWANACHAMA</span><span>MW / 2026</span></div>
     </aside>
 
@@ -498,7 +504,7 @@ body {
         <div><div class="brand-name">Mchezo Wetu</div><div class="brand-sub">MEMBER COMMUNITY</div></div>
       </div>
       <div class="card" id="authCard">
-        <div class="section-label">Member access</div>
+        <div class="section-label">AKAUNTI YA MWANACHAMA</div>
         <h2 id="heading">Karibu tena</h2>
         <p class="subtitle" id="description">Ingia kwenye akaunti yako kwa kutumia barua pepe.</p>
 
@@ -540,6 +546,7 @@ body {
   let otpStage = false;
   let busy = false;
   let otpType = 'magiclink';
+  let registeredEmail = '';
 
   function message(text, kind='ok') {
     const box = $('notice');
@@ -589,11 +596,24 @@ body {
     $('switchBtn').textContent = signup
       ? 'Tayari una akaunti? Ingia'
       : 'Huna akaunti? Jisajili';
+    updateSignupAvailability();
     $('submitBtn').textContent = signup ? 'Tuma OTP ya usajili' : 'Tuma OTP ya kuingia';
+  }
+
+  function updateSignupAvailability() {
+    const email = $('email').value.trim().toLowerCase();
+    $('switchBtn').hidden = !signup && Boolean(registeredEmail) && email === registeredEmail;
   }
 
   async function init() {
     try {
+      try {
+        registeredEmail = localStorage.getItem('mw_registered_email') || '';
+        if (registeredEmail && !$('email').value) $('email').value = registeredEmail;
+        updateSignupAvailability();
+      } catch (error) {
+        console.warn('Registered-email preference unavailable:', error.message);
+      }
       const response = await fetch('/api/config', {cache:'no-store'});
       const config = await response.json();
       if (!response.ok || !config.supabaseUrl || !config.supabaseAnonKey) {
@@ -671,6 +691,35 @@ body {
         throw new Error(result.error || 'OTP si sahihi au ime-expire. Omba OTP mpya.');
       }
 
+      if (signup) {
+        try {
+          localStorage.setItem('mw_registered_email', email);
+          registeredEmail = email;
+        } catch (storageError) {
+          console.warn('Unable to persist completed registration:', storageError.message);
+        }
+        signup = false;
+        otpStage = false;
+        animateCard();
+        $('authForm').reset();
+        $('email').value = email;
+        $('nameField').hidden = true;
+        $('phoneField').hidden = true;
+        $('fullName').required = false;
+        $('otpField').hidden = true;
+        $('emailField').hidden = false;
+        $('otp').required = false;
+        $('email').readOnly = false;
+        $('resendBtn').hidden = true;
+        $('heading').textContent = 'Email imethibitishwa';
+        $('description').textContent = 'Usajili umekamilika. Akaunti yako inasubiri idhini ya msimamizi.';
+        $('submitBtn').textContent = 'Tuma OTP ya kuingia';
+        updateSignupAvailability();
+        setBusy(false, 'Tuma OTP ya kuingia');
+        message('Barua pepe imethibitishwa. Tumia fomu hii kuingia baada ya akaunti yako kuidhinishwa na admin.', 'ok');
+        return;
+      }
+
       const {data, error} = await client.auth.setSession(result.session);
       if (error) throw error;
       if (!data.session) throw new Error('Session haikupatikana. Jaribu tena.');
@@ -698,6 +747,16 @@ body {
   });
 
   $('switchBtn').addEventListener('click', () => setMode(!signup));
+  $('email').addEventListener('input', () => {
+    const email = $('email').value.trim().toLowerCase();
+    if (signup && registeredEmail && email === registeredEmail) {
+      setMode(false);
+      $('email').value = email;
+      message('Barua pepe hii tayari imethibitishwa. Ingia kwa OTP.', 'ok');
+      return;
+    }
+    updateSignupAvailability();
+  });
   setMode(false);
   init();
 })();
@@ -912,6 +971,175 @@ tbody tr:hover td { background: #ffffff03; }
 @media(max-width:390px) {
   .grid { grid-template-columns: 1fr !important; }
   .hero { padding: 20px !important; }
+}
+</style>
+
+<style id="mw-login-refresh">
+html,body { min-height:100%; }
+body {
+  color:#193329!important;
+  background:
+    radial-gradient(ellipse at 8% 4%,#a4d0b52b,transparent 36%),
+    radial-gradient(ellipse at 96% 88%,#92cbb021,transparent 34%),
+    linear-gradient(145deg,#f7faf7,#eff4f0)!important;
+}
+.layout { width:min(1160px,100%);grid-template-columns:minmax(0,1fr) minmax(360px,430px);gap:clamp(30px,5vw,70px); }
+.story {
+  min-height:620px!important;
+  border:1px solid #ffffff25!important;
+  border-radius:32px!important;
+  background:
+    radial-gradient(ellipse at 92% 4%,#67c99143,transparent 42%),
+    radial-gradient(ellipse at 5% 100%,#bbec9c20,transparent 32%),
+    linear-gradient(145deg,#184a34,#103325 76%)!important;
+  box-shadow:0 32px 90px #173d2929,inset 0 1px #ffffff1a!important;
+  animation:mw-panel-arrive .8s cubic-bezier(.2,.75,.25,1) both;
+}
+.story:before { width:440px;height:440px;right:-170px;top:60px;background:radial-gradient(circle,#a0e8bd2e,transparent 69%); }
+.story:after { width:340px;height:340px;left:-190px;bottom:-95px;background:radial-gradient(circle,#d4f89f21,transparent 69%); }
+.story .brand { gap:14px; }
+.story-copy { margin:clamp(30px,5vh,56px) 0 28px; }
+.story-copy .eyebrow { border-color:#ffffff25;background:#ffffff0b; }
+.story h1 { max-width:540px;margin:24px 0 17px;font-size:clamp(42px,4.6vw,60px);letter-spacing:-2.6px; }
+.story h1 { color:#f4fbf5!important; }
+.story h1 span {
+  color:transparent!important;
+  background:linear-gradient(100deg,#d7f4df,#a8e3b7 55%,#d8ef9a)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+}
+.story-desc { max-width:390px;color:#c1d5c7!important; }
+.feature { margin-top:18px; }
+.feature-icon { width:41px;height:41px;flex-basis:41px;border-radius:13px; }
+.community-preview {
+  position:relative;
+  z-index:1;
+  width:min(360px,84%);
+  margin:4px 0 30px auto;
+  padding:17px 18px 14px;
+  border:1px solid #ffffff2b;
+  border-radius:17px;
+  background:linear-gradient(135deg,#ffffff17,#ffffff09);
+  box-shadow:0 18px 42px #071b1130,inset 0 1px #ffffff1d;
+  backdrop-filter:blur(14px);
+  transform:rotate(-2deg);
+  animation:mw-card-float 5s ease-in-out infinite alternate;
+}
+.preview-top,.preview-main,.preview-foot { display:flex;align-items:center;justify-content:space-between;gap:10px; }
+.preview-top { color:#c3dbca;font-size:8px;font-weight:800;letter-spacing:1.5px; }
+.preview-top i { width:7px;height:7px;border-radius:50%;background:#c8ee83;box-shadow:0 0 14px #c8ee83a0; }
+.preview-main { margin-top:15px; }
+.preview-main small { display:block;color:#b4cdbb;font-size:8px;font-weight:700;letter-spacing:1.25px; }
+.preview-main strong { display:block;margin-top:4px;color:#fff;font:800 17px Manrope,sans-serif;letter-spacing:-.4px; }
+.preview-mark { display:grid;place-items:center;width:37px;height:37px;border:1px solid #ffffff30;border-radius:12px;background:#ffffff10;color:#d9f2bf;font:800 11px Manrope,sans-serif; }
+.preview-progress { height:5px;margin:15px 0 10px;overflow:hidden;border-radius:10px;background:#ffffff22; }
+.preview-progress span { display:block;width:66%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#8fd4a7,#d4ee8b); }
+.preview-foot { color:#c1d5c7;font-size:8px; }
+.preview-foot b { color:#e3f4cf; }
+.story-foot { color:#b4c9ba!important;font-size:8px; }
+.auth { animation:mw-auth-arrive .75s .12s cubic-bezier(.2,.75,.25,1) both; }
+.mobile-brand { align-items:center;gap:12px;margin-bottom:20px;padding:0 5px; }
+.mobile-brand .mark { width:45px;height:45px;flex-basis:45px; }
+.mobile-brand .brand-name { font-size:17px; }
+.mobile-brand .brand-sub { margin-top:4px;font-size:8px;letter-spacing:1.6px; }
+.card {
+  padding:clamp(28px,3.2vw,38px);
+  border:1px solid #ffffff!important;
+  border-radius:25px!important;
+  background:linear-gradient(155deg,#ffffff,#fbfdfb)!important;
+  box-shadow:0 30px 85px #17442b18,0 4px 14px #17442b09,inset 0 1px #fff!important;
+  transition:box-shadow .3s,transform .3s;
+}
+.card:hover { box-shadow:0 34px 90px #17442b20,0 6px 18px #17442b0b,inset 0 1px #fff!important; }
+.card:before { left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,#78bd8c,#c7e895,transparent); }
+.section-label { padding:7px 10px;border:1px solid #e3eee6;border-radius:99px;background:#f4f8f4;color:#31744a!important;font-size:8px;letter-spacing:1.5px; }
+.section-label:before { width:7px;height:7px;border-radius:50%;background:#4c9b65!important;box-shadow:0 0 0 3px #4c9b6518; }
+.auth h2 { margin:19px 0 7px;font-size:clamp(28px,3vw,34px);letter-spacing:-1.4px; }
+.subtitle { margin-bottom:24px;color:#77857d!important;font-size:12px;line-height:1.75; }
+.field { margin:17px 0; }
+.auth .field label { margin-bottom:8px;color:#30483b!important;font-size:10px;font-weight:750; }
+.field input {
+  min-height:51px!important;
+  padding:13px 14px!important;
+  border-radius:12px!important;
+  background:#f8faf8!important;
+  box-shadow:inset 0 1px 2px #173a2508;
+  font-size:12px;
+}
+.field input:hover { border-color:#b7cbbb!important; }
+.field input:focus { background:#fff!important; }
+.auth .field input:focus { border-color:#4b986a!important;box-shadow:0 0 0 4px #4b986a1c!important; }
+.field input[readonly] { background:#f0f4f0!important;color:#6d7c72!important; }
+.primary {
+  min-height:51px;
+  margin-top:8px;
+  border-radius:12px!important;
+  background:linear-gradient(110deg,#247c4b,#17633c)!important;
+  box-shadow:0 10px 24px #17683f22,inset 0 1px #ffffff27!important;
+  letter-spacing:.1px;
+}
+.auth .primary { color:#fff!important; }
+.primary:before { background:linear-gradient(90deg,transparent,#ffffff4a,transparent); }
+.primary:hover { transform:translateY(-2px);box-shadow:0 14px 28px #17683f30!important; }
+.primary:active { transform:scale(.99); }
+.primary:disabled { filter:saturate(.75); }
+.secondary { min-height:40px;margin-top:10px;border-radius:10px!important;font-size:10px; }
+.auth .secondary { color:#28704a!important; }
+.notice { margin:14px 0 4px;padding:11px 12px;border-radius:11px!important;font-size:10px; }
+.secure { margin-top:18px;color:#87938b!important;font-size:9px; }
+.otp-help { padding:9px 10px;border:1px solid #e5eee7;border-radius:10px;background:#f6f9f6;color:#78877d;font-size:9px; }
+.field:not([hidden]) { animation:mw-field-in .32s cubic-bezier(.2,.75,.25,1) both; }
+.field:nth-of-type(2) { animation-delay:.04s; }
+.field:nth-of-type(3) { animation-delay:.08s; }
+.field:nth-of-type(4) { animation-delay:.12s; }
+.auth form { position:relative; }
+.auth form:after {
+  display:block;
+  margin-top:14px;
+  color:#8b988f;
+  content:"🔒  Uthibitisho salama wa barua pepe";
+  font-size:9px;
+  text-align:center;
+}
+.story .brand-name,.story .brand-sub,.story .story-desc,.story .story-foot,.story .feature small,.story .feature strong { color:#f2f8f3!important; }
+.story .brand-sub,.story .story-foot,.story .feature small { opacity:.74; }
+.story .mark,.mobile-brand .mark {
+  color:#133321!important;
+  background:linear-gradient(135deg,#d8f2df,#9fdbb3 58%,#d3ef9f)!important;
+  border-radius:14px!important;
+  box-shadow:0 9px 25px #07190e35!important;
+}
+.story .eyebrow { color:#e1f2e5!important; }
+.story .dot,.story .section-label:before { background:#b9e67e!important; }
+.story .feature-icon { color:#c1ec91!important;border-color:#ffffff20!important;background:#ffffff0c!important; }
+.mobile-brand .brand-name { color:#18372a!important; }
+.mobile-brand .brand-sub { color:#718279!important; }
+@keyframes mw-panel-arrive { from { opacity:0;transform:translateX(-18px) scale(.99); } to { opacity:1;transform:translateX(0) scale(1); } }
+@keyframes mw-auth-arrive { from { opacity:0;transform:translateY(18px) scale(.99); } to { opacity:1;transform:translateY(0) scale(1); } }
+@keyframes mw-card-float { from { transform:rotate(-2deg) translateY(0); } to { transform:rotate(-1deg) translateY(-6px); } }
+@media(max-width:900px) {
+  body { background:radial-gradient(ellipse at 50% 0%,#b3d9c52b,transparent 44%),#f4f7f4!important; }
+  .layout { width:min(460px,100%);grid-template-columns:minmax(0,1fr);gap:0; }
+  .story { display:none; }
+  .auth { max-width:460px; }
+  .card { box-shadow:0 24px 65px #173c281a,0 4px 14px #173c2809!important; }
+}
+@media(max-width:480px) {
+  body { padding:22px 16px!important; }
+  .layout { width:100%; }
+  .mobile-brand { margin-bottom:20px;padding:0 3px; }
+  .card { padding:25px 21px!important;border-radius:21px!important; }
+  .auth h2 { font-size:28px; }
+  .subtitle { margin-bottom:20px; }
+  .field { margin:15px 0; }
+}
+@media(min-width:901px) {
+  .auth { max-width:430px;margin-left:auto; }
+  .card { min-height:400px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .story,.auth,.community-preview { animation:none!important; }
+  .card { transition:none!important; }
 }
 </style>
 
