@@ -1314,6 +1314,35 @@ app.get('/admin/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
+app.get('/manifest.webmanifest', (req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.type('application/manifest+json');
+  res.sendFile(path.join(__dirname, 'manifest.webmanifest'));
+});
+
+app.get('/service-worker.js', (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache');
+  res.type('application/javascript');
+  res.sendFile(path.join(__dirname, 'service-worker.js'));
+});
+
+app.get('/app-pwa.js', (req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.type('application/javascript');
+  res.sendFile(path.join(__dirname, 'app-pwa.js'));
+});
+
+app.get('/offline.html', (req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.sendFile(path.join(__dirname, 'offline.html'));
+});
+
+app.get('/pwa-icon.svg', (req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.type('image/svg+xml');
+  res.sendFile(path.join(__dirname, 'pwa-icon.svg'));
+});
+
 app.get(['/mchezo-wetu-logo.svg', '/admin/mchezo-wetu-logo.svg'], (req, res) => {
   res.setHeader('Cache-Control', 'public, max-age=3600');
   res.type('image/svg+xml');
