@@ -89,12 +89,13 @@ function showStage(s){
  $('otpSection').classList.toggle('hidden',s!=='otp');
  $('showSetup').classList.toggle('hidden',s!=='login'||!window.setupAllowed);
  $('heading').textContent=s==='setup'?'Weka Password ya Admin':s==='otp'?'Thibitisha Barua Pepe':'Admin Control Center';
- $('description').textContent=s==='setup'?'Usajili wa admin unaruhusiwa mara moja tu.':s==='otp'?'Ingiza OTP iliyotumwa kwenye email yako.':'Ingia kwa akaunti ya msimamizi. OTP itatumwa kwenye barua pepe yako.';
+ $('description').textContent=s==='setup'?'Usajili wa admin unaruhusiwa mara moja tu.':s==='otp'?'Ingiza OTP ya mwisho uliyotumiwa. Namba za zamani huisha muda au kubatilishwa.':'Ingia kwa akaunti ya msimamizi. OTP itatumwa kwenye barua pepe yako.';
 }
 async function requestOtp(){
  const r=await fetch('/api/admin/auth/send-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:$('password').value})});
  const d=await r.json();if(!r.ok)throw Error(d.error||'Imeshindikana kutuma OTP.');
- showStage('otp');message('OTP imetumwa. Angalia inbox na spam.',true);
+ $('otp').value='';
+ showStage('otp');message('OTP mpya imetumwa. Tumia namba ya mwisho uliyopokea; ukituma tena, OTP za awali hazitatumika.',true);
 }
 async function initialize(){
  try{

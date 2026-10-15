@@ -46,6 +46,17 @@ app.use(express.json({
 }));         app.use(express.urlencoded({ extended: false, limit: '20kb' }));
 function apiError(res, status, message) {
   return res.status(status).json({ success: false, error: message });                               }
+                                                  function missingPaymentReviewMetadata(error) {
+                                                    return error?.code === '42703' &&
+                                                      /rejection_reason|reviewed_by|reviewed_at/i.test(String(error.message || ''));
+                                                  }
+                                                  function normalizePaymentReviewMetadata(payment) {
+                                                    return {
+                                                      ...payment,
+                                                      rejection_reason: payment.rejection_reason || payment.failure_reason || null,
+                                                      reviewed_at: payment.reviewed_at || null
+                                                    };
+                                                  }
                                                   function ready(req, res, next) {
   if (!supabase) {                                    return apiError(res, 503, 'Supabase haijawekwa vizuri kwenye server.');
   }
@@ -812,15 +823,25 @@ app.get('/api/dashboard', ready, requireUser, async (req, res) => {
       .limit(1000);
                                                       if (contributionError) throw contributionError;
 
-    const { data: payments, error: paymentError } = await supabase
+    let paymentResult = await supabase
       .from('payments')
       .select('id, contribution_id, amount, reference, method, status, created_at, verified_at, rejection_reason, failure_reason, reviewed_at, payment_type')
       .eq('user_id', req.user.id)                       .order('created_at', { ascending: false })
       .limit(1000);
+    if (missingPaymentReviewMetadata(paymentResult.error)) {
+      console.warn('Payment review metadata migration is not applied; using existing payment fields.');
+      paymentResult = await supabase
+        .from('payments')
+        .select('id, contribution_id, amount, reference, method, status, created_at, verified_at, failure_reason, payment_type')
+        .eq('user_id', req.user.id)
+        .order('created_at', { ascending: false })
+        .limit(1000);
+    }
+    const { data: payments, error: paymentError } = paymentResult;
     if (paymentError) throw paymentError;
 
     const allContributions = contributions || [];
-    const allPayments = payments || [];
+    const allPayments = (payments || []).map(normalizePaymentReviewMetadata);
     const paid = allPayments
       .filter(p => p.status === 'verified')
       .reduce((sum, p) => sum + Number(p.amount || 0), 0);
@@ -1131,15 +1152,24 @@ app.post('/api/admin/users/:id/action', ready, requireUser, requireAdmin, async 
 
 app.get('/api/admin/payments', ready, requireUser, requireAdmin, async (req, res) => {
   try {
-    const { data: rows, error } = await supabase
+    let result = await supabase
       .from('payments')
       .select('id, user_id, contribution_id, amount, reference, method, status, created_at, verified_at, rejection_reason, failure_reason, reviewed_at')
       .order('created_at', { ascending: false })
       .limit(1000);
 
+    if (missingPaymentReviewMetadata(result.error)) {
+      console.warn('Payment review metadata migration is not applied; using existing payment fields.');
+      result = await supabase
+        .from('payments')
+        .select('id, user_id, contribution_id, amount, reference, method, status, created_at, verified_at, failure_reason')
+        .order('created_at', { ascending: false })
+        .limit(1000);
+    }
+    const { data: rows, error } = result;
     if (error) {
       console.error('Admin payments error:', error);
-      return apiError(res, 500, 'Imeshindikana kupata malipo. Kagua Render Logs.');
+      return apiError(res, 500, 'Imeshindikana kupata malipo. Kagua schema ya jedwali payments kwenye Supabase.');
     }
 
     const payments = rows || [];
@@ -1160,7 +1190,7 @@ app.get('/api/admin/payments', ready, requireUser, requireAdmin, async (req, res
 
     const profileMap = Object.fromEntries(profiles.map(x => [x.id, x]));
     const enriched = payments.map(payment => ({
-      ...payment,
+      ...normalizePaymentReviewMetadata(payment),
       profiles: profileMap[payment.user_id] || null
     }));
 
@@ -1190,7 +1220,7 @@ app.post('/api/admin/payments/:id/review', ready, requireUser, requireAdmin, asy
 
     const newStatus = action === 'verify' ? 'verified' : 'rejected';
 
-    const { data, error } = await supabase
+    let reviewResult = await supabase
       .from('payments')
       .update({
         status: newStatus,
@@ -1204,12 +1234,24 @@ app.post('/api/admin/payments/:id/review', ready, requireUser, requireAdmin, asy
       .select('*')
       .maybeSingle();
 
+    if (missingPaymentReviewMetadata(reviewResult.error)) {
+      console.warn('Payment review metadata migration is not applied; saving the review reason in failure_reason.');
+      reviewResult = await supabase
+        .from('payments')
+        .update({
+          status: newStatus,
+          verified_at: action === 'verify' ? new Date().toISOString() : null,
+          failure_reason: action === 'reject' ? reason : null
+        })
+        .eq('id', paymentId)
+        .eq('status', 'pending')
+        .select('*')
+        .maybeSingle();
+    }
+    const { data, error } = reviewResult;
     if (error) {
       console.error('Payment review error:', error);
-      return res.status(500).json({
-        error: 'Imeshindikana kuhakiki malipo.',
-        details: error.message
-      });
+      return apiError(res, 500, 'Imeshindikana kuhakiki malipo. Kagua schema ya jedwali payments kwenye Supabase.');
     }
 
     if (!data) {
