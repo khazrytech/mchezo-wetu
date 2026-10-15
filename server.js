@@ -1219,6 +1219,13 @@ app.post('/api/payments/sonicpesa', ready, requireUser, async (req, res) => {
     }
   } catch (e) {
     console.error('SonicPesa route error:', e.message);
+    if (e.code === '42501' && /payments/i.test(String(e.message || ''))) {
+      return apiError(
+        res,
+        503,
+        'Supabase imekataa ruhusa ya kuandika malipo. Admin akague grants za service_role kwenye public.payments.'
+      );
+    }
     return apiError(res, 500, 'Hitilafu ya kuanzisha malipo.');
   }
 });
