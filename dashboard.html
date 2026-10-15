@@ -173,7 +173,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 'use strict';
-let client=null,token=null,member=null,dashboardData=null,selectedChannel='MPESA',paymentFilter='all',activePaymentReference=null,currentLanguage='sw',currentLocale='sw-TZ';
+let client=null,token=null,member=null,dashboardData=null,selectedChannel='MPESA',paymentFilter='all',activePaymentReference=null,currentLanguage='sw',currentLocale='sw-TZ',smsRemindersConfigured=false;
 const $=id=>document.getElementById(id);
 const escapeText=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const money=value=>'TSh '+Number(value||0).toLocaleString(currentLocale,{maximumFractionDigits:0});
@@ -191,6 +191,17 @@ const translationPairs=[
  ['Dhibiti mapendeleo ya dashboard na taarifa za usalama.','Manage dashboard preferences and security information.'],['Arifa za dashboard','Dashboard notifications'],['Mapendeleo yanahifadhiwa kwenye kifaa hiki','Preferences are saved on this device'],['Ujumbe wa mafanikio','Success messages'],['Onyesha uthibitisho baada ya kuhifadhi taarifa au kutuma ombi.','Show confirmations after saving details or submitting a request.'],['Muonekano','Appearance'],['Chagua mandhari nyepesi au ya giza kwenye kifaa hiki.','Choose light or dark appearance on this device.'],['Lugha / Language','Language'],['Badilisha lugha ya dashboard yako.','Change your dashboard language.'],['Faragha na taarifa','Privacy and information'],['Matumizi ya taarifa zako ndani ya kikundi','Use of your information in the group'],['Taarifa za wasifu na miamala huonyeshwa kulingana na ruhusa za akaunti yako. Mabadiliko ya malipo hushughulikiwa na server.','Profile and transaction details are shown according to your account permissions. Payment changes are handled by the server.'],['Usalama wa akaunti','Account security'],['Linda akaunti yako','Protect your account'],['Salama','Secure'],['Uthibitisho wa kuingia','Sign-in verification'],['OTP ya barua pepe hutumika kuingia.','Email OTP is used to sign in.'],['Imewashwa','Enabled'],['Barua pepe','Email'],['Akaunti ya sasa','Current account'],['Session ya kifaa','Device session'],['Ondoka ikiwa hutumii kifaa hiki.','Sign out if you are not using this device.'],['Toka','Sign out'],['Unahitaji msaada?','Need help?'],['Angalia maswali ya kawaida au wasiliana na msimamizi wa kikundi.','See common questions or contact your group administrator.'],['Fungua msaada →','Open help →'],
  ['Habari za hivi punde','Recent activity'],['Fungua ukurasa','Open page'],['Lipa mchango +','Pay contribution +'],['Pakua historia ↓','Download history ↓'],['Yote','All'],['Yaliyothibitishwa','Verified'],['Yanasubiri','Pending'],['Yaliyokataliwa','Rejected'],['MAELEZO','DETAILS'],['REFERENCE','REFERENCE'],['TAREHE','DATE'],['NJIA','METHOD'],['KIASI','AMOUNT'],['HALI','STATUS'],['Maelezo','Details'],['Lipa','Pay'],['+ Lipa','+ Pay'],['Funga','Close'],['Hifadhi mabadiliko','Save changes'],['Badilisha picha','Change photo'],['Fungua akaunti yako','Open your account'],['Imeidhinishwa','Approved'],['Inasubiri idhini','Awaiting approval'],['Akaunti imeidhinishwa','Account approved'],['Jumla ya michango','Total contributions'],['Imelipwa','Paid'],['Salio','Balance'],['Inasubiri malipo','Payment pending'],['MIAMALA YAKO','YOUR TRANSACTIONS'],['TAARIFA ZA AKAUNTI','ACCOUNT NOTICES'],['Malipo ya hivi karibuni','Recent payments'],['Mchango unaolipia','Contribution to pay'],['Kiasi (TSh)','Amount (TSh)'],['Namba ya simu','Phone number'],['Jumla ya kulipa','Total to pay'],['Lipa mchango','Pay contribution'],['Chagua mtandao, kiasi na namba ya simu.','Choose a network, amount, and phone number.'],['Akaunti yako inasubiri kuidhinishwa na admin. Malipo yatafunguliwa baada ya idhini.','Your account is awaiting administrator approval. Payments will be enabled after approval.'],['Kikundi','Group'],['Inakagua akaunti...','Checking account...'],['Inapakia michango...','Loading contributions...'],['Inapakia malipo...','Loading payments...'],['Inapakia taarifa...','Loading notifications...'],['Inapakia orodha ya wanachama...','Loading member directory...'],['Bado huna michango','No contributions yet'],['Michango utakayopangiwa itaonekana hapa.','Contributions assigned to you will appear here.'],['Bado hakuna malipo','No payments yet'],['Malipo utakayotuma yataonekana hapa.','Payments you submit will appear here.'],['Bado hakuna malipo yaliyorekodiwa.','No payments have been recorded yet.'],['Hakuna muamala unaolingana na kichujio.','No transactions match this filter.'],['Orodha ya wanachama haijapatikana','Member list is unavailable'],['Bado hakuna wanachama kwenye orodha.','There are no members in the list yet.'],['Email imethibitishwa','Email verified'],['Usajili umekamilika. Akaunti yako inasubiri idhini ya msimamizi.','Registration complete. Your account is awaiting administrator approval.'],['Chati ya malipo ya miezi sita','Six-month payment chart'],['Imethibitishwa','Verified'],['Inasubiri','Pending'],['Akaunti yako imeidhinishwa','Your account is approved'],['Idhini ya akaunti inasubiri','Account approval is pending'],['Unaweza kutumia huduma za akaunti yako.','You can use your account services.'],['Msimamizi akishaidhinisha akaunti, utaruhusiwa kuanzisha malipo.','You can make payments after an administrator approves your account.'],['Hakuna malipo yanayosubiri','No pending payments'],['Hakuna ombi la malipo linalohitaji mapitio kwa sasa.','There are no payment requests awaiting review.']
 ];
+translationPairs.push(
+ ['Vikumbusho vya malipo kwa SMS','SMS payment reminders'],
+ ['Chagua kama Mchezo Wetu inaweza kukutumia vikumbusho vya malipo kwenye simu yako.','Choose whether Mchezo Wetu may send payment reminders to your phone.'],
+ ['Nakubali kupokea SMS za ukumbusho','I agree to receive SMS reminders'],
+ ['Siku 3 kabla ya mwisho, siku ya mwisho, kisha kila wiki baada ya kuchelewa. Unaweza kuzima wakati wowote.','3 days before the due date, on the due date, then weekly while overdue. You can turn this off anytime.'],
+ ['SMS zitawezeshwa baada ya msimamizi kuendesha migration ya database.','SMS reminders will be available after the administrator runs the database migration.'],
+ ['Weka namba sahihi ya Tanzania kwenye wasifu kabla ya kuwasha SMS.','Add a valid Tanzanian phone number to your profile before opting in.'],
+ ['Umejiunga. SMS zitaanza kutumwa baada ya huduma ya SMS kusanidiwa.','Your consent is saved. SMS delivery will start after the SMS provider is configured.'],
+ ['Vikumbusho vya SMS vimewashwa. Unaweza kuvizima wakati wowote.','SMS reminders are enabled. You can turn them off anytime.'],
+ ['Vikumbusho vya SMS vimezimwa.','SMS reminders are off.']
+);
 const protectedTextRoots='#name,#topName,#sidebarName,#sidebarRole,#profileDisplayName,#profileDisplayEmail,#settingsEmail,#profileFullName,#profilePhone,#profileEmail,#memberDirectoryList,#homeContributions,#allContributions,#recentPayments,#paymentsTable,#paymentDetails,#paymentContribution,#notificationsList,#paymentPhone,#paymentAmount,#paymentReference';
 function translatedText(value,language){
  let result=value;
@@ -266,7 +277,61 @@ function setActivePage(name,updateUrl=true){
  if(updateUrl)history.replaceState(null,'',name==='home'?'/dashboard':'#'+name);
  window.scrollTo({top:0,behavior:'smooth'});
 }
+function ensureSmsReminderCard(){
+ if($('smsReminderToggle'))return;
+ const leftStack=$('settings').querySelector('.dashboard-grid > .left-stack');
+ const installCard=$('pwaInstallButton').closest('.card');
+ const card=document.createElement('article');
+ card.className='card';
+ card.innerHTML='<div class="card-head"><div><h2 id="smsReminderHeading"></h2><div class="subtle" id="smsReminderDescription"></div></div></div><div class="settings-row"><div><b id="smsReminderConsent"></b><small id="smsReminderFrequency"></small></div><button class="toggle" id="smsReminderToggle" type="button" role="switch" aria-checked="false" aria-labelledby="smsReminderConsent"></button></div><p class="subtle" id="smsReminderStatus" aria-live="polite"></p>';
+ leftStack.insertBefore(card,installCard);
+ $('smsReminderToggle').addEventListener('click',async event=>{
+  const button=event.currentTarget;
+  const enabled=button.getAttribute('aria-checked')!=='true';
+  button.disabled=true;
+  let saveError=null;
+  try{
+   const result=await api('/api/me/profile',{method:'PATCH',body:JSON.stringify({
+    full_name:member.profile.full_name||'',
+    phone:member.profile.phone||'',
+    sms_reminders_enabled:enabled
+   })});
+   member.profile={...member.profile,...result.profile};
+  }catch(error){
+   saveError=error.message||'Imeshindikana kuhifadhi chaguo la SMS.';
+  }finally{
+   renderProfile();
+   if(saveError)$('smsReminderStatus').textContent=saveError;
+  }
+ });
+}
+function renderSmsReminderPreference(profile){
+ const enabled=profile.sms_reminders_enabled===true;
+ const available=profile.sms_reminders_available===true;
+ const hasPhone=Boolean(normalizePhone(profile.phone));
+ const button=$('smsReminderToggle');
+ $('smsReminderHeading').textContent=currentLanguage==='en'?'SMS payment reminders':'Vikumbusho vya malipo kwa SMS';
+ $('smsReminderDescription').textContent=currentLanguage==='en'?'Choose whether Mchezo Wetu may send payment reminders to your phone.':'Chagua kama Mchezo Wetu inaweza kukutumia vikumbusho vya malipo kwenye simu yako.';
+ $('smsReminderConsent').textContent=currentLanguage==='en'?'I agree to receive SMS reminders':'Nakubali kupokea SMS za ukumbusho';
+ $('smsReminderFrequency').textContent=currentLanguage==='en'
+  ?'3 days before the due date, on the due date, then weekly while overdue. You can turn this off anytime.'
+  :'Siku 3 kabla ya mwisho, siku ya mwisho, kisha kila wiki baada ya kuchelewa. Unaweza kuzima wakati wowote.';
+ button.classList.toggle('on',enabled);
+ button.setAttribute('aria-checked',String(enabled));
+ button.disabled=!available||(!enabled&&!hasPhone);
+ const status=!available
+  ?(currentLanguage==='en'?'SMS reminders will be available after the administrator runs the database migration.':'SMS zitawezeshwa baada ya msimamizi kuendesha migration ya database.')
+  :!hasPhone&&!enabled
+   ?(currentLanguage==='en'?'Add a valid Tanzanian phone number to your profile before opting in.':'Weka namba sahihi ya Tanzania kwenye wasifu kabla ya kuwasha SMS.')
+   :enabled&&!smsRemindersConfigured
+    ?(currentLanguage==='en'?'Your consent is saved. SMS delivery will start after the SMS provider is configured.':'Umejiunga. SMS zitaanza kutumwa baada ya huduma ya SMS kusanidiwa.')
+    :enabled
+     ?(currentLanguage==='en'?'SMS reminders are enabled. You can turn them off anytime.':'Vikumbusho vya SMS vimewashwa. Unaweza kuvizima wakati wowote.')
+     :(currentLanguage==='en'?'SMS reminders are off.':'Vikumbusho vya SMS vimezimwa.');
+ $('smsReminderStatus').textContent=status;
+}
 function renderProfile(){
+ ensureSmsReminderCard();
  const profile=member.profile,user=member.user||{};
  const name=profile.full_name||user.email||'Mwanachama',email=user.email||'';
  $('name').textContent=name;$('topName').textContent=name.split(/\s+/)[0];$('sidebarName').textContent=name;
@@ -282,6 +347,7 @@ function renderProfile(){
  renderAvatar($('topAvatar'),profile.avatar_url,name);
  renderAvatar($('sidebarAvatar'),profile.avatar_url,name);
  $('accountStatus').innerHTML=profile.is_approved?'<span style="color:var(--green)">●</span> &nbsp;Akaunti imeidhinishwa':'<span style="color:var(--gold)">●</span> &nbsp;Inasubiri idhini';
+ renderSmsReminderPreference(profile);
 }
 function renderContributions(contributions){
  const rows=contributions||[];
@@ -395,6 +461,7 @@ async function start(){
   const url=config.supabaseUrl||config.url||config.SUPABASE_URL;
   const key=config.supabaseAnonKey||config.supabasePublishableKey||config.anonKey||config.publishableKey||config.SUPABASE_ANON_KEY;
   if(!url||!key)throw new Error('Supabase URL au public key haijarudishwa na server.');
+  smsRemindersConfigured=config.smsRemindersConfigured===true;
   if(!window.supabase)throw new Error('Supabase library haijapakia. Kagua intaneti.');
   client=window.supabase.createClient(url,key);
   const {data,error}=await client.auth.getSession();

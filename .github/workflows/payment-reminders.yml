@@ -1,0 +1,22 @@
+name: Payment SMS reminders
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  send-reminders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send opted-in member reminders
+        env:
+          PUBLIC_SITE_URL: ${{ secrets.PUBLIC_SITE_URL }}
+          REMINDER_CRON_SECRET: ${{ secrets.REMINDER_CRON_SECRET }}
+        run: |
+          test -n "$PUBLIC_SITE_URL" || { echo "Missing PUBLIC_SITE_URL secret"; exit 1; }
+          test -n "$REMINDER_CRON_SECRET" || { echo "Missing REMINDER_CRON_SECRET secret"; exit 1; }
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            --header "Authorization: Bearer ${REMINDER_CRON_SECRET}" \
+            "${PUBLIC_SITE_URL%/}/api/cron/payment-reminders"

@@ -57,6 +57,130 @@ function apiError(res, status, message) {
                                                       reviewed_at: payment.reviewed_at || null
                                                     };
                                                   }
+                                                  function missingSmsReminderPreference(error) {
+                                                    return error?.code === '42703' &&
+                                                      /sms_reminders_(enabled|consent_at)/i.test(String(error.message || ''));
+                                                  }
+                                                  function tanzaniaDate(date = new Date()) {
+                                                    const parts = new Intl.DateTimeFormat('en-CA', {
+                                                      timeZone: 'Africa/Dar_es_Salaam',
+                                                      year: 'numeric',
+                                                      month: '2-digit',
+                                                      day: '2-digit'
+                                                    }).formatToParts(date);
+                                                    const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
+                                                    return `${values.year}-${values.month}-${values.day}`;
+                                                  }
+                                                  function daysBetweenDates(from, to) {
+                                                    return Math.round(
+                                                      (Date.parse(`${to}T00:00:00.000Z`) - Date.parse(`${from}T00:00:00.000Z`)) /
+                                                      86400000
+                                                    );
+                                                  }
+                                                  function reminderTypeForDate(dueDate, today) {
+                                                    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(dueDate || ''))) return null;
+                                                    const daysUntilDue = daysBetweenDates(today, dueDate);
+                                                    if (daysUntilDue === 3) return 'due_soon';
+                                                    if (daysUntilDue === 0) return 'due_today';
+                                                    if (daysUntilDue < 0 && Math.abs(daysUntilDue) % 7 === 0) return 'overdue';
+                                                    return null;
+                                                  }
+                                                  function normalizeTanzaniaPhone(value) {
+                                                    let phone = String(value || '').replace(/[\s()+.-]/g, '');
+                                                    if (/^0\d{9}$/.test(phone)) phone = '255' + phone.slice(1);
+                                                    else if (/^\d{9}$/.test(phone)) phone = '255' + phone;
+                                                    return /^255\d{9}$/.test(phone) ? phone : null;
+                                                  }
+                                                  function matchesCronSecret(received, expected) {
+                                                    const actual = Buffer.from(String(received || ''));
+                                                    const wanted = Buffer.from(String(expected || ''));
+                                                    return actual.length === wanted.length && actual.length > 0 &&
+                                                      crypto.timingSafeEqual(actual, wanted);
+                                                  }
+                                                  function missingReminderSchema(error) {
+                                                    return error?.code === '42P01' ||
+                                                      (error?.code === '42703' && /sms_reminders_enabled/i.test(String(error.message || '')));
+                                                  }
+                                                  async function reserveReminder(contributionId, reminderType, scheduledFor) {
+                                                    const key = { contribution_id: contributionId, reminder_type: reminderType, scheduled_for: scheduledFor };
+                                                    const now = new Date();
+                                                    const { data: existing, error: lookupError } = await supabase
+                                                      .from('payment_reminder_logs')
+                                                      .select('id, status, attempts, updated_at')
+                                                      .match(key)
+                                                      .maybeSingle();
+                                                    if (lookupError) throw lookupError;
+
+                                                    if (!existing) {
+                                                      const { data, error } = await supabase
+                                                        .from('payment_reminder_logs')
+                                                        .insert({ ...key, status: 'sending', attempts: 1, updated_at: now.toISOString() })
+                                                        .select('id')
+                                                        .maybeSingle();
+                                                      if (error?.code === '23505') return null;
+                                                      if (error) throw error;
+                                                      return data?.id || null;
+                                                    }
+
+                                                    if (existing.status === 'sent') return null;
+                                                    const staleBefore = new Date(now.getTime() - 20 * 60 * 1000).toISOString();
+                                                    let update = supabase
+                                                      .from('payment_reminder_logs')
+                                                      .update({
+                                                        status: 'sending',
+                                                        attempts: Number(existing.attempts || 0) + 1,
+                                                        error: null,
+                                                        updated_at: now.toISOString()
+                                                      })
+                                                      .eq('id', existing.id)
+                                                      .eq('status', existing.status)
+                                                      .eq('updated_at', existing.updated_at);
+                                                    if (existing.status === 'sending') update = update.lt('updated_at', staleBefore);
+                                                    const { data, error } = await update.select('id').maybeSingle();
+                                                    if (error) throw error;
+                                                    return data?.id || null;
+                                                  }
+                                                  async function readReminderRows(buildQuery) {
+                                                    const pageSize = 1000;
+                                                    const rows = [];
+                                                    for (let offset = 0; offset <= 100000; offset += pageSize) {
+                                                      const { data, error } = await buildQuery()
+                                                        .range(offset, offset + pageSize - 1);
+                                                      if (error) throw error;
+                                                      const page = data || [];
+                                                      rows.push(...page);
+                                                      if (page.length < pageSize) return rows;
+                                                    }
+                                                    throw new Error('Reminder query exceeded the supported 100,000-row limit.');
+                                                  }
+                                                  async function sendBeemReminder(phone, message) {
+                                                    const apiKey = process.env.BEEM_API_KEY;
+                                                    const secretKey = process.env.BEEM_SECRET_KEY;
+                                                    const sourceAddress = process.env.BEEM_SOURCE_ADDR;
+                                                    if (!apiKey || !secretKey || !sourceAddress) {
+                                                      throw new Error('BEEM_API_KEY, BEEM_SECRET_KEY na BEEM_SOURCE_ADDR lazima ziwekwe.');
+                                                    }
+
+                                                    const response = await axios.post(
+                                                      'https://apisms.beem.africa/v1/send',
+                                                      {
+                                                        source_addr: sourceAddress,
+                                                        encoding: 0,
+                                                        schedule_time: '',
+                                                        message,
+                                                        recipients: [{ recipient_id: '1', dest_addr: phone }]
+                                                      },
+                                                      {
+                                                        headers: {
+                                                          Authorization: 'Basic ' + Buffer.from(`${apiKey}:${secretKey}`).toString('base64'),
+                                                          'Content-Type': 'application/json'
+                                                        },
+                                                        timeout: 15000
+                                                      }
+                                                    );
+                                                    const result = response.data || {};
+                                                    return String(result.request_id || result.message_id || result.id || '');
+                                                  }
                                                   function ready(req, res, next) {
   if (!supabase) {                                    return apiError(res, 503, 'Supabase haijawekwa vizuri kwenye server.');
   }
@@ -404,7 +528,14 @@ app.get('/api/config', (req, res) => {
 
   res.setHeader('Cache-Control', 'no-store');
   res.json({                                          supabaseUrl: SUPABASE_URL,
-    supabaseAnonKey: SUPABASE_ANON_KEY              });
+    supabaseAnonKey: SUPABASE_ANON_KEY,
+    smsRemindersConfigured: Boolean(
+      process.env.BEEM_API_KEY &&
+      process.env.BEEM_SECRET_KEY &&
+      process.env.BEEM_SOURCE_ADDR &&
+      process.env.REMINDER_CRON_SECRET
+    )
+  });
 });
 
 app.post('/api/auth/send-otp', async (req, res) => {
@@ -628,19 +759,33 @@ app.post('/api/auth/verify-otp', async (req, res) => {
 });
 
 app.get('/api/me', ready, requireUser, async (req, res) => {
-  let { data, error } = await supabase
+  const profileColumns = 'id, full_name, phone, role, is_approved, is_banned, created_at';
+  const reminderColumns = ', sms_reminders_enabled, sms_reminders_consent_at';
+  let reminderPreferenceAvailable = true;
+  let result = await supabase
     .from('profiles')
-    .select('id, full_name, phone, role, is_approved, is_banned, created_at')
+    .select(profileColumns + reminderColumns)
     .eq('id', req.user.id)
     .maybeSingle();
-                                                    if (error) {
-    console.error('Profile query error:', error.message);                                               return apiError(res, 500, 'Imeshindikana kupata profile.');                                       }
+  if (missingSmsReminderPreference(result.error)) {
+    reminderPreferenceAvailable = false;
+    console.warn('SMS reminder preference migration is not applied; reminders remain disabled.');
+    result = await supabase.from('profiles')
+      .select(profileColumns)
+      .eq('id', req.user.id)
+      .maybeSingle();
+  }
+  let { data, error } = result;
+  if (error) {
+    console.error('Profile query error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kupata profile.');
+  }
 
 
   if (!data) {
     // Profile haipo: tengeneza rekodi ya mwanachama huyu pekee.
     const metadata = req.user.user_metadata || {};
-    const { data: created, error: createError } = await supabase
+    const createQuery = supabase
       .from('profiles')
       .insert({
         id: req.user.id,
@@ -649,15 +794,16 @@ app.get('/api/me', ready, requireUser, async (req, res) => {
         role: 'user',
         is_approved: false,
         is_banned: false
-      })
-      .select('id, full_name, phone, role, is_approved, is_banned, created_at')
+      });
+    const { data: created, error: createError } = await createQuery
+      .select(profileColumns + (reminderPreferenceAvailable ? reminderColumns : ''))
       .single();
 
     if (createError) {
       // Inawezekana rekodi iliundwa kwa wakati mmoja na ombi jingine.
       const retry = await supabase
         .from('profiles')
-        .select('id, full_name, phone, role, is_approved, is_banned, created_at')
+        .select(profileColumns + (reminderPreferenceAvailable ? reminderColumns : ''))
         .eq('id', req.user.id)
         .maybeSingle();
 
@@ -675,6 +821,8 @@ app.get('/api/me', ready, requireUser, async (req, res) => {
     }
   }
 
+  data.sms_reminders_enabled = reminderPreferenceAvailable && data.sms_reminders_enabled === true;
+  data.sms_reminders_available = reminderPreferenceAvailable;
   if (data.is_banned) {
     return apiError(res, 403, 'Akaunti yako imesimamishwa. Wasiliana na admin.');
   }
@@ -693,12 +841,20 @@ app.patch('/api/me/profile', ready, requireUser, async (req, res) => {
   try {
     const fullName = String(req.body?.full_name || '').trim();
     const phone = String(req.body?.phone || '').trim();
+    const reminderPreferenceProvided = Object.hasOwn(req.body || {}, 'sms_reminders_enabled');
+    const smsRemindersEnabled = req.body?.sms_reminders_enabled;
 
     if (fullName.length < 2 || fullName.length > 100) {
       return apiError(res, 400, 'Jina liwe na herufi 2 hadi 100.');
     }
     if (phone.length > 30) {
       return apiError(res, 400, 'Namba ya simu si sahihi.');
+    }
+    if (reminderPreferenceProvided && typeof smsRemindersEnabled !== 'boolean') {
+      return apiError(res, 400, 'Chaguo la ukumbusho wa SMS si sahihi.');
+    }
+    if (smsRemindersEnabled && !normalizeTanzaniaPhone(phone)) {
+      return apiError(res, 400, 'Weka namba sahihi ya Tanzania kwenye wasifu kabla ya kuwasha SMS.');
     }
 
     const { data: current, error: currentError } = await supabase
@@ -717,14 +873,25 @@ app.patch('/api/me/profile', ready, requireUser, async (req, res) => {
 
     // User anaweza kubadilisha jina na simu yake tu.
     // Role, idhini na hali ya kufungiwa haviwezi kubadilishwa hapa.
-    const { data, error } = await supabase
+    const updates = { full_name: fullName, phone: phone || null };
+    if (reminderPreferenceProvided) {
+      updates.sms_reminders_enabled = smsRemindersEnabled;
+      if (smsRemindersEnabled) updates.sms_reminders_consent_at = new Date().toISOString();
+    }
+    let updateQuery = supabase
       .from('profiles')
-      .update({ full_name: fullName, phone: phone || null })
+      .update(updates)
       .eq('id', req.user.id)
-      .select('id, full_name, phone, role, is_approved, is_banned, created_at')
+      .select('id, full_name, phone, role, is_approved, is_banned, created_at' +
+        (reminderPreferenceProvided ? ', sms_reminders_enabled, sms_reminders_consent_at' : ''))
       .single();
+    let { data, error } = await updateQuery;
+    if (missingSmsReminderPreference(error)) {
+      return apiError(res, 503, 'Washa SMS baada ya kuendesha payment reminder migration kwenye Supabase.');
+    }
 
     if (error) throw error;
+    data.sms_reminders_available = true;
 
     res.setHeader('Cache-Control', 'no-store');
     return res.json({ success: true, profile: data });
@@ -1116,6 +1283,141 @@ app.post('/api/admin/contributions/:id/cancel', ready, requireUser, requireAdmin
   } catch (error) {
     console.error('Admin contribution cancellation error:', error.message);
     return apiError(res, 500, 'Imeshindikana kughairi mchango.');
+  }
+});
+
+app.post('/api/cron/payment-reminders', ready, async (req, res) => {
+  const expectedSecret = process.env.REMINDER_CRON_SECRET;
+  if (!expectedSecret || !matchesCronSecret(req.headers.authorization?.replace(/^Bearer\s+/i, ''), expectedSecret)) {
+    return apiError(res, 401, 'Ruhusa ya ratiba ya vikumbusho si sahihi.');
+  }
+  if (!process.env.BEEM_API_KEY || !process.env.BEEM_SECRET_KEY || !process.env.BEEM_SOURCE_ADDR) {
+    return apiError(res, 503, 'Huduma ya SMS haijawekwa vizuri kwenye server.');
+  }
+
+  const today = tanzaniaDate();
+  try {
+    const profiles = await readReminderRows(() => supabase
+      .from('profiles')
+      .select('id, phone')
+      .eq('sms_reminders_enabled', true)
+      .eq('is_approved', true)
+      .eq('is_banned', false)
+      .order('id', { ascending: true }));
+    if (!profiles?.length) return res.json({ success: true, date: today, sent: 0, failed: 0, skipped: 0 });
+
+    const memberIds = profiles.map(profile => profile.id);
+    const contributions = [];
+    for (let offset = 0; offset < memberIds.length; offset += 100) {
+      const batch = memberIds.slice(offset, offset + 100);
+      const memberContributions = await readReminderRows(() => supabase
+        .from('contributions')
+        .select('id, user_id, title, amount, due_date, status')
+        .in('user_id', batch)
+        .neq('status', 'cancelled')
+        .not('due_date', 'is', null)
+        .order('id', { ascending: true }));
+      contributions.push(...memberContributions);
+    }
+
+    const payments = [];
+    const contributionIds = contributions.map(contribution => contribution.id);
+    for (let offset = 0; offset < contributionIds.length; offset += 100) {
+      const batch = contributionIds.slice(offset, offset + 100);
+      const contributionPayments = await readReminderRows(() => supabase
+        .from('payments')
+        .select('contribution_id, amount, payment_type')
+        .eq('status', 'verified')
+        .in('contribution_id', batch)
+        .order('id', { ascending: true }));
+      payments.push(...contributionPayments);
+    }
+
+    const membersById = new Map(profiles.map(profile => [profile.id, profile]));
+    const paidByContribution = new Map();
+    for (const payment of payments || []) {
+      if (payment.payment_type === 'game_fee') continue;
+      const paymentAmount = Number(payment.amount || 0);
+      if (!Number.isFinite(paymentAmount) || paymentAmount <= 0) continue;
+      const id = payment.contribution_id;
+      paidByContribution.set(id, (paidByContribution.get(id) || 0) + paymentAmount);
+    }
+
+    let sent = 0;
+    let failed = 0;
+    let skipped = 0;
+    for (const contribution of contributions || []) {
+      const reminderType = reminderTypeForDate(contribution.due_date, today);
+      if (!reminderType) continue;
+      const member = membersById.get(contribution.user_id);
+      const phone = normalizeTanzaniaPhone(member?.phone);
+      const amount = Number(contribution.amount || 0);
+      const balance = Math.max(0, amount - (paidByContribution.get(contribution.id) || 0));
+      if (!member || !phone || !Number.isFinite(amount) || amount <= 0 || balance <= 0) {
+        skipped++;
+        continue;
+      }
+
+      let reminderId;
+      try {
+        reminderId = await reserveReminder(contribution.id, reminderType, today);
+      } catch (error) {
+        console.error('Payment reminder reservation error:', error.message);
+        failed++;
+        continue;
+      }
+      if (!reminderId) {
+        skipped++;
+        continue;
+      }
+
+      const message = reminderType === 'due_soon'
+        ? `Mchezo Wetu: Salio la mchango wa ${contribution.title || 'kikundi'} ni TSh ${balance.toLocaleString('en-US')}; mwisho ${contribution.due_date}. Lipa kwa wakati.`
+        : reminderType === 'due_today'
+          ? `Mchezo Wetu: Leo ndiyo mwisho wa kulipa salio la TSh ${balance.toLocaleString('en-US')} kwa ${contribution.title || 'kikundi'}.`
+          : `Mchezo Wetu: Salio la TSh ${balance.toLocaleString('en-US')} kwa ${contribution.title || 'kikundi'} limechelewa. Tafadhali lipa au wasiliana na msimamizi.`;
+      let providerMessageId;
+      try {
+        providerMessageId = await sendBeemReminder(phone, message);
+      } catch (error) {
+        const reason = String(error.response?.data?.message || error.message || 'SMS imeshindwa kutumwa.').slice(0, 500);
+        const { error: updateError } = await supabase
+          .from('payment_reminder_logs')
+          .update({ status: 'failed', error: reason, updated_at: new Date().toISOString() })
+          .eq('id', reminderId);
+        if (updateError) console.error('Payment reminder failure log error:', updateError.message);
+        console.error('Payment reminder delivery error:', reason);
+        failed++;
+        continue;
+      }
+
+      const sentAt = new Date().toISOString();
+      const { error: sentLogError } = await supabase
+        .from('payment_reminder_logs')
+        .update({
+          status: 'sent',
+          provider_message_id: providerMessageId || null,
+          error: null,
+          sent_at: sentAt,
+          updated_at: sentAt
+        })
+        .eq('id', reminderId);
+      if (sentLogError) {
+        console.error('SMS sent but reminder log could not be updated:', sentLogError.message);
+        failed++;
+        continue;
+      }
+      sent++;
+    }
+
+    return res.json({ success: true, date: today, sent, failed, skipped });
+  } catch (error) {
+    if (missingReminderSchema(error)) {
+      console.error('Payment reminder migration is not applied:', error.message);
+      return apiError(res, 503, 'Migration ya vikumbusho vya SMS haijaendeshwa kwenye Supabase.');
+    }
+    console.error('Payment reminder scheduler error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kutuma vikumbusho vya SMS.');
   }
 });
 
