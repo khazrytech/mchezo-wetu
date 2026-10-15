@@ -284,12 +284,24 @@ function renderContributions(contributions){
  $('contributionCount').textContent=String(rows.length);
  const active=rows.filter(item=>item.status!=='cancelled');
  const total=active.reduce((sum,item)=>sum+Number(item.amount||0),0);
- const verified=dashboardData?.stats?.paid||0,pending=dashboardData?.stats?.pending||0;
+ const verified=dashboardData?.stats?.contributionPaid??dashboardData?.stats?.paid??0,pending=dashboardData?.stats?.pending||0;
  $('contribTotal').textContent=money(total);$('contribTotalCount').textContent=currentLanguage==='en'?'Contributions '+rows.length:'Michango '+rows.length;
  $('contribPaid').textContent=money(verified);$('contribBalance').textContent=money(dashboardData?.stats?.balance);
  $('contribPending').textContent=money(pending);
- const markup=rows.length?rows.map(item=>'<div class="contribution"><div class="c-left"><div class="c-icon">▤</div><div><div class="c-title">'+escapeText(item.title||'Mchango')+'</div><div class="c-meta">Mwisho '+escapeText(dateLabel(item.due_date))+' · Umewekwa '+escapeText(dateLabel(item.created_at))+'</div></div></div><div class="c-right"><b>'+money(item.amount)+'</b>'+pill(item.status)+'</div></div>').join(''):'<div class="empty-state"><strong>Bado huna michango</strong>Michango utakayopangiwa itaonekana hapa.</div>';
- $('homeContributions').innerHTML=rows.length?rows.slice(0,3).map(item=>'<div class="contribution"><div class="c-left"><div class="c-icon">▤</div><div><div class="c-title">'+escapeText(item.title||'Mchango')+'</div><div class="c-meta">Mwisho '+escapeText(dateLabel(item.due_date))+'</div></div></div><div class="c-right"><b>'+money(item.amount)+'</b>'+pill(item.status)+'</div></div>').join(''):markup;
+ const paidFor=item=>(dashboardData?.payments||[])
+  .filter(payment=>payment.contribution_id===item.id&&payment.status==='verified')
+  .reduce((sum,payment)=>sum+Number(payment.amount||0),0);
+ const pendingFor=item=>(dashboardData?.payments||[])
+  .filter(payment=>payment.contribution_id===item.id&&payment.status==='pending')
+  .reduce((sum,payment)=>sum+Number(payment.amount||0),0);
+ const rowMarkup=item=>{
+  const paid=paidFor(item),pending=pendingFor(item),balance=Math.max(0,Number(item.amount||0)-paid);
+  const due=item.due_date?(currentLanguage==='en'?'Due ':'Mwisho ')+escapeText(dateLabel(item.due_date)):(currentLanguage==='en'?'No due date':'Hakuna tarehe ya mwisho');
+  const state=item.status==='cancelled'?'cancelled':balance===0?'paid':'due';
+  return '<div class="contribution"><div class="c-left"><div class="c-icon">▤</div><div><div class="c-title">'+escapeText(item.title||'Mchango')+'</div><div class="c-meta">'+due+' · '+(currentLanguage==='en'?'Paid ':'Imelipwa ')+money(paid)+(pending?' · '+(currentLanguage==='en'?'Pending ':'Inasubiri ')+money(pending):'')+'</div></div></div><div class="c-right"><b>'+money(balance)+'</b><small>'+(currentLanguage==='en'?'Balance':'Salio')+'</small>'+pill(state)+'</div></div>';
+ };
+ const markup=rows.length?rows.map(rowMarkup).join(''):'<div class="empty-state"><strong>Bado huna michango</strong>Michango utakayopangiwa itaonekana hapa.</div>';
+ $('homeContributions').innerHTML=rows.length?rows.slice(0,3).map(rowMarkup).join(''):markup;
  $('allContributions').innerHTML=markup;
  const select=$('paymentContribution'),selected=select.value;
  select.innerHTML='<option value="">Malipo ya jumla / hakuna mchango maalum</option>'+active.map(item=>'<option value="'+escapeText(item.id)+'">'+escapeText(item.title||'Mchango')+' — '+money(item.amount)+'</option>').join('');
@@ -309,7 +321,7 @@ function renderPaymentRows(payments){
  renderNotifications();
 }
 function renderProgress(stats){
- const assigned=Number(stats.assigned||0),paid=Number(stats.paid||0),balance=Number(stats.balance||0);
+ const assigned=Number(stats.assigned||0),paid=Number(stats.contributionPaid??stats.paid??0),balance=Number(stats.balance||0);
  const percent=assigned?Math.max(0,Math.min(100,Math.round(paid/assigned*100))):0;
  $('progressPercent').textContent=percent+'%';$('progressPaid').textContent=money(paid);
  $('progressTotals').textContent=money(paid)+' / '+money(assigned);$('progressBalance').textContent=money(balance);
@@ -337,8 +349,16 @@ function renderNotifications(){
  else items.push({icon:'◷',title:currentLanguage==='en'?'Account approval is pending':'Idhini ya akaunti inasubiri',text:currentLanguage==='en'?'You can make payments after an administrator approves your account.':'Msimamizi akishaidhinisha akaunti, utaruhusiwa kuanzisha malipo.'});
  const pending=(dashboardData?.payments||[]).filter(payment=>payment.status==='pending');
  if(pending.length)items.push({icon:'◷',title:pending.length+' '+(pending.length===1?'malipo yanasubiri':'malipo yanasubiri'),text:pending.slice(0,3).map(payment=>(payment.reference||'Bila reference')+' · '+money(payment.amount)).join(' | ')});
+ const rejected=(dashboardData?.payments||[]).filter(payment=>payment.status==='rejected');
+ rejected.slice(0,3).forEach(payment=>{
+  const reason=payment.rejection_reason||payment.failure_reason;
+  items.push({
+  icon:'!',title:(currentLanguage==='en'?'Payment declined':'Malipo yamekataliwa')+' · '+(payment.reference||'Bila reference'),
+  text:(reason?(currentLanguage==='en'?'Reason: ':'Sababu: ')+reason+' · ':'')+dateLabel(payment.reviewed_at||payment.created_at)+' · '+money(payment.amount)
+  });
+ });
  const recent=dashboardData?.payments?.[0];
- if(recent)items.push({icon:recent.status==='verified'?'✓':'↗',title:'Muamala wa hivi karibuni: '+statusLabel(recent.status),text:(recent.reference?'Reference '+recent.reference+' · ':'')+dateLabel(recent.created_at)+' · '+money(recent.amount)});
+ if(recent)items.push({icon:recent.status==='verified'?'✓':recent.status==='rejected'?'!':'↗',title:'Muamala wa hivi karibuni: '+statusLabel(recent.status),text:(recent.reference?'Reference '+recent.reference+' · ':'')+dateLabel(recent.created_at)+' · '+money(recent.amount)});
  if(!pending.length&&member?.profile?.is_approved)items.push({icon:'✓',title:currentLanguage==='en'?'No pending payments':'Hakuna malipo yanayosubiri',text:currentLanguage==='en'?'There are no payment requests awaiting review.':'Hakuna ombi la malipo linalohitaji mapitio kwa sasa.'});
  $('notificationsList').innerHTML=items.map(item=>'<div class="notice-item"><div class="notice-icon">'+escapeText(item.icon)+'</div><div><b>'+escapeText(item.title)+'</b><small>'+escapeText(item.text)+'</small></div></div>').join('');
  $('noticeDot').hidden=!pending.length;
@@ -448,14 +468,34 @@ function closePayment(){ $('paymentModal').hidden=true;$('paymentModal').classLi
 function openPaymentDetail(paymentId){
  const payment=(dashboardData?.payments||[]).find(item=>String(item.id)===String(paymentId));
  if(!payment)return;
- $('paymentDetails').innerHTML='<div class="settings-row"><div><b>Mchango</b></div><span>'+escapeText(paymentTitle(payment))+'</span></div><div class="settings-row"><div><b>Kiasi</b></div><strong>'+money(payment.amount)+'</strong></div><div class="settings-row"><div><b>Reference</b></div><strong>'+escapeText(payment.reference||'—')+'</strong></div><div class="settings-row"><div><b>Hali</b></div>'+pill(payment.status)+'</div><div class="settings-row"><div><b>Njia</b></div><span>'+escapeText(paymentMethodLabel(payment.method))+'</span></div><div class="settings-row"><div><b>Tarehe</b></div><span>'+escapeText(dateLabel(payment.created_at))+'</span></div>';
+ const reason=payment.rejection_reason||payment.failure_reason;
+ $('paymentDetails').innerHTML='<div class="settings-row"><div><b>Mchango</b></div><span>'+escapeText(paymentTitle(payment))+'</span></div><div class="settings-row"><div><b>Kiasi</b></div><strong>'+money(payment.amount)+'</strong></div><div class="settings-row"><div><b>Reference</b></div><strong>'+escapeText(payment.reference||'—')+'</strong></div><div class="settings-row"><div><b>Hali</b></div>'+pill(payment.status)+'</div><div class="settings-row"><div><b>Njia</b></div><span>'+escapeText(paymentMethodLabel(payment.method))+'</span></div><div class="settings-row"><div><b>Tarehe</b></div><span>'+escapeText(dateLabel(payment.created_at))+'</span></div>'+(payment.status==='rejected'&&reason?'<div class="settings-row"><div><b>Sababu ya kukataa</b></div><span>'+escapeText(reason)+'</span></div>':'')+(payment.status==='verified'?'<button class="outline-btn" id="downloadReceipt" type="button">Pakua risiti</button>':'');
+ const receiptButton=$('downloadReceipt');
+ if(receiptButton)receiptButton.addEventListener('click',()=>downloadReceipt(payment));
  $('paymentDetailModal').hidden=false;$('paymentDetailModal').classList.add('open');document.body.style.overflow='hidden';
+}
+function downloadReceipt(payment){
+ if(payment.status!=='verified'){setNotice('Risiti inapatikana baada ya malipo kuthibitishwa.','error');return}
+ const fields=[
+  ['Mwanachama',member?.profile?.full_name||member?.user?.email||'Mwanachama'],
+  ['Mchango',paymentTitle(payment)],
+  ['Kiasi',money(payment.amount)],
+  ['Reference',payment.reference||'—'],
+  ['Njia',paymentMethodLabel(payment.method)],
+  ['Tarehe ya malipo',dateLabel(payment.verified_at||payment.created_at)],
+  ['Hali','Imethibitishwa']
+ ];
+ const html='<!doctype html><html lang="sw"><meta charset="utf-8"><title>Risiti - Mchezo Wetu</title><style>body{font:16px Arial,sans-serif;color:#172a25;max-width:680px;margin:48px auto;padding:24px;border:1px solid #dce7df}h1{color:#12805a}p{color:#74857d}.row{display:flex;justify-content:space-between;gap:20px;padding:12px 0;border-bottom:1px solid #e3eae5}.row b{color:#172a25}@media print{body{margin:0;border:0}}</style><h1>Mchezo Wetu</h1><p>Risiti ya malipo yaliyothibitishwa</p>'+fields.map(([label,value])=>'<div class="row"><span>'+escapeText(label)+'</span><b>'+escapeText(value)+'</b></div>').join('')+'<p>Hifadhi risiti hii kwa kumbukumbu zako.</p></html>';
+ const url=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
+ const link=document.createElement('a');link.href=url;link.download='mchezo-wetu-risiti-'+String(payment.reference||payment.id).replace(/[^a-zA-Z0-9_-]/g,'-')+'.html';document.body.appendChild(link);link.click();link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 function downloadHistory(){
  const rows=dashboardData?.payments||[];
  if(!rows.length){setNotice('Hakuna historia ya malipo ya kupakua.','error');return}
  const csvRows=[['Reference','Tarehe','Njia','Kiasi TSh','Hali'],...rows.map(payment=>[payment.reference||'',dateLabel(payment.created_at),paymentMethodLabel(payment.method),Number(payment.amount||0),statusLabel(payment.status)])];
- const csv='\uFEFF'+csvRows.map(row=>row.map(value=>'"'+String(value).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+ const cell=value=>{let text=String(value??'');if(/^[=+\-@]/.test(text))text="'"+text;return '"'+text.replace(/"/g,'""')+'"'};
+ const csv='\uFEFF'+csvRows.map(row=>row.map(cell).join(',')).join('\r\n');
  const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
  const link=document.createElement('a');link.href=url;link.download='mchezo-wetu-malipo.csv';link.click();URL.revokeObjectURL(url);
 }

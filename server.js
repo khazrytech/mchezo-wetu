@@ -809,20 +809,23 @@ app.get('/api/dashboard', ready, requireUser, async (req, res) => {
       .select('id, title, amount, due_date, status, created_at')
       .eq('user_id', req.user.id)
       .order('created_at', { ascending: false })
-      .limit(50);
+      .limit(1000);
                                                       if (contributionError) throw contributionError;
 
     const { data: payments, error: paymentError } = await supabase
       .from('payments')
-      .select('id, contribution_id, amount, reference, method, status, created_at, verified_at')
+      .select('id, contribution_id, amount, reference, method, status, created_at, verified_at, rejection_reason, failure_reason, reviewed_at, payment_type')
       .eq('user_id', req.user.id)                       .order('created_at', { ascending: false })
-      .limit(50);
+      .limit(1000);
     if (paymentError) throw paymentError;
 
     const allContributions = contributions || [];
     const allPayments = payments || [];
     const paid = allPayments
       .filter(p => p.status === 'verified')
+      .reduce((sum, p) => sum + Number(p.amount || 0), 0);
+    const contributionPaid = allPayments
+      .filter(p => p.status === 'verified' && p.payment_type !== 'game_fee')
       .reduce((sum, p) => sum + Number(p.amount || 0), 0);
                                                       const pending = allPayments
       .filter(p => p.status === 'pending')              .reduce((sum, p) => sum + Number(p.amount || 0), 0);
@@ -835,8 +838,8 @@ app.get('/api/dashboard', ready, requireUser, async (req, res) => {
     res.json({                                          success: true,
       profile,
       stats: {
-        paid,                                             pending,
-        assigned: due,                                    balance: Math.max(0, due - paid)                },
+        paid, contributionPaid,                           pending,
+        assigned: due,                                    balance: Math.max(0, due - contributionPaid) },
       contributions: allContributions,
       payments: allPayments
     });                                             } catch (error) {
@@ -964,6 +967,137 @@ app.get('/api/admin/users', ready, requireUser, requireAdmin, async (req, res) =
   }
 });
 
+app.get('/api/admin/contributions', ready, requireUser, requireAdmin, async (req, res) => {
+  try {
+    const { data: rows, error } = await supabase
+      .from('contributions')
+      .select('id, user_id, title, amount, due_date, status, created_at')
+      .order('created_at', { ascending: false })
+      .limit(1000);
+
+    if (error) throw error;
+    const userIds = [...new Set((rows || []).map(row => row.user_id).filter(Boolean))];
+    let profiles = [];
+    if (userIds.length) {
+      const result = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', userIds);
+      if (result.error) throw result.error;
+      profiles = result.data || [];
+    }
+    const profileMap = Object.fromEntries(profiles.map(profile => [profile.id, profile]));
+    res.setHeader('Cache-Control', 'no-store');
+    return res.json({
+      success: true,
+      contributions: (rows || []).map(row => ({
+        ...row,
+        profile: profileMap[row.user_id] || null
+      }))
+    });
+  } catch (error) {
+    console.error('Admin contributions error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kupata michango.');
+  }
+});
+
+app.post('/api/admin/contributions', ready, requireUser, requireAdmin, async (req, res) => {
+  try {
+    const userId = String(req.body?.user_id || '').trim();
+    const title = String(req.body?.title || '').trim();
+    const amount = Number(req.body?.amount);
+    const dueDate = req.body?.due_date ? String(req.body.due_date) : null;
+
+    if (!userId) return apiError(res, 400, 'Chagua mwanachama.');
+    if (title.length < 2 || title.length > 120) {
+      return apiError(res, 400, 'Jina la mchango liwe na herufi 2 hadi 120.');
+    }
+    if (!Number.isSafeInteger(amount) || amount < 100 || amount > 100000000) {
+      return apiError(res, 400, 'Kiasi kiwe kati ya TSh 100 na TSh 100,000,000.');
+    }
+    if (dueDate && (!/^\d{4}-\d{2}-\d{2}$/.test(dueDate) ||
+        Number.isNaN(Date.parse(dueDate + 'T00:00:00Z')) ||
+        new Date(dueDate + 'T00:00:00Z').toISOString().slice(0, 10) !== dueDate)) {
+      return apiError(res, 400, 'Tarehe ya mwisho si sahihi.');
+    }
+
+    const { data: member, error: memberError } = await supabase
+      .from('profiles')
+      .select('id, role, is_banned')
+      .eq('id', userId)
+      .maybeSingle();
+    if (memberError) throw memberError;
+    if (!member || member.role === 'admin' || member.is_banned) {
+      return apiError(res, 400, 'Mwanachama hayupo au akaunti imesimamishwa.');
+    }
+
+    const { data, error } = await supabase
+      .from('contributions')
+      .insert({ user_id: userId, title, amount, due_date: dueDate })
+      .select('id, user_id, title, amount, due_date, status, created_at')
+      .single();
+    if (error) throw error;
+
+    res.setHeader('Cache-Control', 'no-store');
+    return res.status(201).json({ success: true, contribution: data });
+  } catch (error) {
+    console.error('Admin contribution creation error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kuunda mchango.');
+  }
+});
+
+app.patch('/api/admin/contributions/:id', ready, requireUser, requireAdmin, async (req, res) => {
+  try {
+    const title = String(req.body?.title || '').trim();
+    const amount = Number(req.body?.amount);
+    const dueDate = req.body?.due_date ? String(req.body.due_date) : null;
+
+    if (title.length < 2 || title.length > 120) {
+      return apiError(res, 400, 'Jina la mchango liwe na herufi 2 hadi 120.');
+    }
+    if (!Number.isSafeInteger(amount) || amount < 100 || amount > 100000000) {
+      return apiError(res, 400, 'Kiasi kiwe kati ya TSh 100 na TSh 100,000,000.');
+    }
+    if (dueDate && (!/^\d{4}-\d{2}-\d{2}$/.test(dueDate) ||
+        Number.isNaN(Date.parse(dueDate + 'T00:00:00Z')) ||
+        new Date(dueDate + 'T00:00:00Z').toISOString().slice(0, 10) !== dueDate)) {
+      return apiError(res, 400, 'Tarehe ya mwisho si sahihi.');
+    }
+
+    const { data, error } = await supabase
+      .from('contributions')
+      .update({ title, amount, due_date: dueDate })
+      .eq('id', req.params.id)
+      .neq('status', 'cancelled')
+      .select('id, user_id, title, amount, due_date, status, created_at')
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return apiError(res, 404, 'Mchango haujapatikana au tayari umeghairiwa.');
+    return res.json({ success: true, contribution: data });
+  } catch (error) {
+    console.error('Admin contribution update error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kuhifadhi mabadiliko ya mchango.');
+  }
+});
+
+app.post('/api/admin/contributions/:id/cancel', ready, requireUser, requireAdmin, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('contributions')
+      .update({ status: 'cancelled' })
+      .eq('id', req.params.id)
+      .neq('status', 'cancelled')
+      .select('id, status')
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return apiError(res, 404, 'Mchango haujapatikana au tayari umeghairiwa.');
+    return res.json({ success: true, contribution: data });
+  } catch (error) {
+    console.error('Admin contribution cancellation error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kughairi mchango.');
+  }
+});
+
 app.post('/api/admin/users/:id/action', ready, requireUser, requireAdmin, async (req, res) => {       const userId = req.params.id;
   const action = String(req.body.action || '');
   const allowed = ['approve', 'ban', 'unban'];
@@ -986,19 +1120,22 @@ app.post('/api/admin/users/:id/action', ready, requireUser, requireAdmin, async 
     return apiError(res, 500, 'Imeshindikana kubadilisha akaunti.');
   }
   if (!data) return apiError(res, 404, 'Mwanachama hajapatikana.');
-                                                    await supabase.from('audit_logs').insert({
+  const { error: auditError } = await supabase.from('audit_logs').insert({
     actor_id: req.user.id,
     action: `user_${action}`,
-    target_id: userId,                                details: {}                                     });
+    target_id: userId,
+    details: {}
+  });
+  if (auditError) console.error('Admin audit log error:', auditError.message);
   res.json({ success: true, message: 'Mabadiliko yamehifadhiwa.' });                                });
 
 app.get('/api/admin/payments', ready, requireUser, requireAdmin, async (req, res) => {
   try {
     const { data: rows, error } = await supabase
       .from('payments')
-      .select('id, user_id, contribution_id, amount, reference, method, status, created_at, verified_at')
+      .select('id, user_id, contribution_id, amount, reference, method, status, created_at, verified_at, rejection_reason, failure_reason, reviewed_at')
       .order('created_at', { ascending: false })
-      .limit(500);
+      .limit(1000);
 
     if (error) {
       console.error('Admin payments error:', error);
@@ -1016,10 +1153,9 @@ app.get('/api/admin/payments', ready, requireUser, requireAdmin, async (req, res
         .in('id', userIds);
 
       if (result.error) {
-        console.error('Payment profiles lookup error:', result.error);
-      } else {
-        profiles = result.data || [];
+        throw result.error;
       }
+      profiles = result.data || [];
     }
 
     const profileMap = Object.fromEntries(profiles.map(x => [x.id, x]));
@@ -1041,11 +1177,15 @@ app.post('/api/admin/payments/:id/review', ready, requireUser, requireAdmin, asy
   try {
     const paymentId = req.params.id;
     const action = String(req.body?.action || '').toLowerCase();
+    const reason = String(req.body?.reason || '').trim();
 
     if (!paymentId || !['verify', 'reject'].includes(action)) {
       return res.status(400).json({
         error: 'Payment ID au action si sahihi.'
       });
+    }
+    if (action === 'reject' && (reason.length < 3 || reason.length > 500)) {
+      return apiError(res, 400, 'Andika sababu ya kukataa (herufi 3 hadi 500).');
     }
 
     const newStatus = action === 'verify' ? 'verified' : 'rejected';
@@ -1053,7 +1193,11 @@ app.post('/api/admin/payments/:id/review', ready, requireUser, requireAdmin, asy
     const { data, error } = await supabase
       .from('payments')
       .update({
-        status: newStatus
+        status: newStatus,
+        reviewed_by: req.user.id,
+        reviewed_at: new Date().toISOString(),
+        verified_at: action === 'verify' ? new Date().toISOString() : null,
+        rejection_reason: action === 'reject' ? reason : null
       })
       .eq('id', paymentId)
       .eq('status', 'pending')
@@ -1073,6 +1217,17 @@ app.post('/api/admin/payments/:id/review', ready, requireUser, requireAdmin, asy
         error: 'Malipo hayapo au tayari yameshakaguliwa.'
       });
     }
+
+    const { error: auditError } = await supabase.from('audit_logs').insert({
+      actor_id: req.user.id,
+      action: `payment_${action}`,
+      target_id: paymentId,
+      details: {
+        reference: data.reference || null,
+        reason: action === 'reject' ? reason : null
+      }
+    });
+    if (auditError) console.error('Payment review audit log error:', auditError.message);
 
     return res.json({
       success: true,
