@@ -1117,6 +1117,12 @@ app.get('/admin/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
+app.get(['/mchezo-wetu-logo.svg', '/admin/mchezo-wetu-logo.svg'], (req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.type('image/svg+xml');
+  res.sendFile(path.join(__dirname, 'mchezo-wetu-logo.svg'));
+});
+
 app.post('/api/payments/sonicpesa', ready, requireUser, async (req, res) => {
   try {
     const apiKey = process.env.SONICPESA_API_KEY;

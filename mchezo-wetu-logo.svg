@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Mchezo Wetu</title>
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1c563c"/>
+      <stop offset="1" stop-color="#102f24"/>
+    </linearGradient>
+    <linearGradient id="people" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e1f3b0"/>
+      <stop offset="1" stop-color="#8ed9a9"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="url(#tile)"/>
+  <path d="M11 48c1.1-7.3 6.1-11.6 12.4-11.6 3.2 0 5.7 1 7.6 3 1.9-2 4.5-3 7.6-3C44.9 36.4 49.9 40.7 51 48v3H11z" fill="url(#people)"/>
+  <circle cx="23.4" cy="25.3" r="6.1" fill="#c9edaa"/>
+  <circle cx="40.6" cy="25.3" r="6.1" fill="#a5e2a3"/>
+  <path d="M28.2 23.2c.1-6 3.5-10 9.5-10-1.1 4.2-3.5 7.4-9.5 10Z" fill="#f0d889"/>
+  <path d="M31.1 31.1c1.5-4.4 4.1-7.3 8.1-9.4" fill="none" stroke="#f0d889" stroke-linecap="round" stroke-width="2.2"/>
+</svg>

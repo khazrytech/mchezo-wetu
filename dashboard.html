@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f3f6f4">
 <title>Mchezo Wetu | Member Portal</title>
+<link rel="icon" type="image/svg+xml" href="./mchezo-wetu-logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#172a25;--muted:#74857d;--soft:#f3f6f4;--line:#e3eae5;--white:#fff;--green:#12805a;--deep:#112b23;--mint:#e6f3eb;--gold:#aa762e;--gold-bg:#fbf3e5;--red:#b24b50;--red-bg:#fbeeee;--blue:#527db1;--shadow:0 8px 24px rgba(24,48,35,.045);font-family:"DM Sans",sans-serif;color:var(--ink)}
 *{box-sizing:border-box}html{min-height:100%;scroll-behavior:smooth}body{margin:0;min-height:100vh;background:var(--soft);line-height:1.5}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:wait;opacity:.6}img{max-width:100%}[hidden]{display:none!important}
 .sidebar{position:fixed;inset:0 auto 0 0;z-index:10;width:254px;display:flex;flex-direction:column;padding:24px 17px 16px;background:#142920;color:#f2f7f3}
-.brand{display:flex;align-items:center;gap:11px;padding:0 9px 25px;color:#f5faf6;font:800 16px Manrope,sans-serif;letter-spacing:-.5px}.brand-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#b4e4c4;color:#173c2c;font-size:17px}.brand small{display:block;margin-top:2px;color:#a0b8a9;font:700 9px "DM Sans";letter-spacing:1.2px}
+.brand{display:flex;align-items:center;gap:11px;padding:0 9px 25px;color:#f5faf6;font:800 16px Manrope,sans-serif;letter-spacing:-.5px}.brand-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#b4e4c4;color:#173c2c;font-size:17px;object-fit:cover}.brand small{display:block;margin-top:2px;color:#a0b8a9;font:700 9px "DM Sans";letter-spacing:1.2px}
 .workspace{margin:0 9px 22px;padding:10px 11px;border:1px solid #365044;border-radius:11px;color:#adc0b4;font-size:10px}.workspace b{color:#f5faf6;font-size:11px}.workspace span{float:right;color:#8de3ac}
 .nav-label{padding:0 11px 8px;color:#91a99a;font-size:9px;font-weight:800;letter-spacing:1.2px}.nav{display:grid;gap:3px}.nav button{display:flex;align-items:center;gap:11px;width:100%;min-height:41px;padding:9px 11px;border:0;border-radius:9px;background:transparent;color:#b5c4ba;text-align:left;font-size:11px;font-weight:650}.nav button .ico{width:17px;color:#a9c4b1;text-align:center;font-size:14px}.nav button.active{background:#294639;color:#d2f1db}.nav button:hover:not(.active){background:#1d382c;color:#eef6f0}.nav .count{margin-left:auto;padding:2px 6px;border-radius:99px;background:#faeee0;color:var(--gold);font-size:9px}
 .side-bottom{margin-top:auto;padding-top:13px;border-top:1px solid #365044}.user-mini{display:flex;align-items:center;gap:10px;padding:7px}.avatar{display:grid;place-items:center;width:36px;height:36px;flex:0 0 auto;overflow:hidden;border-radius:50%;background:#d9eddf;color:#1b5238;font-size:11px;font-weight:800}.avatar img{width:100%;height:100%;object-fit:cover}.user-mini b,.user-mini small{display:block}.user-mini b{color:#f3f8f4;font-size:10px}.user-mini small{margin-top:2px;color:#a0b4a7;font-size:9px}
@@ -76,7 +77,7 @@
 </head>
 <body>
 <aside class="sidebar" aria-label="Menyu ya mwanachama">
-  <div class="brand"><div class="brand-icon">M</div><div class="brand-copy">Mchezo Wetu<small>MEMBER PORTAL</small></div></div>
+  <div class="brand"><img class="brand-icon" src="./mchezo-wetu-logo.svg" alt="Nembo ya Mchezo Wetu"><div class="brand-copy">Mchezo Wetu<small>MEMBER PORTAL</small></div></div>
   <div class="workspace">Kikundi<br><b>Mchezo Wetu</b><span>●</span></div>
   <div class="nav-label">AKAUNTI</div>
   <nav class="nav" aria-label="Member portal">
