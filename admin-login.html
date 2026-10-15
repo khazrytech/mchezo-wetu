@@ -21,7 +21,24 @@ button:disabled{opacity:.55}
 </style>
 </head>
 <body>
-<main class="card">
+<main class="auth-shell">
+<aside class="auth-brand">
+  <a class="brand-lockup" href="/" aria-label="Mchezo Wetu">
+    <span class="logo">MW</span>
+    <span><strong>Mchezo Wetu</strong><small>ADMINISTRATION</small></span>
+  </a>
+  <div class="brand-copy">
+    <span class="eyebrow"><i></i> WORKSPACE SALAMA</span>
+    <h2>Simamia jumuiya yako kwa <span>uaminifu.</span></h2>
+    <p>Dashibodi moja ya kusimamia wanachama na kukagua michango kwa usalama.</p>
+  </div>
+  <div class="security-list">
+    <div><span class="security-icon">✓</span><span><strong>Uthibitisho wa hatua mbili</strong><small>OTP hutumwa kwenye barua pepe ya admin</small></span></div>
+    <div><span class="security-icon">◇</span><span><strong>Ufikiaji uliolindwa</strong><small>Admin pekee ndiye anayeruhusiwa kuingia</small></span></div>
+  </div>
+  <div class="brand-footer"><span class="live-dot"></span> Mfumo wa usimamizi · Mchezo Wetu</div>
+</aside>
+<section class="card">
 <div class="logo">MW</div>
 <h1 id="heading">Admin Control Center</h1>
 <p id="description">Ingia kwa akaunti ya msimamizi. OTP itatumwa kwenye barua pepe yako.</p>
@@ -52,6 +69,7 @@ button:disabled{opacity:.55}
 <button id="resendBtn" class="secondary">Tuma OTP tena</button>
 </section>
 <div class="small">Mchezo Wetu · Eneo salama la wasimamizi</div>
+</section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -253,6 +271,157 @@ button.secondary {
 @media(max-width:420px) {
   body { padding: 12px !important; }
   .card { border-radius: 21px !important; padding: 22px !important; }
+}
+</style>
+
+<style id="admin-auth-modern">
+body {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: clamp(16px, 4vw, 42px) !important;
+  background:
+    radial-gradient(ellipse at 5% 5%, #586cbd25, transparent 38%),
+    radial-gradient(ellipse at 95% 95%, #8fb4501b, transparent 35%),
+    #f2f5f3 !important;
+  color: #24372d !important;
+}
+.auth-shell {
+  display: grid;
+  grid-template-columns: minmax(300px, .92fr) minmax(380px, 1fr);
+  width: min(100%, 960px);
+  min-height: 590px;
+  overflow: hidden;
+  border: 1px solid #e3eae5;
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 28px 90px rgba(24, 51, 36, .14);
+  animation: auth-rise .65s cubic-bezier(.2,.75,.25,1) both;
+}
+.auth-brand {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 34px;
+  background:
+    radial-gradient(ellipse at 95% 90%, rgba(169, 216, 130, .17), transparent 35%),
+    linear-gradient(150deg, #153b2c, #102e25 65%, #173b2a);
+  color: #f4fbf5;
+}
+.auth-brand::after {
+  position: absolute;
+  right: -105px;
+  bottom: 93px;
+  width: 300px;
+  height: 300px;
+  border: 1px solid rgba(209, 242, 183, .1);
+  border-radius: 50%;
+  box-shadow: 0 0 0 34px rgba(209, 242, 183, .035), 0 0 0 70px rgba(209, 242, 183, .025);
+  content: "";
+  pointer-events: none;
+}
+.brand-lockup { display: flex; align-items: center; gap: 12px; color: #f4fbf5; text-decoration: none; }
+.brand-lockup .logo {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #d3f29e, #79d79d);
+  color: #153b2c;
+  font-size: 13px;
+  font-weight: 900;
+  box-shadow: 0 7px 20px #081a1133;
+}
+.brand-lockup strong, .brand-lockup small { display: block; }
+.brand-lockup strong { font-size: 14px; letter-spacing: -.02em; }
+.brand-lockup small { margin-top: 4px; color: #a9c5b3; font-size: 9px; font-weight: 800; letter-spacing: .14em; }
+.brand-copy { position: relative; z-index: 1; margin: auto 0; padding: 52px 0 35px; }
+.eyebrow { display: inline-flex; align-items: center; gap: 9px; color: #b8d2aa; font-size: 10px; font-weight: 800; letter-spacing: .13em; }
+.eyebrow i, .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #b4e887; box-shadow: 0 0 12px #b4e88780; }
+.brand-copy h2 { max-width: 380px; margin: 20px 0 14px; color: #f4fbf5; font-size: clamp(30px, 4vw, 42px); line-height: 1.13; letter-spacing: -.055em; }
+.brand-copy h2 span { color: #c1ed8d; }
+.brand-copy p { max-width: 355px; margin: 0; color: #b4c9bb; font-size: 13px; line-height: 1.8; }
+.security-list { position: relative; z-index: 1; display: grid; gap: 17px; }
+.security-list > div { display: flex; align-items: center; gap: 11px; }
+.security-icon { display: grid; place-items: center; width: 31px; height: 31px; flex: 0 0 auto; border: 1px solid #ffffff20; border-radius: 10px; background: #ffffff0d; color: #c6ed9b; }
+.security-list strong, .security-list small { display: block; }
+.security-list strong { color: #eaf5ed; font-size: 11px; }
+.security-list small { margin-top: 3px; color: #9fb8a8; font-size: 10px; }
+.brand-footer { position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; margin-top: 34px; color: #abc2b2; font-size: 10px; }
+.card {
+  align-self: center;
+  width: 100%;
+  max-width: none;
+  padding: clamp(30px, 5vw, 54px) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  animation: auth-content .75s .08s both;
+}
+.card > .logo { display: none; }
+.card h1 { margin: 4px 0 9px; color: #1f3529; font-size: 27px; letter-spacing: -.045em; }
+.card > p { margin: 0 0 25px; color: #79877e !important; font-size: 13px; line-height: 1.7; }
+.card label { margin: 17px 0 7px; color: #455a4d !important; font-size: 11px; font-weight: 700; }
+.card input {
+  min-height: 49px !important;
+  padding: 12px 14px !important;
+  border: 1px solid #dfe8e1 !important;
+  border-radius: 11px !important;
+  background: #f8faf8 !important;
+  color: #294034 !important;
+}
+.card input:focus { border-color: #68ad81 !important; box-shadow: 0 0 0 4px #68ad811c !important; }
+.card input::placeholder { color: #a0aca4; }
+.card button {
+  min-height: 49px !important;
+  margin-top: 14px;
+  border: 0 !important;
+  border-radius: 11px !important;
+  background: linear-gradient(110deg, #277b51, #399a62) !important;
+  color: #fff !important;
+  box-shadow: 0 9px 20px #257b5026;
+}
+.card button:hover { filter: brightness(1.06); box-shadow: 0 12px 24px #257b5033; }
+.card button.secondary {
+  border: 1px solid #e0e9e2 !important;
+  background: #f6f9f6 !important;
+  color: #486151 !important;
+  box-shadow: none;
+}
+.message { border: 1px solid #f1d3d6; background: #fff3f4; color: #a93d4a; }
+.message.success { border-color: #d5ead9; background: #f0f8f1; color: #27734c; }
+.small { margin-top: 26px; color: #8a978f !important; font-size: 10px; }
+@keyframes auth-rise {
+  from { opacity: 0; transform: translateY(12px) scale(.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes auth-content {
+  from { opacity: 0; transform: translateX(9px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@media (max-width: 720px) {
+  body { align-items: flex-start; padding: 16px !important; }
+  .auth-shell { grid-template-columns: 1fr; width: min(100%, 490px); min-height: 0; border-radius: 23px; }
+  .auth-brand { min-height: 205px; padding: 23px; }
+  .brand-copy { margin: 26px 0 0; padding: 0; }
+  .brand-copy h2 { max-width: 400px; margin: 13px 0 8px; font-size: 28px; }
+  .brand-copy p { max-width: 410px; font-size: 12px; }
+  .security-list, .brand-footer { display: none; }
+  .card { padding: 29px 25px !important; }
+  .card h1 { font-size: 24px; }
+}
+@media (max-width: 390px) {
+  body { padding: 10px !important; }
+  .auth-brand { min-height: 190px; padding: 20px; }
+  .brand-copy h2 { font-size: 25px; }
+  .card { padding: 24px 19px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 </style>
 

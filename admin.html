@@ -373,10 +373,215 @@ button:disabled { cursor: wait; opacity: .6; }
   footer.footer { padding: 14px 0; }
 }
 
+/* Modern admin workspace */
+:root {
+  color-scheme: light;
+  --bg: #f3f6f4;
+  --panel: #ffffff;
+  --panel2: #ffffff;
+  --panel-soft: #f4f7f5;
+  --green: #167c55;
+  --green2: #20a26b;
+  --purple: #4d75bd;
+  --yellow: #a96b08;
+  --red: #c74453;
+  --text: #1d3027;
+  --muted: #708078;
+  --border: #e3ebe6;
+  --radius: 18px;
+  --shadow: 0 8px 26px rgba(28, 54, 40, .055);
+}
+html { scroll-padding-top: 90px; }
+body {
+  background:
+    radial-gradient(ellipse at 88% 0%, rgba(37, 150, 99, .075), transparent 31%),
+    var(--bg);
+  color: var(--text);
+}
+.sidebar {
+  z-index: 30;
+  border-right-color: rgba(255,255,255,.08);
+  background: linear-gradient(180deg, #12372a 0%, #102c23 100%);
+  box-shadow: 8px 0 28px rgba(22, 51, 37, .06);
+}
+.brand { padding-bottom: 30px; }
+.logo {
+  border-radius: 14px;
+  background: linear-gradient(145deg, #c9f08b, #72d99f);
+  color: #12372a;
+  box-shadow: 0 7px 18px rgba(126, 221, 159, .16);
+}
+.brand-name { color: #f2fbf5; letter-spacing: -.02em; }
+.brand-sub, .nav-label { color: #8ca99a; }
+.sidebar .nav a { min-height: 44px; border-radius: 11px; color: #c0d1c7; }
+.sidebar .nav a:hover, .sidebar .nav a.active {
+  color: #d5f5a7;
+  background: rgba(194, 237, 139, .12);
+}
+.nav-icon { color: #a6d38d; }
+.nav-count { background: rgba(255, 213, 123, .15); color: #ffd57b; }
+.security { border-color: rgba(255,255,255,.1); background: rgba(255,255,255,.045); }
+.security b { color: #eef8f1; }
+.security p, .status-live { color: #a9bdb1; }
+.main { max-width: 1660px; }
+.topbar {
+  min-height: 76px;
+  border-bottom-color: rgba(220, 231, 224, .86);
+  background: rgba(243, 246, 244, .9);
+}
+.crumb { color: #819088; }
+.crumb strong { color: #30483b; }
+.btn {
+  min-height: 40px;
+  border-color: #e0e9e3;
+  border-radius: 11px;
+  background: #fff;
+  color: #385346;
+  box-shadow: 0 2px 6px rgba(28, 54, 40, .025);
+}
+.btn:hover { border-color: #abd2bb; color: #176d4b; }
+.menu-toggle { align-items: center; justify-content: center; width: 42px; padding: 7px; }
+.avatar { border-color: #c8e5d3; background: #e8f5ed; color: #176d4b; }
+.welcome { margin: 10px 0 30px; }
+.eyebrow { color: #488268; font-size: .72rem; font-weight: 800; letter-spacing: .1em; }
+.welcome h1 { color: #1e3428; letter-spacing: -.045em; }
+.welcome .subtitle { color: #738178; }
+.date-chip, .tag {
+  border-color: #e0e9e3;
+  background: #fff;
+  color: #687970;
+  box-shadow: 0 2px 7px rgba(28, 54, 40, .025);
+}
+.tag { border-color: #d7ebdd; background: #eff8f1; color: #26764f; }
+.notice { border-color: #f1c9cd; background: #fff2f3; color: #a83140; }
+.notice.good { border-color: #cde7d5; background: #eef8f0; color: #26764f; }
+.section-heading h2 { color: #243a2e; letter-spacing: -.025em; }
+.section-heading p, .panel-sub { color: #7a8981; }
+.stat {
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  border-color: #e5ece7;
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: var(--shadow);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.stat::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  background: var(--accent, #2c9a68);
+  content: "";
+}
+.stat:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(28, 54, 40, .09); }
+.stat-label, .stat-foot { color: #78877e; }
+.stat-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #eff7f1;
+  color: #26764f;
+}
+.stat-value { color: #233a2e; letter-spacing: -.04em; }
+.stat-foot strong { color: #248454; }
+.panel {
+  border-color: #e4ebe6;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+.panel-title { color: #2b4034; }
+.legend { color: #75847c; }
+.legend i { background: #268458; }
+.legend .cy i { background: #668dc9; }
+.bars { background: #f0f4f1; }
+.bar { background: linear-gradient(0deg, #238157, #61c28b); }
+.bar.cyan { background: linear-gradient(0deg, #597fb9, #9bb7e0); }
+.chart-foot { border-top-color: #e7eee9; color: #78877e; }
+.chart-foot strong, .break-value { color: #2e4538; }
+.break-name { color: #74837a; }
+.progress { background: #edf2ee; }
+.callout { border-color: #f1e2bd; background: #fff9ec; }
+.callout b { color: #95610c; }
+.table-panel { padding-bottom: 2px; }
+.table-panel .panel-head { padding-bottom: 18px; }
+.toolbar { padding-top: 2px; }
+.search-wrap {
+  min-height: 43px;
+  border-color: #e2eae4;
+  border-radius: 11px;
+  background: #f8faf8;
+  color: #829088;
+}
+.search-wrap input {
+  border: 0 !important;
+  background: transparent !important;
+  color: #2b4034 !important;
+  box-shadow: none !important;
+}
+.search-wrap input::placeholder { color: #99a69f; }
+.filter {
+  border-color: #e0e9e3 !important;
+  background-color: #fff !important;
+  color: #43594d !important;
+}
+.table-scroll table { min-width: 760px; }
+th {
+  background: #f7f9f7;
+  color: #77877d;
+  font-size: .67rem;
+  letter-spacing: .065em;
+}
+td { color: #53665b; }
+th, td { border-bottom-color: #edf1ee; }
+tbody tr:hover td { background: #f8fbf8; }
+.member-avatar { background: #e9f5ed; color: #28764f; }
+.member-name { color: #2b4034; }
+.member-meta { color: #829087; }
+.pill { border-color: #f0e0b9; background: #fff8e8; color: #95610c; }
+.pill.ok { border-color: #d4eada; background: #eff8f1; color: #26764f; }
+.pill.bad { border-color: #f1d6d9; background: #fff1f2; color: #b23f4c; }
+.mini { border-color: #e1e9e3; border-radius: 8px; background: #f6f9f6; color: #455b4e; }
+.mini.approve, .mini.verify { border-color: #cfe5d5; background: #eff8f1; color: #207247; }
+.mini.reject { border-color: #efd3d7; background: #fff2f3; color: #ad3948; }
+.loading, .empty { color: #7a8981; }
+.spinner { border-color: #d7e9dc; border-top-color: #238157; }
+.footer { color: #849188; }
+.table-panel .footer { border-top: 1px solid #edf1ee; }
+.sidebar-backdrop { display: none; }
+@media (max-width: 760px) {
+  .layout.menu-open .sidebar-backdrop {
+    position: fixed;
+    z-index: 25;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: rgba(18, 36, 27, .42);
+    backdrop-filter: blur(2px);
+  }
+  .sidebar { box-shadow: 18px 0 46px rgba(13, 37, 25, .23); }
+}
+@media (max-width: 520px) {
+  .welcome h1 { font-size: 1.75rem; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stat { min-height: 136px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
 </style>
 </head>
 <body>
-<div class="layout">
+<div class="layout" id="layout">
 <aside class="sidebar" id="sidebar">
   <div class="brand"><div class="logo">MW</div><div><div class="brand-name">Mchezo Wetu</div><div class="brand-sub">ADMIN CENTER</div></div></div>
   <div class="nav-label">WORKSPACE</div>
@@ -393,10 +598,11 @@ button:disabled { cursor: wait; opacity: .6; }
     <button class="btn" id="logout" style="width:100%;text-align:left;margin-top:12px">↗ &nbsp; Toka kwenye akaunti</button>
   </div>
 </aside>
+<button class="sidebar-backdrop" id="sidebarBackdrop" aria-label="Funga menyu"></button>
 
 <main class="main">
 <header class="topbar">
-  <div style="display:flex;align-items:center;gap:11px"><button class="btn menu-toggle" id="menuToggle" aria-label="Fungua menyu">☰</button><div class="crumb">Mchezo Wetu &nbsp;/&nbsp; <strong>Admin Dashboard</strong></div></div>
+  <div style="display:flex;align-items:center;gap:11px"><button class="btn menu-toggle" id="menuToggle" aria-label="Fungua menyu" aria-controls="sidebar" aria-expanded="false">☰</button><div class="crumb">Mchezo Wetu &nbsp;/&nbsp; <strong>Admin Dashboard</strong></div></div>
   <div class="top-actions"><a href="/dashboard" class="btn member-view">Member view ↗</a><button class="btn" id="refresh" title="Refresh data">↻</button><label class="avatar" id="adminAvatar" for="adminAvatarFile" title="Badilisha picha ya admin">MW</label><input id="adminAvatarFile" type="file" accept="image/jpeg,image/png,image/webp" hidden></div>
 </header>
 
@@ -629,12 +835,19 @@ $('paymentSearch').addEventListener('input',renderPayments);
 $('paymentFilter').addEventListener('change',renderPayments);
 $('menuToggle').addEventListener('click',()=>{
  const open=$('sidebar').classList.toggle('open');
+ $('layout').classList.toggle('menu-open',open);
  $('menuToggle').setAttribute('aria-expanded',String(open));
 });
-document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>{$('sidebar').classList.remove('open');document.querySelectorAll('.nav a').forEach(n=>n.classList.remove('active'));a.classList.add('active')}));
+document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>{$('sidebar').classList.remove('open');$('layout').classList.remove('menu-open');$('menuToggle').setAttribute('aria-expanded','false');document.querySelectorAll('.nav a').forEach(n=>n.classList.remove('active'));a.classList.add('active')}));
+$('sidebarBackdrop').addEventListener('click',()=>{
+ $('sidebar').classList.remove('open');
+ $('layout').classList.remove('menu-open');
+ $('menuToggle').setAttribute('aria-expanded','false');
+});
 document.addEventListener('keydown',event=>{
  if(event.key==='Escape'){
   $('sidebar').classList.remove('open');
+  $('layout').classList.remove('menu-open');
   $('menuToggle').setAttribute('aria-expanded','false');
  }
 });
