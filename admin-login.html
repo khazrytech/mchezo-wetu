@@ -3,430 +3,569 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#090a16">
+<meta name="theme-color" content="#080a12">
+<meta name="robots" content="noindex,nofollow">
 <title>Mchezo Wetu | Admin Login</title>
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="apple-touch-icon" href="/pwa-icon.svg">
+<link rel="apple-touch-icon" href="/pwa-icon-192.png">
 <link rel="icon" type="image/svg+xml" href="./mchezo-wetu-logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@600;700;800&display=swap">
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 20% 10%,#7048ff33,transparent 40%),radial-gradient(ellipse at 90% 90%,#23d7d022,transparent 35%),#090a16;color:#f5f4ff;font:14px Arial,sans-serif}
-.card{width:100%;max-width:420px;padding:30px;border:1px solid #ffffff18;border-radius:24px;background:#111326eF;box-shadow:0 25px 90px #0008}
-.logo{width:52px;height:52px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(135deg,#a184ff,#4b55d8,#43d8d0);font-size:20px;font-weight:900}
-h1{font-size:25px;margin:22px 0 8px}p{color:#999db9;line-height:1.7;font-size:13px}
-label{display:block;margin:17px 0 8px;font-size:12px;color:#c8c8df}
-input{width:100%;padding:14px;border:1px solid #ffffff20;border-radius:12px;background:#090b19;color:white;outline:none}
-input:focus{border-color:#a184ff}
-button{width:100%;padding:14px;border:0;border-radius:12px;background:linear-gradient(100deg,#a184ff,#6558e8);color:white;font-weight:800;margin-top:18px;cursor:pointer}
-button:disabled{opacity:.55}
-.secondary{background:#ffffff0b;border:1px solid #ffffff20}
-.hidden{display:none!important}.message{display:none;padding:12px;border-radius:10px;background:#ff718415;color:#ffb0be;line-height:1.6;font-size:12px;margin-top:15px;overflow-wrap:anywhere}.message.show{display:block}.success{background:#42dca515;color:#8af0bf}
-.small{font-size:11px;text-align:center;margin-top:20px}
+:root{
+  --bg:#080a12;
+  --surface:#101426;
+  --surface-2:#161b2e;
+  --line:rgba(190,182,255,.16);
+  --line-strong:rgba(199,243,107,.34);
+  --text:#f5f4ff;
+  --muted:#98a0bb;
+  --accent:#c7f36b;
+  --accent-2:#8ed9a9;
+  --brand:#153b2c;
+  --danger:#fb7185;
+  --success:#86efac;
+  --radius:20px;
+  --shadow:0 28px 90px rgba(0,0,0,.55);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:clamp(14px,3.5vw,40px);
+  background:
+    radial-gradient(ellipse at 8% 4%,rgba(139,92,246,.22),transparent 38%),
+    radial-gradient(ellipse at 94% 96%,rgba(199,243,107,.12),transparent 34%),
+    var(--bg);
+  color:var(--text);
+  font-family:"DM Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:14px;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,strong,.btn{font-family:"Manrope",ui-sans-serif,system-ui,sans-serif}
+.auth-shell{
+  display:grid;
+  grid-template-columns:minmax(280px,.9fr) minmax(370px,1fr);
+  width:min(100%,980px);
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:28px;
+  background:linear-gradient(150deg,rgba(22,27,46,.92),rgba(12,15,26,.96));
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(22px);
+  animation:rise .6s cubic-bezier(.2,.75,.25,1) both;
+}
+.auth-brand{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  padding:34px;
+  background:
+    radial-gradient(ellipse at 92% 88%,rgba(199,243,107,.18),transparent 36%),
+    linear-gradient(155deg,#12402c,#0d2a20 62%,#16422e);
+}
+.auth-brand::after{
+  position:absolute;
+  right:-110px;
+  bottom:86px;
+  width:300px;
+  height:300px;
+  border:1px solid rgba(209,242,183,.12);
+  border-radius:50%;
+  box-shadow:0 0 0 34px rgba(209,242,183,.04),0 0 0 72px rgba(209,242,183,.025);
+  content:"";
+  pointer-events:none;
+}
+.brand-lockup{display:flex;align-items:center;gap:12px;color:#f4fbf5;text-decoration:none}
+.brand-lockup img{width:44px;height:44px;border-radius:14px;object-fit:cover;box-shadow:0 8px 22px rgba(4,18,11,.5)}
+.brand-lockup strong,.brand-lockup small{display:block}
+.brand-lockup strong{font-size:14px;letter-spacing:-.02em}
+.brand-lockup small{margin-top:4px;color:#a9c5b3;font-size:9px;font-weight:800;letter-spacing:.15em}
+.brand-copy{position:relative;z-index:1;margin:auto 0;padding:52px 0 34px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;color:#b8d2aa;font-size:10px;font-weight:800;letter-spacing:.13em}
+.eyebrow i,.live-dot{width:7px;height:7px;border-radius:50%;background:#b4e887;box-shadow:0 0 12px rgba(180,232,135,.5)}
+.brand-copy h2{max-width:380px;margin:20px 0 14px;color:#f4fbf5;font-size:clamp(29px,4vw,41px);line-height:1.14;letter-spacing:-.05em}
+.brand-copy h2 span{color:#c1ed8d}
+.brand-copy p{max-width:360px;margin:0;color:#b4c9bb;font-size:13px;line-height:1.8}
+.security-list{position:relative;z-index:1;display:grid;gap:16px}
+.security-list>div{display:flex;align-items:center;gap:11px}
+.security-icon{display:grid;place-items:center;width:31px;height:31px;flex:0 0 auto;border:1px solid rgba(255,255,255,.13);border-radius:10px;background:rgba(255,255,255,.05);color:#c6ed9b}
+.security-list strong,.security-list small{display:block}
+.security-list strong{color:#eaf5ed;font-size:11px}
+.security-list small{margin-top:3px;color:#9fb8a8;font-size:10px}
+.brand-footer{position:relative;z-index:1;display:flex;align-items:center;gap:8px;margin-top:32px;color:#abc2b2;font-size:10px}
+.auth-panel{display:flex;flex-direction:column;justify-content:center;padding:clamp(28px,4.5vw,48px)}
+.steps{display:flex;align-items:center;gap:8px;margin-bottom:20px}
+.step{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.step b{display:grid;place-items:center;width:20px;height:20px;border:1px solid var(--line);border-radius:50%;font-size:10px;color:var(--muted)}
+.step.active{color:var(--accent)}
+.step.active b{border-color:var(--line-strong);background:rgba(199,243,107,.15);color:var(--accent)}
+.step-line{flex:1;height:1px;background:var(--line)}
+h1{margin:0 0 8px;font-size:26px;letter-spacing:-.045em}
+#description{margin:0 0 22px;color:var(--muted);font-size:13px;line-height:1.7}
+.notice{
+  display:none;
+  margin-bottom:18px;
+  padding:12px 14px;
+  border:1px solid rgba(251,113,133,.32);
+  border-radius:13px;
+  background:rgba(251,113,133,.1);
+  color:#ffc2cb;
+  font-size:12px;
+  line-height:1.65;
+  overflow-wrap:anywhere;
+}
+.notice.show{display:block}
+.notice.success{border-color:rgba(134,239,172,.32);background:rgba(134,239,172,.1);color:#a7f3c6}
+label{display:block;margin:16px 0 7px;color:#d4d5e6;font-size:11px;font-weight:700}
+.input-shell{position:relative}
+input{
+  width:100%;
+  min-height:50px;
+  padding:13px 14px;
+  border:1px solid #34384d;
+  border-radius:13px;
+  background:#090c16;
+  color:var(--text);
+  font:inherit;
+  outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+input::placeholder{color:#5d6480}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(199,243,107,.14)}
+input[readonly]{color:#b9c0d6;background:#0b0f1c;cursor:default}
+input[readonly]:focus{border-color:#34384d;box-shadow:none}
+#otp{letter-spacing:.55em;font-size:19px;font-weight:700;text-align:center;padding-left:22px}
+.reveal{
+  position:absolute;
+  top:50%;
+  right:8px;
+  display:grid;
+  place-items:center;
+  width:36px;
+  height:36px;
+  min-height:0;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:var(--muted);
+  transform:translateY(-50%);
+  cursor:pointer;
+}
+.reveal:hover{background:rgba(255,255,255,.06);color:var(--text);filter:none}
+.hint{margin:8px 0 0;color:var(--muted);font-size:11px;line-height:1.6}
+.btn{
+  width:100%;
+  min-height:50px;
+  margin-top:16px;
+  padding:13px 16px;
+  border:0;
+  border-radius:13px;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+  transition:transform .16s,filter .16s,box-shadow .16s;
+}
+.btn:active{transform:scale(.985)}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn.primary{
+  background:linear-gradient(110deg,var(--accent),var(--accent-2));
+  color:#08130d;
+  box-shadow:0 12px 30px rgba(199,243,107,.18);
+}
+.btn.primary:hover:not(:disabled){filter:brightness(1.06)}
+.btn.secondary{border:1px solid var(--line);background:rgba(255,255,255,.045);color:#ded9ff}
+.btn.secondary:hover:not(:disabled){background:rgba(255,255,255,.08)}
+.btn.is-busy{position:relative;color:transparent!important}
+.btn.is-busy::after{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:18px;
+  height:18px;
+  margin:-9px 0 0 -9px;
+  border:2px solid rgba(8,19,13,.28);
+  border-top-color:#08130d;
+  border-radius:50%;
+  content:"";
+  animation:spin .7s linear infinite;
+}
+.btn.secondary.is-busy::after{border-color:rgba(222,217,255,.3);border-top-color:#ded9ff}
+.actions{display:flex;gap:10px}
+.actions .btn{flex:1}
+.foot{margin-top:22px;color:#6f7691;font-size:10px;text-align:center}
+.form-section[hidden]{display:none}
+.otp-meta{display:flex;justify-content:space-between;gap:10px;margin-top:14px;font-size:11px;color:var(--muted)}
+.otp-meta a{color:var(--accent);text-decoration:none;font-weight:700}
+.otp-meta a:hover{text-decoration:underline}
+.otp-meta a[aria-disabled="true"]{color:#5d6480;pointer-events:none;text-decoration:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes rise{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px}
+@media(max-width:760px){
+  body{align-items:flex-start;padding:14px}
+  .auth-shell{grid-template-columns:1fr;width:min(100%,520px);border-radius:24px}
+  .auth-brand{min-height:186px;padding:24px}
+  .brand-copy{margin:24px 0 0;padding:0}
+  .brand-copy h2{font-size:27px;margin:12px 0 8px}
+  .security-list,.brand-footer{display:none}
+  .auth-panel{padding:28px 24px}
+  h1{font-size:23px}
+}
+@media(max-width:380px){
+  body{padding:10px}
+  .auth-panel{padding:24px 19px}
+  .action-row{flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
 </style>
 <script src="/app-pwa.js" defer></script>
 </head>
 <body>
 <main class="auth-shell">
-<aside class="auth-brand">
-  <a class="brand-lockup" href="/" aria-label="Mchezo Wetu">
-    <img class="logo" src="./mchezo-wetu-logo.svg" alt="">
-    <span><strong>Mchezo Wetu</strong><small>ADMINISTRATION</small></span>
-  </a>
-  <div class="brand-copy">
-    <span class="eyebrow"><i></i> WORKSPACE SALAMA</span>
-    <h2>Simamia jumuiya yako kwa <span>uaminifu.</span></h2>
-    <p>Dashibodi moja ya kusimamia wanachama na kukagua michango kwa usalama.</p>
-  </div>
-  <div class="security-list">
-    <div><span class="security-icon">✓</span><span><strong>Uthibitisho wa hatua mbili</strong><small>OTP hutumwa kwenye barua pepe ya admin</small></span></div>
-    <div><span class="security-icon">◇</span><span><strong>Ufikiaji uliolindwa</strong><small>Admin pekee ndiye anayeruhusiwa kuingia</small></span></div>
-  </div>
-  <div class="brand-footer"><span class="live-dot"></span> Mfumo wa usimamizi · Mchezo Wetu</div>
-</aside>
-<section class="card">
-<img class="logo" src="./mchezo-wetu-logo.svg" alt="" aria-hidden="true">
-<h1 id="heading">Admin Control Center</h1>
-<p id="description">Ingia kwa akaunti ya msimamizi. OTP itatumwa kwenye barua pepe yako.</p>
-<div id="notice" class="message"></div>
+  <aside class="auth-brand">
+    <a class="brand-lockup" href="/" aria-label="Mchezo Wetu">
+      <img src="./mchezo-wetu-logo.svg" alt="">
+      <span><strong>Mchezo Wetu</strong><small>ADMINISTRATION</small></span>
+    </a>
+    <div class="brand-copy">
+      <span class="eyebrow"><i></i> ENEO SALAMA LA WASIMAMIZI</span>
+      <h2>Simamia jumuiya yako kwa <span>uaminifu.</span></h2>
+      <p>Dashibodi moja ya kusimamia wanachama na kukagua michango kwa usalama.</p>
+    </div>
+    <div class="security-list">
+      <div><span class="security-icon">✓</span><span><strong>Uthibitisho wa hatua mbili</strong><small>OTP hutumwa kwenye barua pepe ya admin</small></span></div>
+      <div><span class="security-icon">◇</span><span><strong>Ufikiaji uliolindwa</strong><small>Admin pekee ndiye anayeruhusiwa kuingia</small></span></div>
+    </div>
+    <div class="brand-footer"><span class="live-dot"></span> Mfumo wa usimamizi · Mchezo Wetu</div>
+  </aside>
 
-<section id="login">
-<label for="email">Barua pepe ya admin</label>
-<input id="email" type="email" autocomplete="username" value="hackertrick1997@gmail.com" readonly>
-<label for="password">Password</label>
-<input id="password" type="password" autocomplete="current-password" placeholder="Weka password yako">
-<button id="loginBtn">Ingia na utume OTP</button>
-<button id="showSetup" class="secondary hidden">Weka password ya admin kwa mara ya kwanza</button>
-</section>
+  <section class="auth-panel">
+    <div class="steps" aria-hidden="true">
+      <span class="step active" id="stepDot1"><b>1</b> Password</span>
+      <span class="step-line"></span>
+      <span class="step" id="stepDot2"><b>2</b> OTP</span>
+    </div>
+    <h1 id="heading">Ingia kama msimamizi</h1>
+    <p id="description">Weka password yako. Tutatuma namba ya uthibitisho (OTP) kwenye barua pepe ya msimamizi.</p>
+    <div id="notice" class="notice" role="status" aria-live="polite"></div>
 
-<section id="setup" class="hidden">
-<label for="newPassword">Password mpya (angalau herufi 10)</label>
-<input id="newPassword" type="password" autocomplete="new-password" minlength="10">
-<label for="confirmPassword">Rudia password</label>
-<input id="confirmPassword" type="password" autocomplete="new-password" minlength="10">
-<button id="setupBtn">Weka password ya admin</button>
-<button id="backLogin" class="secondary">Rudi login</button>
-</section>
+    <form id="login" class="form-section" novalidate>
+      <label for="email">Barua pepe ya msimamizi</label>
+      <input id="email" type="email" autocomplete="username" readonly aria-readonly="true" value="">
+      <label for="password">Password</label>
+      <div class="input-shell">
+        <input id="password" type="password" autocomplete="current-password" placeholder="Weka password yako" required>
+        <button id="togglePassword" class="reveal" type="button" aria-label="Onyesha password" aria-pressed="false">👁</button>
+      </div>
+      <button id="loginBtn" class="btn primary" type="submit">Endelea</button>
+      <button id="showSetup" class="btn secondary" type="button" hidden>Weka password ya admin kwa mara ya kwanza</button>
+    </form>
 
-<section id="otpSection" class="hidden">
-<label for="otp">OTP ya tarakimu 6</label>
-<input id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000">
-<button id="verifyBtn">Thibitisha OTP na uingie</button>
-<button id="resendBtn" class="secondary">Tuma OTP tena</button>
-</section>
-<div class="small">Mchezo Wetu · Eneo salama la wasimamizi</div>
-</section>
+    <form id="setup" class="form-section" novalidate hidden>
+      <label for="newPassword">Password mpya</label>
+      <div class="input-shell">
+        <input id="newPassword" type="password" autocomplete="new-password" minlength="10" placeholder="Angalau herufi 10">
+        <button id="toggleNewPassword" class="reveal" type="button" aria-label="Onyesha password" aria-pressed="false">👁</button>
+      </div>
+      <label for="confirmPassword">Rudia password</label>
+      <input id="confirmPassword" type="password" autocomplete="new-password" minlength="10" placeholder="Andika password tena">
+      <p class="hint">Password iwe na angalau herufi 10. Usajili wa admin unaruhusiwa mara moja tu.</p>
+      <button id="setupBtn" class="btn primary" type="submit">Weka password na tuma OTP</button>
+      <button id="backLogin" class="btn secondary" type="button">Rudi kwenye kuingia</button>
+    </form>
+
+    <form id="otpSection" class="form-section" novalidate hidden>
+      <label for="otp">Namba ya uthibitisho (OTP)</label>
+      <input id="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" required>
+      <p class="hint">Angalia inbox au spam. Tumia OTP ya mwisho uliyotumiwa — za zamani huisha muda.</p>
+      <button id="verifyBtn" class="btn primary" type="submit">Thibitisha na uingie</button>
+      <div class="actions action-row">
+        <button id="resendBtn" class="btn secondary" type="button">Tuma OTP tena</button>
+        <button id="backBtn" class="btn secondary" type="button">Rudi</button>
+      </div>
+      <div class="otp-meta">
+        <span id="otpTarget"></span>
+        <span id="resendHint"></span>
+      </div>
+    </form>
+
+    <p class="foot">Mchezo Wetu · Eneo salama la wasimamizi</p>
+  </section>
 </main>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const email='hackertrick1997@gmail.com';
-const $=id=>document.getElementById(id);
-let client=null, stage='login';
+(function () {
+  'use strict';
 
-function message(text,good=false){
- const el=$('notice');el.textContent=text;el.className='message show'+(good?' success':'');
-}
-function busy(id,on){$(id).disabled=on}
-function showStage(s){
- stage=s;
- $('login').classList.toggle('hidden',s!=='login');
- $('setup').classList.toggle('hidden',s!=='setup');
- $('otpSection').classList.toggle('hidden',s!=='otp');
- $('showSetup').classList.toggle('hidden',s!=='login'||!window.setupAllowed);
- $('heading').textContent=s==='setup'?'Weka Password ya Admin':s==='otp'?'Thibitisha Barua Pepe':'Admin Control Center';
- $('description').textContent=s==='setup'?'Usajili wa admin unaruhusiwa mara moja tu.':s==='otp'?'Ingiza OTP ya mwisho uliyotumiwa. Namba za zamani huisha muda au kubatilishwa.':'Ingia kwa akaunti ya msimamizi. OTP itatumwa kwenye barua pepe yako.';
-}
-async function requestOtp(){
- const r=await fetch('/api/admin/auth/send-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:$('password').value})});
- const d=await r.json();if(!r.ok)throw Error(d.error||'Imeshindikana kutuma OTP.');
- $('otp').value='';
- showStage('otp');message('OTP mpya imetumwa. Tumia namba ya mwisho uliyopokea; ukituma tena, OTP za awali hazitatumika.',true);
-}
-async function initialize(){
- try{
-  const r=await fetch('/api/config',{cache:'no-store'}),c=await r.json();
-  if(!r.ok)throw Error(c.error||'Supabase configuration haipo.');
-  client=window.supabase.createClient(c.supabaseUrl,c.supabaseAnonKey);
-  const s=await fetch('/api/admin/auth/status');const d=await s.json();
-  if(s.ok&&d.setupAllowed)window.setupAllowed=true;
-  showStage('login');
- }catch(e){message(e.message)}
-}
-$('loginBtn').onclick=async()=>{
- busy('loginBtn',true);
- try{await requestOtp()}catch(e){message(e.message)}
- finally{busy('loginBtn',false)}
-};
-$('showSetup').onclick=()=>{showStage('setup');message('');};
-$('backLogin').onclick=()=>{showStage('login');message('');};
-$('setupBtn').onclick=async()=>{
- const p=$('newPassword').value;
- if(p.length<10)return message('Password iwe na angalau herufi 10.');
- if(p!==$('confirmPassword').value)return message('Password hazifanani.');
- busy('setupBtn',true);
- try{
-  const r=await fetch('/api/admin/auth/setup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:p})});
-  const d=await r.json();if(!r.ok)throw Error(d.error||'Imeshindikana kuweka password.');
-  $('password').value=p;message('Password imewekwa. Sasa thibitisha OTP.',true);
-  await requestOtp();
- }catch(e){message(e.message)}
- finally{busy('setupBtn',false)}
-};
-$('verifyBtn').onclick=async()=>{
- const token=$('otp').value.trim();
- if(!/^\d{6}$/.test(token))return message('Weka OTP yenye tarakimu 6.');
- busy('verifyBtn',true);
- try{
-  const r=await fetch('/api/admin/auth/verify-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,token})});
-  const d=await r.json();if(!r.ok)throw Error(d.error||'OTP haijakubaliwa.');
-  const {error}=await client.auth.setSession({access_token:d.session.access_token,refresh_token:d.session.refresh_token});
-  if(error)throw error;
-  location.href='/admin/dashboard';
- }catch(e){message(e.message)}
- finally{busy('verifyBtn',false)}
-};
-$('resendBtn').onclick=async()=>{
- busy('resendBtn',true);
- try{await requestOtp()}catch(e){message(e.message)}
- finally{busy('resendBtn',false)}
-};
-initialize();
-</script>
+  var $ = function (id) { return document.getElementById(id); };
+  var client = null;
+  var adminEmail = '';
+  var resendTimer = null;
 
-<style id="mw-global-redesign-v2">
-:root {
-  color-scheme: dark;
-  --mw-bg: #080a12;
-  --mw-surface: #111522;
-  --mw-surface2: #171b2b;
-  --mw-border: rgba(190,182,255,.15);
-  --mw-text: #f5f4ff;
-  --mw-muted: #9ba3bd;
-  --mw-purple: #a78bfa;
-  --mw-lime: #c7f36b;
-  --mw-danger: #fb7185;
-  --mw-success: #86efac;
-}
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  color: var(--mw-text) !important;
-  background:
-    radial-gradient(ellipse at 8% 0%, #8b5cf61b, transparent 36%),
-    radial-gradient(ellipse at 94% 95%, #c7f36b0b, transparent 30%),
-    var(--mw-bg) !important;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", sans-serif !important;
-}
-h1,h2,h3,h4 { letter-spacing: -.04em; }
-p { line-height: 1.7; }
-a { transition: color .2s, background .2s; }
-button, input, select, textarea { font: inherit; }
-button { cursor: pointer; }
-input, select, textarea {
-  max-width: 100%;
-  color: var(--mw-text) !important;
-  background: #090c16 !important;
-  border: 1px solid #34384d !important;
-  border-radius: 13px !important;
-  outline: none;
-  transition: border-color .2s, box-shadow .2s;
-}
-input:focus, select:focus, textarea:focus {
-  border-color: var(--mw-purple) !important;
-  box-shadow: 0 0 0 4px #a78bfa1c !important;
-}
-button, .btn, .primary {
-  border-radius: 13px !important;
-  transition: transform .18s, filter .18s, box-shadow .18s;
-}
-button:hover, .btn:hover { filter: brightness(1.07); }
-button:active, .btn:active { transform: scale(.985); }
-.primary, .btn.primary {
-  color: #11111a !important;
-  background: linear-gradient(110deg,#e1d5ff,#a78bfa 55%,#c7f36b) !important;
-  border: 0 !important;
-  font-weight: 800 !important;
-  box-shadow: 0 10px 28px #a78bfa20;
-}
-.card, .panel, .stat, .member-section, .table-panel {
-  border-color: var(--mw-border) !important;
-}
-.notice, .message {
-  border-radius: 13px !important;
-  overflow-wrap: anywhere;
-}
-.pill, .tag, .date-chip {
-  border-radius: 999px !important;
-}
-[hidden] { display: none !important; }
-:focus-visible {
-  outline: 2px solid var(--mw-lime) !important;
-  outline-offset: 3px;
-}
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    scroll-behavior: auto !important;
-    animation-duration: .01ms !important;
-    transition-duration: .01ms !important;
+  function message(text, good) {
+    var el = $('notice');
+    el.textContent = text || '';
+    el.className = 'notice' + (text ? ' show' : '') + (good ? ' success' : '');
   }
-}
-</style>
 
-<style id="mw-page-redesign-v2">
-body {
-  min-height: 100vh;
-  background:
-    radial-gradient(ellipse at 8% 5%,#8b5cf630,transparent 36%),
-    radial-gradient(ellipse at 95% 95%,#c7f36b12,transparent 32%),
-    #080a12 !important;
-}
-.card {
-  border: 1px solid var(--mw-border) !important;
-  border-radius: 26px !important;
-  background: linear-gradient(145deg,#171a2bfa,#0d101cf7) !important;
-  box-shadow: 0 28px 100px #0009 !important;
-  backdrop-filter: blur(24px);
-  padding: clamp(24px,5vw,36px) !important;
-}
-.logo {
-  background: linear-gradient(135deg,#e1d5ff,#a78bfa 55%,#c7f36b) !important;
-  color: #11111a !important;
-  border-radius: 16px !important;
-  box-shadow: 0 10px 32px #a78bfa38 !important;
-}
-h1 { letter-spacing: -.045em !important; }
-p { color: var(--mw-muted) !important; }
-label { color: #d4d5e6 !important; font-weight: 650 !important; }
-input {
-  min-height: 50px !important;
-  padding: 13px !important;
-  border-radius: 13px !important;
-}
-button {
-  min-height: 49px !important;
-  background: linear-gradient(110deg,#e1d5ff,#a78bfa 55%,#c7f36b) !important;
-  color: #11111a !important;
-  font-weight: 800 !important;
-}
-button.secondary {
-  background: #ffffff08 !important;
-  border: 1px solid var(--mw-border) !important;
-  color: #ddd5ff !important;
-}
-.message { border-radius: 13px !important; }
-@media(max-width:420px) {
-  body { padding: 12px !important; }
-  .card { border-radius: 21px !important; padding: 22px !important; }
-}
-</style>
+  function busy(id, on) {
+    var el = $(id);
+    if (!el) return;
+    el.disabled = on;
+    el.setAttribute('aria-busy', on ? 'true' : 'false');
+    el.classList.toggle('is-busy', on);
+  }
 
-<style id="admin-auth-modern">
-body {
-  display: flex !important;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: clamp(16px, 4vw, 42px) !important;
-  background:
-    radial-gradient(ellipse at 5% 5%, #586cbd25, transparent 38%),
-    radial-gradient(ellipse at 95% 95%, #8fb4501b, transparent 35%),
-    #f2f5f3 !important;
-  color: #24372d !important;
-}
-.auth-shell {
-  display: grid;
-  grid-template-columns: minmax(300px, .92fr) minmax(380px, 1fr);
-  width: min(100%, 960px);
-  min-height: 590px;
-  overflow: hidden;
-  border: 1px solid #e3eae5;
-  border-radius: 28px;
-  background: #fff;
-  box-shadow: 0 28px 90px rgba(24, 51, 36, .14);
-  animation: auth-rise .65s cubic-bezier(.2,.75,.25,1) both;
-}
-.auth-brand {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  padding: 34px;
-  background:
-    radial-gradient(ellipse at 95% 90%, rgba(169, 216, 130, .17), transparent 35%),
-    linear-gradient(150deg, #153b2c, #102e25 65%, #173b2a);
-  color: #f4fbf5;
-}
-.auth-brand::after {
-  position: absolute;
-  right: -105px;
-  bottom: 93px;
-  width: 300px;
-  height: 300px;
-  border: 1px solid rgba(209, 242, 183, .1);
-  border-radius: 50%;
-  box-shadow: 0 0 0 34px rgba(209, 242, 183, .035), 0 0 0 70px rgba(209, 242, 183, .025);
-  content: "";
-  pointer-events: none;
-}
-.brand-lockup { display: flex; align-items: center; gap: 12px; color: #f4fbf5; text-decoration: none; }
-.brand-lockup .logo {
-  display: grid;
-  place-items: center;
-  display: block;
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  object-fit: cover;
-  box-shadow: 0 7px 20px #081a1133;
-}
-.brand-lockup strong, .brand-lockup small { display: block; }
-.brand-lockup strong { font-size: 14px; letter-spacing: -.02em; }
-.brand-lockup small { margin-top: 4px; color: #a9c5b3; font-size: 9px; font-weight: 800; letter-spacing: .14em; }
-.brand-copy { position: relative; z-index: 1; margin: auto 0; padding: 52px 0 35px; }
-.eyebrow { display: inline-flex; align-items: center; gap: 9px; color: #b8d2aa; font-size: 10px; font-weight: 800; letter-spacing: .13em; }
-.eyebrow i, .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #b4e887; box-shadow: 0 0 12px #b4e88780; }
-.brand-copy h2 { max-width: 380px; margin: 20px 0 14px; color: #f4fbf5; font-size: clamp(30px, 4vw, 42px); line-height: 1.13; letter-spacing: -.055em; }
-.brand-copy h2 span { color: #c1ed8d; }
-.brand-copy p { max-width: 355px; margin: 0; color: #b4c9bb; font-size: 13px; line-height: 1.8; }
-.security-list { position: relative; z-index: 1; display: grid; gap: 17px; }
-.security-list > div { display: flex; align-items: center; gap: 11px; }
-.security-icon { display: grid; place-items: center; width: 31px; height: 31px; flex: 0 0 auto; border: 1px solid #ffffff20; border-radius: 10px; background: #ffffff0d; color: #c6ed9b; }
-.security-list strong, .security-list small { display: block; }
-.security-list strong { color: #eaf5ed; font-size: 11px; }
-.security-list small { margin-top: 3px; color: #9fb8a8; font-size: 10px; }
-.brand-footer { position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; margin-top: 34px; color: #abc2b2; font-size: 10px; }
-.card {
-  align-self: center;
-  width: 100%;
-  max-width: none;
-  padding: clamp(30px, 5vw, 54px) !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: #fff !important;
-  box-shadow: none !important;
-  animation: auth-content .75s .08s both;
-}
-.card > .logo { display: none; }
-.card h1 { margin: 4px 0 9px; color: #1f3529; font-size: 27px; letter-spacing: -.045em; }
-.card > p { margin: 0 0 25px; color: #79877e !important; font-size: 13px; line-height: 1.7; }
-.card label { margin: 17px 0 7px; color: #455a4d !important; font-size: 11px; font-weight: 700; }
-.card input {
-  min-height: 49px !important;
-  padding: 12px 14px !important;
-  border: 1px solid #dfe8e1 !important;
-  border-radius: 11px !important;
-  background: #f8faf8 !important;
-  color: #294034 !important;
-}
-.card input:focus { border-color: #68ad81 !important; box-shadow: 0 0 0 4px #68ad811c !important; }
-.card input::placeholder { color: #a0aca4; }
-.card button {
-  min-height: 49px !important;
-  margin-top: 14px;
-  border: 0 !important;
-  border-radius: 11px !important;
-  background: linear-gradient(110deg, #277b51, #399a62) !important;
-  color: #fff !important;
-  box-shadow: 0 9px 20px #257b5026;
-}
-.card button:hover { filter: brightness(1.06); box-shadow: 0 12px 24px #257b5033; }
-.card button.secondary {
-  border: 1px solid #e0e9e2 !important;
-  background: #f6f9f6 !important;
-  color: #486151 !important;
-  box-shadow: none;
-}
-.message { border: 1px solid #f1d3d6; background: #fff3f4; color: #a93d4a; }
-.message.success { border-color: #d5ead9; background: #f0f8f1; color: #27734c; }
-.small { margin-top: 26px; color: #8a978f !important; font-size: 10px; }
-@keyframes auth-rise {
-  from { opacity: 0; transform: translateY(12px) scale(.99); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-@keyframes auth-content {
-  from { opacity: 0; transform: translateX(9px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@media (max-width: 720px) {
-  body { align-items: flex-start; padding: 16px !important; }
-  .auth-shell { grid-template-columns: 1fr; width: min(100%, 490px); min-height: 0; border-radius: 23px; }
-  .auth-brand { min-height: 205px; padding: 23px; }
-  .brand-copy { margin: 26px 0 0; padding: 0; }
-  .brand-copy h2 { max-width: 400px; margin: 13px 0 8px; font-size: 28px; }
-  .brand-copy p { max-width: 410px; font-size: 12px; }
-  .security-list, .brand-footer { display: none; }
-  .card { padding: 29px 25px !important; }
-  .card h1 { font-size: 24px; }
-}
-@media (max-width: 390px) {
-  body { padding: 10px !important; }
-  .auth-brand { min-height: 190px; padding: 20px; }
-  .brand-copy h2 { font-size: 25px; }
-  .card { padding: 24px 19px !important; }
-}
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
-}
-</style>
+  function currentEmail() {
+    return ($('email').value || '').trim().toLowerCase();
+  }
 
+  var stages = { login: 'login', setup: 'setup', otp: 'otpSection' };
+
+  function showStage(name) {
+    Object.keys(stages).forEach(function (key) {
+      $(stages[key]).hidden = key !== name;
+    });
+    $('stepDot1').classList.toggle('active', name === 'login');
+    $('stepDot2').classList.toggle('active', name === 'otp');
+
+    if (name === 'setup') {
+      $('heading').textContent = 'Weka password ya msimamizi';
+      $('description').textContent = 'Huenda hii ni mara ya kwanza. Usajili wa admin unaruhusiwa mara moja tu.';
+      $('newPassword').focus();
+    } else if (name === 'otp') {
+      $('heading').textContent = 'Thibitisha barua pepe';
+      $('description').textContent = 'Weka OTP ya tarakimu 6 uliyotumiwa kwenye barua pepe.';
+      $('otp').value = '';
+      $('otp').focus();
+    } else {
+      $('heading').textContent = 'Ingia kama msimamizi';
+      $('description').textContent = 'Weka password yako. Tutatuma namba ya uthibitisho (OTP) kwenye barua pepe ya msimamizi.';
+      $('password').focus();
+    }
+  }
+
+  async function api(path, options) {
+    var response;
+    try {
+      response = await fetch(path, options);
+    } catch (error) {
+      throw new Error('Hakuna muunganisho wa mtandao. Angalia intaneti yako kisha ujaribu tena.');
+    }
+    var data = {};
+    try { data = await response.json(); } catch (error) { data = {}; }
+    if (!response.ok) {
+      throw new Error(data.error || 'Ombi halijafanikiwa (kosa ' + response.status + ').');
+    }
+    return data;
+  }
+
+  function startResendCooldown() {
+    var left = 45;
+    var link = $('resendBtn');
+    link.disabled = true;
+    clearInterval(resendTimer);
+    var tick = function () {
+      $('resendHint').textContent = 'Unaweza kutuma tena baada ya sekunde ' + left + '.';
+      if (left <= 0) {
+        clearInterval(resendTimer);
+        link.disabled = false;
+        $('resendHint').textContent = '';
+      }
+      left -= 1;
+    };
+    tick();
+    resendTimer = setInterval(tick, 1000);
+  }
+
+  async function requestOtp() {
+    var data = await api('/api/admin/auth/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: currentEmail(), password: $('password').value })
+    });
+    $('otpTarget').textContent = currentEmail() ? ('Namba imetumwa kwa ' + currentEmail()) : '';
+    showStage('otp');
+    message(data.message || 'OTP imetumwa. Tumia namba ya mwisho uliyopokea.', true);
+    startResendCooldown();
+  }
+
+  function setPasswordVisibility(inputId, buttonId) {
+    $(buttonId).addEventListener('click', function () {
+      var input = $(inputId);
+      var reveal = input.type === 'password';
+      input.type = reveal ? 'text' : 'password';
+      $(buttonId).setAttribute('aria-pressed', reveal ? 'true' : 'false');
+      $(buttonId).setAttribute('aria-label', reveal ? 'Ficha password' : 'Onyesha password');
+      $(buttonId).textContent = reveal ? '🙈' : '👁';
+      input.focus();
+    });
+  }
+
+  async function initialize() {
+    try {
+      var config = await api('/api/config', { cache: 'no-store' });
+      client = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+
+      var status = await api('/api/admin/auth/status');
+      adminEmail = String(status.adminEmail || '');
+      $('email').value = adminEmail;
+
+      if (status.setupAllowed) {
+        $('showSetup').hidden = false;
+      }
+
+      if (!adminEmail) {
+        $('email').readOnly = false;
+        $('email').removeAttribute('aria-readonly');
+        $('email').placeholder = 'admin@example.com';
+        message('Weka barua pepe ya msimamizi kisha password yako ili kuendelea.');
+        showStage('login');
+        return;
+      }
+
+      if (status.message) message(status.message);
+      showStage('login');
+    } catch (error) {
+      message(error.message);
+      $('email').readOnly = false;
+      $('email').removeAttribute('aria-readonly');
+      showStage('login');
+    }
+  }
+
+  $('login').addEventListener('submit', async function (event) {
+    event.preventDefault();
+    if (!currentEmail() || currentEmail().indexOf('@') < 0) return message('Weka barua pepe sahihi ya msimamizi.');
+    if (!$('password').value) return message('Weka password yako kwanza.');
+    busy('loginBtn', true);
+    try {
+      await requestOtp();
+    } catch (error) {
+      message(error.message);
+    } finally {
+      busy('loginBtn', false);
+    }
+  });
+
+  $('setup').addEventListener('submit', async function (event) {
+    event.preventDefault();
+    var password = $('newPassword').value;
+    if (password.length < 10) return message('Password iwe na angalau herufi 10.');
+    if (password !== $('confirmPassword').value) return message('Password hazifanani.');
+    busy('setupBtn', true);
+    try {
+      await api('/api/admin/auth/setup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: currentEmail(), password: password })
+      });
+      $('password').value = password;
+      message('Password imewekwa. Sasa thibitisha OTP.', true);
+      await requestOtp();
+    } catch (error) {
+      message(error.message);
+    } finally {
+      busy('setupBtn', false);
+    }
+  });
+
+  async function verifyOtp() {
+    var token = $('otp').value.trim();
+    if (!/^\d{6}$/.test(token)) return message('Weka OTP yenye tarakimu 6.');
+    busy('verifyBtn', true);
+    try {
+      var data = await api('/api/admin/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: currentEmail(), token: token })
+      });
+      var result = await client.auth.setSession({
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token
+      });
+      if (result.error) throw new Error(result.error.message);
+      message('Umethibitishwa. Tunakupeleka kwenye dashibodi…', true);
+      location.href = '/admin/dashboard';
+    } catch (error) {
+      message(error.message);
+      $('otp').select();
+    } finally {
+      busy('verifyBtn', false);
+    }
+  }
+
+  $('otpSection').addEventListener('submit', function (event) {
+    event.preventDefault();
+    verifyOtp();
+  });
+
+  $('otp').addEventListener('input', function () {
+    this.value = this.value.replace(/\D/g, '').slice(0, 6);
+  });
+
+  $('otp').addEventListener('paste', function (event) {
+    var text = (event.clipboardData || window.clipboardData).getData('text') || '';
+    var digits = text.replace(/\D/g, '').slice(0, 6);
+    if (!digits) return;
+    event.preventDefault();
+    this.value = digits;
+    if (digits.length === 6) verifyOtp();
+  });
+
+  $('resendBtn').addEventListener('click', async function () {
+    busy('resendBtn', true);
+    try {
+      var data = await api('/api/admin/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: currentEmail(), password: $('password').value })
+      });
+      message(data.message || 'OTP mpya imetumwa. Tumia namba ya mwisho uliyopokea.', true);
+      startResendCooldown();
+    } catch (error) {
+      message(error.message);
+    } finally {
+      busy('resendBtn', false);
+    }
+  });
+
+  $('showSetup').addEventListener('click', function () {
+    message('');
+    showStage('setup');
+  });
+
+  $('backLogin').addEventListener('click', function () {
+    message('');
+    showStage('login');
+  });
+
+  $('backBtn').addEventListener('click', function () {
+    message('');
+    showStage('login');
+  });
+
+  setPasswordVisibility('password', 'togglePassword');
+  setPasswordVisibility('newPassword', 'toggleNewPassword');
+
+  window.addEventListener('offline', function () {
+    message('Umetoka mtandaoni. Angalia intaneti yako kisha ujaribu tena.');
+  });
+
+  initialize();
+})();
+</script>
 </body>
 </html>

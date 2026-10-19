@@ -1,7 +1,10 @@
-const express = require('express');               const path = require('path');
+const express = require('express');
+const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 const axios = require('axios');
 const crypto = require('crypto');
+const helmet = require('helmet');
+const { rateLimit } = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -35,15 +38,59 @@ const supabase = SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY
     })
   : null;
 app.disable('x-powered-by');
+app.set('trust proxy', 1);
+app.use(helmet({
+  contentSecurityPolicy: {
+    useDefaults: false,
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
+      connectSrc: ["'self'", 'https://*.supabase.co', 'wss://*.supabase.co'],
+      fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
+      objectSrc: ["'none'"],
+      baseUri: ["'self'"],
+      formAction: ["'self'"],
+      frameAncestors: ["'none'"],
+      manifestSrc: ["'self'"],
+      workerSrc: ["'self'"]
+    }
+  },
+  crossOriginEmbedderPolicy: false,
+  crossOriginOpenerPolicy: { policy: 'same-origin' },
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  hsts: { maxAge: 15552000, includeSubDomains: true, preload: false },
+  frameguard: { action: 'deny' }
+}));
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');         res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');                    next();
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  next();
 });
+
+// Rate limiting: hulinda OTP dhidi ya matumizi mabaya na kunawa credits za Brevo.
+const otpLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 8,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { success: false, error: 'Maombi mengi ya OTP. Subiri dakika 15 kisha ujaribu tena.' }
+});
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 300,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { success: false, error: 'Maombi mengi mno. Subiri kidogo.' }
+});
+
 app.use(express.json({
   limit: '3mb',
   verify: (req, res, buf) => { req.rawBody = Buffer.from(buf); }
-}));         app.use(express.urlencoded({ extended: false, limit: '20kb' }));
+}));
+app.use(express.urlencoded({ extended: false, limit: '20kb' }));
+app.use('/api', apiLimiter);
 function apiError(res, status, message) {
   return res.status(status).json({ success: false, error: message });                               }
                                                   function missingPaymentReviewMetadata(error) {
@@ -60,6 +107,35 @@ function apiError(res, status, message) {
                                                   function missingSmsReminderPreference(error) {
                                                     return error?.code === '42703' &&
                                                       /sms_reminders_(enabled|consent_at)/i.test(String(error.message || ''));
+                                                  }
+                                                  function missingPaymentType(error) {
+                                                    return error?.code === '42703' &&
+                                                      /payment_type/i.test(String(error.message || ''));
+                                                  }
+                                                  function missingTable(error, name) {
+                                                    return error?.code === '42P01' ||
+                                                      (error?.code === '42703' && new RegExp(name, 'i').test(String(error.message || '')));
+                                                  }
+                                                  function parsePagination(req, defaultSize = 50, maxSize = 200) {
+                                                    const page = Math.max(1, Number.parseInt(req.query?.page, 10) || 1);
+                                                    const requested = Number.parseInt(req.query?.pageSize, 10);
+                                                    const size = Number.isFinite(requested) ? requested : defaultSize;
+                                                    const pageSize = Math.min(maxSize, Math.max(1, size));
+                                                    const from = (page - 1) * pageSize;
+                                                    return { page, pageSize, from, to: from + pageSize - 1 };
+                                                  }
+                                                  function cleanSearch(value, max = 80) {
+                                                    return String(value || '').trim().slice(0, max);
+                                                  }
+                                                  // Hutumia RPC ya aggregation (inapopatikana) ili takwimu ziwe sahihi kwa data kubwa.
+                                                  // Ikikosekana, inarudi kwenye hesabu ya JS ili mfumo usivunjike.
+                                                  async function aggregateOrCount(fnName, args, countBuilder) {
+                                                    const { data, error } = await supabase.rpc(fnName, args);
+                                                    if (!error && data) return data;
+                                                    if (error && process.env.NODE_ENV !== 'test') {
+                                                      console.warn(`RPC ${fnName} haipatikani; kutumia hesabu ya JS:`, error.message);
+                                                    }
+                                                    return countBuilder();
                                                   }
                                                   function tanzaniaDate(date = new Date()) {
                                                     const parts = new Intl.DateTimeFormat('en-CA', {
@@ -220,8 +296,10 @@ async function requireAdmin(req, res, next) {
 }
 
 
-// ADMIN OTP AUTH ROUTES - MCH EZO WETU
-const ADMIN_EMAIL = 'hackertrick1997@gmail.com';
+// ADMIN OTP AUTH ROUTES - MCHEZO WETU
+const ADMIN_EMAIL = String(
+  process.env.ADMIN_EMAIL || 'hackertrick1997@gmail.com'
+).trim().toLowerCase();
 
 const publicAuthClient = SUPABASE_URL && SUPABASE_ANON_KEY
   ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -344,6 +422,7 @@ app.get('/api/admin/auth/status', ready, async (req, res) => {
       return res.json({
         success: true,
         setupAllowed: false,
+        adminEmail: ADMIN_EMAIL,
         message: 'Akaunti ya admin haipo Supabase Auth.'
       });
     }
@@ -354,14 +433,14 @@ app.get('/api/admin/auth/status', ready, async (req, res) => {
       !profile?.is_banned &&
       user.app_metadata?.admin_password_set !== true;
 
-    return res.json({ success: true, setupAllowed: allowed });
+    return res.json({ success: true, setupAllowed: allowed, adminEmail: ADMIN_EMAIL });
   } catch (error) {
     console.error('Admin status error:', error.message);
     return apiError(res, 500, 'Imeshindikana kukagua hali ya admin.');
   }
 });
 
-app.post('/api/admin/auth/setup', ready, async (req, res) => {
+app.post('/api/admin/auth/setup', otpLimiter, ready, async (req, res) => {
   try {
     const email = String(req.body?.email || '').trim().toLowerCase();
     const password = String(req.body?.password || '');
@@ -411,7 +490,7 @@ app.post('/api/admin/auth/setup', ready, async (req, res) => {
   }
 });
 
-app.post('/api/admin/auth/send-otp', ready, async (req, res) => {
+app.post('/api/admin/auth/send-otp', otpLimiter, ready, async (req, res) => {
   try {
     const email = String(req.body?.email || '').trim().toLowerCase();
     const password = String(req.body?.password || '');
@@ -457,7 +536,7 @@ app.post('/api/admin/auth/send-otp', ready, async (req, res) => {
   }
 });
 
-app.post('/api/admin/auth/verify-otp', ready, async (req, res) => {
+app.post('/api/admin/auth/verify-otp', otpLimiter, ready, async (req, res) => {
   try {
     const email = String(req.body?.email || '').trim().toLowerCase();
     const token = String(req.body?.token || '').trim();
@@ -538,9 +617,9 @@ app.get('/api/config', (req, res) => {
   });
 });
 
-app.post('/api/auth/send-otp', async (req, res) => {
+app.post('/api/auth/send-otp', otpLimiter, async (req, res) => {
   const email = String(req.body?.email || '').trim().toLowerCase();
-  if (email === 'hackertrick1997@gmail.com') {
+  if (email === ADMIN_EMAIL) {
     return apiError(res, 403, 'Tumia ukurasa wa admin kuingia.');
   }
   const signup = req.body?.signup === true;
@@ -656,7 +735,7 @@ app.post('/api/auth/send-otp', async (req, res) => {
 });
 
 
-app.post('/api/auth/verify-otp', async (req, res) => {
+app.post('/api/auth/verify-otp', otpLimiter, async (req, res) => {
   const email = String(req.body?.email || '').trim().toLowerCase();
   const token = String(req.body?.token || '').trim();
   const type = String(req.body?.type || '');
@@ -946,10 +1025,15 @@ app.post('/api/me/profile/avatar', ready, requireUser, async (req, res) => {
 
 app.get('/api/members', ready, requireUser, async (req, res) => {
   try {
-    const { data, error } = await supabase.from('profiles')
-      .select('id, full_name, created_at')
+    const { page, pageSize, from, to } = parsePagination(req, 500, 500);
+    const q = cleanSearch(req.query.q).replace(/[%,()]/g, ' ');
+
+    let query = supabase.from('profiles')
+      .select('id, full_name, created_at', { count: 'exact' })
       .neq('role', 'admin')
-      .order('created_at', { ascending: true }).limit(1000);
+      .order('created_at', { ascending: true });
+    if (q) query = query.or(`full_name.ilike.%${q}%,phone.ilike.%${q}%`);
+    const { data, error, count } = await query.range(from, to);
     if (error) throw error;
 
     const auth = await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
@@ -964,7 +1048,14 @@ app.get('/api/members', ready, requireUser, async (req, res) => {
     }));
 
     res.setHeader('Cache-Control', 'no-store');
-    return res.json({ success: true, count: members.length, members });
+    return res.json({
+      success: true,
+      count: members.length,
+      total: Number.isFinite(count) ? count : members.length,
+      page,
+      pageSize,
+      members
+    });
   } catch (error) {
     console.error('Members endpoint error:', error.message);
     return apiError(res, 500, 'Imeshindikana kupata orodha ya wanachama.');
@@ -990,19 +1081,27 @@ app.get('/api/dashboard', ready, requireUser, async (req, res) => {
       .limit(1000);
                                                       if (contributionError) throw contributionError;
 
-    let paymentResult = await supabase
-      .from('payments')
-      .select('id, contribution_id, amount, reference, method, status, created_at, verified_at, rejection_reason, failure_reason, reviewed_at, payment_type')
-      .eq('user_id', req.user.id)                       .order('created_at', { ascending: false })
-      .limit(1000);
-    if (missingPaymentReviewMetadata(paymentResult.error)) {
-      console.warn('Payment review metadata migration is not applied; using existing payment fields.');
+    const paymentSelectBase = 'id, contribution_id, amount, reference, method, status, created_at, verified_at, failure_reason';
+    // Hujaribu seti kamili ya columns, kisha kupunguza taratibu kama migration haijafanyika.
+    const paymentColumnSets = [
+      paymentSelectBase + ', rejection_reason, reviewed_at, payment_type, proof_url',
+      paymentSelectBase + ', rejection_reason, reviewed_at, payment_type',
+      paymentSelectBase + ', payment_type',
+      paymentSelectBase
+    ];
+    let paymentResult = null;
+    for (const cols of paymentColumnSets) {
       paymentResult = await supabase
         .from('payments')
-        .select('id, contribution_id, amount, reference, method, status, created_at, verified_at, failure_reason, payment_type')
+        .select(cols)
         .eq('user_id', req.user.id)
         .order('created_at', { ascending: false })
         .limit(1000);
+      if (!paymentResult.error) break;
+      if (!missingPaymentReviewMetadata(paymentResult.error) &&
+          !missingPaymentType(paymentResult.error) &&
+          !missingTable(paymentResult.error, 'proof_url')) break;
+      console.warn('payments: kutumia seti nyepesi ya columns —', paymentResult.error.message);
     }
     const { data: payments, error: paymentError } = paymentResult;
     if (paymentError) throw paymentError;
@@ -1087,7 +1186,13 @@ app.get('/api/dashboard', ready, requireUser, async (req, res) => {
       })
       .select('id, amount, reference, method, status, created_at')                                        .single();
 
-    if (error) throw error;
+    if (error) {
+      // 23505 = ukiukaji wa unique index ya reference (inaweza kutokea kwa mbio za wakati mmoja).
+      if (error.code === '23505') {
+        return apiError(res, 409, 'Reference hii tayari imetumika.');
+      }
+      throw error;
+    }
 
     res.status(201).json({                              success: true,
       message: 'Ombi limepokelewa. Malipo yanasubiri kuthibitishwa na admin.',
@@ -1096,34 +1201,45 @@ app.get('/api/dashboard', ready, requireUser, async (req, res) => {
     return apiError(res, 500, 'Imeshindikana kutuma ombi la malipo.');                                }
 });
 
-app.get('/api/admin/summary', ready, requireUser, requireAdmin, async (req, res) => {                 try {
-    const [usersResult, paymentsResult, contributionsResult] = await Promise.all([
-      supabase.from('profiles').select('id, is_approved, is_banned, role'),
-      supabase.from('payments').select('id, amount, status, created_at'),
-      supabase.from('contributions').select('id, amount, status')
-    ]);
-    for (const result of [usersResult, paymentsResult, contributionsResult]) {
-      if (result.error) throw result.error;           }
-                                                      const allUsers = usersResult.data || [];
-    const users = allUsers.filter(u => u.role !== 'admin');
-    const payments = paymentsResult.data || [];       const contributions = contributionsResult.data || [];
-    res.setHeader('Cache-Control', 'no-store');       res.json({
-      success: true,                                    stats: {
-        users: users.length,
-        active: users.filter(u => u.is_approved && !u.is_banned).length,
-        blocked: users.filter(u => u.is_banned).length,
-        admins: allUsers.filter(u => u.role === 'admin').length,
-        pendingPayments: payments.filter(p => p.status === 'pending').length,
-        verifiedPayments: payments.filter(p => p.status === 'verified').length,
-        rejectedPayments: payments.filter(p => p.status === 'rejected').length,
-        verifiedAmount: payments
-          .filter(p => p.status === 'verified')
-          .reduce((sum, p) => sum + Number(p.amount || 0), 0),
-        pendingAmount: payments
-          .filter(p => p.status === 'pending')              .reduce((sum, p) => sum + Number(p.amount || 0), 0),
-        assignedContributions: contributions                .filter(c => c.status !== 'cancelled')
-          .reduce((sum, c) => sum + Number(c.amount || 0), 0)
-      }                                               });
+// Hesabu ya akiba (fallback) kama RPC ya aggregation haijasanikishwa kwenye Supabase.
+async function computeAdminStatsFromTables() {
+  const [usersResult, paymentsResult, contributionsResult] = await Promise.all([
+    supabase.from('profiles').select('id, is_approved, is_banned, role'),
+    supabase.from('payments').select('id, amount, status, created_at'),
+    supabase.from('contributions').select('id, amount, status')
+  ]);
+  for (const result of [usersResult, paymentsResult, contributionsResult]) {
+    if (result.error) throw result.error;
+  }
+  const allUsers = usersResult.data || [];
+  const users = allUsers.filter(u => u.role !== 'admin');
+  const payments = paymentsResult.data || [];
+  const contributions = contributionsResult.data || [];
+  return {
+    users: users.length,
+    active: users.filter(u => u.is_approved && !u.is_banned).length,
+    blocked: users.filter(u => u.is_banned).length,
+    admins: allUsers.filter(u => u.role === 'admin').length,
+    pendingPayments: payments.filter(p => p.status === 'pending').length,
+    verifiedPayments: payments.filter(p => p.status === 'verified').length,
+    rejectedPayments: payments.filter(p => p.status === 'rejected').length,
+    verifiedAmount: payments
+      .filter(p => p.status === 'verified')
+      .reduce((sum, p) => sum + Number(p.amount || 0), 0),
+    pendingAmount: payments
+      .filter(p => p.status === 'pending')
+      .reduce((sum, p) => sum + Number(p.amount || 0), 0),
+    assignedContributions: contributions
+      .filter(c => c.status !== 'cancelled')
+      .reduce((sum, c) => sum + Number(c.amount || 0), 0)
+  };
+}
+
+app.get('/api/admin/summary', ready, requireUser, requireAdmin, async (req, res) => {
+  try {
+    const stats = await aggregateOrCount('admin_summary_stats', {}, computeAdminStatsFromTables);
+    res.setHeader('Cache-Control', 'no-store');
+    res.json({ success: true, stats });
   } catch (error) {
     console.error('Admin summary error:', error.message);
     return apiError(res, 500, 'Imeshindikana kupata takwimu za admin.');
@@ -1132,10 +1248,19 @@ app.get('/api/admin/summary', ready, requireUser, requireAdmin, async (req, res)
 
 app.get('/api/admin/users', ready, requireUser, requireAdmin, async (req, res) => {
   try {
-    const { data, error } = await supabase.from('profiles')
-      .select('id, full_name, phone, role, is_approved, is_banned, created_at')
+    const { page, pageSize, from, to } = parsePagination(req, 500, 1000);
+    const q = cleanSearch(req.query.q).replace(/[%,()]/g, ' ');
+    const status = cleanSearch(req.query.status, 20).toLowerCase();
+
+    let query = supabase.from('profiles')
+      .select('id, full_name, phone, role, is_approved, is_banned, created_at', { count: 'exact' })
       .neq('role', 'admin')
-      .order('created_at', { ascending: false }).limit(500);
+      .order('created_at', { ascending: false });
+    if (status === 'pending') query = query.eq('is_approved', false).eq('is_banned', false);
+    else if (status === 'approved') query = query.eq('is_approved', true).eq('is_banned', false);
+    else if (status === 'banned') query = query.eq('is_banned', true);
+    if (q) query = query.or(`full_name.ilike.%${q}%,phone.ilike.%${q}%`);
+    const { data, error, count } = await query.range(from, to);
     if (error) throw error;
 
     const auth = await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
@@ -1147,6 +1272,9 @@ app.get('/api/admin/users', ready, requireUser, requireAdmin, async (req, res) =
     res.setHeader('Cache-Control', 'no-store');
     res.json({
       success: true,
+      total: Number.isFinite(count) ? count : (data || []).length,
+      page,
+      pageSize,
       users: (data || []).map(u => ({ ...u, avatar_url: avatars[u.id] || null }))
     });
   } catch (error) {
@@ -1157,11 +1285,20 @@ app.get('/api/admin/users', ready, requireUser, requireAdmin, async (req, res) =
 
 app.get('/api/admin/contributions', ready, requireUser, requireAdmin, async (req, res) => {
   try {
-    const { data: rows, error } = await supabase
+    const { page, pageSize, from, to } = parsePagination(req, 500, 1000);
+    const status = cleanSearch(req.query.status, 20).toLowerCase();
+    const userId = cleanSearch(req.query.user_id, 64);
+    const q = cleanSearch(req.query.q).replace(/[%,()]/g, ' ');
+
+    let query = supabase
       .from('contributions')
-      .select('id, user_id, title, amount, due_date, status, created_at')
-      .order('created_at', { ascending: false })
-      .limit(1000);
+      .select('id, user_id, title, amount, due_date, status, created_at', { count: 'exact' })
+      .order('created_at', { ascending: false });
+    if (status === 'cancelled') query = query.eq('status', 'cancelled');
+    else if (status === 'active') query = query.neq('status', 'cancelled');
+    if (userId) query = query.eq('user_id', userId);
+    if (q) query = query.ilike('title', `%${q}%`);
+    const { data: rows, error, count } = await query.range(from, to);
 
     if (error) throw error;
     const userIds = [...new Set((rows || []).map(row => row.user_id).filter(Boolean))];
@@ -1178,6 +1315,9 @@ app.get('/api/admin/contributions', ready, requireUser, requireAdmin, async (req
     res.setHeader('Cache-Control', 'no-store');
     return res.json({
       success: true,
+      total: Number.isFinite(count) ? count : (rows || []).length,
+      page,
+      pageSize,
       contributions: (rows || []).map(row => ({
         ...row,
         profile: profileMap[row.user_id] || null
@@ -1421,54 +1561,93 @@ app.post('/api/cron/payment-reminders', ready, async (req, res) => {
   }
 });
 
-app.post('/api/admin/users/:id/action', ready, requireUser, requireAdmin, async (req, res) => {       const userId = req.params.id;
-  const action = String(req.body.action || '');
+app.post('/api/admin/users/:id/action', ready, requireUser, requireAdmin, async (req, res) => {
+  const userId = String(req.params.id || '').trim();
+  const action = String(req.body?.action || '');
   const allowed = ['approve', 'ban', 'unban'];
 
   if (!allowed.includes(action)) {
     return apiError(res, 400, 'Kitendo hakitambuliki.');
   }
-
   if (userId === req.user.id && action === 'ban') {
     return apiError(res, 400, 'Huwezi kusimamisha akaunti yako mwenyewe.');
   }
-  const updates = {                                   approve: { is_approved: true },
-    ban: { is_banned: true },                         unban: { is_banned: false }
-  };
-  const { data, error } = await supabase              .from('profiles')
-    .update(updates[action])                          .eq('id', userId)
-    .select('id')                                     .maybeSingle();
-                                                    if (error) {
-    console.error('Admin user action error:', error.message);
-    return apiError(res, 500, 'Imeshindikana kubadilisha akaunti.');
+  try {
+    const updates = {
+      approve: { is_approved: true },
+      ban: { is_banned: true },
+      unban: { is_banned: false }
+    };
+    const { data, error } = await supabase
+      .from('profiles')
+      .update(updates[action])
+      .eq('id', userId)
+      .select('id')
+      .maybeSingle();
+
+    if (error) {
+      console.error('Admin user action error:', error.message);
+      return apiError(res, 500, 'Imeshindikana kubadilisha akaunti.');
+    }
+    if (!data) return apiError(res, 404, 'Mwanachama hajapatikana.');
+
+    await insertAudit(req.user.id, `user_${action}`, userId, {});
+
+    // Arifa ya barua pepe kwa mwanachama (haizuidii jibu).
+    if (action === 'approve' || action === 'ban') {
+      void memberEmailById(userId).then(email => {
+        if (!email) return;
+        if (action === 'approve') {
+          return sendMemberEmail(email, 'Akaunti yako imeidhinishwa - Mchezo Wetu',
+            '<p>Akaunti yako imeidhinishwa. Sasa unaweza kuingia na kuwasilisha malipo.</p>');
+        }
+        return sendMemberEmail(email, 'Akaunti yako imesimamishwa - Mchezo Wetu',
+          '<p>Akaunti yako imesimamishwa. Wasiliana na msimamizi wa kikundi.</p>');
+      });
+    }
+
+    return res.json({ success: true, message: 'Mabadiliko yamehifadhiwa.' });
+  } catch (error) {
+    console.error('Admin user action exception:', error.message);
+    return apiError(res, 500, 'Hitilafu wakati wa kubadilisha akaunti.');
   }
-  if (!data) return apiError(res, 404, 'Mwanachama hajapatikana.');
-  const { error: auditError } = await supabase.from('audit_logs').insert({
-    actor_id: req.user.id,
-    action: `user_${action}`,
-    target_id: userId,
-    details: {}
-  });
-  if (auditError) console.error('Admin audit log error:', auditError.message);
-  res.json({ success: true, message: 'Mabadiliko yamehifadhiwa.' });                                });
+});
 
 app.get('/api/admin/payments', ready, requireUser, requireAdmin, async (req, res) => {
   try {
-    let result = await supabase
-      .from('payments')
-      .select('id, user_id, contribution_id, amount, reference, method, status, created_at, verified_at, rejection_reason, failure_reason, reviewed_at')
-      .order('created_at', { ascending: false })
-      .limit(1000);
+    const { page, pageSize, from, to } = parsePagination(req, 500, 1000);
+    const status = cleanSearch(req.query.status, 20).toLowerCase();
+    const userId = cleanSearch(req.query.user_id, 64);
+    const q = cleanSearch(req.query.q).replace(/[%,()]/g, ' ');
 
-    if (missingPaymentReviewMetadata(result.error)) {
-      console.warn('Payment review metadata migration is not applied; using existing payment fields.');
-      result = await supabase
+    const baseCols = 'id, user_id, contribution_id, amount, reference, method, status, created_at, verified_at, failure_reason';
+    const fullCols = baseCols + ', rejection_reason, reviewed_at';
+
+    const build = (cols) => {
+      let query = supabase
         .from('payments')
-        .select('id, user_id, contribution_id, amount, reference, method, status, created_at, verified_at, failure_reason')
-        .order('created_at', { ascending: false })
-        .limit(1000);
+        .select(cols, { count: 'exact' })
+        .order('created_at', { ascending: false });
+      if (['pending', 'verified', 'rejected'].includes(status)) query = query.eq('status', status);
+      if (userId) query = query.eq('user_id', userId);
+      if (q) query = query.ilike('reference', `%${q}%`);
+      return query.range(from, to);
+    };
+
+    // Hujaribu seti kamili ya columns, kisha kupunguza taratibu kama migration haijafanyika.
+    const columnSets = [
+      fullCols + ', proof_url',
+      fullCols,
+      baseCols
+    ];
+    let result = null;
+    for (const cols of columnSets) {
+      result = await build(cols);
+      if (!result.error) break;
+      if (!missingPaymentReviewMetadata(result.error) && !missingTable(result.error, 'proof_url')) break;
+      console.warn('payments: kutumia seti nyepesi ya columns —', result.error.message);
     }
-    const { data: rows, error } = result;
+    const { data: rows, error, count } = result;
     if (error) {
       console.error('Admin payments error:', error);
       return apiError(res, 500, 'Imeshindikana kupata malipo. Kagua schema ya jedwali payments kwenye Supabase.');
@@ -1479,15 +1658,15 @@ app.get('/api/admin/payments', ready, requireUser, requireAdmin, async (req, res
     let profiles = [];
 
     if (userIds.length) {
-      const result = await supabase
+      const profileResult = await supabase
         .from('profiles')
         .select('id, full_name, phone')
         .in('id', userIds);
 
-      if (result.error) {
-        throw result.error;
+      if (profileResult.error) {
+        throw profileResult.error;
       }
-      profiles = result.data || [];
+      profiles = profileResult.data || [];
     }
 
     const profileMap = Object.fromEntries(profiles.map(x => [x.id, x]));
@@ -1497,7 +1676,13 @@ app.get('/api/admin/payments', ready, requireUser, requireAdmin, async (req, res
     }));
 
     res.setHeader('Cache-Control', 'no-store');
-    return res.json({ success: true, payments: enriched });
+    return res.json({
+      success: true,
+      total: Number.isFinite(count) ? count : payments.length,
+      page,
+      pageSize,
+      payments: enriched
+    });
   } catch (err) {
     console.error('Admin payments exception:', err);
     return apiError(res, 500, 'Hitilafu wakati wa kupata malipo.');
@@ -1562,16 +1747,24 @@ app.post('/api/admin/payments/:id/review', ready, requireUser, requireAdmin, asy
       });
     }
 
-    const { error: auditError } = await supabase.from('audit_logs').insert({
-      actor_id: req.user.id,
-      action: `payment_${action}`,
-      target_id: paymentId,
-      details: {
-        reference: data.reference || null,
-        reason: action === 'reject' ? reason : null
-      }
+    await insertAudit(req.user.id, `payment_${action}`, paymentId, {
+      reference: data.reference || null,
+      reason: action === 'reject' ? reason : null
     });
-    if (auditError) console.error('Payment review audit log error:', auditError.message);
+
+    // Arifa ya barua pepe kwa mwanachama (haizuidii jibu).
+    if (data.user_id) {
+      void memberEmailById(data.user_id).then(email => {
+        if (!email) return;
+        const amountLabel = 'TSh ' + Number(data.amount || 0).toLocaleString('en-US');
+        if (action === 'verify') {
+          return sendMemberEmail(email, 'Malipo yako yamethibitishwa - Mchezo Wetu',
+            `<p>Malipo yako ya ${amountLabel} (reference ${String(data.reference || '').replace(/[<>]/g, '')}) yamethibitishwa. Asante.</p>`);
+        }
+        return sendMemberEmail(email, 'Malipo yako yamekataliwa - Mchezo Wetu',
+          `<p>Malipo yako ya ${amountLabel} hayakuthibitishwa. Sababu: ${reason.replace(/[<>]/g, '')}</p>`);
+      });
+    }
 
     return res.json({
       success: true,
@@ -1585,6 +1778,446 @@ app.post('/api/admin/payments/:id/review', ready, requireUser, requireAdmin, asy
     return res.status(500).json({
       error: 'Hitilafu ya ndani wakati wa kuhakiki malipo.'
     });
+  }
+});
+
+// ===== KUMBUKUMBU YA VITENDO (audit) =====
+async function insertAudit(actorId, action, targetId, details = {}) {
+  const { error } = await supabase.from('audit_logs').insert({
+    actor_id: actorId,
+    action,
+    target_id: targetId || null,
+    details
+  });
+  if (error) console.error('Audit log error:', error.message);
+}
+
+// Hutuma barua pepe kwa mwanachama (haitazuia jibu la API hata ikishindwa).
+async function sendMemberEmail(email, subject, html) {
+  const apiKey = process.env.BREVO_API_KEY;
+  if (!apiKey || !email) return;
+  const senderEmail = process.env.BREVO_SENDER_EMAIL || ADMIN_EMAIL;
+  const senderName = process.env.BREVO_SENDER_NAME || 'Mchezo Wetu';
+  try {
+    await axios.post('https://api.brevo.com/v3/smtp/email', {
+      sender: { name: senderName, email: senderEmail },
+      to: [{ email }],
+      subject,
+      htmlContent: `<div style="font-family:Arial,sans-serif;color:#172033;max-width:520px;margin:auto">
+        <h2>Mchezo Wetu</h2>${html}</div>`
+    }, {
+      headers: { 'api-key': apiKey, 'Content-Type': 'application/json' },
+      timeout: 15000
+    });
+  } catch (error) {
+    console.error('Member email error:', error.response?.data || error.message);
+  }
+}
+
+async function memberEmailById(userId) {
+  const { data, error } = await supabase.auth.admin.getUserById(userId);
+  if (error) {
+    console.error('Member email lookup error:', error.message);
+    return null;
+  }
+  return data?.user?.email || null;
+}
+
+app.get('/api/admin/audit-logs', ready, requireUser, requireAdmin, async (req, res) => {
+  try {
+    const { page, pageSize, from, to } = parsePagination(req, 100, 200);
+    const { data, error, count } = await supabase
+      .from('audit_logs')
+      .select('id, actor_id, action, target_id, details, created_at', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(from, to);
+    if (error) {
+      if (missingTable(error, 'audit_logs')) {
+        return res.json({ success: true, total: 0, page, pageSize, logs: [] });
+      }
+      throw error;
+    }
+    const actorIds = [...new Set((data || []).map(row => row.actor_id).filter(Boolean))];
+    let actorNames = {};
+    if (actorIds.length) {
+      const profiles = await supabase.from('profiles').select('id, full_name').in('id', actorIds);
+      if (!profiles.error) {
+        actorNames = Object.fromEntries((profiles.data || []).map(x => [x.id, x.full_name]));
+      }
+    }
+    res.setHeader('Cache-Control', 'no-store');
+    return res.json({
+      success: true,
+      total: Number.isFinite(count) ? count : (data || []).length,
+      page,
+      pageSize,
+      logs: (data || []).map(row => ({ ...row, actor_name: actorNames[row.actor_id] || null }))
+    });
+  } catch (error) {
+    console.error('Audit logs error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kupata kumbukumbu za vitendo.');
+  }
+});
+
+// ===== MATANGAZO (announcements) =====
+app.get('/api/announcements', ready, requireUser, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('announcements')
+      .select('id, title, body, created_at')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+      .limit(50);
+    if (error) {
+      if (missingTable(error, 'announcements')) {
+        return res.json({ success: true, announcements: [] });
+      }
+      throw error;
+    }
+    res.setHeader('Cache-Control', 'no-store');
+    return res.json({ success: true, announcements: data || [] });
+  } catch (error) {
+    console.error('Announcements list error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kupata matangazo.');
+  }
+});
+
+app.get('/api/admin/announcements', ready, requireUser, requireAdmin, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('announcements')
+      .select('id, title, body, is_active, created_by, created_at, updated_at')
+      .order('created_at', { ascending: false })
+      .limit(200);
+    if (error) {
+      if (missingTable(error, 'announcements')) {
+        return res.json({ success: true, announcements: [] });
+      }
+      throw error;
+    }
+    res.setHeader('Cache-Control', 'no-store');
+    return res.json({ success: true, announcements: data || [] });
+  } catch (error) {
+    console.error('Admin announcements error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kupata matangazo.');
+  }
+});
+
+app.post('/api/admin/announcements', ready, requireUser, requireAdmin, async (req, res) => {
+  try {
+    const title = String(req.body?.title || '').trim();
+    const body = String(req.body?.body || '').trim();
+    const isActive = req.body?.is_active === false ? false : true;
+
+    if (title.length < 3 || title.length > 120) {
+      return apiError(res, 400, 'Kichwa cha tangazo kiwe na herufi 3 hadi 120.');
+    }
+    if (body.length < 3 || body.length > 2000) {
+      return apiError(res, 400, 'Maudhui ya tangazo yawe na herufi 3 hadi 2000.');
+    }
+
+    const { data, error } = await supabase
+      .from('announcements')
+      .insert({ title, body, is_active: isActive, created_by: req.user.id })
+      .select('id, title, body, is_active, created_at')
+      .single();
+    if (error) {
+      if (missingTable(error, 'announcements')) {
+        return apiError(res, 503, 'Jedwali la matangazo halijasanikishwa. Endesha migration ya Supabase.');
+      }
+      throw error;
+    }
+
+    await insertAudit(req.user.id, 'announcement_created', data.id, { title });
+    return res.status(201).json({ success: true, announcement: data });
+  } catch (error) {
+    console.error('Announcement create error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kuunda tangazo.');
+  }
+});
+
+app.patch('/api/admin/announcements/:id', ready, requireUser, requireAdmin, async (req, res) => {
+  try {
+    const updates = {};
+    if (Object.hasOwn(req.body || {}, 'title')) {
+      const title = String(req.body.title || '').trim();
+      if (title.length < 3 || title.length > 120) {
+        return apiError(res, 400, 'Kichwa cha tangazo kiwe na herufi 3 hadi 120.');
+      }
+      updates.title = title;
+    }
+    if (Object.hasOwn(req.body || {}, 'body')) {
+      const body = String(req.body.body || '').trim();
+      if (body.length < 3 || body.length > 2000) {
+        return apiError(res, 400, 'Maudhui ya tangazo yawe na herufi 3 hadi 2000.');
+      }
+      updates.body = body;
+    }
+    if (Object.hasOwn(req.body || {}, 'is_active')) {
+      updates.is_active = req.body.is_active === true;
+    }
+    if (!Object.keys(updates).length) {
+      return apiError(res, 400, 'Hakuna mabadiliko yaliyotumwa.');
+    }
+    updates.updated_at = new Date().toISOString();
+
+    const { data, error } = await supabase
+      .from('announcements')
+      .update(updates)
+      .eq('id', req.params.id)
+      .select('id, title, body, is_active, updated_at')
+      .maybeSingle();
+    if (error) {
+      if (missingTable(error, 'announcements')) {
+        return apiError(res, 503, 'Jedwali la matangazo halijasanikishwa.');
+      }
+      throw error;
+    }
+    if (!data) return apiError(res, 404, 'Tangazo halipatikani.');
+    await insertAudit(req.user.id, 'announcement_updated', data.id, {});
+    return res.json({ success: true, announcement: data });
+  } catch (error) {
+    console.error('Announcement update error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kuhifadhi tangazo.');
+  }
+});
+
+app.delete('/api/admin/announcements/:id', ready, requireUser, requireAdmin, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('announcements')
+      .delete()
+      .eq('id', req.params.id)
+      .select('id')
+      .maybeSingle();
+    if (error) {
+      if (missingTable(error, 'announcements')) {
+        return apiError(res, 503, 'Jedwali la matangazo halijasanikishwa.');
+      }
+      throw error;
+    }
+    if (!data) return apiError(res, 404, 'Tangazo halipatikani.');
+    await insertAudit(req.user.id, 'announcement_deleted', data.id, {});
+    return res.json({ success: true, message: 'Tangazo limefutwa.' });
+  } catch (error) {
+    console.error('Announcement delete error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kufuta tangazo.');
+  }
+});
+
+// ===== MAELEZO YA MWANACHAMA MMOJA (admin) =====
+app.get('/api/admin/members/:id', ready, requireUser, requireAdmin, async (req, res) => {
+  const userId = String(req.params.id || '').trim();
+  try {
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('id, full_name, phone, role, is_approved, is_banned, created_at')
+      .eq('id', userId)
+      .maybeSingle();
+    if (profileError) throw profileError;
+    if (!profile) return apiError(res, 404, 'Mwanachama hajapatikana.');
+
+    const [contributionsResult, paymentsResult, authUser] = await Promise.all([
+      supabase
+        .from('contributions')
+        .select('id, title, amount, due_date, status, created_at')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(500),
+      supabase
+        .from('payments')
+        .select('id, contribution_id, amount, reference, method, status, created_at, verified_at, failure_reason')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(500),
+      supabase.auth.admin.getUserById(userId)
+    ]);
+    if (contributionsResult.error) throw contributionsResult.error;
+    if (paymentsResult.error) throw paymentsResult.error;
+
+    const contributions = contributionsResult.data || [];
+    const payments = paymentsResult.data || [];
+    const paid = payments
+      .filter(p => p.status === 'verified')
+      .reduce((sum, p) => sum + Number(p.amount || 0), 0);
+    const pending = payments
+      .filter(p => p.status === 'pending')
+      .reduce((sum, p) => sum + Number(p.amount || 0), 0);
+    const assigned = contributions
+      .filter(c => c.status !== 'cancelled')
+      .reduce((sum, c) => sum + Number(c.amount || 0), 0);
+
+    res.setHeader('Cache-Control', 'no-store');
+    return res.json({
+      success: true,
+      profile,
+      stats: { paid, pending, assigned, balance: Math.max(0, assigned - paid) },
+      contributions,
+      payments,
+      avatar_url: authUser?.data?.user?.user_metadata?.avatar_url || null
+    });
+  } catch (error) {
+    console.error('Admin member detail error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kupata taarifa za mwanachama.');
+  }
+});
+
+// ===== VITENDO KWA WANACHAMA WENGI (bulk) =====
+app.post('/api/admin/users/bulk-action', ready, requireUser, requireAdmin, async (req, res) => {
+  try {
+    const action = String(req.body?.action || '').toLowerCase();
+    const ids = Array.isArray(req.body?.ids)
+      ? [...new Set(req.body.ids.map(String).filter(Boolean))].slice(0, 500)
+      : [];
+
+    if (!['approve', 'ban', 'unban'].includes(action)) {
+      return apiError(res, 400, 'Kitendo hakitambuliki.');
+    }
+    if (!ids.length) {
+      return apiError(res, 400, 'Chagua wanachama angalau mmoja.');
+    }
+    const targets = ids.filter(id => !(id === req.user.id && action === 'ban'));
+    if (!targets.length) {
+      return apiError(res, 400, 'Hakuna mwanachama sahihi uliyechagua.');
+    }
+
+    const updates = {
+      approve: { is_approved: true },
+      ban: { is_banned: true },
+      unban: { is_banned: false }
+    };
+    const { data, error } = await supabase
+      .from('profiles')
+      .update(updates[action])
+      .in('id', targets)
+      .neq('role', 'admin')
+      .select('id');
+    if (error) throw error;
+
+    await insertAudit(req.user.id, `user_bulk_${action}`, targets[0] || null, { ids: targets });
+    return res.json({ success: true, updated: (data || []).length });
+  } catch (error) {
+    console.error('Admin bulk user action error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kutekeleza kitendo kwa wanachama.');
+  }
+});
+
+app.post('/api/admin/payments/bulk-review', ready, requireUser, requireAdmin, async (req, res) => {
+  try {
+    const action = String(req.body?.action || '').toLowerCase();
+    const reason = String(req.body?.reason || '').trim();
+    const ids = Array.isArray(req.body?.ids)
+      ? [...new Set(req.body.ids.map(String).filter(Boolean))].slice(0, 500)
+      : [];
+
+    if (!['verify', 'reject'].includes(action)) {
+      return apiError(res, 400, 'Kitendo hakitambuliki.');
+    }
+    if (!ids.length) {
+      return apiError(res, 400, 'Chagua malipo angalau moja.');
+    }
+    if (action === 'reject' && (reason.length < 3 || reason.length > 500)) {
+      return apiError(res, 400, 'Andika sababu ya kukataa (herufi 3 hadi 500).');
+    }
+
+    const newStatus = action === 'verify' ? 'verified' : 'rejected';
+    const now = new Date().toISOString();
+    const runUpdate = (payload) => supabase
+      .from('payments')
+      .update(payload)
+      .in('id', ids)
+      .eq('status', 'pending')
+      .select('id');
+
+    let result = await runUpdate({
+      status: newStatus,
+      reviewed_by: req.user.id,
+      reviewed_at: now,
+      verified_at: action === 'verify' ? now : null,
+      rejection_reason: action === 'reject' ? reason : null
+    });
+    if (missingPaymentReviewMetadata(result.error)) {
+      result = await runUpdate({
+        status: newStatus,
+        verified_at: action === 'verify' ? now : null,
+        failure_reason: action === 'reject' ? reason : null
+      });
+    }
+    if (result.error) throw result.error;
+
+    await insertAudit(req.user.id, `payment_bulk_${action}`, ids[0] || null, {
+      ids: (result.data || []).map(row => row.id),
+      reason: action === 'reject' ? reason : null
+    });
+    return res.json({ success: true, updated: (result.data || []).length });
+  } catch (error) {
+    console.error('Admin bulk payment review error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kuhakiki malipo yaliyochaguliwa.');
+  }
+});
+
+// ===== UTHIBITISHO WA MALIPO (picha ya risiti) =====
+app.post('/api/payments/:id/proof', ready, requireUser, async (req, res) => {
+  try {
+    const match = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/
+      .exec(String(req.body?.image || ''));
+    if (!match) return apiError(res, 400, 'Chagua picha JPG, PNG au WEBP.');
+
+    const bytes = Buffer.from(match[2], 'base64');
+    if (!bytes.length || bytes.length > 1800000) {
+      return apiError(res, 413, 'Picha ni kubwa sana. Punguza ukubwa wake.');
+    }
+
+    const { data: payment, error } = await supabase
+      .from('payments')
+      .select('id, user_id, status')
+      .eq('id', req.params.id)
+      .eq('user_id', req.user.id)
+      .maybeSingle();
+    if (error) throw error;
+    if (!payment) return apiError(res, 404, 'Malipo hayapatikani.');
+    if (payment.status !== 'pending') {
+      return apiError(res, 409, 'Huwezi kuongeza uthibitisho kwenye malipo yaliyokwisha hakikiwa.');
+    }
+
+    const bucket = 'payment-proofs';
+    const created = await supabase.storage.createBucket(bucket, {
+      public: true,
+      fileSizeLimit: '2MB',
+      allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp']
+    });
+    if (created.error) {
+      const existing = await supabase.storage.getBucket(bucket);
+      if (existing.error) throw created.error;
+    }
+
+    const ext = match[1] === 'image/png' ? 'png' : match[1] === 'image/webp' ? 'webp' : 'jpg';
+    const path = req.user.id + '/' + payment.id + '-' + Date.now() + '.' + ext;
+    const upload = await supabase.storage.from(bucket).upload(path, bytes, {
+      contentType: match[1], upsert: true, cacheControl: '3600'
+    });
+    if (upload.error) throw upload.error;
+
+    const url = supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+    const update = await supabase
+      .from('payments')
+      .update({ proof_url: url })
+      .eq('id', payment.id)
+      .eq('user_id', req.user.id)
+      .select('id, proof_url')
+      .maybeSingle();
+    if (update.error) {
+      if (missingTable(update.error, 'proof_url')) {
+        return apiError(res, 503, 'Column ya proof_url haipo. Endesha migration ya Supabase.');
+      }
+      throw update.error;
+    }
+
+    res.setHeader('Cache-Control', 'no-store');
+    return res.json({ success: true, proof_url: url, payment: update.data });
+  } catch (error) {
+    console.error('Payment proof upload error:', error.message);
+    return apiError(res, 500, 'Imeshindikana kupakia uthibitisho wa malipo.');
   }
 });
 
@@ -1609,7 +2242,7 @@ app.get('/dashboard', (req, res) => {
   res.setHeader('Expires', '0');
   res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
-                                                  app.get('/admin', (req, res) => {
+app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin-login.html'));
 });
 app.get('/admin/dashboard', (req, res) => {
@@ -1639,10 +2272,20 @@ app.get('/offline.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'offline.html'));
 });
 
-app.get('/pwa-icon.svg', (req, res) => {
+const PWA_ICONS = {
+  '/pwa-icon.svg': 'image/svg+xml',
+  '/pwa-icon-maskable.svg': 'image/svg+xml',
+  '/pwa-icon-192.png': 'image/png',
+  '/pwa-icon-512.png': 'image/png',
+  '/pwa-icon-maskable-512.png': 'image/png'
+};
+
+app.get(Object.keys(PWA_ICONS), (req, res) => {
+  const type = PWA_ICONS[req.path];
+  if (!type) return res.status(404).end();
   res.setHeader('Cache-Control', 'public, max-age=86400');
-  res.type('image/svg+xml');
-  res.sendFile(path.join(__dirname, 'pwa-icon.svg'));
+  res.type(type);
+  res.sendFile(path.join(__dirname, path.basename(req.path)));
 });
 
 app.get(['/mchezo-wetu-logo.svg', '/admin/mchezo-wetu-logo.svg'], (req, res) => {
@@ -1822,6 +2465,10 @@ app.use('/api', (req, res) => apiError(res, 404, 'API haijapatikana.'));
 
 app.use((req, res) => res.status(404).send('Ukurasa haujapatikana.'));
 
-app.listen(PORT, () => {
-  console.log(`Mchezo Wetu server running on port ${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Mchezo Wetu server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;

@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#090a16">
 <title>Mchezo Wetu — Admin Control Center</title>
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="apple-touch-icon" href="/pwa-icon.svg">
+<link rel="apple-touch-icon" href="/pwa-icon-192.png">
 <link rel="icon" type="image/svg+xml" href="./mchezo-wetu-logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -24,579 +24,511 @@
 
 <style>
 
-/* Mchezo Wetu — Neon Green Glass Responsive Design */
-:root {
-  color-scheme: dark;
-  --bg: #07100c;
-  --panel: rgba(17, 31, 24, .88);
-  --panel2: #101e17;
-  --green: #7cff6b;
-  --green2: #31e981;
-  --text: #f2fff5;
-  --muted: #91a99a;
-  --border: rgba(124,255,107,.17);
-  --radius: 20px;
-  --shadow: 0 16px 50px rgba(0,0,0,.28);
-}
-* { box-sizing: border-box; }
-html { min-height: 100%; scroll-behavior: smooth; }
-body {
-  margin: 0;
-  min-height: 100vh;
-  color: var(--text);
-  background:
-    radial-gradient(ellipse at 8% 0%, rgba(49,233,129,.12), transparent 35%),
-    radial-gradient(ellipse at 95% 15%, rgba(124,255,107,.08), transparent 30%),
-    var(--bg);
-  font-family: Inter, "Segoe UI", Arial, sans-serif;
-  line-height: 1.6;
-}
-button, input, select, textarea { font: inherit; }
-button, a { -webkit-tap-highlight-color: transparent; }
-a { color: var(--green); }
-button {
-  cursor: pointer;
-  transition: transform .2s ease, filter .2s ease, border-color .2s ease;
-}
-button:hover { filter: brightness(1.12); }
-button:active { transform: scale(.98); }
-input, select, textarea {
-  width: 100%;
-  min-height: 45px;
-  padding: 12px 14px;
-  color: var(--text);
-  background: rgba(4,13,8,.8);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  outline: none;
-}
-input:focus, select:focus, textarea:focus {
-  border-color: var(--green);
-  box-shadow: 0 0 0 3px rgba(124,255,107,.1);
-}
-label { display: block; margin-bottom: 7px; color: #c7dfce; }
-button, .btn, [type=submit] {
-  border-radius: 12px;
-}
-.btn-primary, button.primary, .primary-btn,
-button[type=submit], input[type=submit] {
-  color: #061109;
-  background: linear-gradient(135deg, var(--green), var(--green2));
-  border: 0;
-  font-weight: 800;
-}
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 13px 15px; border-bottom: 1px solid var(--border); text-align: left; }
-th { color: var(--green); font-size: .82rem; text-transform: uppercase; letter-spacing: .05em; }
-tr:hover td { background: rgba(124,255,107,.035); }
-img { max-width: 100%; }
-header, nav, aside, main, section, footer { min-width: 0; }
-header, nav, aside {
-  border-color: var(--border);
-}
-header {
-  background: rgba(7,16,12,.88);
-  backdrop-filter: blur(18px);
-}
-nav a, aside a {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 10px 13px;
-  border-radius: 12px;
-  color: #c8d9ce;
-  text-decoration: none;
-  transition: .2s ease;
-}
-nav a:hover, aside a:hover, nav a.active, aside a.active {
-  color: var(--green);
-  background: rgba(124,255,107,.09);
-}
-main, .container, .dashboard, .dashboard-content, .main-content {
-  min-width: 0;
-}
-.card, .panel, .stat-card, .stat-box, .settings-card,
-.profile-card, .payment-card, .contribution-card, .content-card,
-[class*="card"], [class*="panel"] {
-  border-color: var(--border);
-}
-.card, .panel, .stat-card, .stat-box, .settings-card,
-.profile-card, .payment-card, .contribution-card, .content-card {
-  background: linear-gradient(145deg, rgba(20,39,28,.92), rgba(10,22,15,.92));
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-h1, h2, h3 { line-height: 1.25; letter-spacing: -.025em; }
-h1 { font-size: clamp(1.65rem, 4vw, 2.5rem); }
-h2 { font-size: clamp(1.2rem, 3vw, 1.65rem); }
-small, .muted, .subtitle, .description { color: var(--muted); }
-.badge, .status, .chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: rgba(124,255,107,.08);
-  color: var(--green);
-  font-size: .8rem;
-}
-button:not([type=submit]) {
-  border-color: var(--border);
-}
-hr { border: 0; border-top: 1px solid var(--border); }
-table { display: table; }
-.table-wrap, .table-responsive, .overflow-auto {
-  max-width: 100%;
-  overflow-x: auto;
-  border-radius: 14px;
-}
-::-webkit-scrollbar { width: 7px; height: 7px; }
-::-webkit-scrollbar-thumb { background: #31523b; border-radius: 99px; }
-:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
-@media (max-width: 1050px) {
-  .sidebar, aside { max-width: 100%; }
-  .dashboard-layout, .admin-layout { grid-template-columns: 1fr !important; }
-  .stats-grid, .stats, .stat-grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
-}
-@media (max-width: 720px) {
-  body { font-size: 14px; }
-  main, .container, .dashboard-content, .main-content {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding-left: 14px !important;
-    padding-right: 14px !important;
-  }
-  header { padding-left: 14px; padding-right: 14px; }
-  .sidebar, aside {
-    width: 100% !important;
-    position: relative !important;
-    height: auto !important;
-  }
-  .stats-grid, .stats, .stat-grid, .grid-2, .grid-3, .grid-4 {
-    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
-  }
-  .card, .panel, .stat-card, .stat-box, .settings-card,
-  .profile-card, .payment-card, .contribution-card, .content-card {
-    border-radius: 16px;
-  }
-  table { min-width: 600px; }
-  form { max-width: 100%; }
-  button, .btn, [type=submit] { max-width: 100%; }
-}
-@media (max-width: 390px) {
-  main, .container, .dashboard-content, .main-content {
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-  }
-  .stats-grid, .stats, .stat-grid, .grid-2, .grid-3, .grid-4 {
-    grid-template-columns: 1fr !important;
-  }
-}
+/* ============================================================
+   Mchezo Wetu — Admin Control Center
+   ONE consolidated light theme. Design tokens + utilities.
+   Brand identity: deep green + lime accents.
+   ============================================================ */
 
-/* Admin dashboard */
-:root {
-  --bg: #09120f;
-  --panel: #111e19;
-  --panel-soft: #15251e;
-  --green: #64e6a6;
-  --green2: #40c98d;
-  --purple: #82b7ff;
-  --yellow: #f5c96b;
-  --red: #ff8390;
-  --text: #edf8f2;
-  --muted: #96aaa0;
-  --border: rgba(179, 220, 199, .13);
-  --radius: 17px;
-  --shadow: 0 16px 44px rgba(0, 0, 0, .2);
-}
-html { scroll-padding-top: 24px; }
-body { background: radial-gradient(ellipse at 85% 0%, rgba(64, 201, 141, .08), transparent 34%), var(--bg); }
-.layout { display: grid; grid-template-columns: 254px minmax(0, 1fr); min-height: 100vh; }
-.sidebar {
-  position: sticky;
-  top: 0;
-  display: flex;
-  flex-direction: column;
-  width: 254px;
-  max-width: none;
-  height: 100vh;
-  padding: 24px 16px 18px;
-  border-right: 1px solid var(--border);
-  background: rgba(12, 24, 19, .95);
-}
-.brand { display: flex; align-items: center; gap: 11px; padding: 2px 8px 28px; }
-.logo { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 13px; background: linear-gradient(135deg, var(--green), #37ae7b); color: #07160f; font-weight: 900; }
-.brand-name { color: var(--text); font-weight: 800; }
-.brand-sub, .nav-label { color: var(--muted); font-size: .67rem; font-weight: 800; letter-spacing: .13em; }
-.nav-label { padding: 0 10px 9px; }
-.sidebar .nav { position: static; display: grid; gap: 5px; justify-content: stretch; padding: 0; border: 0; background: transparent; backdrop-filter: none; }
-.sidebar .nav + .nav-label { margin-top: 22px !important; }
-.sidebar .nav a { display: flex; justify-content: flex-start; min-height: 42px; padding: 10px; color: #b8c9c0; font-size: .85rem; }
-.sidebar .nav a:hover, .sidebar .nav a.active { color: var(--green); background: rgba(100, 230, 166, .09); }
-.nav-icon { width: 22px; color: var(--green); text-align: center; }
-.nav-count { margin-left: auto; padding: 2px 7px; border-radius: 99px; background: rgba(245, 201, 107, .12); color: var(--yellow); font-size: .72rem; }
-.sidebar-bottom { margin-top: auto; }
-.security { padding: 14px; border: 1px solid var(--border); border-radius: 14px; background: rgba(255, 255, 255, .025); }
-.security b { font-size: .86rem; }
-.security p { margin: 7px 0 11px; color: var(--muted); font-size: .75rem; line-height: 1.55; }
-.status-live { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: .72rem; }
-.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px rgba(100, 230, 166, .7); }
-.main { min-width: 0; width: 100%; max-width: 1560px; margin: 0 auto; padding: 0 clamp(18px, 3vw, 40px) 30px; }
-.topbar { position: sticky; z-index: 10; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 70px; margin: 0 calc(clamp(18px, 3vw, 40px) * -1) 24px; padding: 10px clamp(18px, 3vw, 40px); border-bottom: 1px solid var(--border); background: rgba(9, 18, 15, .91); backdrop-filter: blur(16px); }
-.crumb { color: var(--muted); font-size: .82rem; }
-.crumb strong { color: var(--text); }
-.top-actions { display: flex; align-items: center; gap: 9px; }
-.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 8px 12px; color: var(--text); background: var(--panel-soft); border: 1px solid var(--border); text-decoration: none; font-size: .81rem; font-weight: 650; }
-.btn:hover { border-color: rgba(100, 230, 166, .5); }
-.menu-toggle { display: none; }
-.avatar { display: grid; place-items: center; width: 38px; height: 38px; overflow: hidden; border: 1px solid rgba(100, 230, 166, .35); border-radius: 50%; background: rgba(100, 230, 166, .1); color: var(--green); font-weight: 800; cursor: pointer; }
-.avatar img { width: 100%; height: 100%; object-fit: cover; }
-.welcome { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; margin: 6px 0 25px; }
-.welcome h1 { margin: 8px 0 6px; font-size: clamp(1.7rem, 3vw, 2.35rem); }
-.welcome .subtitle { max-width: 650px; margin: 0; }
-.date-chip, .tag { display: inline-flex; align-items: center; padding: 7px 11px; border: 1px solid var(--border); border-radius: 999px; background: rgba(255, 255, 255, .025); color: var(--muted); font-size: .72rem; font-weight: 700; }
-.tag { color: var(--green); border-color: rgba(100, 230, 166, .2); background: rgba(100, 230, 166, .07); }
-.notice { display: none; margin: 0 0 18px; padding: 12px 14px; border: 1px solid rgba(255, 131, 144, .2); border-radius: 12px; background: rgba(255, 131, 144, .08); color: #ffabb3; font-size: .85rem; }
-.notice.show { display: block; }
-.notice.good { border-color: rgba(100, 230, 166, .2); background: rgba(100, 230, 166, .08); color: var(--green); }
-.section-heading, .panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
-.section-heading { margin: 0 0 13px; }
-.section-heading h2 { margin: 0 0 4px; font-size: 1.12rem; }
-.section-heading p, .panel-sub { margin: 0; color: var(--muted); font-size: .8rem; }
-.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; margin-bottom: 16px; }
-.stat { min-width: 0; padding: 17px; border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(145deg, rgba(19, 36, 29, .98), rgba(13, 25, 21, .98)); box-shadow: var(--shadow); }
-.stat-top { display: flex; justify-content: space-between; gap: 8px; }
-.stat-label, .stat-foot { color: var(--muted); font-size: .77rem; }
-.stat-icon { color: var(--green); }
-.stat-value { margin: 14px 0 8px; font-size: clamp(1.25rem, 2vw, 1.8rem); font-weight: 800; overflow-wrap: anywhere; }
-.stat-foot { font-size: .72rem; }
-.stat-foot strong { color: var(--green); }
-.content-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; margin-bottom: 16px; }
-.panel { min-width: 0; padding: 19px; border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(145deg, rgba(17, 32, 26, .98), rgba(12, 23, 19, .98)); box-shadow: var(--shadow); }
-.panel-head { align-items: center; margin-bottom: 17px; }
-.panel-title { font-size: .97rem; font-weight: 750; }
-.panel-sub { margin-top: 3px; }
-.legend { display: flex; gap: 16px; color: var(--muted); font-size: .72rem; }
-.legend span { display: inline-flex; align-items: center; gap: 7px; }
-.legend i { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
-.legend .cy i { background: #7fb6ff; }
-.chart { display: flex; align-items: flex-end; justify-content: center; gap: clamp(32px, 12vw, 110px); min-height: 165px; padding: 14px 0 4px; }
-.chart-col { display: grid; justify-items: center; gap: 8px; min-width: 80px; }
-.bars { display: flex; align-items: flex-end; width: 46px; height: 115px; overflow: hidden; border-radius: 9px; background: rgba(255, 255, 255, .035); }
-.bar { width: 100%; min-height: 4px; border-radius: 9px 9px 0 0; background: linear-gradient(0deg, #32ac78, #78efb7); }
-.bar.cyan { background: linear-gradient(0deg, #528cc8, #8bc1ff); }
-.chart-label { color: var(--muted); font-size: .69rem; text-align: center; }
-.chart-foot { display: flex; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 1px solid var(--border); color: var(--muted); font-size: .76rem; }
-.chart-foot strong { color: var(--text); }
-.breakdown { display: grid; gap: 15px; }
-.break-row { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 7px; font-size: .77rem; }
-.break-name { color: var(--muted); }
-.break-name .mark { display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: var(--green); }
-.break-value { color: var(--text); }
-.progress { height: 6px; overflow: hidden; border-radius: 99px; background: rgba(255, 255, 255, .06); }
-.progress span { display: block; width: 0; height: 100%; border-radius: inherit; transition: width .3s ease; }
-.callout { margin-top: 18px; padding: 11px 12px; border: 1px solid rgba(245, 201, 107, .16); border-radius: 12px; background: rgba(245, 201, 107, .06); }
-.callout b { color: var(--yellow); font-size: .76rem; }
-.callout p { margin: 4px 0 0; color: var(--muted); font-size: .72rem; }
-.table-panel { margin: 16px 0; padding: 0; overflow: hidden; }
-.table-panel .panel-head { padding: 19px 19px 0; }
-.toolbar { display: flex; align-items: center; gap: 10px; padding: 0 19px 15px; }
-.contribution-form { display: grid; grid-template-columns: 1.2fr 1.2fr .8fr 1fr auto; align-items: end; gap: 11px; padding: 18px 19px; }
-.contribution-form .field { min-width: 0; margin: 0; }
-.contribution-form label { margin-bottom: 5px; color: var(--muted); font-size: .72rem; }
-.contribution-form input, .contribution-form select { min-height: 40px; padding: 8px 10px; font-size: .78rem; }
-.contribution-form-actions { display: flex; gap: 7px; padding-bottom: 1px; }
-.contribution-form-actions .mini { min-height: 40px; padding-inline: 11px; }
-.report-toolbar { align-items: center; flex-wrap: wrap; padding: 18px 0 10px; }
-.report-toolbar label { margin: 0; color: var(--muted); font-size: .75rem; }
-.report-toolbar .filter { min-width: 150px; }
-.report-summary { display: flex; flex-wrap: wrap; gap: 10px 22px; color: var(--muted); font-size: .8rem; }
-.search-wrap { display: flex; align-items: center; gap: 9px; width: min(360px, 100%); min-height: 40px; margin: 0; padding: 0 11px; border: 1px solid var(--border); border-radius: 10px; background: rgba(5, 13, 10, .5); color: var(--muted); }
-.search-wrap input { min-height: 38px; padding: 6px 0; border: 0; background: transparent; box-shadow: none; }
-.filter { width: auto; min-width: 170px; min-height: 40px; padding: 7px 30px 7px 10px; }
-.table-scroll { max-width: 100%; overflow-x: auto; }
-.table-scroll table { min-width: 740px; }
-th { color: var(--muted); font-size: .68rem; font-weight: 750; }
-td { color: #dce9e1; font-size: .79rem; }
-th, td { padding: 12px 13px; border-bottom: 1px solid var(--border); }
-.member { display: flex; align-items: center; gap: 10px; min-width: 170px; }
-.member-avatar { display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 auto; overflow: hidden; border-radius: 50%; background: rgba(100, 230, 166, .1); color: var(--green); font-size: .72rem; font-weight: 800; }
-.member-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.member-name { color: var(--text); font-weight: 700; }
-.member-meta { margin-top: 2px; color: var(--muted); font-size: .7rem; }
-.pill { display: inline-flex; align-items: center; padding: 4px 9px; border: 1px solid var(--border); border-radius: 99px; background: rgba(245, 201, 107, .08); color: var(--yellow); font-size: .68rem; font-weight: 700; white-space: nowrap; }
-.pill.ok { border-color: rgba(100, 230, 166, .2); background: rgba(100, 230, 166, .08); color: var(--green); }
-.pill.bad { border-color: rgba(255, 131, 144, .2); background: rgba(255, 131, 144, .08); color: var(--red); }
-.actions { display: flex; justify-content: flex-end; gap: 6px; }
-.mini { min-height: 30px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel-soft); color: var(--text); font-size: .69rem; font-weight: 700; white-space: nowrap; }
-.mini.approve, .mini.verify { color: var(--green); border-color: rgba(100, 230, 166, .24); }
-.mini.reject { color: #ff9ba5; border-color: rgba(255, 131, 144, .24); }
-.loading, .empty { padding: 20px; color: var(--muted); text-align: center; }
-.spinner { display: inline-block; width: 14px; height: 14px; margin-right: 7px; border: 2px solid rgba(100, 230, 166, .2); border-top-color: var(--green); border-radius: 50%; vertical-align: -2px; animation: spin .8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.footer { display: flex; justify-content: space-between; gap: 12px; padding: 12px 19px; color: var(--muted); font-size: .72rem; }
-footer.footer { padding: 17px 0; }
-button:disabled { cursor: wait; opacity: .6; }
-@media (max-width: 1050px) {
-  .layout { grid-template-columns: 220px minmax(0, 1fr); }
-  .sidebar { width: 220px; }
-  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .content-grid { grid-template-columns: 1fr; }
-}
-@media (max-width: 760px) {
-  .layout { display: block; }
-  .sidebar {
-    position: fixed !important;
-    z-index: 30;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: min(290px, 86vw) !important;
-    height: 100dvh !important;
-    max-width: none !important;
-    transform: translateX(-105%);
-    transition: transform .25s ease;
-    box-shadow: 14px 0 42px rgba(0, 0, 0, .35);
-  }
-  .sidebar.open { transform: translateX(0); }
-  .main { padding-right: 15px !important; padding-left: 15px !important; }
-  .topbar { margin-right: -15px; margin-left: -15px; padding-right: 15px; padding-left: 15px; }
-  .menu-toggle { display: inline-flex; }
-}
-@media (max-width: 520px) {
-  .main { padding-right: 11px !important; padding-left: 11px !important; }
-  .topbar { min-height: 62px; margin-right: -11px; margin-left: -11px; padding: 8px 11px; }
-  .crumb { display: none; }
-  .top-actions { gap: 6px; }
-  .member-view { font-size: .72rem; }
-  .welcome { align-items: flex-start; flex-direction: column; gap: 10px; margin-bottom: 19px; }
-  .stats { gap: 9px; }
-  .stat { padding: 13px; border-radius: 14px; }
-  .stat-label, .stat-foot { font-size: .69rem; }
-  .stat-value { margin: 10px 0 6px; font-size: 1.22rem; }
-  .panel { padding: 15px; }
-  .table-panel { padding: 0; }
-  .table-panel .panel-head { padding: 15px 15px 0; }
-  .toolbar { align-items: stretch; flex-direction: column; padding: 0 15px 13px; }
-  .contribution-form { grid-template-columns: 1fr; padding: 15px; }
-  .contribution-form-actions { flex-wrap: wrap; }
-  .report-toolbar { align-items: stretch; }
-  .report-toolbar .filter { width: 100%; }
-  .search-wrap, .filter { width: 100%; }
-  .panel-head { align-items: flex-start; }
-  .tag { font-size: .65rem; }
-  .footer { flex-direction: column; gap: 3px; padding: 10px 15px; }
-  footer.footer { padding: 14px 0; }
-}
-
-/* Modern admin workspace */
-:root {
+/* ---------- Design tokens ---------- */
+:root{
   color-scheme: light;
-  --bg: #f3f6f4;
-  --panel: #ffffff;
-  --panel2: #ffffff;
-  --panel-soft: #f4f7f5;
-  --green: #167c55;
-  --green2: #20a26b;
-  --purple: #4d75bd;
-  --yellow: #a96b08;
-  --red: #c74453;
-  --text: #1d3027;
-  --muted: #708078;
-  --border: #e3ebe6;
-  --radius: 18px;
-  --shadow: 0 8px 26px rgba(28, 54, 40, .055);
+
+  /* Brand */
+  --green:#167c55;
+  --green-strong:#0d6142;
+  --green-2:#1f9d68;
+  --lime:#8bd17c;
+  --purple:#4d75bd;
+  --yellow:#a96b08;
+  --red:#c74453;
+
+  /* Surfaces */
+  --bg:#f1f6f3;
+  --bg-glow:rgba(37,150,99,.075);
+  --panel:#ffffff;
+  --panel-soft:#f4f8f5;
+  --thead-bg:#f6faf7;
+
+  /* Text */
+  --text:#1b2f26;
+  --muted:#5f7168;
+  --muted-2:#7b8c83;
+
+  /* Lines */
+  --border:#e2ebe5;
+  --border-strong:#d2e1d8;
+
+  /* Shape */
+  --radius-sm:9px;
+  --radius:14px;
+  --radius-lg:18px;
+
+  /* Elevation */
+  --shadow-sm:0 2px 8px rgba(28,54,40,.05);
+  --shadow:0 10px 30px rgba(28,54,40,.07);
+  --shadow-lg:0 22px 60px rgba(16,43,30,.18);
+
+  /* Vertical rhythm */
+  --gap-section:18px;
+  --gap-block:14px;
+
+  /* Sidebar (dark brand panel on light page) */
+  --sidebar-bg:linear-gradient(180deg,#12372a 0%,#102c23 100%);
 }
-html { scroll-padding-top: 90px; }
-body {
+
+/* ---------- Base ---------- */
+*{box-sizing:border-box}
+html{min-height:100%;scroll-behavior:smooth;scroll-padding-top:90px}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  background:radial-gradient(ellipse at 88% 0%, var(--bg-glow), transparent 31%), var(--bg);
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font:inherit}
+button,a{-webkit-tap-highlight-color:transparent}
+a{color:var(--green)}
+img{max-width:100%}
+header,nav,aside,main,section,footer{min-width:0}
+hr{border:0;border-top:1px solid var(--border)}
+h1,h2,h3{line-height:1.25;letter-spacing:-.025em}
+h1{font-size:clamp(1.65rem,4vw,2.4rem)}
+h2{font-size:clamp(1.2rem,3vw,1.6rem)}
+small,.muted,.subtitle,.description{color:var(--muted)}
+
+/* ---------- Focus ---------- */
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:6px}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--green);outline-offset:1px}
+
+/* ---------- Forms & buttons ---------- */
+input,select,textarea{
+  width:100%;
+  min-height:45px;
+  padding:12px 14px;
+  color:var(--text);
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+}
+input::placeholder,textarea::placeholder{color:var(--muted-2)}
+input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(31,157,104,.14)}
+label{display:block;margin-bottom:7px;color:var(--muted)}
+input[type=checkbox]{width:16px;height:16px;min-height:16px;padding:0;accent-color:var(--green)}
+
+button,.btn,[type=submit]{border-radius:var(--radius-sm)}
+button{cursor:pointer;transition:transform .15s ease,border-color .15s ease,background-color .15s ease,box-shadow .15s ease}
+button:hover{filter:brightness(1.02)}
+button:active{transform:scale(.98)}
+button:disabled{cursor:not-allowed;opacity:.6}
+button:not([type=submit]){border:1px solid var(--border)}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:40px;
+  padding:8px 12px;
+  color:#385346;
+  background:#fff;
+  border:1px solid #e0e9e3;
+  box-shadow:var(--shadow-sm);
+  text-decoration:none;
+  font-size:.81rem;
+  font-weight:600;
+}
+.btn:hover{border-color:#abd2bb;color:var(--green-strong)}
+.btn-primary,button.primary,.primary-btn,button[type=submit],input[type=submit]{
+  color:#fff;
+  background:linear-gradient(135deg,var(--green),var(--green-2));
+  border:0;
+  font-weight:700;
+}
+.btn-primary:hover,button.primary:hover,.primary-btn:hover,button[type=submit]:hover{filter:brightness(1.05)}
+
+/* Busy (in-flight) button state */
+.is-busy{position:relative;pointer-events:none;color:transparent !important}
+.is-busy::after{
+  content:"";
+  position:absolute;
+  top:50%;left:50%;
+  width:14px;height:14px;
+  margin:-7px 0 0 -7px;
+  border:2px solid var(--border-strong);
+  border-top-color:var(--green);
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+
+/* ---------- Layout ---------- */
+.layout{display:grid;grid-template-columns:254px minmax(0,1fr);min-height:100vh}
+.sidebar{
+  position:sticky;
+  z-index:30;
+  top:0;
+  display:flex;
+  flex-direction:column;
+  width:254px;
+  max-width:none;
+  height:100vh;
+  padding:24px 16px 18px;
+  border-right:1px solid rgba(255,255,255,.08);
+  background:var(--sidebar-bg);
+  box-shadow:8px 0 28px rgba(22,51,37,.06);
+}
+.brand{display:flex;align-items:center;gap:11px;padding:2px 8px 30px}
+.logo{
+  display:grid;place-items:center;
+  width:42px;height:42px;flex:0 0 auto;
+  border-radius:14px;
+  background:linear-gradient(145deg,#c9f08b,#72d99f);
+  color:#12372a;font-weight:900;
+  object-fit:cover;
+  box-shadow:0 7px 18px rgba(126,221,159,.16);
+}
+.brand-name{color:#f2fbf5;font-weight:800;letter-spacing:-.02em}
+.brand-sub,.nav-label{color:#8ca99a;font-size:.67rem;font-weight:800;letter-spacing:.13em}
+.nav-label{padding:0 10px 9px}
+.sidebar .nav{position:static;display:grid;gap:5px;justify-content:stretch;padding:0;border:0;background:transparent}
+.sidebar .nav + .nav-label{margin-top:22px}
+.sidebar .nav a{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:9px;
+  min-height:44px;
+  padding:10px;
+  border-radius:11px;
+  color:#c0d1c7;
+  font-size:.85rem;
+  text-decoration:none;
+  transition:.2s ease;
+}
+.sidebar .nav a:hover,.sidebar .nav a.active{color:#d5f5a7;background:rgba(194,237,139,.12)}
+.nav-icon{width:22px;color:#a6d38d;text-align:center}
+.nav-count{margin-left:auto;padding:2px 7px;border-radius:99px;background:rgba(255,213,123,.15);color:#ffd57b;font-size:.72rem}
+.sidebar-bottom{margin-top:auto}
+.security{padding:14px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.045)}
+.security b{color:#eef8f1;font-size:.86rem}
+.security p{margin:7px 0 11px;color:#a9bdb1;font-size:.75rem;line-height:1.55}
+.status-live{display:flex;align-items:center;gap:8px;color:#a9bdb1;font-size:.72rem}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px rgba(139,209,124,.8)}
+.sidebar-backdrop{display:none}
+
+/* ---------- Main / topbar ---------- */
+.main{min-width:0;width:100%;max-width:1660px;margin:0 auto;padding:0 clamp(18px,3vw,40px) 30px}
+.topbar{
+  position:sticky;
+  z-index:10;
+  top:0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  min-height:76px;
+  margin:0 calc(clamp(18px,3vw,40px) * -1) 24px;
+  padding:10px clamp(18px,3vw,40px);
+  border-bottom:1px solid var(--border-strong);
+  background:rgba(243,246,244,.9);
+  backdrop-filter:blur(16px);
+}
+.crumb{color:var(--muted);font-size:.82rem}
+.crumb strong{color:#30483b}
+.top-actions{display:flex;align-items:center;gap:9px}
+.menu-toggle{display:none;align-items:center;justify-content:center;width:42px;padding:7px}
+.avatar{
+  display:grid;place-items:center;
+  width:38px;height:38px;overflow:hidden;
+  border:1px solid #c8e5d3;border-radius:50%;
+  background:#e8f5ed;color:var(--green-strong);
+  font-weight:800;cursor:pointer;
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+
+/* ---------- Welcome / headings ---------- */
+.welcome{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin:10px 0 30px}
+.eyebrow{color:#488268;font-size:.72rem;font-weight:800;letter-spacing:.1em}
+.welcome h1{margin:8px 0 6px;color:#1e3428;letter-spacing:-.045em}
+.welcome .subtitle{max-width:650px;margin:0;color:#738178}
+.date-chip,.tag{
+  display:inline-flex;align-items:center;
+  padding:7px 11px;
+  border:1px solid #e0e9e3;border-radius:999px;
+  background:#fff;color:#687970;
+  font-size:.72rem;font-weight:700;
+  box-shadow:var(--shadow-sm);
+}
+.tag{color:var(--green-strong);border-color:#d7ebdd;background:#eff8f1}
+.section-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin:0 0 13px}
+.section-heading h2{margin:0 0 4px;color:#243a2e;font-size:1.12rem}
+.section-heading p{margin:0;color:#7a8981;font-size:.8rem}
+
+/* ---------- Notices ---------- */
+.notice{display:none;margin:0 0 var(--gap-section);padding:12px 14px;border:1px solid #f1c9cd;border-radius:12px;background:#fff2f3;color:#a83140;font-size:.85rem}
+.notice.show{display:block}
+.notice.good{border-color:#cde7d5;background:#eef8f0;color:#26764f}
+
+/* ---------- Stats ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:var(--gap-section)}
+.stat{
+  position:relative;overflow:hidden;min-width:0;
+  padding:20px;
+  border:1px solid #e5ece7;border-radius:17px;
+  background:#fff;box-shadow:var(--shadow);
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.stat::before{position:absolute;top:0;right:0;left:0;height:3px;background:var(--accent,#2c9a68);content:""}
+.stat:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(28,54,40,.09)}
+.stat-top{display:flex;justify-content:space-between;gap:8px}
+.stat-label,.stat-foot{color:#78877e;font-size:.77rem}
+.stat-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#eff7f1;color:var(--green-strong)}
+.stat-value{margin:14px 0 8px;color:#233a2e;font-size:clamp(1.25rem,2vw,1.8rem);font-weight:800;letter-spacing:-.04em;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.stat-foot{font-size:.72rem}
+.stat-foot strong{color:#248454}
+
+/* ---------- Panels / content ---------- */
+.content-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--gap-block);margin-bottom:var(--gap-section)}
+.panel{min-width:0;padding:19px;border:1px solid #e4ebe6;border-radius:var(--radius-lg);background:#fff;box-shadow:var(--shadow)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:17px}
+.panel-title{color:#2b4034;font-size:.97rem;font-weight:750}
+.panel-sub{margin-top:3px;color:#7a8981;font-size:.8rem}
+.panel-actions{display:flex;align-items:center;gap:10px}
+
+/* ---------- Charts / breakdown ---------- */
+.legend{display:flex;gap:16px;color:#75847c;font-size:.72rem}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:8px;height:8px;border-radius:50%;background:#268458}
+.legend .cy i{background:#668dc9}
+.chart{display:flex;align-items:flex-end;justify-content:center;gap:clamp(32px,12vw,110px);min-height:165px;padding:14px 0 4px}
+.chart-col{display:grid;justify-items:center;gap:8px;min-width:80px}
+.bars{display:flex;align-items:flex-end;width:46px;height:115px;overflow:hidden;border-radius:9px;background:#f0f4f1}
+.bar{width:100%;min-height:4px;border-radius:9px 9px 0 0;background:linear-gradient(0deg,#238157,#61c28b)}
+.bar.cyan{background:linear-gradient(0deg,#597fb9,#9bb7e0)}
+.chart-label{color:var(--muted);font-size:.69rem;text-align:center}
+.chart-foot{display:flex;justify-content:space-between;gap:12px;padding-top:12px;border-top:1px solid #e7eee9;color:#78877e;font-size:.76rem}
+.chart-foot strong{color:#2e4538;font-variant-numeric:tabular-nums}
+.breakdown{display:grid;gap:15px}
+.break-row{display:flex;justify-content:space-between;gap:12px;margin-bottom:7px;font-size:.77rem}
+.break-name{color:#74837a}
+.break-name .mark{display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:50%;background:var(--green)}
+.break-value{color:#2e4538;font-variant-numeric:tabular-nums}
+.progress{height:6px;overflow:hidden;border-radius:99px;background:#edf2ee}
+.progress span{display:block;width:0;height:100%;border-radius:inherit;transition:width .3s ease}
+.callout{margin-top:18px;padding:11px 12px;border:1px solid #f1e2bd;border-radius:12px;background:#fff9ec}
+.callout b{color:#95610c;font-size:.76rem}
+.callout p{margin:4px 0 0;color:var(--muted);font-size:.72rem}
+
+/* ---------- Tables ---------- */
+.table-panel{margin:var(--gap-section) 0;padding:0;overflow:hidden}
+.table-panel .panel-head{padding:19px 19px 18px}
+.toolbar{display:flex;align-items:center;gap:10px;padding:0 19px 15px}
+.bulk-bar{flex-wrap:wrap;padding-top:0}
+.bulk-bar .panel-sub{margin-right:auto}
+
+.table-scroll{
+  max-width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  /* subtle edge shadow hints */
   background:
-    radial-gradient(ellipse at 88% 0%, rgba(37, 150, 99, .075), transparent 31%),
-    var(--bg);
-  color: var(--text);
+    linear-gradient(to right, var(--panel) 30%, rgba(255,255,255,0)) left center,
+    linear-gradient(to left, var(--panel) 30%, rgba(255,255,255,0)) right center,
+    radial-gradient(farthest-side at 0 50%, rgba(20,50,35,.14), transparent) left center,
+    radial-gradient(farthest-side at 100% 50%, rgba(20,50,35,.14), transparent) right center;
+  background-repeat:no-repeat;
+  background-size:40px 100%,40px 100%,16px 100%,16px 100%;
+  background-attachment:local,local,scroll,scroll;
 }
-.sidebar {
-  z-index: 30;
-  border-right-color: rgba(255,255,255,.08);
-  background: linear-gradient(180deg, #12372a 0%, #102c23 100%);
-  box-shadow: 8px 0 28px rgba(22, 51, 37, .06);
+table{width:100%;border-collapse:collapse;display:table}
+th,td{padding:12px 13px;border-bottom:1px solid #edf1ee;text-align:left}
+th{background:var(--thead-bg);color:#77877d;font-size:.67rem;font-weight:750;text-transform:uppercase;letter-spacing:.065em;white-space:nowrap}
+td{color:#53665b;font-size:.79rem}
+tbody tr:hover td{background:#f8fbf8}
+
+/* Sticky header + sticky first column */
+.table-scroll thead th{position:sticky;top:0;z-index:3}
+.table-scroll th:first-child,
+.table-scroll td:first-child{position:sticky;left:0;z-index:2;background:var(--panel);box-shadow:1px 0 0 var(--border)}
+.table-scroll thead th:first-child{z-index:4;background:var(--thead-bg)}
+
+.member{display:flex;align-items:center;gap:10px;min-width:170px}
+.member-avatar{display:grid;place-items:center;width:36px;height:36px;flex:0 0 auto;overflow:hidden;border-radius:50%;background:#e9f5ed;color:#28764f;font-size:.72rem;font-weight:800}
+.member-avatar img{width:100%;height:100%;object-fit:cover}
+.member-name{color:#2b4034;font-weight:700}
+.member-meta{margin-top:2px;color:#829087;font-size:.7rem}
+.member-link{padding:0;border:0;background:none;color:var(--text);font:inherit;font-weight:700;text-align:left}
+.member-link:hover{color:var(--green);text-decoration:underline}
+.actions{display:flex;justify-content:flex-end;gap:6px}
+.mini{min-height:30px;padding:5px 10px;border:1px solid #e1e9e3;border-radius:8px;background:#f6f9f6;color:#455b4e;font-size:.69rem;font-weight:700;white-space:nowrap}
+.mini:hover{border-color:#b9dfc9}
+.mini.approve,.mini.verify{border-color:#cfe5d5;background:#eff8f1;color:#207247}
+.mini.reject{border-color:#efd3d7;background:#fff2f3;color:#ad3948}
+.mini.link{text-decoration:none;display:inline-flex;align-items:center}
+.mini[disabled]{cursor:not-allowed}
+.footer{display:flex;justify-content:space-between;gap:12px;padding:12px 19px;color:#849188;font-size:.72rem}
+.table-panel .footer{border-top:1px solid #edf1ee}
+footer.footer{padding:17px 0}
+
+/* ---------- Loading / empty / skeleton ---------- */
+.loading,.empty{display:flex;flex-direction:column;align-items:center;gap:12px;padding:26px 18px;color:#7a8981;text-align:center}
+.empty__msg{max-width:46ch}
+.spinner{display:inline-block;width:14px;height:14px;margin-right:7px;border:2px solid #d7e9dc;border-top-color:#238157;border-radius:50%;vertical-align:-2px;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.skeleton{display:block;height:12px;border-radius:6px;background:linear-gradient(90deg,rgba(20,50,35,.06) 25%,rgba(20,50,35,.12) 37%,rgba(20,50,35,.06) 63%);background-size:400% 100%;animation:shimmer 1.4s ease-in-out infinite}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:0 0}}
+.skeleton-row td{border-bottom:1px solid var(--border)}
+
+/* ---------- Toasts ---------- */
+.toast-container{
+  position:fixed;z-index:60;
+  top:16px;right:16px;
+  display:flex;flex-direction:column;gap:10px;
+  width:min(360px,calc(100vw - 32px));
+  pointer-events:none;
 }
-.brand { padding-bottom: 30px; }
-.logo {
-  border-radius: 14px;
-  background: linear-gradient(145deg, #c9f08b, #72d99f);
-  color: #12372a;
-  box-shadow: 0 7px 18px rgba(126, 221, 159, .16);
-  object-fit: cover;
+.toast{
+  pointer-events:auto;
+  display:flex;align-items:flex-start;gap:10px;
+  padding:12px 14px;
+  border:1px solid var(--border);
+  border-left:4px solid var(--muted);
+  border-radius:12px;
+  background:var(--panel);
+  box-shadow:var(--shadow-lg);
+  color:var(--text);
+  font-size:.85rem;
+  animation:toastIn .22s ease;
 }
-.brand-name { color: #f2fbf5; letter-spacing: -.02em; }
-.brand-sub, .nav-label { color: #8ca99a; }
-.sidebar .nav a { min-height: 44px; border-radius: 11px; color: #c0d1c7; }
-.sidebar .nav a:hover, .sidebar .nav a.active {
-  color: #d5f5a7;
-  background: rgba(194, 237, 139, .12);
+.toast__icon{flex:0 0 auto;font-weight:800;line-height:1.4}
+.toast__msg{flex:1;min-width:0;overflow-wrap:anywhere}
+.toast--success{border-left-color:var(--green-2)}
+.toast--success .toast__icon{color:var(--green)}
+.toast--error{border-left-color:var(--red)}
+.toast--error .toast__icon{color:var(--red)}
+.toast--info{border-left-color:var(--purple)}
+.toast--info .toast__icon{color:var(--purple)}
+.toast.is-leaving{animation:toastOut .2s ease forwards}
+@keyframes toastIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateY(-10px)}}
+
+/* ---------- Forms (contribution / announcement) ---------- */
+.contribution-form{display:grid;grid-template-columns:1.2fr 1.2fr .8fr 1fr auto;align-items:end;gap:11px;padding:18px 19px}
+.contribution-form .field{min-width:0;margin:0}
+.contribution-form label{margin-bottom:5px;color:var(--muted);font-size:.72rem}
+.contribution-form input,.contribution-form select{min-height:40px;padding:8px 10px;font-size:.78rem}
+.contribution-form textarea{min-height:80px;padding:9px 10px;font-size:.8rem;resize:vertical}
+.contribution-form-actions{display:flex;gap:7px;padding-bottom:1px}
+.contribution-form-actions .mini{min-height:40px;padding-inline:11px}
+.report-toolbar{align-items:center;flex-wrap:wrap;padding:18px 0 10px}
+.report-toolbar label{margin:0;color:var(--muted);font-size:.75rem}
+.report-toolbar .filter{min-width:150px}
+.report-summary{display:flex;flex-wrap:wrap;gap:10px 22px;color:var(--muted);font-size:.8rem}
+
+/* ---------- Search / filters ---------- */
+.search-wrap{display:flex;align-items:center;gap:9px;width:min(360px,100%);min-height:43px;margin:0;padding:0 11px;border:1px solid #e2eae4;border-radius:var(--radius-sm);background:#f8faf8;color:#829088}
+.search-wrap input{min-height:38px;padding:6px 0;border:0 !important;background:transparent !important;color:#2b4034 !important;box-shadow:none !important}
+.search-wrap input::placeholder{color:#99a69f}
+.filter{width:auto;min-width:170px;min-height:40px;padding:7px 30px 7px 10px;border-color:#e0e9e3;background-color:#fff;color:#43594d}
+
+/* ---------- Pills ---------- */
+.pill{display:inline-flex;align-items:center;padding:4px 9px;border:1px solid #f0e0b9;border-radius:99px;background:#fff8e8;color:#95610c;font-size:.68rem;font-weight:700;white-space:nowrap}
+.pill.ok{border-color:#d4eada;background:#eff8f1;color:#26764f}
+.pill.bad{border-color:#f1d6d9;background:#fff1f2;color:#b23f4c}
+
+/* ---------- Modal ---------- */
+.modal-backdrop{position:fixed;z-index:40;inset:0;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(19,52,41,.45);backdrop-filter:blur(4px)}
+.modal-backdrop.open{display:flex}
+.modal{width:min(780px,100%);max-height:92vh;overflow:auto;padding:20px;border:1px solid var(--border);border-radius:16px;background:var(--panel);box-shadow:var(--shadow-lg)}
+.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.modal-head h2{margin:0;color:#233a2e;font-size:1.12rem}
+.modal-head p{margin:5px 0 0;color:var(--muted);font-size:.78rem}
+.modal .close{width:32px;height:32px;flex:0 0 auto;padding:0;border:1px solid var(--border);border-radius:9px;background:var(--panel-soft);color:var(--muted);font-size:1.05rem}
+.modal-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}
+.modal-stat{padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--panel-soft)}
+.modal-stat span{display:block;color:var(--muted);font-size:.7rem}
+.modal-stat b{display:block;margin-top:4px;font-size:.95rem;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.modal-sub{margin:18px 0 8px;color:#2b4034;font-size:.88rem;font-weight:750}
+.modal .member{margin-bottom:4px}
+
+/* ---------- Utilities ---------- */
+.trunc{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.member-link.trunc,.member-name.trunc{max-width:210px}
+td .trunc,.trunc-cell{max-width:260px}
+.flash{animation:flashRow 1.4s ease}
+@keyframes flashRow{0%{background:rgba(31,157,104,.14)}100%{background:transparent}}
+
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#c3d5ca;border-radius:99px}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1050px){
+  .layout{grid-template-columns:220px minmax(0,1fr)}
+  .sidebar{width:220px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .content-grid{grid-template-columns:1fr}
 }
-.nav-icon { color: #a6d38d; }
-.nav-count { background: rgba(255, 213, 123, .15); color: #ffd57b; }
-.security { border-color: rgba(255,255,255,.1); background: rgba(255,255,255,.045); }
-.security b { color: #eef8f1; }
-.security p, .status-live { color: #a9bdb1; }
-.main { max-width: 1660px; }
-.topbar {
-  min-height: 76px;
-  border-bottom-color: rgba(220, 231, 224, .86);
-  background: rgba(243, 246, 244, .9);
+@media (max-width:820px){
+  .table-scroll table{min-width:720px}
 }
-.crumb { color: #819088; }
-.crumb strong { color: #30483b; }
-.btn {
-  min-height: 40px;
-  border-color: #e0e9e3;
-  border-radius: 11px;
-  background: #fff;
-  color: #385346;
-  box-shadow: 0 2px 6px rgba(28, 54, 40, .025);
-}
-.btn:hover { border-color: #abd2bb; color: #176d4b; }
-.menu-toggle { align-items: center; justify-content: center; width: 42px; padding: 7px; }
-.avatar { border-color: #c8e5d3; background: #e8f5ed; color: #176d4b; }
-.welcome { margin: 10px 0 30px; }
-.eyebrow { color: #488268; font-size: .72rem; font-weight: 800; letter-spacing: .1em; }
-.welcome h1 { color: #1e3428; letter-spacing: -.045em; }
-.welcome .subtitle { color: #738178; }
-.date-chip, .tag {
-  border-color: #e0e9e3;
-  background: #fff;
-  color: #687970;
-  box-shadow: 0 2px 7px rgba(28, 54, 40, .025);
-}
-.tag { border-color: #d7ebdd; background: #eff8f1; color: #26764f; }
-.notice { border-color: #f1c9cd; background: #fff2f3; color: #a83140; }
-.notice.good { border-color: #cde7d5; background: #eef8f0; color: #26764f; }
-.section-heading h2 { color: #243a2e; letter-spacing: -.025em; }
-.section-heading p, .panel-sub { color: #7a8981; }
-.stat {
-  position: relative;
-  overflow: hidden;
-  padding: 20px;
-  border-color: #e5ece7;
-  border-radius: 17px;
-  background: #fff;
-  box-shadow: var(--shadow);
-  transition: transform .2s ease, box-shadow .2s ease;
-}
-.stat::before {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 3px;
-  background: var(--accent, #2c9a68);
-  content: "";
-}
-.stat:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(28, 54, 40, .09); }
-.stat-label, .stat-foot { color: #78877e; }
-.stat-icon {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: #eff7f1;
-  color: #26764f;
-}
-.stat-value { color: #233a2e; letter-spacing: -.04em; }
-.stat-foot strong { color: #248454; }
-.panel {
-  border-color: #e4ebe6;
-  border-radius: 18px;
-  background: #fff;
-  box-shadow: var(--shadow);
-}
-.panel-title { color: #2b4034; }
-.legend { color: #75847c; }
-.legend i { background: #268458; }
-.legend .cy i { background: #668dc9; }
-.bars { background: #f0f4f1; }
-.bar { background: linear-gradient(0deg, #238157, #61c28b); }
-.bar.cyan { background: linear-gradient(0deg, #597fb9, #9bb7e0); }
-.chart-foot { border-top-color: #e7eee9; color: #78877e; }
-.chart-foot strong, .break-value { color: #2e4538; }
-.break-name { color: #74837a; }
-.progress { background: #edf2ee; }
-.callout { border-color: #f1e2bd; background: #fff9ec; }
-.callout b { color: #95610c; }
-.table-panel { padding-bottom: 2px; }
-.table-panel .panel-head { padding-bottom: 18px; }
-.toolbar { padding-top: 2px; }
-.search-wrap {
-  min-height: 43px;
-  border-color: #e2eae4;
-  border-radius: 11px;
-  background: #f8faf8;
-  color: #829088;
-}
-.search-wrap input {
-  border: 0 !important;
-  background: transparent !important;
-  color: #2b4034 !important;
-  box-shadow: none !important;
-}
-.search-wrap input::placeholder { color: #99a69f; }
-.filter {
-  border-color: #e0e9e3 !important;
-  background-color: #fff !important;
-  color: #43594d !important;
-}
-.table-scroll table { min-width: 760px; }
-th {
-  background: #f7f9f7;
-  color: #77877d;
-  font-size: .67rem;
-  letter-spacing: .065em;
-}
-td { color: #53665b; }
-th, td { border-bottom-color: #edf1ee; }
-tbody tr:hover td { background: #f8fbf8; }
-.member-avatar { background: #e9f5ed; color: #28764f; }
-.member-name { color: #2b4034; }
-.member-meta { color: #829087; }
-.pill { border-color: #f0e0b9; background: #fff8e8; color: #95610c; }
-.pill.ok { border-color: #d4eada; background: #eff8f1; color: #26764f; }
-.pill.bad { border-color: #f1d6d9; background: #fff1f2; color: #b23f4c; }
-.mini { border-color: #e1e9e3; border-radius: 8px; background: #f6f9f6; color: #455b4e; }
-.mini.approve, .mini.verify { border-color: #cfe5d5; background: #eff8f1; color: #207247; }
-.mini.reject { border-color: #efd3d7; background: #fff2f3; color: #ad3948; }
-.loading, .empty { color: #7a8981; }
-.spinner { border-color: #d7e9dc; border-top-color: #238157; }
-.footer { color: #849188; }
-.table-panel .footer { border-top: 1px solid #edf1ee; }
-.sidebar-backdrop { display: none; }
-@media (max-width: 760px) {
-  .layout.menu-open .sidebar-backdrop {
-    position: fixed;
-    z-index: 25;
-    inset: 0;
-    display: block;
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background: rgba(18, 36, 27, .42);
-    backdrop-filter: blur(2px);
+@media (max-width:760px){
+  .layout{display:block}
+  .sidebar{
+    position:fixed;z-index:30;top:0;bottom:0;left:0;
+    width:min(290px,86vw) !important;
+    height:100dvh !important;
+    max-width:none !important;
+    transform:translateX(-105%);
+    transition:transform .25s ease;
+    box-shadow:18px 0 46px rgba(13,37,25,.23);
   }
-  .sidebar { box-shadow: 18px 0 46px rgba(13, 37, 25, .23); }
+  .sidebar.open{transform:translateX(0)}
+  .layout.menu-open .sidebar-backdrop{
+    position:fixed;z-index:25;inset:0;display:block;
+    width:100%;height:100%;padding:0;border:0;border-radius:0;
+    background:rgba(18,36,27,.42);backdrop-filter:blur(2px);
+  }
+  .main{padding-right:15px !important;padding-left:15px !important}
+  .topbar{margin-right:-15px;margin-left:-15px;padding-right:15px;padding-left:15px}
+  .menu-toggle{display:inline-flex}
+  .toast-container{top:auto;bottom:14px;right:14px;left:14px;width:auto;flex-direction:column-reverse}
+  @keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @keyframes toastOut{to{opacity:0;transform:translateY(12px)}}
 }
-@media (max-width: 520px) {
-  .welcome h1 { font-size: 1.75rem; }
-  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .stat { min-height: 136px; }
+@media (max-width:520px){
+  .main{padding-right:11px !important;padding-left:11px !important}
+  .topbar{min-height:62px;margin-right:-11px;margin-left:-11px;padding:8px 11px}
+  .crumb{display:none}
+  .top-actions{gap:6px}
+  .member-view{font-size:.72rem}
+  .welcome{align-items:flex-start;flex-direction:column;gap:10px;margin-bottom:19px}
+  .welcome h1{font-size:1.75rem}
+  .stats{gap:9px;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat{padding:13px;border-radius:14px;min-height:136px}
+  .stat-label,.stat-foot{font-size:.69rem}
+  .stat-value{margin:10px 0 6px;font-size:1.22rem}
+  .panel{padding:15px}
+  .table-panel{padding:0}
+  .table-panel .panel-head{padding:15px 15px 0;align-items:flex-start;flex-wrap:wrap}
+  .toolbar{align-items:stretch;flex-direction:column;padding:0 15px 13px}
+  .contribution-form{grid-template-columns:1fr;padding:15px}
+  .contribution-form-actions{flex-wrap:wrap}
+  .report-toolbar{align-items:stretch}
+  .report-toolbar .filter{width:100%}
+  .search-wrap,.filter{width:100%}
+  .tag{font-size:.65rem}
+  .footer{flex-direction:column;gap:3px;padding:10px 15px}
+  footer.footer{padding:14px 0}
+  .modal-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto !important;animation-duration:.01ms !important;transition-duration:.01ms !important}
 }
+
 </style>
 </head>
 <body>
@@ -610,6 +542,8 @@ tbody tr:hover td { background: #f8fbf8; }
     <a href="#contributions"><span class="nav-icon">▤</span>Michango</a>
     <a href="#payments"><span class="nav-icon">⇄</span>Malipo <span class="nav-count" id="pendingBadge">—</span></a>
     <a href="#finance"><span class="nav-icon">▥</span>Muhtasari wa fedha</a>
+    <a href="#announcements"><span class="nav-icon">✎</span>Matangazo</a>
+    <a href="#audit"><span class="nav-icon">≡</span>Kumbukumbu</a>
   </nav>
   <div class="nav-label" style="margin-top:20px">QUICK ACCESS</div>
   <nav class="nav"><a href="/dashboard"><span class="nav-icon">↗</span>Member portal</a><a href="#security"><span class="nav-icon">◇</span>Usalama</a></nav>
@@ -665,10 +599,11 @@ tbody tr:hover td { background: #f8fbf8; }
 </section>
 
 <section class="panel table-panel" id="members">
-  <div class="panel-head"><div><div class="panel-title">Usimamizi wa wanachama</div><div class="panel-sub">Idhinisha, tafuta au simamisha akaunti inapohitajika.</div></div><span class="tag" id="memberCount">— wanachama</span></div>
+  <div class="panel-head"><div><div class="panel-title">Usimamizi wa wanachama</div><div class="panel-sub">Idhinisha, tafuta au simamisha akaunti inapohitajika.</div></div><div class="panel-actions"><button class="mini" id="exportMembersCsv" type="button">↓ Pakua CSV</button><span class="tag" id="memberCount">— wanachama</span></div></div>
   <div class="toolbar"><label class="search-wrap"><span>⌕</span><input class="search" id="userSearch" placeholder="Tafuta jina au simu..." autocomplete="off"></label><select class="filter" id="userFilter" aria-label="Chuja wanachama"><option value="all">Wanachama wote</option><option value="pending">Hawajaidhinishwa</option><option value="approved">Walioidhinishwa</option><option value="banned">Waliosimamishwa</option></select></div>
-  <div class="table-scroll"><table><thead><tr><th>Mwanachama</th><th>Jukumu</th><th>Hali ya akaunti</th><th>Tarehe</th><th style="text-align:right">Vitendo</th></tr></thead><tbody id="usersList"><tr><td colspan="5"><div class="loading"><span class="spinner"></span>Inapakia wanachama...</div></td></tr></tbody></table></div>
-  <div class="footer"><span id="userResult">Inapakia...</span><span>Taarifa kutoka Supabase</span></div>
+  <div class="toolbar bulk-bar" id="userBulkBar"><span class="panel-sub">Vitendo kwa waliochaguliwa:</span><button class="mini approve" type="button" data-bulk-user="approve" disabled>Idhinisha</button><button class="mini reject" type="button" data-bulk-user="ban" disabled>Simamisha</button><button class="mini" type="button" data-bulk-user="unban" disabled>Fungua</button></div>
+  <div class="table-scroll"><table><thead><tr><th style="width:34px"><input type="checkbox" id="userSelectAll" aria-label="Chagua wanachama wote kwenye ukurasa"></th><th>Mwanachama</th><th>Jukumu</th><th>Hali ya akaunti</th><th>Tarehe</th><th style="text-align:right">Vitendo</th></tr></thead><tbody id="usersList" aria-busy="true"><tr class="skeleton-row" aria-hidden="true"><td><span class="skeleton" style="width:70%"></span></td><td><span class="skeleton" style="width:85%"></span></td><td><span class="skeleton" style="width:55%"></span></td><td><span class="skeleton" style="width:60%"></span></td><td><span class="skeleton" style="width:65%"></span></td><td><span class="skeleton" style="width:45%"></span></td></tr><tr class="skeleton-row" aria-hidden="true"><td><span class="skeleton" style="width:70%"></span></td><td><span class="skeleton" style="width:70%"></span></td><td><span class="skeleton" style="width:55%"></span></td><td><span class="skeleton" style="width:60%"></span></td><td><span class="skeleton" style="width:65%"></span></td><td><span class="skeleton" style="width:45%"></span></td></tr><tr class="skeleton-row" aria-hidden="true"><td><span class="skeleton" style="width:70%"></span></td><td><span class="skeleton" style="width:80%"></span></td><td><span class="skeleton" style="width:55%"></span></td><td><span class="skeleton" style="width:60%"></span></td><td><span class="skeleton" style="width:65%"></span></td><td><span class="skeleton" style="width:45%"></span></td></tr></tbody></table></div>
+  <div class="footer"><span id="userResult">Inapakia...</span><span class="actions" style="gap:6px"><button class="mini" id="userPrev" type="button">← Nyuma</button><button class="mini" id="userNext" type="button">Mbele →</button></span></div>
 </section>
 
 <section class="panel table-panel" id="contributions">
@@ -681,31 +616,138 @@ tbody tr:hover td { background: #f8fbf8; }
     <div class="contribution-form-actions"><button class="mini approve" id="saveContribution" type="submit">Ongeza mchango</button><button class="mini" id="cancelContributionEdit" type="button" hidden>Ghairi uhariri</button></div>
   </form>
   <div class="toolbar"><select class="filter" id="contributionFilter" aria-label="Chuja michango"><option value="all">Michango yote</option><option value="active">Inayoendelea</option><option value="cancelled">Iliyoghairiwa</option></select></div>
-  <div class="table-scroll"><table><thead><tr><th>Mchango</th><th>Mwanachama</th><th>Kiasi</th><th>Tarehe ya mwisho</th><th>Hali</th><th style="text-align:right">Vitendo</th></tr></thead><tbody id="contributionsList"><tr><td colspan="6"><div class="loading"><span class="spinner"></span>Inapakia michango...</div></td></tr></tbody></table></div>
-  <div class="footer"><span id="contributionResult">Inapakia...</span><span>Michango iliyoghairiwa hubaki kwenye historia.</span></div>
+  <div class="table-scroll"><table><thead><tr><th>Mchango</th><th>Mwanachama</th><th>Kiasi</th><th>Tarehe ya mwisho</th><th>Hali</th><th style="text-align:right">Vitendo</th></tr></thead><tbody id="contributionsList" aria-busy="true"><tr class="skeleton-row" aria-hidden="true"><td><span class="skeleton" style="width:75%"></span></td><td><span class="skeleton" style="width:70%"></span></td><td><span class="skeleton" style="width:50%"></span></td><td><span class="skeleton" style="width:60%"></span></td><td><span class="skeleton" style="width:55%"></span></td><td><span class="skeleton" style="width:45%"></span></td></tr><tr class="skeleton-row" aria-hidden="true"><td><span class="skeleton" style="width:70%"></span></td><td><span class="skeleton" style="width:65%"></span></td><td><span class="skeleton" style="width:50%"></span></td><td><span class="skeleton" style="width:60%"></span></td><td><span class="skeleton" style="width:55%"></span></td><td><span class="skeleton" style="width:45%"></span></td></tr><tr class="skeleton-row" aria-hidden="true"><td><span class="skeleton" style="width:80%"></span></td><td><span class="skeleton" style="width:70%"></span></td><td><span class="skeleton" style="width:50%"></span></td><td><span class="skeleton" style="width:60%"></span></td><td><span class="skeleton" style="width:55%"></span></td><td><span class="skeleton" style="width:45%"></span></td></tr></tbody></table></div>
+  <div class="footer"><span id="contributionResult">Inapakia...</span><span class="actions" style="gap:6px"><button class="mini" id="contributionPrev" type="button">← Nyuma</button><button class="mini" id="contributionNext" type="button">Mbele →</button></span></div>
 </section>
 
 <section class="panel table-panel" id="payments">
-  <div class="panel-head"><div><div class="panel-title">Uhakiki wa malipo</div><div class="panel-sub">Kagua reference, kiasi na hali ya kila muamala.</div></div><span class="tag" id="paymentCount">— malipo</span></div>
+  <div class="panel-head"><div><div class="panel-title">Uhakiki wa malipo</div><div class="panel-sub">Kagua reference, kiasi na hali ya kila muamala.</div></div><div class="panel-actions"><button class="mini" id="exportPaymentsCsv" type="button">↓ Pakua CSV</button><span class="tag" id="paymentCount">— malipo</span></div></div>
   <div class="toolbar"><label class="search-wrap"><span>⌕</span><input class="search" id="paymentSearch" placeholder="Tafuta reference au jina..." autocomplete="off"></label><select class="filter" id="paymentFilter" aria-label="Chuja malipo"><option value="all">Malipo yote</option><option value="pending">Yanasubiri</option><option value="verified">Yaliyothibitishwa</option><option value="rejected">Yaliyokataliwa</option></select></div>
-  <div class="table-scroll"><table><thead><tr><th>Mwanachama</th><th>Kiasi</th><th>Reference</th><th>Njia</th><th>Hali</th><th>Tarehe</th><th style="text-align:right">Vitendo</th></tr></thead><tbody id="paymentsList"><tr><td colspan="7"><div class="loading"><span class="spinner"></span>Inapakia malipo...</div></td></tr></tbody></table></div>
-  <div class="footer"><span id="paymentResult">Inapakia...</span><span>Uamuzi wa malipo unatumwa kwa server</span></div>
+  <div class="toolbar bulk-bar" id="paymentBulkBar"><span class="panel-sub">Vitendo kwa yaliyochaguliwa:</span><button class="mini verify" type="button" data-bulk-payment="verify" disabled>Thibitisha zote</button><button class="mini reject" type="button" data-bulk-payment="reject" disabled>Kataa zote</button></div>
+  <div class="table-scroll"><table><thead><tr><th style="width:34px"><input type="checkbox" id="paymentSelectAll" aria-label="Chagua malipo yote kwenye ukurasa"></th><th>Mwanachama</th><th>Kiasi</th><th>Reference</th><th>Njia</th><th>Hali</th><th>Tarehe</th><th style="text-align:right">Vitendo</th></tr></thead><tbody id="paymentsList" aria-busy="true"><tr class="skeleton-row" aria-hidden="true"><td><span class="skeleton" style="width:70%"></span></td><td><span class="skeleton" style="width:85%"></span></td><td><span class="skeleton" style="width:55%"></span></td><td><span class="skeleton" style="width:70%"></span></td><td><span class="skeleton" style="width:50%"></span></td><td><span class="skeleton" style="width:55%"></span></td><td><span class="skeleton" style="width:60%"></span></td><td><span class="skeleton" style="width:45%"></span></td></tr><tr class="skeleton-row" aria-hidden="true"><td><span class="skeleton" style="width:70%"></span></td><td><span class="skeleton" style="width:70%"></span></td><td><span class="skeleton" style="width:55%"></span></td><td><span class="skeleton" style="width:65%"></span></td><td><span class="skeleton" style="width:50%"></span></td><td><span class="skeleton" style="width:55%"></span></td><td><span class="skeleton" style="width:60%"></span></td><td><span class="skeleton" style="width:45%"></span></td></tr><tr class="skeleton-row" aria-hidden="true"><td><span class="skeleton" style="width:70%"></span></td><td><span class="skeleton" style="width:80%"></span></td><td><span class="skeleton" style="width:55%"></span></td><td><span class="skeleton" style="width:70%"></span></td><td><span class="skeleton" style="width:50%"></span></td><td><span class="skeleton" style="width:55%"></span></td><td><span class="skeleton" style="width:60%"></span></td><td><span class="skeleton" style="width:45%"></span></td></tr></tbody></table></div>
+  <div class="footer"><span id="paymentResult">Inapakia...</span><span class="actions" style="gap:6px"><button class="mini" id="paymentPrev" type="button">← Nyuma</button><button class="mini" id="paymentNext" type="button">Mbele →</button></span></div>
+</section>
+
+<section class="panel table-panel" id="announcements">
+  <div class="panel-head"><div><div class="panel-title">Matangazo</div><div class="panel-sub">Tuma matangazo yanayoonekana kwenye portal ya wanachama.</div></div><span class="tag" id="announcementCount">— matangazo</span></div>
+  <form id="announcementForm" class="contribution-form" style="grid-template-columns:1fr">
+    <div class="field"><label for="announcementTitle">Kichwa</label><input id="announcementTitle" maxlength="120" required placeholder="Mfano: Mkutano wa wanachama"></div>
+    <div class="field"><label for="announcementBody">Maudhui</label><textarea id="announcementBody" maxlength="2000" rows="3" required placeholder="Andika ujumbe kwa wanachama..."></textarea></div>
+    <label style="display:flex;align-items:center;gap:8px;margin:0"><input id="announcementActive" type="checkbox" checked> Inaonekana kwa wanachama</label>
+    <div class="contribution-form-actions"><button class="mini approve" id="saveAnnouncement" type="submit">Tangaza</button><button class="mini" id="cancelAnnouncementEdit" type="button" hidden>Ghairi</button></div>
+  </form>
+  <div class="table-scroll"><table><thead><tr><th>Kichwa</th><th>Hali</th><th>Tarehe</th><th style="text-align:right">Vitendo</th></tr></thead><tbody id="announcementsList"><tr><td colspan="4"><div class="empty"><div class="empty__msg">Bofya kuona matangazo ya sasa.</div><button class="mini" type="button" data-empty-refresh="announcements">Pakia matangazo</button></div></td></tr></tbody></table></div>
+  <div class="footer"><span id="announcementResult">—</span><span>Matangazo yenye hali ya kuzimwa hayaonekani kwa wanachama.</span></div>
+</section>
+
+<section class="panel table-panel" id="audit">
+  <div class="panel-head"><div><div class="panel-title">Kumbukumbu za vitendo</div><div class="panel-sub">Rekodi za vitendo vya admin kwenye mfumo.</div></div><span class="tag" id="auditCount">— kumbukumbu</span></div>
+  <div class="table-scroll"><table><thead><tr><th>Muda</th><th>Mtendaji</th><th>Kitendo</th><th>Lengo</th><th>Maelezo</th></tr></thead><tbody id="auditList"><tr><td colspan="5"><div class="empty"><div class="empty__msg">Bofya kuona kumbukumbu za vitendo.</div><button class="mini" type="button" data-empty-refresh="audit">Pakia kumbukumbu</button></div></td></tr></tbody></table></div>
+  <div class="footer"><span id="auditResult">—</span><span class="actions" style="gap:6px"><button class="mini" id="auditPrev" type="button">← Nyuma</button><button class="mini" id="auditNext" type="button">Mbele →</button></span></div>
 </section>
 <footer class="footer"><span>© <span id="year"></span> Mchezo Wetu · Admin Control Center</span><span>Premium Member Management</span></footer>
 </main>
 </div>
 
+<div class="modal-backdrop" id="memberModal" hidden>
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="memberModalTitle">
+    <div class="modal-head"><div><h2 id="memberModalTitle">Maelezo ya mwanachama</h2><p id="memberModalSub">Inapakia...</p></div><button class="close" id="closeMemberModal" type="button" aria-label="Funga">×</button></div>
+    <div id="memberModalBody"></div>
+  </section>
+</div>
+
+<div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="false"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 'use strict';
 let supabaseClient=null,sessionToken=null,allUsers=[],allPayments=[],allContributions=[],currentUser=null,busy=false;
+let pageUsers=[],pagePayments=[],pageContributions=[];
+let announcements=[],announcementsLoaded=false,auditLogs=[],auditLoaded=false,auditPage=1,auditPageSize=50,auditTotal=0;
+let userSearchTimer=null,paymentSearchTimer=null;
+const paging={users:{page:1,pageSize:100},payments:{page:1,pageSize:100},contributions:{page:1,pageSize:100}};
+const totals={users:0,payments:0,contributions:0};
+const filters={users:{q:'',status:''},payments:{q:'',status:''},contributions:{q:'',status:''}};
 const $=id=>document.getElementById(id);
 const money=n=>'TSh '+Number(n||0).toLocaleString('en-TZ',{maximumFractionDigits:0});
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const initials=v=>String(v||'MW').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'MW';
+const safeAvatarUrl=v=>/^https:\/\//i.test(String(v||''))?esc(v):'';
 const date=v=>{if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?'—':d.toLocaleDateString('sw-TZ',{day:'2-digit',month:'short',year:'numeric'})};
 function note(msg,good=false){const n=$('notice');n.textContent=msg;n.className='notice show '+(good?'good':'bad')}
 function clearNote(){$('notice').className='notice'}
+/* ---- UI helpers: toasts, busy buttons, skeletons, empty states, CSV ---- */
+function toast(message,variant){
+ const c=$('toastContainer');if(!c)return;
+ const type=(variant==='success'||variant==='error'||variant==='info')?variant:'info';
+ const icon=type==='success'?'✓':type==='error'?'⚠':'ℹ';
+ const el=document.createElement('div');
+ el.className='toast toast--'+type;
+ el.setAttribute('role','status');
+ el.innerHTML='<span class="toast__icon" aria-hidden="true"></span><span class="toast__msg"></span>';
+ el.querySelector('.toast__icon').textContent=icon;
+ el.querySelector('.toast__msg').textContent=String(message==null?'':message);
+ const dismiss=()=>{if(el.dataset.dismissed)return;el.dataset.dismissed='1';el.classList.add('is-leaving');setTimeout(()=>el.remove(),220)};
+ el.addEventListener('click',dismiss);
+ setTimeout(dismiss,4000);
+ c.appendChild(el);
+ while(c.children.length>5)c.removeChild(c.firstChild);
+}
+function setBusy(btn,isBusy){
+ if(!btn)return;
+ if(isBusy){btn.classList.add('is-busy');btn.disabled=true;btn.setAttribute('aria-busy','true')}
+ else{btn.classList.remove('is-busy');btn.disabled=false;btn.removeAttribute('aria-busy')}
+}
+function endBusy(btn){if(!btn)return;btn.classList.remove('is-busy');btn.removeAttribute('aria-busy')}
+function skeletonRows(cols,count){
+ const c=Math.max(1,Number(cols)||4),n=Math.max(1,Number(count)||4);let out='';
+ for(let i=0;i<n;i++){
+  out+='<tr class="skeleton-row" aria-hidden="true">';
+  for(let j=0;j<c;j++){out+='<td><span class="skeleton" style="width:'+(j===0?70:45+((i+j)%4)*12)+'%"></span></td>'}
+  out+='</tr>';
+ }
+ return out;
+}
+function emptyRow(cols,message,action){
+ const target=action&&action.target?action.target:'';
+ const label=action&&action.label?action.label:'Sasisha';
+ return '<tr><td colspan="'+Number(cols||1)+'"><div class="empty"><div class="empty__msg">'+esc(message)+'</div>'+(target?'<button class="mini" type="button" data-empty-refresh="'+esc(target)+'">'+esc(label)+'</button>':'')+'</div></td></tr>';
+}
+function csvCell(value){
+ let text=String(value==null?'':value);
+ if(/^[=+\-@]/.test(text))text="'"+text;
+ return '"'+text.replace(/"/g,'""')+'"';
+}
+function csvStamp(){const d=new Date(),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())}
+function downloadCsv(filename,header,rows){
+ const lines=[header].concat(rows).map(row=>row.map(csvCell).join(',')).join('\r\n');
+ const url=URL.createObjectURL(new Blob(['\uFEFF'+lines],{type:'text/csv;charset=utf-8'}));
+ const link=document.createElement('a');link.href=url;link.download=filename;
+ document.body.appendChild(link);link.click();link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function exportMembersCsv(){
+ if(!pageUsers.length){note('Hakuna wanachama wa kuhamisha kwenye ukurasa huu.');toast('Hakuna wanachama wa kuhamisha.','info');return}
+ const header=['Mwanachama','Simu','Jukumu','Hali ya akaunti','Tarehe'];
+ const rows=pageUsers.map(u=>[u.full_name||'Bila jina',u.phone||'',u.role==='admin'?'Admin':'Mwanachama',u.is_banned?'Amesimamishwa':(u.is_approved?'Ameidhinishwa':'Inasubiri'),date(u.created_at)]);
+ downloadCsv('wanachama-'+csvStamp()+'.csv',header,rows);
+ toast('Wanachama '+rows.length+' wamepakuliwa kama CSV.','success');
+}
+function exportPaymentsCsv(){
+ if(!pagePayments.length){note('Hakuna malipo ya kuhamisha kwenye ukurasa huu.');toast('Hakuna malipo ya kuhamisha.','info');return}
+ const names={pending:'Inasubiri',verified:'Imethibitishwa',rejected:'Imekataliwa'};
+ const header=['Mwanachama','Simu','Kiasi (TSh)','Reference','Njia','Hali','Tarehe'];
+ const rows=pagePayments.map(p=>[p.profiles?.full_name||'Mwanachama',p.profiles?.phone||'',Number(p.amount||0),p.reference||'',p.method||'',names[p.status]||p.status||'',date(p.created_at)]);
+ downloadCsv('malipo-'+csvStamp()+'.csv',header,rows);
+ toast('Malipo '+rows.length+' yamepakuliwa kama CSV.','success');
+}
+function refreshSection(target){
+ if(target==='members')loadUsers(1);
+ else if(target==='payments')loadPayments(1);
+ else if(target==='contributions')loadContributions(1);
+ else if(target==='announcements')loadAnnouncements();
+ else if(target==='audit')loadAudit(1);
+}
 async function api(url,options={}){
  const headers={Authorization:'Bearer '+sessionToken,...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})};
  const r=await fetch(url,{...options,headers,cache:'no-store'});
@@ -741,29 +783,50 @@ function renderStats(s){
  const max=Math.max(...vals,1);
  $('chart').innerHTML='<div class="chart-col"><div class="bars"><div class="bar" style="height:'+Math.max(3,vals[0]/max*100)+'%"></div></div><div class="chart-label">Imethibitishwa</div></div><div class="chart-col"><div class="bars"><div class="bar cyan" style="height:'+Math.max(3,vals[1]/max*100)+'%"></div></div><div class="chart-label">Inasubiri</div></div>';
 }
-function renderUsers(){
- const q=$('userSearch').value.trim().toLowerCase(),f=$('userFilter').value;
- const rows=allUsers.filter(u=>{
-  const text=[u.full_name,u.phone,u.role,u.id].join(' ').toLowerCase();
-  if(q&&!text.includes(q))return false;
-  if(f==='pending'&&(u.is_approved||u.is_banned))return false;
-  if(f==='approved'&&(!u.is_approved||u.is_banned))return false;
-  if(f==='banned'&&!u.is_banned)return false;
-  if(f==='admin'&&u.role!=='admin')return false;
-  return true;
- });
- $('memberCount').textContent=allUsers.length+' wanachama';
- $('userResult').textContent='Inaonyesha '+rows.length+' kati ya '+allUsers.length+' wanachama';
- if(!rows.length){$('usersList').innerHTML='<tr><td colspan="5"><div class="empty">Hakuna mwanachama anayelingana na utafutaji.</div></td></tr>';return}
+function currentChecked(cls){return Array.from(document.querySelectorAll('tbody .'+cls)).filter(box=>box.checked).map(box=>box.value)}
+function syncUserSelection(){
+ const boxes=document.querySelectorAll('tbody .user-check'),checked=currentChecked('user-check');
+ $('userBulkBar').querySelectorAll('button[data-bulk-user]').forEach(btn=>btn.disabled=!checked.length);
+ const all=$('userSelectAll');all.checked=boxes.length>0&&checked.length===boxes.length;all.indeterminate=checked.length>0&&checked.length<boxes.length;
+}
+function syncPaymentSelection(){
+ const boxes=document.querySelectorAll('tbody .payment-check'),checked=currentChecked('payment-check');
+ $('paymentBulkBar').querySelectorAll('button[data-bulk-payment]').forEach(btn=>btn.disabled=!checked.length);
+ const all=$('paymentSelectAll');all.checked=boxes.length>0&&checked.length===boxes.length;all.indeterminate=checked.length>0&&checked.length<boxes.length;
+}
+async function loadUsers(page){
+ const p=paging.users;if(page)p.page=page;
+ const params=new URLSearchParams({page:p.page,pageSize:p.pageSize});
+ if(filters.users.status)params.set('status',filters.users.status);
+ if(filters.users.q)params.set('q',filters.users.q);
+ $('userResult').textContent='Inapakia wanachama...';
+ $('usersList').innerHTML=skeletonRows(6,5);$('usersList').setAttribute('aria-busy','true');
+ try{
+  const data=await api('/api/admin/users?'+params.toString());
+  pageUsers=data.users||[];totals.users=Number(data.total||0);p.page=Number(data.page||p.page);p.pageSize=Number(data.pageSize||p.pageSize);
+  renderUsersTable();return true;
+ }catch(error){
+  $('usersList').removeAttribute('aria-busy');
+  $('usersList').innerHTML=emptyRow(6,'Imeshindikana kupakia wanachama. Angalia muunganisho kisha ujaribu tena.',{target:'members',label:'Jaribu tena'});
+  note(error.message||'Imeshindikana kupata wanachama.');return false;
+ }
+}
+function renderUsersTable(){
+ const p=paging.users,rows=pageUsers,pages=Math.max(1,Math.ceil(totals.users/p.pageSize));
+ $('usersList').removeAttribute('aria-busy');
+ $('memberCount').textContent=totals.users+' wanachama';
+ $('userResult').textContent='Ukurasa '+p.page+' / '+pages+' · jumla '+totals.users+' wanachama';
+ $('userPrev').disabled=p.page<=1;$('userNext').disabled=p.page>=pages;
+ if(!rows.length){$('usersList').innerHTML=emptyRow(6,'Hakuna wanachama wanaolingana na utafutaji au kichujio. Badilisha vichujio au sasisha orodha.',{target:'members',label:'Sasisha wanachama'});syncUserSelection();return}
  $('usersList').innerHTML=rows.map(u=>{
   const state=u.is_banned?'banned':u.is_approved?'approved':'pending';
-  let actions='';
+  let actions='<button class="mini" data-member="'+esc(u.id)+'">Maelezo</button>';
   if(u.role!=='admin'&&!u.is_banned&&!u.is_approved)actions+='<button class="mini approve" data-user="'+esc(u.id)+'" data-action="approve">Idhinisha</button>';
   if(u.role!=='admin'&&u.is_banned)actions+='<button class="mini approve" data-user="'+esc(u.id)+'" data-action="unban">Fungua</button>';
   if(u.role!=='admin'&&!u.is_banned)actions+='<button class="mini reject" data-user="'+esc(u.id)+'" data-action="ban">Simamisha</button>';
-  if(!actions)actions='<span style="color:var(--muted);font-size:9px">'+(u.role==='admin'?'Admin':'Hakuna')+'</span>';
-  return '<tr><td><div class="member"><div class="member-avatar">'+(u.avatar_url?'<img src="'+esc(u.avatar_url)+'" alt="">':esc(initials(u.full_name)))+'</div><div><div class="member-name">'+esc(u.full_name||'Bila jina')+'</div><div class="member-meta">'+esc(u.phone||'Simu haijawekwa')+'</div></div></div></td><td><span class="pill">Mwanachama</span></td><td>'+pill(state)+'</td><td>'+esc(date(u.created_at))+'</td><td><div class="actions">'+actions+'</div></td></tr>';
+  return '<tr><td><input type="checkbox" class="user-check" value="'+esc(u.id)+'" aria-label="Chagua mwanachama"></td><td><div class="member"><div class="member-avatar">'+(safeAvatarUrl(u.avatar_url)?'<img src="'+safeAvatarUrl(u.avatar_url)+'" alt="">':esc(initials(u.full_name)))+'</div><div><button class="member-link trunc" type="button" title="'+esc(u.full_name||'Bila jina')+'" data-member="'+esc(u.id)+'">'+esc(u.full_name||'Bila jina')+'</button><div class="member-meta trunc" title="'+esc(u.phone||'Simu haijawekwa')+'">'+esc(u.phone||'Simu haijawekwa')+'</div></div></div></td><td><span class="pill">Mwanachama</span></td><td>'+pill(state)+'</td><td>'+esc(date(u.created_at))+'</td><td><div class="actions">'+actions+'</div></td></tr>';
  }).join('');
+ syncUserSelection();
 }
 function renderContributionMembers(){
  const select=$('contributionMember'),selected=select.value;
@@ -773,13 +836,30 @@ function renderContributionMembers(){
   .join('');
  if(allUsers.some(user=>user.id===selected))select.value=selected;
 }
+async function loadContributions(page){
+ const p=paging.contributions;if(page)p.page=page;
+ const params=new URLSearchParams({page:p.page,pageSize:p.pageSize});
+ if(filters.contributions.status)params.set('status',filters.contributions.status);
+ $('contributionResult').textContent='Inapakia michango...';
+ $('contributionsList').innerHTML=skeletonRows(6,5);$('contributionsList').setAttribute('aria-busy','true');
+ try{
+  const data=await api('/api/admin/contributions?'+params.toString());
+  pageContributions=data.contributions||[];totals.contributions=Number(data.total||0);p.page=Number(data.page||p.page);p.pageSize=Number(data.pageSize||p.pageSize);
+  renderContributions();return true;
+ }catch(error){
+  $('contributionsList').removeAttribute('aria-busy');
+  $('contributionsList').innerHTML=emptyRow(6,'Imeshindikana kupakia michango. Jaribu tena baada ya muda mfupi.',{target:'contributions',label:'Jaribu tena'});
+  note(error.message||'Imeshindikana kupata michango.');return false;
+ }
+}
 function renderContributions(){
- const filter=$('contributionFilter').value;
- const rows=allContributions.filter(item=>filter==='all'||(filter==='cancelled'?item.status==='cancelled':item.status!=='cancelled'));
- $('contributionCount').textContent=allContributions.length+' michango';
- $('contributionResult').textContent='Inaonyesha '+rows.length+' kati ya '+allContributions.length+' michango';
+ const p=paging.contributions,rows=pageContributions,pages=Math.max(1,Math.ceil(totals.contributions/p.pageSize));
+ $('contributionsList').removeAttribute('aria-busy');
+ $('contributionCount').textContent=totals.contributions+' michango';
+ $('contributionResult').textContent='Ukurasa '+p.page+' / '+pages+' · jumla '+totals.contributions+' michango';
+ $('contributionPrev').disabled=p.page<=1;$('contributionNext').disabled=p.page>=pages;
  if(!rows.length){
-  $('contributionsList').innerHTML='<tr><td colspan="6"><div class="empty">Hakuna michango kwenye kichujio hiki.</div></td></tr>';
+  $('contributionsList').innerHTML=emptyRow(6,'Hakuna michango kwenye kichujio hiki. Ongeza mchango mpya au sasisha.',{target:'contributions',label:'Sasisha michango'});
   return;
  }
  $('contributionsList').innerHTML=rows.map(item=>{
@@ -789,7 +869,7 @@ function renderContributions(){
   const status=cancelled?'<span class="pill bad">Imeghairiwa</span>':paid>=Number(item.amount||0)?'<span class="pill ok">Imelipwa</span>':'<span class="pill ok">Inaendelea</span>';
   const actions=cancelled?'<span style="color:var(--muted);font-size:9px">Hakuna</span>':
    '<button class="mini" data-contribution="'+esc(item.id)+'" data-action="edit-contribution">Hariri</button><button class="mini reject" data-contribution="'+esc(item.id)+'" data-action="cancel-contribution">Ghairi</button>';
-  return '<tr><td><div class="member-name">'+esc(item.title)+'</div></td><td>'+esc(item.profile?.full_name||'Mwanachama')+'</td><td><b>'+money(item.amount)+'</b></td><td>'+esc(date(item.due_date))+'</td><td>'+status+'</td><td><div class="actions">'+actions+'</div></td></tr>';
+  return '<tr><td><div class="member-name trunc" title="'+esc(item.title)+'">'+esc(item.title)+'</div></td><td><span class="trunc" title="'+esc(item.profile?.full_name||'Mwanachama')+'">'+esc(item.profile?.full_name||'Mwanachama')+'</span></td><td><b>'+money(item.amount)+'</b></td><td>'+esc(date(item.due_date))+'</td><td>'+status+'</td><td><div class="actions">'+actions+'</div></td></tr>';
  }).join('');
 }
 function resetContributionForm(){
@@ -799,20 +879,37 @@ function resetContributionForm(){
  $('saveContribution').textContent='Ongeza mchango';
  $('cancelContributionEdit').hidden=true;
 }
-function renderPayments(){
- const q=$('paymentSearch').value.trim().toLowerCase(),f=$('paymentFilter').value;
- const rows=allPayments.filter(p=>{
-  const name=p.profiles?.full_name||'',text=[name,p.profiles?.phone,p.reference,p.method,p.status,p.id].join(' ').toLowerCase();
-  return (!q||text.includes(q))&&(f==='all'||p.status===f);
- });
- $('paymentCount').textContent=allPayments.length+' malipo';
- $('paymentResult').textContent='Inaonyesha '+rows.length+' kati ya '+allPayments.length+' miamala';
- if(!rows.length){$('paymentsList').innerHTML='<tr><td colspan="7"><div class="empty">Hakuna malipo yanayolingana na utafutaji.</div></td></tr>';return}
+async function loadPayments(page){
+ const p=paging.payments;if(page)p.page=page;
+ const params=new URLSearchParams({page:p.page,pageSize:p.pageSize});
+ if(filters.payments.status)params.set('status',filters.payments.status);
+ if(filters.payments.q)params.set('q',filters.payments.q);
+ $('paymentResult').textContent='Inapakia malipo...';
+ $('paymentsList').innerHTML=skeletonRows(8,5);$('paymentsList').setAttribute('aria-busy','true');
+ try{
+  const data=await api('/api/admin/payments?'+params.toString());
+  pagePayments=data.payments||[];totals.payments=Number(data.total||0);p.page=Number(data.page||p.page);p.pageSize=Number(data.pageSize||p.pageSize);
+  renderPaymentsTable();return true;
+ }catch(error){
+  $('paymentsList').removeAttribute('aria-busy');
+  $('paymentsList').innerHTML=emptyRow(8,'Imeshindikana kupakia malipo. Jaribu tena baada ya muda mfupi.',{target:'payments',label:'Jaribu tena'});
+  note(error.message||'Imeshindikana kupata malipo.');return false;
+ }
+}
+function renderPaymentsTable(){
+ const p=paging.payments,rows=pagePayments,pages=Math.max(1,Math.ceil(totals.payments/p.pageSize));
+ $('paymentsList').removeAttribute('aria-busy');
+ $('paymentCount').textContent=totals.payments+' malipo';
+ $('paymentResult').textContent='Ukurasa '+p.page+' / '+pages+' · jumla '+totals.payments+' malipo';
+ $('paymentPrev').disabled=p.page<=1;$('paymentNext').disabled=p.page>=pages;
+ if(!rows.length){$('paymentsList').innerHTML=emptyRow(8,'Hakuna malipo yanayolingana na utafutaji au kichujio. Badilisha vichujio au sasisha.',{target:'payments',label:'Sasisha malipo'});syncPaymentSelection();return}
  $('paymentsList').innerHTML=rows.map(p=>{
   const name=p.profiles?.full_name||'Mwanachama';
-  const actions=p.status==='pending'?'<button class="mini verify" data-payment="'+esc(p.id)+'" data-action="verify">Thibitisha</button><button class="mini reject" data-payment="'+esc(p.id)+'" data-action="reject">Kataa</button>':'<span style="color:var(--muted);font-size:9px">Imekaguliwa</span>';
-  return '<tr><td><div class="member"><div class="member-avatar">'+esc(initials(name))+'</div><div><div class="member-name">'+esc(name)+'</div><div class="member-meta">'+esc(p.profiles?.phone||'')+'</div></div></div></td><td style="font-weight:800;color:#f3efff">'+money(p.amount)+'</td><td>'+esc(p.reference||'—')+'</td><td>'+esc(p.method||'—')+'</td><td>'+pill(p.status)+'</td><td>'+esc(date(p.created_at))+'</td><td><div class="actions">'+actions+'</div></td></tr>';
+  let actions=p.status==='pending'?'<button class="mini verify" data-payment="'+esc(p.id)+'" data-action="verify">Thibitisha</button><button class="mini reject" data-payment="'+esc(p.id)+'" data-action="reject">Kataa</button>':'<span style="color:var(--muted);font-size:9px">Imekaguliwa</span>';
+  if(typeof p.proof_url==='string'&&p.proof_url.startsWith('https://'))actions='<a class="mini link" href="'+esc(p.proof_url)+'" target="_blank" rel="noopener noreferrer">Risiti</a>'+actions;
+  return '<tr><td><input type="checkbox" class="payment-check" value="'+esc(p.id)+'" aria-label="Chagua malipo"></td><td><div class="member"><div class="member-avatar">'+esc(initials(name))+'</div><div><div class="member-name trunc" title="'+esc(name)+'">'+esc(name)+'</div><div class="member-meta trunc" title="'+esc(p.profiles?.phone||'')+'">'+esc(p.profiles?.phone||'')+'</div></div></div></td><td style="font-weight:800;color:var(--text);font-variant-numeric:tabular-nums">'+money(p.amount)+'</td><td><span class="trunc" title="'+esc(p.reference||'')+'">'+esc(p.reference||'—')+'</span></td><td>'+esc(p.method||'—')+'</td><td>'+pill(p.status)+'</td><td>'+esc(date(p.created_at))+'</td><td><div class="actions">'+actions+'</div></td></tr>';
  }).join('');
+ syncPaymentSelection();
 }
 function financialReportRows(){
  const from=$('reportFrom').value,to=$('reportTo').value;
@@ -863,46 +960,155 @@ function exportFinancialReport(){
  const link=document.createElement('a');link.href=url;link.download='mchezo-wetu-ripoti-malipo.csv';link.click();
  setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
+function resetAnnouncementForm(){
+ const form=$('announcementForm');
+ form.reset();delete form.dataset.editingId;
+ $('announcementActive').checked=true;
+ $('saveAnnouncement').textContent='Tangaza';
+ $('cancelAnnouncementEdit').hidden=true;
+}
+async function loadAnnouncements(){
+ $('announcementsList').innerHTML=skeletonRows(4,4);$('announcementsList').setAttribute('aria-busy','true');
+ try{
+  const data=await api('/api/admin/announcements');
+  announcements=data.announcements||[];
+  announcementsLoaded=true;
+  renderAnnouncements();
+ }catch(error){
+  announcementsLoaded=false;
+  $('announcementsList').removeAttribute('aria-busy');
+  $('announcementsList').innerHTML=emptyRow(4,'Imeshindikana kupakia matangazo. Jaribu tena baada ya muda mfupi.',{target:'announcements',label:'Jaribu tena'});
+  note(error.message||'Imeshindikana kupata matangazo.');
+ }
+}
+function renderAnnouncements(){
+ const rows=announcements;
+ $('announcementsList').removeAttribute('aria-busy');
+ $('announcementCount').textContent=rows.length+' matangazo';
+ $('announcementResult').textContent='Matangazo '+rows.length+' yanapatikana';
+ if(!rows.length){$('announcementsList').innerHTML=emptyRow(4,'Hakuna tangazo bado. Tumia fomu hapo juu kuongeza tangazo jipya.',{target:'announcements',label:'Sasisha matangazo'});return}
+ $('announcementsList').innerHTML=rows.map(a=>{
+  const active=a.is_active!==false;
+  const state=active?'<span class="pill ok">Inaonekana</span>':'<span class="pill bad">Imezimwa</span>';
+  const body=String(a.body||'');
+  const actions='<button class="mini" data-announcement="'+esc(a.id)+'" data-action="edit-announcement">Hariri</button><button class="mini" data-announcement="'+esc(a.id)+'" data-action="toggle-announcement">'+(active?'Zima':'Washa')+'</button><button class="mini reject" data-announcement="'+esc(a.id)+'" data-action="delete-announcement">Futa</button>';
+  return '<tr><td><div class="member-name trunc" title="'+esc(a.title)+'">'+esc(a.title)+'</div><div class="member-meta trunc" title="'+esc(body)+'">'+esc(body.length>90?body.slice(0,90)+'…':body)+'</div></td><td>'+state+'</td><td>'+esc(date(a.created_at))+'</td><td><div class="actions">'+actions+'</div></td></tr>';
+ }).join('');
+}
+function auditDetailsText(details){
+ if(details==null)return '—';
+ if(typeof details==='string')return details;
+ try{
+  const text=JSON.stringify(details);
+  return (!text||text==='{}')?'—':text;
+ }catch(error){return '—'}
+}
+function auditDetails(details){
+ const text=auditDetailsText(details);
+ return esc(text.length>200?text.slice(0,200)+'…':text);
+}
+async function loadAudit(page){
+ if(page)auditPage=page;
+ $('auditList').innerHTML=skeletonRows(5,6);$('auditList').setAttribute('aria-busy','true');
+ try{
+  const data=await api('/api/admin/audit-logs?page='+auditPage+'&pageSize='+auditPageSize);
+  auditLogs=data.logs||[];
+  auditTotal=Number(data.total||0);
+  auditPage=Number(data.page||auditPage);
+  auditLoaded=true;
+  renderAudit();
+ }catch(error){
+  auditLoaded=false;
+  $('auditList').removeAttribute('aria-busy');
+  $('auditList').innerHTML=emptyRow(5,'Imeshindikana kupakia kumbukumbu. Jaribu tena baada ya muda mfupi.',{target:'audit',label:'Jaribu tena'});
+  note(error.message||'Imeshindikana kupata kumbukumbu za vitendo.');
+ }
+}
+function renderAudit(){
+ const pages=Math.max(1,Math.ceil(auditTotal/auditPageSize));
+ $('auditList').removeAttribute('aria-busy');
+ $('auditCount').textContent=auditTotal+' kumbukumbu';
+ $('auditResult').textContent='Ukurasa '+auditPage+' / '+pages+' (jumla '+auditTotal+')';
+ $('auditPrev').disabled=auditPage<=1;
+ $('auditNext').disabled=auditPage>=pages;
+ if(!auditLogs.length){$('auditList').innerHTML=emptyRow(5,'Hakuna kumbukumbu bado. Kumbukumbu zitaonekana baada ya vitendo vya admin.',{target:'audit',label:'Sasisha kumbukumbu'});return}
+ $('auditList').innerHTML=auditLogs.map(log=>'<tr><td>'+esc(date(log.created_at))+'</td><td class="trunc-cell">'+esc(log.actor_name||'Mfumo')+'</td><td><span class="pill">'+esc(log.action||'—')+'</span></td><td class="trunc-cell"><span class="trunc" title="'+esc(log.target_id||'')+'">'+esc(log.target_id||'—')+'</span></td><td class="trunc-cell"><span class="trunc" title="'+esc(auditDetailsText(log.details))+'">'+auditDetails(log.details)+'</span></td></tr>').join('');
+}
+function renderMemberModal(data){
+ const profile=data.profile||{},stats=data.stats||{};
+ const name=profile.full_name||'Bila jina';
+ const state=profile.is_banned?'banned':profile.is_approved?'approved':'pending';
+ const avatar=safeAvatarUrl(data.avatar_url)?'<img src="'+safeAvatarUrl(data.avatar_url)+'" alt="">':esc(initials(name));
+ $('memberModalTitle').textContent=name;
+ $('memberModalSub').textContent=(profile.phone||'Simu haijawekwa')+' · '+date(profile.created_at);
+ const contributions=data.contributions||[],payments=data.payments||[];
+ const contribRows=contributions.length?contributions.map(item=>'<tr><td>'+esc(item.title||'—')+'</td><td>'+money(item.amount)+'</td><td>'+esc(date(item.due_date))+'</td><td>'+(item.status==='cancelled'?'<span class="pill bad">Imeghairiwa</span>':'<span class="pill ok">Inaendelea</span>')+'</td></tr>').join(''):'<tr><td colspan="4"><div class="empty">Hakuna michango.</div></td></tr>';
+ const paymentRows=payments.length?payments.map(p=>'<tr><td>'+money(p.amount)+'</td><td>'+esc(p.reference||'—')+'</td><td>'+esc(p.method||'—')+'</td><td>'+pill(p.status)+'</td><td>'+esc(date(p.created_at))+'</td></tr>').join(''):'<tr><td colspan="5"><div class="empty">Hakuna malipo.</div></td></tr>';
+ $('memberModalBody').innerHTML='<div class="member"><div class="member-avatar">'+avatar+'</div><div><div class="member-name">'+esc(name)+'</div><div class="member-meta">'+esc(profile.phone||'Simu haijawekwa')+' · '+esc(date(profile.created_at))+'</div></div><span style="margin-left:auto">'+pill(state)+'</span></div>'
+  +'<div class="modal-stats">'
+  +'<div class="modal-stat"><span>Imelipwa</span><b>'+money(stats.paid)+'</b></div>'
+  +'<div class="modal-stat"><span>Inasubiri</span><b>'+money(stats.pending)+'</b></div>'
+  +'<div class="modal-stat"><span>Iliyopangwa</span><b>'+money(stats.assigned)+'</b></div>'
+  +'<div class="modal-stat"><span>Salio</span><b>'+money(stats.balance)+'</b></div>'
+  +'</div>'
+  +'<div class="modal-sub">Michango</div><div class="table-scroll"><table><thead><tr><th>Mchango</th><th>Kiasi</th><th>Tarehe ya mwisho</th><th>Hali</th></tr></thead><tbody>'+contribRows+'</tbody></table></div>'
+  +'<div class="modal-sub">Malipo</div><div class="table-scroll"><table><thead><tr><th>Kiasi</th><th>Reference</th><th>Njia</th><th>Hali</th><th>Tarehe</th></tr></thead><tbody>'+paymentRows+'</tbody></table></div>';
+}
+let lastModalFocus=null;
+async function openMemberModal(id){
+ const modal=$('memberModal');
+ lastModalFocus=document.activeElement;
+ $('memberModalTitle').textContent='Maelezo ya mwanachama';
+ $('memberModalSub').textContent='Inapakia...';
+ $('memberModalBody').innerHTML='<div class="loading"><span class="spinner"></span>Inapakia taarifa za mwanachama...</div>';
+ modal.hidden=false;modal.classList.add('open');document.body.style.overflow='hidden';
+ const closeBtn=$('closeMemberModal');if(closeBtn)requestAnimationFrame(()=>{try{closeBtn.focus()}catch(e){}});
+ try{
+  renderMemberModal(await api('/api/admin/members/'+encodeURIComponent(id)));
+ }catch(error){
+  $('memberModalBody').innerHTML='<div class="empty"><div class="empty__msg">'+esc(error.message||'Imeshindikana kupata taarifa za mwanachama.')+'</div></div>';
+ }
+}
+function closeMemberModal(){
+ const modal=$('memberModal');
+ if(modal.hidden&&!modal.classList.contains('open'))return;
+ modal.hidden=true;modal.classList.remove('open');document.body.style.overflow='';
+ if(lastModalFocus&&typeof lastModalFocus.focus==='function'){try{lastModalFocus.focus()}catch(e){}}
+ lastModalFocus=null;
+}
 async function loadAll(){
  if(busy)return;busy=true;clearNote();$('connectionStatus').textContent='Inasasisha...';
  $('refresh').disabled=true;
  try{
-  const results=await Promise.allSettled([
-   api('/api/admin/summary'),
-   api('/api/admin/users'),
-   api('/api/admin/payments'),
-   api('/api/admin/contributions')
-  ]);
   const problems=[];
+  const [summary,directory,report]=await Promise.allSettled([
+   api('/api/admin/summary'),
+   api('/api/admin/users?page=1&pageSize=1000'),
+   api('/api/admin/payments?page=1&pageSize=1000')
+  ]);
 
-  if(results[0].status==='fulfilled'){
-   renderStats(results[0].value.stats||{});
+  if(summary.status==='fulfilled'){
+   renderStats(summary.value.stats||{});
   }else{
-   problems.push('Takwimu: '+(results[0].reason?.message||'hazijapatikana'));
+   problems.push('Takwimu: '+(summary.reason?.message||'hazijapatikana'));
   }
 
-  if(results[1].status==='fulfilled'){
-   allUsers=results[1].value.users||[];
-   renderUsers();
+  if(directory.status==='fulfilled'){
+   allUsers=directory.value.users||[];
    renderContributionMembers();
   }else{
-   problems.push('Wanachama: '+(results[1].reason?.message||'hawajapatikana'));
+   problems.push('Wanachama: '+(directory.reason?.message||'hawajapatikana'));
   }
 
-  if(results[2].status==='fulfilled'){
-   allPayments=results[2].value.payments||[];
-   renderPayments();
+  if(report.status==='fulfilled'){
+   allPayments=report.value.payments||[];
    renderFinancialReport();
   }else{
-   problems.push('Malipo: '+(results[2].reason?.message||'hayajapatikana'));
+   problems.push('Malipo: '+(report.reason?.message||'hayajapatikana'));
   }
 
-  if(results[3].status==='fulfilled'){
-   allContributions=results[3].value.contributions||[];
-   renderContributions();
-  }else{
-   problems.push('Michango: '+(results[3].reason?.message||'haijapatikana'));
-  }
+  const [u,p,c]=await Promise.all([loadUsers(1),loadPayments(1),loadContributions(1)]);
+  if([u,p,c].includes(false)&&!problems.length)problems.push('Baadhi ya orodha hazijapakiwa.');
 
   if(problems.length){
    $('connectionStatus').textContent='Baadhi ya data haijapatikana';
@@ -937,7 +1143,7 @@ async function start(){
    note('Akaunti hii haina ruhusa za admin. Ingia kwa akaunti iliyoidhinishwa kama admin.');
    $('connectionStatus').textContent='Ruhusa imekataliwa';return;
   }
-  if(currentUser.avatar_url){$('adminAvatar').innerHTML='<img src="'+esc(currentUser.avatar_url)+'" alt="Admin">'}else{$('adminAvatar').textContent=initials(currentUser.full_name||data.session.user.email)}
+  if(safeAvatarUrl(currentUser.avatar_url)){$('adminAvatar').innerHTML='<img src="'+safeAvatarUrl(currentUser.avatar_url)+'" alt="Admin">'}else{$('adminAvatar').textContent=initials(currentUser.full_name||data.session.user.email)}
   $('connectionStatus').textContent='Akaunti imeunganishwa';
   await loadAll();
  }catch(e){
@@ -954,21 +1160,144 @@ $('adminAvatarFile').addEventListener('change',async e=>{
   c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);
   c.getContext('2d').drawImage(img,0,0,c.width,c.height);
   const r=await api('/api/me/profile/avatar',{method:'POST',body:JSON.stringify({image:c.toDataURL('image/jpeg',.78)})});
-  $('adminAvatar').innerHTML='<img src="'+esc(r.avatar_url)+'" alt="Admin">';
+  $('adminAvatar').innerHTML=safeAvatarUrl(r.avatar_url)?'<img src="'+safeAvatarUrl(r.avatar_url)+'" alt="Admin">':esc(initials(currentUser?.full_name));
   note('Picha ya admin imebadilishwa.',true);
  }catch(err){note(err.message||'Imeshindikana kupakia picha.')}
  finally{e.target.value=''}
 });
 
 $('refresh').addEventListener('click',loadAll);
-$('userSearch').addEventListener('input',renderUsers);
-$('userFilter').addEventListener('change',renderUsers);
-$('paymentSearch').addEventListener('input',renderPayments);
-$('paymentFilter').addEventListener('change',renderPayments);
+$('userSearch').addEventListener('input',()=>{clearTimeout(userSearchTimer);userSearchTimer=setTimeout(()=>{filters.users.q=$('userSearch').value.trim();loadUsers(1)},300)});
+$('userFilter').addEventListener('change',()=>{filters.users.status=$('userFilter').value==='all'?'':$('userFilter').value;loadUsers(1)});
+$('paymentSearch').addEventListener('input',()=>{clearTimeout(paymentSearchTimer);paymentSearchTimer=setTimeout(()=>{filters.payments.q=$('paymentSearch').value.trim();loadPayments(1)},300)});
+$('paymentFilter').addEventListener('change',()=>{filters.payments.status=$('paymentFilter').value==='all'?'':$('paymentFilter').value;loadPayments(1)});
 $('reportFrom').addEventListener('change',renderFinancialReport);
 $('reportTo').addEventListener('change',renderFinancialReport);
 $('exportAdminPayments').addEventListener('click',exportFinancialReport);
-$('contributionFilter').addEventListener('change',renderContributions);
+$('exportMembersCsv').addEventListener('click',exportMembersCsv);
+$('exportPaymentsCsv').addEventListener('click',exportPaymentsCsv);
+function runUserSearch(){clearTimeout(userSearchTimer);filters.users.q=$('userSearch').value.trim();loadUsers(1)}
+function runPaymentSearch(){clearTimeout(paymentSearchTimer);filters.payments.q=$('paymentSearch').value.trim();loadPayments(1)}
+$('userSearch').addEventListener('keydown',event=>{
+ if(event.key==='Enter'){event.preventDefault();runUserSearch()}
+ else if(event.key==='Escape'&&$('userSearch').value){event.preventDefault();$('userSearch').value='';runUserSearch()}
+});
+$('paymentSearch').addEventListener('keydown',event=>{
+ if(event.key==='Enter'){event.preventDefault();runPaymentSearch()}
+ else if(event.key==='Escape'&&$('paymentSearch').value){event.preventDefault();$('paymentSearch').value='';runPaymentSearch()}
+});
+document.addEventListener('click',event=>{
+ const trigger=event.target.closest('[data-empty-refresh]');
+ if(trigger)refreshSection(trigger.dataset.emptyRefresh);
+});
+$('contributionFilter').addEventListener('change',()=>{filters.contributions.status=$('contributionFilter').value==='all'?'':$('contributionFilter').value;loadContributions(1)});
+$('userPrev').addEventListener('click',()=>{if(paging.users.page>1)loadUsers(paging.users.page-1)});
+$('userNext').addEventListener('click',()=>{if(paging.users.page<Math.max(1,Math.ceil(totals.users/paging.users.pageSize)))loadUsers(paging.users.page+1)});
+$('paymentPrev').addEventListener('click',()=>{if(paging.payments.page>1)loadPayments(paging.payments.page-1)});
+$('paymentNext').addEventListener('click',()=>{if(paging.payments.page<Math.max(1,Math.ceil(totals.payments/paging.payments.pageSize)))loadPayments(paging.payments.page+1)});
+$('contributionPrev').addEventListener('click',()=>{if(paging.contributions.page>1)loadContributions(paging.contributions.page-1)});
+$('contributionNext').addEventListener('click',()=>{if(paging.contributions.page<Math.max(1,Math.ceil(totals.contributions/paging.contributions.pageSize)))loadContributions(paging.contributions.page+1)});
+$('userSelectAll').addEventListener('change',event=>{document.querySelectorAll('tbody .user-check').forEach(box=>box.checked=event.target.checked);syncUserSelection()});
+$('usersList').addEventListener('change',event=>{if(event.target.classList.contains('user-check'))syncUserSelection()});
+$('paymentSelectAll').addEventListener('change',event=>{document.querySelectorAll('tbody .payment-check').forEach(box=>box.checked=event.target.checked);syncPaymentSelection()});
+$('paymentsList').addEventListener('change',event=>{if(event.target.classList.contains('payment-check'))syncPaymentSelection()});
+$('userBulkBar').addEventListener('click',async event=>{
+ const btn=event.target.closest('[data-bulk-user]');if(!btn||btn.disabled)return;
+ const action=btn.dataset.bulkUser,ids=currentChecked('user-check');
+ if(!ids.length){note('Chagua wanachama angalau mmoja.');return}
+ const labels={approve:'kuidhinisha',ban:'kusimamisha',unban:'kufungua'};
+ if(!confirm('Una uhakika wa '+labels[action]+' wanachama '+ids.length+'?'))return;
+ $('userBulkBar').querySelectorAll('button[data-bulk-user]').forEach(b=>b.disabled=true);
+ setBusy(btn,true);
+ try{
+  const result=await api('/api/admin/users/bulk-action',{method:'POST',body:JSON.stringify({action,ids})});
+  await loadAll();
+  const msg='Wanachama '+Number(result.updated||0)+' wamehifadhiwa kwa mafanikio.';
+  note(msg,true);toast(msg,'success');
+  $('userBulkBar').querySelectorAll('button[data-bulk-user]').forEach(b=>endBusy(b));
+ }catch(error){const msg=error.message||'Imeshindikana kutekeleza kitendo.';note(msg);toast(msg,'error');$('userBulkBar').querySelectorAll('button[data-bulk-user]').forEach(b=>endBusy(b));syncUserSelection()}
+});
+$('paymentBulkBar').addEventListener('click',async event=>{
+ const btn=event.target.closest('[data-bulk-payment]');if(!btn||btn.disabled)return;
+ const action=btn.dataset.bulkPayment,ids=currentChecked('payment-check');
+ if(!ids.length){note('Chagua malipo angalau moja.');return}
+ let reason='';
+ if(action==='reject'){
+  reason=String(prompt('Andika sababu fupi ya kukataa malipo yaliyochaguliwa:')||'').trim();
+  if(reason.length<3||reason.length>500){note('Andika sababu ya kukataa yenye herufi 3 hadi 500.');return}
+ }else if(!confirm('Thibitisha malipo yaliyochaguliwa? Hakikisha umekagua miamala kwenye huduma ya malipo.'))return;
+ $('paymentBulkBar').querySelectorAll('button[data-bulk-payment]').forEach(b=>b.disabled=true);
+ setBusy(btn,true);
+ try{
+  const result=await api('/api/admin/payments/bulk-review',{method:'POST',body:JSON.stringify(action==='reject'?{action,ids,reason}:{action,ids})});
+  await loadAll();
+  const msg='Malipo '+Number(result.updated||0)+' yamehifadhiwa kwa mafanikio.';
+  note(msg,true);toast(msg,'success');
+  $('paymentBulkBar').querySelectorAll('button[data-bulk-payment]').forEach(b=>endBusy(b));
+ }catch(error){const msg=error.message||'Imeshindikana kuhakiki malipo.';note(msg);toast(msg,'error');$('paymentBulkBar').querySelectorAll('button[data-bulk-payment]').forEach(b=>endBusy(b));syncPaymentSelection()}
+});
+$('announcementForm').addEventListener('submit',async event=>{
+ event.preventDefault();
+ const form=event.currentTarget,editingId=form.dataset.editingId;
+ const title=$('announcementTitle').value.trim(),body=$('announcementBody').value.trim(),isActive=$('announcementActive').checked;
+ if(title.length<3||title.length>120){note('Kichwa cha tangazo kiwe na herufi 3 hadi 120.');return}
+ if(body.length<3||body.length>2000){note('Maudhui ya tangazo yawe na herufi 3 hadi 2000.');return}
+ const button=$('saveAnnouncement');setBusy(button,true);
+ try{
+  await api(editingId?'/api/admin/announcements/'+encodeURIComponent(editingId):'/api/admin/announcements',{method:editingId?'PATCH':'POST',body:JSON.stringify({title,body,is_active:isActive})});
+  resetAnnouncementForm();
+  await loadAnnouncements();
+  const msg=editingId?'Tangazo limehifadhiwa.':'Tangazo limetumwa.';
+  note(msg,true);toast(msg,'success');
+ }catch(error){const msg=error.message||'Imeshindikana kuhifadhi tangazo.';note(msg);toast(msg,'error')}
+ finally{setBusy(button,false)}
+});
+$('cancelAnnouncementEdit').addEventListener('click',resetAnnouncementForm);
+$('announcementsList').addEventListener('click',async event=>{
+ const btn=event.target.closest('[data-announcement]');if(!btn)return;
+ const id=btn.dataset.announcement,action=btn.dataset.action;
+ const item=announcements.find(a=>String(a.id)===String(id));
+ if(action==='edit-announcement'){
+  if(!item)return;
+  $('announcementForm').dataset.editingId=item.id;
+  $('announcementTitle').value=item.title||'';
+  $('announcementBody').value=item.body||'';
+  $('announcementActive').checked=item.is_active!==false;
+  $('saveAnnouncement').textContent='Hifadhi mabadiliko';
+  $('cancelAnnouncementEdit').hidden=false;
+  $('announcementForm').scrollIntoView({behavior:'smooth',block:'center'});
+  $('announcementTitle').focus();
+  return;
+ }
+ if(action==='toggle-announcement'){
+  if(!item)return;
+  setBusy(btn,true);
+  try{
+   await api('/api/admin/announcements/'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({is_active:item.is_active===false})});
+   await loadAnnouncements();
+   note('Hali ya tangazo imebadilishwa.',true);toast('Hali ya tangazo imebadilishwa.','success');
+  }catch(error){const msg=error.message||'Imeshindikana kubadili hali ya tangazo.';note(msg);toast(msg,'error');setBusy(btn,false)}
+  return;
+ }
+ if(action==='delete-announcement'){
+  if(!confirm('Futa tangazo hili kabisa?'))return;
+  setBusy(btn,true);
+  try{
+   await api('/api/admin/announcements/'+encodeURIComponent(id),{method:'DELETE'});
+   if($('announcementForm').dataset.editingId===id)resetAnnouncementForm();
+   await loadAnnouncements();
+   note('Tangazo limefutwa.',true);toast('Tangazo limefutwa.','success');
+  }catch(error){const msg=error.message||'Imeshindikana kufuta tangazo.';note(msg);toast(msg,'error');setBusy(btn,false)}
+ }
+});
+$('auditPrev').addEventListener('click',()=>{if(auditPage>1)loadAudit(auditPage-1)});
+$('auditNext').addEventListener('click',()=>{if(auditPage<Math.max(1,Math.ceil(auditTotal/auditPageSize)))loadAudit(auditPage+1)});
+$('closeMemberModal').addEventListener('click',closeMemberModal);
+$('memberModal').addEventListener('click',event=>{if(event.target===$('memberModal'))closeMemberModal()});
+document.addEventListener('click',event=>{
+ const mb=event.target.closest('[data-member]');
+ if(mb)openMemberModal(mb.dataset.member);
+});
 $('contributionForm').addEventListener('submit',async event=>{
  event.preventDefault();
  const form=event.currentTarget,editingId=form.dataset.editingId;
@@ -995,7 +1324,7 @@ $('menuToggle').addEventListener('click',()=>{
  $('layout').classList.toggle('menu-open',open);
  $('menuToggle').setAttribute('aria-expanded',String(open));
 });
-document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>{$('sidebar').classList.remove('open');$('layout').classList.remove('menu-open');$('menuToggle').setAttribute('aria-expanded','false');document.querySelectorAll('.nav a').forEach(n=>n.classList.remove('active'));a.classList.add('active')}));
+document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>{$('sidebar').classList.remove('open');$('layout').classList.remove('menu-open');$('menuToggle').setAttribute('aria-expanded','false');document.querySelectorAll('.nav a').forEach(n=>n.classList.remove('active'));a.classList.add('active');const hash=a.getAttribute('href');if(hash==='#announcements'&&!announcementsLoaded)loadAnnouncements();if(hash==='#audit'&&!auditLoaded)loadAudit(1)}));
 $('sidebarBackdrop').addEventListener('click',()=>{
  $('sidebar').classList.remove('open');
  $('layout').classList.remove('menu-open');
@@ -1006,6 +1335,16 @@ document.addEventListener('keydown',event=>{
   $('sidebar').classList.remove('open');
   $('layout').classList.remove('menu-open');
   $('menuToggle').setAttribute('aria-expanded','false');
+  if(!$('memberModal').hidden)closeMemberModal();
+  return;
+ }
+ const modal=$('memberModal');
+ if(event.key==='Tab'&&!modal.hidden){
+  const focusable=[...modal.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')].filter(el=>el.offsetParent!==null||el===document.activeElement);
+  if(!focusable.length){event.preventDefault();return}
+  const first=focusable[0],last=focusable[focusable.length-1];
+  if(event.shiftKey&&document.activeElement===first){event.preventDefault();try{last.focus()}catch(e){}}
+  else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();try{first.focus()}catch(e){}}
  }
 });
 document.addEventListener('click',async e=>{
@@ -1015,7 +1354,7 @@ document.addEventListener('click',async e=>{
  if(!ub&&!pb&&!cb)return;
  const btn=ub||pb||cb,action=btn.dataset.action;
  if(cb&&action==='edit-contribution'){
-  const contribution=allContributions.find(item=>String(item.id)===String(cb.dataset.contribution));
+  const contribution=pageContributions.find(item=>String(item.id)===String(cb.dataset.contribution));
   if(!contribution)return;
   $('contributionForm').dataset.editingId=contribution.id;
   $('contributionTitle').value=contribution.title||'';
@@ -1031,13 +1370,13 @@ document.addEventListener('click',async e=>{
  }
  if(cb&&action==='cancel-contribution'){
   if(!confirm('Ghairi mchango huu? Rekodi na historia ya malipo yake zitabaki.'))return;
-  btn.disabled=true;
+  setBusy(btn,true);
   try{
    await api('/api/admin/contributions/'+encodeURIComponent(cb.dataset.contribution)+'/cancel',{method:'POST'});
    if($('contributionForm').dataset.editingId===cb.dataset.contribution)resetContributionForm();
    await loadAll();
-   note('Mchango umeghairiwa. Historia ya malipo imehifadhiwa.',true);
-  }catch(error){note(error.message||'Imeshindikana kughairi mchango.');btn.disabled=false}
+   note('Mchango umeghairiwa. Historia ya malipo imehifadhiwa.',true);toast('Mchango umeghairiwa.','success');
+  }catch(error){const msg=error.message||'Imeshindikana kughairi mchango.';note(msg);toast(msg,'error');setBusy(btn,false)}
   return;
  }
  if(action==='ban'&&!confirm('Una uhakika unataka kusimamisha akaunti hii?'))return;
@@ -1050,13 +1389,13 @@ document.addEventListener('click',async e=>{
   }
  }
  if(action==='verify'&&!confirm('Thibitisha tu baada ya kuhakiki muamala kwenye huduma ya malipo. Uendelee?'))return;
- btn.disabled=true;
+ setBusy(btn,true);
  try{
   if(ub)await api('/api/admin/users/'+encodeURIComponent(ub.dataset.user)+'/action',{method:'POST',body:JSON.stringify({action})});
   else await api('/api/admin/payments/'+encodeURIComponent(pb.dataset.payment)+'/review',{method:'POST',body:JSON.stringify({action,reason:rejectionReason})});
-  note('Mabadiliko yamehifadhiwa kwa mafanikio.',true);
+  note('Mabadiliko yamehifadhiwa kwa mafanikio.',true);toast('Mabadiliko yamehifadhiwa kwa mafanikio.','success');
   await loadAll();
- }catch(err){note(err.message);btn.disabled=false}
+ }catch(err){const msg=err.message||'Imeshindikana kuhifadhi mabadiliko.';note(msg);toast(msg,'error');setBusy(btn,false)}
 });
 $('logout').addEventListener('click',async()=>{
  try{
