@@ -77,7 +77,7 @@ img{max-width:100%}
 .user-mini b,.user-mini small{display:block}
 .user-mini b{color:#f3fbf6;font-size:11px}
 .user-mini small{margin-top:2px;color:#9cb4a6;font-size:9px}
-.mobile-more-toggle,.mobile-more-menu{display:none}
+.nav-toggle,.nav-backdrop{display:none}
 
 /* ---------- layout & topbar ---------- */
 .main{width:min(1640px,calc(100% - 254px));margin-left:254px;padding:0 clamp(20px,3vw,48px) 56px}
@@ -343,23 +343,18 @@ tr:last-child td{border-bottom:0}
   .pay-card{grid-row:span 2}
 }
 @media(max-width:760px){
-  .sidebar{inset:auto 0 0 0;width:100%;height:auto;flex-direction:row;align-items:center;gap:4px;padding:6px 8px calc(6px + env(safe-area-inset-bottom));border-right:0;border-top:1px solid rgba(255,255,255,.10);overflow-x:auto;background:linear-gradient(180deg,#0b1a14,#081410)}
-  .sidebar .brand,.workspace,.nav-label,.side-bottom{display:none}
-  .sidebar .nav{display:flex;align-items:center;gap:4px;flex:1;overflow-x:auto;scrollbar-width:none}
-  .sidebar .nav::-webkit-scrollbar{display:none}
-  .nav button{flex-direction:column;gap:2px;min-width:64px;min-height:0;width:auto;padding:7px 8px;font-size:9px;text-align:center}
+  .nav-toggle{display:grid;place-items:center;width:40px;height:40px;flex:0 0 auto;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface);color:var(--ink);font-size:15px}
+  .nav-toggle:hover{color:var(--green);border-color:var(--green)}
+  .sidebar{inset:0 auto 0 0;z-index:70;width:min(282px,84vw);height:auto;gap:2px;padding:20px 15px calc(16px + env(safe-area-inset-bottom));border-right:1px solid rgba(255,255,255,.10);border-top:0;overflow-y:auto;transform:translateX(-100%);transition:transform .26s ease;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+  .sidebar.open{transform:translateX(0)}
+  .nav button{flex-direction:row;gap:11px;min-width:0;width:100%;min-height:44px;padding:11px 12px;font-size:13px;text-align:left}
   .nav button .ico{font-size:16px}
-  .nav .nav-text{display:block}
-  .nav .count{position:absolute;top:3px;right:10px;margin-left:0;min-width:15px;padding:0 4px;font-size:8px}
-  .mobile-more-toggle{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:64px;padding:7px 8px;border:0;border-radius:var(--r-sm);background:transparent;color:#b7ccc0;font-size:9px}
-  .mobile-more-toggle .ico{font-size:16px;width:auto}
-  .mobile-more-menu{display:grid;position:fixed;right:12px;bottom:calc(78px + env(safe-area-inset-bottom));z-index:60;width:min(250px,calc(100vw - 24px));gap:3px;padding:8px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);box-shadow:var(--shadow)}
-  .mobile-more-menu:not([hidden]){animation:state-in .2s ease both}
-  .mobile-more-menu button{display:flex;align-items:center;gap:10px;padding:11px;border:0;border-radius:var(--r-xs);background:transparent;color:var(--ink);text-align:left;font-size:12px;font-weight:650}
-  .mobile-more-menu button:hover{background:var(--surface-2)}
-  .mobile-more-menu .ico{width:18px;color:var(--green);text-align:center}
-  .main{width:100%;margin:0;padding:0 16px 104px}
-  .topbar{min-height:60px;margin:0 -16px;padding:0 16px}
+  .nav .count{position:static;margin-left:auto;min-width:18px;padding:1px 6px;font-size:9px}
+  .nav-backdrop{display:block;position:fixed;inset:0;z-index:65;background:rgba(4,12,8,.55);opacity:0;pointer-events:none;transition:opacity .26s ease}
+  .nav-backdrop.show{opacity:1;pointer-events:auto}
+  .main{width:100%;margin:0;padding:0 16px 40px}
+  .topbar{min-height:60px;margin:0 -16px;padding:0 16px;gap:10px}
+  .crumb{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .top-name{display:none}
   .content{padding-top:20px}
   .welcome{flex-direction:column;gap:12px}
@@ -370,7 +365,7 @@ tr:last-child td{border-bottom:0}
   .right-stack{grid-template-columns:1fr}
   .pay-card{grid-row:auto}
   .table-wrap{overflow-x:auto}
-  .toast-host{top:auto;left:16px;right:16px;bottom:calc(92px + env(safe-area-inset-bottom));width:auto}
+  .toast-host{top:auto;left:16px;right:16px;bottom:16px;width:auto}
 }
 @media(max-width:520px){
   .form-grid{grid-template-columns:1fr;gap:0}
@@ -391,7 +386,7 @@ tr:last-child td{border-bottom:0}
 </head>
 <body>
 <div class="toast-host" id="toastHost" role="status" aria-live="polite" aria-atomic="false"></div>
-<aside class="sidebar" aria-label="Menyu ya mwanachama">
+<aside class="sidebar" id="sidebarNav" aria-label="Menyu ya mwanachama">
   <div class="brand"><img class="brand-icon" src="./mchezo-wetu-logo.svg" alt="Nembo ya Mchezo Wetu"><div class="brand-copy">Mchezo Wetu<small>MEMBER PORTAL</small></div></div>
   <div class="workspace">Kikundi<br><b>Mchezo Wetu</b><span>●</span></div>
   <div class="nav-label">AKAUNTI</div>
@@ -403,18 +398,12 @@ tr:last-child td{border-bottom:0}
     <button data-page="profile" type="button"><span class="ico">♙</span><span class="nav-text">Wasifu</span></button>
     <button data-page="settings" type="button"><span class="ico">⚙</span><span class="nav-text">Mipangilio</span></button>
     <button data-page="help" type="button"><span class="ico">?</span><span class="nav-text">Msaada</span></button>
-    <button class="mobile-more-toggle" id="mobileMoreToggle" type="button" aria-expanded="false" aria-controls="mobileMoreMenu"><span class="ico">•••</span><span>Zaidi</span></button>
   </nav>
-  <div class="mobile-more-menu" id="mobileMoreMenu" hidden>
-    <button data-page="notices" type="button"><span class="ico">♧</span>Arifa na hali</button>
-    <button data-page="profile" type="button"><span class="ico">♙</span>Wasifu wangu</button>
-    <button data-page="settings" type="button"><span class="ico">⚙</span>Mipangilio</button>
-    <button data-page="help" type="button"><span class="ico">?</span>Msaada</button>
-  </div>
   <div class="side-bottom"><div class="user-mini"><div class="avatar" id="sidebarAvatar">MW</div><div class="user-copy"><b id="sidebarName">Mwanachama</b><small id="sidebarRole">Mwanachama</small></div></div></div>
 </aside>
+<div class="nav-backdrop" id="navBackdrop"></div>
 <main class="main">
-  <header class="topbar"><div class="crumb">Member Portal &nbsp;›&nbsp; <b id="crumbPage">Muhtasari</b></div><div class="top-actions"><button class="top-pay" id="openPayment" type="button">+ Lipa</button><button class="icon-btn" aria-label="Msaada" data-go="help" type="button">?</button><button class="icon-btn" aria-label="Arifa" data-go="notices" type="button">♧<i class="unread" id="noticeDot" hidden></i></button><span class="top-name" id="topName">Mwanachama</span><div class="avatar" id="topAvatar">MW</div></div></header>
+  <header class="topbar"><button class="nav-toggle" id="navToggle" type="button" aria-label="Fungua menyu" aria-expanded="false" aria-controls="sidebarNav">☰</button><div class="crumb">Member Portal &nbsp;›&nbsp; <b id="crumbPage">Muhtasari</b></div><div class="top-actions"><button class="top-pay" id="openPayment" type="button">+ Lipa</button><button class="icon-btn" aria-label="Msaada" data-go="help" type="button">?</button><button class="icon-btn" aria-label="Arifa" data-go="notices" type="button">♧<i class="unread" id="noticeDot" hidden></i></button><span class="top-name" id="topName">Mwanachama</span><div class="avatar" id="topAvatar">MW</div></div></header>
   <div class="content">
     <div class="notice" id="notice" role="status" aria-live="polite"></div>
     <section class="page active" id="home">
@@ -646,7 +635,7 @@ function setActivePage(name,updateUrl=true){
  document.querySelectorAll('.nav button[data-page]').forEach(button=>button.classList.toggle('active',button.dataset.page===name));
  const labels={home:'Muhtasari',contributions:'Michango yangu',payments:'Historia ya malipo',notices:'Arifa na hali',profile:'Wasifu wangu',settings:'Mipangilio',help:'Msaada'};
  $('crumbPage').textContent=labels[name];
- $('mobileMoreMenu').hidden=true;$('mobileMoreToggle').setAttribute('aria-expanded','false');
+ closeDrawer();
  if(updateUrl)history.replaceState(null,'',name==='home'?'/dashboard':'#'+name);
  window.scrollTo({top:0,behavior:'smooth'});
  if(name==='notices')loadAnnouncements(true,true);
@@ -1059,14 +1048,21 @@ function downloadHistory(){
 }
 document.querySelectorAll('[data-page]').forEach(button=>button.addEventListener('click',()=>setActivePage(button.dataset.page)));
 document.querySelectorAll('[data-go]').forEach(button=>button.addEventListener('click',()=>setActivePage(button.dataset.go)));
-$('mobileMoreToggle').addEventListener('click',()=>{
- const open=$('mobileMoreMenu').hidden;
- $('mobileMoreMenu').hidden=!open;$('mobileMoreToggle').setAttribute('aria-expanded',String(open));
-});
+function setDrawer(open){
+ const sidebar=$('sidebarNav');
+ if(!sidebar||sidebar.classList.contains('open')===open)return;
+ sidebar.classList.toggle('open',open);
+ $('navBackdrop').classList.toggle('show',open);
+ $('navToggle').setAttribute('aria-expanded',String(open));
+ $('navToggle').setAttribute('aria-label',open?'Funga menyu':'Fungua menyu');
+ document.body.style.overflow=open?'hidden':'';
+}
+function closeDrawer(){setDrawer(false)}
+$('navToggle').addEventListener('click',()=>setDrawer(!$('sidebarNav').classList.contains('open')));
+$('navBackdrop').addEventListener('click',closeDrawer);
+$('sidebarNav').addEventListener('click',event=>{if(event.target.closest('button[data-page]'))closeDrawer()});
+window.addEventListener('resize',()=>{if(window.innerWidth>760)closeDrawer()});
 document.addEventListener('click',event=>{
- if(!$('mobileMoreMenu').hidden&&!event.target.closest('#mobileMoreMenu, #mobileMoreToggle')){
-  $('mobileMoreMenu').hidden=true;$('mobileMoreToggle').setAttribute('aria-expanded','false');
- }
  if(event.target.closest('#openPayment, [data-open-payment]')){openPayment();return}
  const clearSearch=event.target.closest('[data-clear-search]');
  if(clearSearch){
@@ -1110,6 +1106,7 @@ document.addEventListener('keydown',event=>{
  if(event.key==='Escape'){
   if(!$('paymentModal').hidden)closePayment();
   if(!$('paymentDetailModal').hidden)closePaymentDetail();
+  closeDrawer();
  }
 });
 $('chooseAvatar').addEventListener('click',()=>$('memberAvatarFile').click());
