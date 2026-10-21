@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#090a16">
-<title>Mchezo Wetu — Admin Control Center</title>
+<title>Mchezo Wetu — Dashibodi ya Msimamizi</title>
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/pwa-icon-192.png">
 <link rel="icon" type="image/svg+xml" href="./mchezo-wetu-logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <script src="/app-pwa.js" defer></script>
 
 
@@ -85,7 +85,7 @@ body{
   min-height:100vh;
   color:var(--text);
   background:radial-gradient(ellipse at 88% 0%, var(--bg-glow), transparent 31%), var(--bg);
-  font-family:Inter,"Segoe UI",Arial,sans-serif;
+  font-family:"DM Sans","Segoe UI",Arial,sans-serif;
   line-height:1.6;
   -webkit-font-smoothing:antialiased;
 }
@@ -96,6 +96,7 @@ img{max-width:100%}
 header,nav,aside,main,section,footer{min-width:0}
 hr{border:0;border-top:1px solid var(--border)}
 h1,h2,h3{line-height:1.25;letter-spacing:-.025em}
+h1,h2,h3,.brand-name,.panel-title,.btn,.stat-value{font-family:Manrope,"DM Sans","Segoe UI",Arial,sans-serif}
 h1{font-size:clamp(1.65rem,4vw,2.4rem)}
 h2{font-size:clamp(1.2rem,3vw,1.6rem)}
 small,.muted,.subtitle,.description{color:var(--muted)}
@@ -271,6 +272,15 @@ button:not([type=submit]){border:1px solid var(--border)}
 .notice{display:none;margin:0 0 var(--gap-section);padding:12px 14px;border:1px solid #f1c9cd;border-radius:12px;background:#fff2f3;color:#a83140;font-size:.85rem}
 .notice.show{display:block}
 .notice.good{border-color:#cde7d5;background:#eef8f0;color:#26764f}
+.startup-error{max-width:680px;margin:28px auto;padding:28px;border:1px solid #f1c9cd;border-radius:var(--radius-lg);background:#fff2f3;color:#a83140;box-shadow:var(--shadow);text-align:center}
+.startup-error h2{margin:0 0 8px;color:#8e2938;font-size:1.25rem}
+.startup-error p{margin:0;color:#7b424a}
+.startup-error .startup-error-detail{margin:15px 0 0;padding:10px 12px;border-radius:var(--radius-sm);background:#fff;color:var(--muted);font-size:.78rem;overflow-wrap:anywhere}
+.startup-error button{margin-top:18px}
+body.dashboard-unavailable .main>.section-heading,
+body.dashboard-unavailable .main>.stats,
+body.dashboard-unavailable .main>.content-grid,
+body.dashboard-unavailable .main>section.panel{display:none}
 
 /* ---------- Stats ---------- */
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:var(--gap-section)}
@@ -442,6 +452,11 @@ footer.footer{padding:17px 0}
 /* ---------- Modal ---------- */
 .modal-backdrop{position:fixed;z-index:40;inset:0;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(19,52,41,.45);backdrop-filter:blur(4px)}
 .modal-backdrop.open{display:flex}
+.admin-dialog{width:min(440px,100%);padding:20px;border:1px solid var(--border);border-radius:16px;background:var(--panel);box-shadow:var(--shadow-lg)}
+.admin-dialog textarea{width:100%;min-height:104px;margin-top:12px;resize:vertical}
+.admin-dialog-error{min-height:20px;margin-top:6px;color:var(--red);font-size:.75rem}
+.admin-dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+.admin-dialog-actions button{min-width:92px}
 .modal{width:min(780px,100%);max-height:92vh;overflow:auto;padding:20px;border:1px solid var(--border);border-radius:16px;background:var(--panel);box-shadow:var(--shadow-lg)}
 .modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .modal-head h2{margin:0;color:#233a2e;font-size:1.12rem}
@@ -534,10 +549,10 @@ td .trunc,.trunc-cell{max-width:260px}
 <body>
 <div class="layout" id="layout">
 <aside class="sidebar" id="sidebar">
-  <div class="brand"><img class="logo" src="./mchezo-wetu-logo.svg" alt="Nembo ya Mchezo Wetu"><div><div class="brand-name">Mchezo Wetu</div><div class="brand-sub">ADMIN CENTER</div></div></div>
-  <div class="nav-label">WORKSPACE</div>
+  <div class="brand"><img class="logo" src="./mchezo-wetu-logo.svg" alt="Nembo ya Mchezo Wetu"><div><div class="brand-name">Mchezo Wetu</div><div class="brand-sub">USIMAMIZI</div></div></div>
+  <div class="nav-label">MENYU KUU</div>
   <nav class="nav">
-    <a class="active" href="#overview"><span class="nav-icon">◈</span>Overview</a>
+    <a class="active" href="#overview"><span class="nav-icon">◈</span>Muhtasari</a>
     <a href="#members"><span class="nav-icon">♙</span>Wanachama</a>
     <a href="#contributions"><span class="nav-icon">▤</span>Michango</a>
     <a href="#payments"><span class="nav-icon">⇄</span>Malipo <span class="nav-count" id="pendingBadge">—</span></a>
@@ -545,8 +560,8 @@ td .trunc,.trunc-cell{max-width:260px}
     <a href="#announcements"><span class="nav-icon">✎</span>Matangazo</a>
     <a href="#audit"><span class="nav-icon">≡</span>Kumbukumbu</a>
   </nav>
-  <div class="nav-label" style="margin-top:20px">QUICK ACCESS</div>
-  <nav class="nav"><a href="/dashboard"><span class="nav-icon">↗</span>Member portal</a><a href="#security"><span class="nav-icon">◇</span>Usalama</a></nav>
+  <div class="nav-label" style="margin-top:20px">NJIA FUPI</div>
+  <nav class="nav"><a href="/dashboard"><span class="nav-icon">↗</span>Dashibodi ya mwanachama</a><a href="#security"><span class="nav-icon">◇</span>Usalama</a></nav>
   <div class="sidebar-bottom">
     <div class="security" id="security"><b>Ulinzi wa mfumo</b><p>Vitendo vya admin vinathibitishwa na server. Hakiki muamala kabla ya kukubali malipo.</p><div class="status-live"><span class="dot"></span><span id="connectionStatus">Inaunganisha...</span></div></div>
     <button class="btn" id="logout" style="width:100%;text-align:left;margin-top:12px">↗ &nbsp; Toka kwenye akaunti</button>
@@ -556,19 +571,25 @@ td .trunc,.trunc-cell{max-width:260px}
 
 <main class="main">
 <header class="topbar">
-  <div style="display:flex;align-items:center;gap:11px"><button class="btn menu-toggle" id="menuToggle" aria-label="Fungua menyu" aria-controls="sidebar" aria-expanded="false">☰</button><div class="crumb">Mchezo Wetu &nbsp;/&nbsp; <strong>Admin Dashboard</strong></div></div>
-  <div class="top-actions"><a href="/dashboard" class="btn member-view">Member view ↗</a><button class="btn" id="refresh" title="Refresh data">↻</button><label class="avatar" id="adminAvatar" for="adminAvatarFile" title="Badilisha picha ya admin">MW</label><input id="adminAvatarFile" type="file" accept="image/jpeg,image/png,image/webp" hidden></div>
+  <div style="display:flex;align-items:center;gap:11px"><button class="btn menu-toggle" id="menuToggle" aria-label="Fungua menyu" aria-controls="sidebar" aria-expanded="false">☰</button><div class="crumb">Mchezo Wetu &nbsp;/&nbsp; <strong>Dashibodi ya msimamizi</strong></div></div>
+  <div class="top-actions"><a href="/dashboard" class="btn member-view">Dashibodi ya mwanachama ↗</a><button class="btn" id="refresh" title="Sasisha taarifa">↻</button><label class="avatar" id="adminAvatar" for="adminAvatarFile" title="Badilisha picha ya msimamizi">MW</label><input id="adminAvatarFile" type="file" accept="image/jpeg,image/png,image/webp" hidden></div>
 </header>
 
 <section class="welcome" id="overview">
-  <div><div class="eyebrow">✦ &nbsp; SECURE ADMINISTRATION</div><h1>Habari, Admin <span style="color:var(--purple)">✦</span></h1><p class="subtitle">Karibu kwenye control center yako. Simamia wanachama, michango na miamala yote sehemu moja.</p></div>
+  <div><div class="eyebrow">✦ &nbsp; USIMAMIZI SALAMA</div><h1>Habari, msimamizi <span style="color:var(--green)">✦</span></h1><p class="subtitle">Karibu kwenye dashibodi yako. Simamia wanachama, michango na miamala yote sehemu moja.</p></div>
   <div class="date-chip" id="today">Inapakia tarehe...</div>
 </section>
 <div id="notice" class="notice" role="status" aria-live="polite"></div>
+<section class="startup-error" id="startupError" role="alert" hidden>
+  <h2>Dashibodi haipatikani kwa sasa</h2>
+  <p>Imeshindikana kupakia taarifa za usimamizi. Jaribu tena baada ya muda mfupi.</p>
+  <div class="startup-error-detail" id="startupErrorDetail"></div>
+  <button class="btn btn-primary" id="retryStartup" type="button">Jaribu tena</button>
+</section>
 
-<div class="section-heading"><div><h2>Muhtasari wa mfumo</h2><p>Takwimu halisi kutoka database yako.</p></div><span class="tag">● LIVE DATA</span></div>
+<div class="section-heading"><div><h2>Muhtasari wa mfumo</h2><p>Takwimu halisi kutoka hifadhidata yako.</p></div><span class="tag" id="dataStatus">Inasubiri taarifa</span></div>
 <section class="stats">
-  <article class="stat" style="--accent:#b7a0ff"><div class="stat-top"><span class="stat-label">Wanachama wote</span><span class="stat-icon">♙</span></div><div class="stat-value" id="users">—</div><div class="stat-foot"><strong>●</strong> Akaunti zilizosajiliwa</div></article>
+  <article class="stat" style="--accent:#167c55"><div class="stat-top"><span class="stat-label">Wanachama wote</span><span class="stat-icon">♙</span></div><div class="stat-value" id="users">—</div><div class="stat-foot"><strong>●</strong> Akaunti zilizosajiliwa</div></article>
   <article class="stat" style="--accent:#67e5ac"><div class="stat-top"><span class="stat-label">Wanachama hai</span><span class="stat-icon">✓</span></div><div class="stat-value" id="active">—</div><div class="stat-foot"><strong>●</strong> Walioidhinishwa na admin</div></article>
   <article class="stat" style="--accent:#ffd078"><div class="stat-top"><span class="stat-label">Malipo yanayosubiri</span><span class="stat-icon">◷</span></div><div class="stat-value" id="pendingCount">—</div><div class="stat-foot"><strong id="pendingAmount">TSh —</strong> bado hayajathibitishwa</div></article>
   <article class="stat" style="--accent:#5ce5df"><div class="stat-top"><span class="stat-label">Malipo yaliyothibitishwa</span><span class="stat-icon">↗</span></div><div class="stat-value" id="verifiedAmount">TSh —</div><div class="stat-foot"><strong id="verifiedCount">—</strong> miamala imethibitishwa</div></article>
@@ -582,7 +603,7 @@ td .trunc,.trunc-cell{max-width:260px}
     <div class="chart-foot"><span>Muhtasari wa sasa</span><strong id="chartTotal">TSh —</strong></div>
   </article>
   <article class="panel">
-    <div class="panel-head"><div><div class="panel-title">Afya ya mfumo</div><div class="panel-sub">Hali ya akaunti na miamala.</div></div><span style="font-size:9px;color:var(--green)">● LIVE</span></div>
+    <div class="panel-head"><div><div class="panel-title">Afya ya mfumo</div><div class="panel-sub">Hali ya akaunti na miamala.</div></div></div>
     <div class="breakdown">
       <div><div class="break-row"><span class="break-name"><i class="mark" style="background:var(--green)"></i>Wanachama hai</span><strong class="break-value" id="approvedBreak">—</strong></div><div class="progress"><span id="approvedBar" style="background:linear-gradient(90deg,#67e5ac,#5ce5df)"></span></div></div>
       <div><div class="break-row"><span class="break-name"><i class="mark" style="background:var(--yellow)"></i>Malipo yanayosubiri</span><strong class="break-value" id="pendingBreak">—</strong></div><div class="progress"><span id="pendingBar" style="background:linear-gradient(90deg,#ffd078,#ff9f70)"></span></div></div>
@@ -645,7 +666,7 @@ td .trunc,.trunc-cell{max-width:260px}
   <div class="table-scroll"><table><thead><tr><th>Muda</th><th>Mtendaji</th><th>Kitendo</th><th>Lengo</th><th>Maelezo</th></tr></thead><tbody id="auditList"><tr><td colspan="5"><div class="empty"><div class="empty__msg">Bofya kuona kumbukumbu za vitendo.</div><button class="mini" type="button" data-empty-refresh="audit">Pakia kumbukumbu</button></div></td></tr></tbody></table></div>
   <div class="footer"><span id="auditResult">—</span><span class="actions" style="gap:6px"><button class="mini" id="auditPrev" type="button">← Nyuma</button><button class="mini" id="auditNext" type="button">Mbele →</button></span></div>
 </section>
-<footer class="footer"><span>© <span id="year"></span> Mchezo Wetu · Admin Control Center</span><span>Premium Member Management</span></footer>
+<footer class="footer"><span>© <span id="year"></span> Mchezo Wetu · Dashibodi ya usimamizi</span><span>Usimamizi wa wanachama kwa usalama</span></footer>
 </main>
 </div>
 
@@ -659,6 +680,19 @@ td .trunc,.trunc-cell{max-width:260px}
 <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="false"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<div class="modal-backdrop" id="adminActionDialog" hidden>
+  <section class="admin-dialog" role="dialog" aria-modal="true" aria-labelledby="adminDialogTitle" aria-describedby="adminDialogMessage">
+    <h2 id="adminDialogTitle"></h2>
+    <p id="adminDialogMessage"></p>
+    <label id="adminDialogReasonLabel" for="adminDialogReason" hidden>Sababu ya kukataa</label>
+    <textarea id="adminDialogReason" maxlength="500" minlength="3" rows="4" hidden></textarea>
+    <div class="admin-dialog-error" id="adminDialogError" role="alert" aria-live="polite"></div>
+    <div class="admin-dialog-actions">
+      <button class="mini" id="adminDialogCancel" type="button">Ghairi</button>
+      <button class="mini approve" id="adminDialogConfirm" type="button">Endelea</button>
+    </div>
+  </section>
+</div>
 <script>
 'use strict';
 let supabaseClient=null,sessionToken=null,allUsers=[],allPayments=[],allContributions=[],currentUser=null,busy=false;
@@ -675,7 +709,48 @@ const initials=v=>String(v||'MW').trim().split(/\s+/).slice(0,2).map(x=>x[0]||''
 const safeAvatarUrl=v=>/^https:\/\//i.test(String(v||''))?esc(v):'';
 const date=v=>{if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?'—':d.toLocaleDateString('sw-TZ',{day:'2-digit',month:'short',year:'numeric'})};
 function note(msg,good=false){const n=$('notice');n.textContent=msg;n.className='notice show '+(good?'good':'bad')}
+function finishAdminDialog(value){
+ const modal=$('adminActionDialog');
+ if(modal.hidden)return;
+ modal.hidden=true;modal.classList.remove('open');document.body.style.overflow=adminDialogPreviousOverflow;
+ $('adminDialogReason').value='';$('adminDialogError').textContent='';
+ const resolve=adminDialogResolve;adminDialogResolve=null;
+ if(lastAdminDialogFocus&&typeof lastAdminDialogFocus.focus==='function'){try{lastAdminDialogFocus.focus()}catch(error){}}
+ lastAdminDialogFocus=null;
+ if(resolve)resolve(value);
+}
+function adminDialog({title,message,reason=false,confirmLabel='Endelea'}){
+ if(adminDialogResolve)finishAdminDialog(null);
+ const modal=$('adminActionDialog'),reasonField=$('adminDialogReason');
+ lastAdminDialogFocus=document.activeElement;
+ adminDialogPreviousOverflow=document.body.style.overflow;
+ $('adminDialogTitle').textContent=title;$('adminDialogMessage').textContent=message;
+ $('adminDialogReasonLabel').hidden=!reason;reasonField.hidden=!reason;
+ reasonField.required=reason;$('adminDialogConfirm').textContent=confirmLabel;
+ $('adminDialogError').textContent='';
+ modal.hidden=false;modal.classList.add('open');document.body.style.overflow='hidden';
+ requestAnimationFrame(()=>{try{(reason?reasonField:$('adminDialogConfirm')).focus()}catch(error){}});
+ return new Promise(resolve=>{adminDialogResolve=resolve});
+}
+function confirmAdminDialog(){
+ const reasonField=$('adminDialogReason');
+ if(!reasonField.hidden){
+  const reason=reasonField.value.trim();
+  if(reason.length<3||reason.length>500){$('adminDialogError').textContent='Sababu iwe na herufi 3 hadi 500.';reasonField.focus();return}
+  finishAdminDialog(reason);return;
+ }
+ finishAdminDialog(true);
+}
 function clearNote(){$('notice').className='notice'}
+function showStartupError(message){
+ $('startupErrorDetail').textContent=message;
+ $('startupError').hidden=false;
+ document.body.classList.add('dashboard-unavailable');
+}
+function clearStartupError(){
+ $('startupError').hidden=true;
+ document.body.classList.remove('dashboard-unavailable');
+}
 /* ---- UI helpers: toasts, busy buttons, skeletons, empty states, CSV ---- */
 function toast(message,variant){
  const c=$('toastContainer');if(!c)return;
@@ -1054,7 +1129,7 @@ function renderMemberModal(data){
   +'<div class="modal-sub">Michango</div><div class="table-scroll"><table><thead><tr><th>Mchango</th><th>Kiasi</th><th>Tarehe ya mwisho</th><th>Hali</th></tr></thead><tbody>'+contribRows+'</tbody></table></div>'
   +'<div class="modal-sub">Malipo</div><div class="table-scroll"><table><thead><tr><th>Kiasi</th><th>Reference</th><th>Njia</th><th>Hali</th><th>Tarehe</th></tr></thead><tbody>'+paymentRows+'</tbody></table></div>';
 }
-let lastModalFocus=null;
+let lastModalFocus=null,adminDialogResolve=null,lastAdminDialogFocus=null,adminDialogPreviousOverflow='';
 async function openMemberModal(id){
  const modal=$('memberModal');
  lastModalFocus=document.activeElement;
@@ -1077,7 +1152,7 @@ function closeMemberModal(){
  lastModalFocus=null;
 }
 async function loadAll(){
- if(busy)return;busy=true;clearNote();$('connectionStatus').textContent='Inasasisha...';
+ if(busy)return;busy=true;clearNote();$('connectionStatus').textContent='Inasasisha...';$('dataStatus').textContent='Inapakia taarifa...';
  $('refresh').disabled=true;
  try{
   const problems=[];
@@ -1112,22 +1187,29 @@ async function loadAll(){
 
   if(problems.length){
    $('connectionStatus').textContent='Baadhi ya data haijapatikana';
+   $('dataStatus').textContent='Baadhi ya taarifa hazipatikani';
    note(problems.join(' | '));
   }else{
    $('connectionStatus').textContent='Server imeunganishwa';
+   $('dataStatus').textContent='Taarifa zimesasishwa';
   }
  }catch(e){
   $('connectionStatus').textContent='Hitilafu ya muunganisho';
-  note(e.message+' — Kagua Render Logs na Supabase profiles ikiwa kosa linaendelea.');
+  $('dataStatus').textContent='Hitilafu ya muunganisho';
+  note(e.message+' — Kagua kumbukumbu za seva na wasifu wa Supabase ikiwa kosa linaendelea.');
  }finally{busy=false;$('refresh').disabled=false}
 }
 async function start(){
+ clearStartupError();
+ clearNote();
+ $('connectionStatus').textContent='Inaunganisha...';
+ $('dataStatus').textContent='Inapakia taarifa...';
  $('today').textContent=new Date().toLocaleDateString('sw-TZ',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
  $('year').textContent=new Date().getFullYear();
  try{
   const cr=await fetch('/api/config',{cache:'no-store'});
   const cfg=await cr.json().catch(()=>({}));
-  if(!cr.ok)throw new Error(cfg.error||'Server imeshindwa kurudisha mipangilio ya Supabase. Kagua Render Environment Variables.');
+  if(!cr.ok)throw new Error(cfg.error||'Seva imeshindwa kurudisha mipangilio ya Supabase. Kagua vigezo vya mazingira vya seva.');
   const url=cfg.supabaseUrl||cfg.url||cfg.SUPABASE_URL;
   const key=cfg.supabaseAnonKey||cfg.supabasePublishableKey||cfg.anonKey||cfg.publishableKey||cfg.SUPABASE_ANON_KEY;
   if(!url||!key)throw new Error('Supabase URL au anon/publishable key haijarudishwa na /api/config.');
@@ -1140,7 +1222,7 @@ async function start(){
   const me=await api('/api/me');
   currentUser=me.profile||me.user||me;
   if(currentUser.role&&currentUser.role!=='admin'){
-   note('Akaunti hii haina ruhusa za admin. Ingia kwa akaunti iliyoidhinishwa kama admin.');
+   showStartupError('Akaunti hii haina ruhusa za msimamizi. Ingia kwa akaunti iliyoidhinishwa kama msimamizi.');
    $('connectionStatus').textContent='Ruhusa imekataliwa';return;
   }
   if(safeAvatarUrl(currentUser.avatar_url)){$('adminAvatar').innerHTML='<img src="'+safeAvatarUrl(currentUser.avatar_url)+'" alt="Admin">'}else{$('adminAvatar').textContent=initials(currentUser.full_name||data.session.user.email)}
@@ -1148,7 +1230,8 @@ async function start(){
   await loadAll();
  }catch(e){
   $('connectionStatus').textContent='Muunganisho umeshindikana';
-  note(e.message||'Imeshindikana kuanzisha dashboard.');
+  $('dataStatus').textContent='Taarifa hazipatikani';
+  showStartupError(e.message||'Imeshindikana kuanzisha dashibodi.');
  }
 }
 
@@ -1167,6 +1250,11 @@ $('adminAvatarFile').addEventListener('change',async e=>{
 });
 
 $('refresh').addEventListener('click',loadAll);
+$('retryStartup').addEventListener('click',async()=>{
+ const button=$('retryStartup');
+ button.disabled=true;
+ try{await start()}finally{button.disabled=false}
+});
 $('userSearch').addEventListener('input',()=>{clearTimeout(userSearchTimer);userSearchTimer=setTimeout(()=>{filters.users.q=$('userSearch').value.trim();loadUsers(1)},300)});
 $('userFilter').addEventListener('change',()=>{filters.users.status=$('userFilter').value==='all'?'':$('userFilter').value;loadUsers(1)});
 $('paymentSearch').addEventListener('input',()=>{clearTimeout(paymentSearchTimer);paymentSearchTimer=setTimeout(()=>{filters.payments.q=$('paymentSearch').value.trim();loadPayments(1)},300)});
@@ -1206,7 +1294,7 @@ $('userBulkBar').addEventListener('click',async event=>{
  const action=btn.dataset.bulkUser,ids=currentChecked('user-check');
  if(!ids.length){note('Chagua wanachama angalau mmoja.');return}
  const labels={approve:'kuidhinisha',ban:'kusimamisha',unban:'kufungua'};
- if(!confirm('Una uhakika wa '+labels[action]+' wanachama '+ids.length+'?'))return;
+ if(!await adminDialog({title:'Thibitisha kitendo',message:'Una uhakika wa '+labels[action]+' wanachama '+ids.length+'?'}))return;
  $('userBulkBar').querySelectorAll('button[data-bulk-user]').forEach(b=>b.disabled=true);
  setBusy(btn,true);
  try{
@@ -1223,9 +1311,9 @@ $('paymentBulkBar').addEventListener('click',async event=>{
  if(!ids.length){note('Chagua malipo angalau moja.');return}
  let reason='';
  if(action==='reject'){
-  reason=String(prompt('Andika sababu fupi ya kukataa malipo yaliyochaguliwa:')||'').trim();
-  if(reason.length<3||reason.length>500){note('Andika sababu ya kukataa yenye herufi 3 hadi 500.');return}
- }else if(!confirm('Thibitisha malipo yaliyochaguliwa? Hakikisha umekagua miamala kwenye huduma ya malipo.'))return;
+  reason=await adminDialog({title:'Kataa malipo yaliyochaguliwa',message:'Andika sababu itakayoonekana kwa mwanachama.',reason:true,confirmLabel:'Kataa malipo'});
+  if(reason===null)return;
+ }else if(!await adminDialog({title:'Thibitisha malipo',message:'Hakikisha umekagua miamala kwenye huduma ya malipo kabla ya kuthibitisha.'}))return;
  $('paymentBulkBar').querySelectorAll('button[data-bulk-payment]').forEach(b=>b.disabled=true);
  setBusy(btn,true);
  try{
@@ -1280,7 +1368,7 @@ $('announcementsList').addEventListener('click',async event=>{
   return;
  }
  if(action==='delete-announcement'){
-  if(!confirm('Futa tangazo hili kabisa?'))return;
+  if(!await adminDialog({title:'Futa tangazo',message:'Futa tangazo hili kabisa? Hatua hii haiwezi kutenduliwa.'}))return;
   setBusy(btn,true);
   try{
    await api('/api/admin/announcements/'+encodeURIComponent(id),{method:'DELETE'});
@@ -1331,12 +1419,20 @@ $('sidebarBackdrop').addEventListener('click',()=>{
  $('menuToggle').setAttribute('aria-expanded','false');
 });
 document.addEventListener('keydown',event=>{
+ const actionDialog=$('adminActionDialog');
+ if(event.key==='Escape'&&!actionDialog.hidden){finishAdminDialog(null);return}
  if(event.key==='Escape'){
   $('sidebar').classList.remove('open');
   $('layout').classList.remove('menu-open');
   $('menuToggle').setAttribute('aria-expanded','false');
   if(!$('memberModal').hidden)closeMemberModal();
   return;
+ }
+ if(event.key==='Tab'&&!actionDialog.hidden){
+  const focusable=[...actionDialog.querySelectorAll('button:not([disabled]),textarea:not([disabled]):not([hidden])')];
+  const first=focusable[0],last=focusable[focusable.length-1];
+  if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
+  else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
  }
  const modal=$('memberModal');
  if(event.key==='Tab'&&!modal.hidden){
@@ -1347,6 +1443,9 @@ document.addEventListener('keydown',event=>{
   else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();try{first.focus()}catch(e){}}
  }
 });
+$('adminDialogCancel').addEventListener('click',()=>finishAdminDialog(null));
+$('adminDialogConfirm').addEventListener('click',confirmAdminDialog);
+$('adminActionDialog').addEventListener('click',event=>{if(event.target===$('adminActionDialog'))finishAdminDialog(null)});
 document.addEventListener('click',async e=>{
  const ub=e.target.closest('[data-user]');
  const pb=e.target.closest('[data-payment]');
@@ -1369,7 +1468,7 @@ document.addEventListener('click',async e=>{
   return;
  }
  if(cb&&action==='cancel-contribution'){
-  if(!confirm('Ghairi mchango huu? Rekodi na historia ya malipo yake zitabaki.'))return;
+  if(!await adminDialog({title:'Ghairi mchango',message:'Ghairi mchango huu? Rekodi na historia ya malipo yake zitabaki.'}))return;
   setBusy(btn,true);
   try{
    await api('/api/admin/contributions/'+encodeURIComponent(cb.dataset.contribution)+'/cancel',{method:'POST'});
@@ -1379,16 +1478,13 @@ document.addEventListener('click',async e=>{
   }catch(error){const msg=error.message||'Imeshindikana kughairi mchango.';note(msg);toast(msg,'error');setBusy(btn,false)}
   return;
  }
- if(action==='ban'&&!confirm('Una uhakika unataka kusimamisha akaunti hii?'))return;
+ if(action==='ban'&&!await adminDialog({title:'Simamisha akaunti',message:'Una uhakika unataka kusimamisha akaunti hii?'}))return;
  let rejectionReason='';
  if(pb&&action==='reject'){
-  rejectionReason=String(prompt('Andika sababu fupi ya kukataa malipo:')||'').trim();
-  if(rejectionReason.length<3||rejectionReason.length>500){
-   note('Andika sababu ya kukataa yenye herufi 3 hadi 500.');
-   return;
-  }
+  rejectionReason=await adminDialog({title:'Kataa malipo',message:'Andika sababu itakayoonekana kwa mwanachama.',reason:true,confirmLabel:'Kataa malipo'});
+  if(rejectionReason===null)return;
  }
- if(action==='verify'&&!confirm('Thibitisha tu baada ya kuhakiki muamala kwenye huduma ya malipo. Uendelee?'))return;
+ if(action==='verify'&&!await adminDialog({title:'Thibitisha malipo',message:'Thibitisha tu baada ya kuhakiki muamala kwenye huduma ya malipo. Uendelee?'}))return;
  setBusy(btn,true);
  try{
   if(ub)await api('/api/admin/users/'+encodeURIComponent(ub.dataset.user)+'/action',{method:'POST',body:JSON.stringify({action})});

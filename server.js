@@ -2294,6 +2294,15 @@ app.get(['/mchezo-wetu-logo.svg', '/admin/mchezo-wetu-logo.svg'], (req, res) => 
   res.sendFile(path.join(__dirname, 'mchezo-wetu-logo.svg'));
 });
 
+// Brand tiles for the mobile-money networks shown in the payment sheet.
+app.use('/brands', express.static(path.join(__dirname, 'brands'), {
+  index: false,
+  maxAge: '1d',
+  setHeaders(res) {
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+  }
+}));
+
 app.post('/api/payments/sonicpesa', ready, requireUser, async (req, res) => {
   try {
     const apiKey = process.env.SONICPESA_API_KEY;

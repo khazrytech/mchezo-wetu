@@ -17,7 +17,7 @@
   --bg:#080a12;
   --surface:#101426;
   --surface-2:#161b2e;
-  --line:rgba(190,182,255,.16);
+  --line:rgba(190,220,202,.16);
   --line-strong:rgba(199,243,107,.34);
   --text:#f5f4ff;
   --muted:#98a0bb;
@@ -38,7 +38,7 @@ body{
   place-items:center;
   padding:clamp(14px,3.5vw,40px);
   background:
-    radial-gradient(ellipse at 8% 4%,rgba(139,92,246,.22),transparent 38%),
+    radial-gradient(ellipse at 8% 4%,rgba(53,200,138,.16),transparent 38%),
     radial-gradient(ellipse at 94% 96%,rgba(199,243,107,.12),transparent 34%),
     var(--bg);
   color:var(--text);
@@ -67,7 +67,7 @@ h1,h2,h3,strong,.btn{font-family:"Manrope",ui-sans-serif,system-ui,sans-serif}
   padding:34px;
   background:
     radial-gradient(ellipse at 90% 92%,rgba(199,243,107,.16),transparent 36%),
-    linear-gradient(155deg,#2a2350,#171233 60%,#241c48);
+    linear-gradient(155deg,#12402c,#0d2a20 62%,#16422e);
 }
 .auth-brand::after{
   position:absolute;
@@ -87,18 +87,18 @@ h1,h2,h3,strong,.btn{font-family:"Manrope",ui-sans-serif,system-ui,sans-serif}
 .brand-lockup strong{font-size:14px;letter-spacing:-.02em}
 .brand-lockup small{margin-top:4px;color:#b6aede;font-size:9px;font-weight:800;letter-spacing:.15em}
 .brand-copy{position:relative;z-index:1;margin:auto 0;padding:48px 0 30px}
-.eyebrow{display:inline-flex;align-items:center;gap:9px;color:#c7bff0;font-size:10px;font-weight:800;letter-spacing:.13em}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;color:#b8d2aa;font-size:10px;font-weight:800;letter-spacing:.13em}
 .eyebrow i,.live-dot{width:7px;height:7px;border-radius:50%;background:#c7f36b;box-shadow:0 0 12px rgba(199,243,107,.55)}
 .brand-copy h2{max-width:380px;margin:20px 0 14px;color:#f6f5ff;font-size:clamp(29px,4vw,41px);line-height:1.14;letter-spacing:-.05em}
 .brand-copy h2 span{color:#c1ed8d}
-.brand-copy p{max-width:360px;margin:0;color:#b7b2d0;font-size:13px;line-height:1.8}
+.brand-copy p{max-width:360px;margin:0;color:#b4c9bb;font-size:13px;line-height:1.8}
 .feature-list{position:relative;z-index:1;display:grid;gap:15px}
 .feature-list>div{display:flex;align-items:center;gap:11px}
 .feature-icon{display:grid;place-items:center;width:31px;height:31px;flex:0 0 auto;border:1px solid rgba(255,255,255,.13);border-radius:10px;background:rgba(255,255,255,.05);color:#c6ed9b}
 .feature-list strong,.feature-list small{display:block}
-.feature-list strong{color:#eeeaff;font-size:11px}
-.feature-list small{margin-top:3px;color:#a9a3c4;font-size:10px}
-.brand-footer{position:relative;z-index:1;display:flex;align-items:center;gap:8px;margin-top:30px;color:#aaa4c6;font-size:10px}
+.feature-list strong{color:#eaf5ed;font-size:11px}
+.feature-list small{margin-top:3px;color:#9fb8a8;font-size:10px}
+.brand-footer{position:relative;z-index:1;display:flex;align-items:center;gap:8px;margin-top:30px;color:#abc2b2;font-size:10px}
 .auth-panel{display:flex;flex-direction:column;justify-content:center;padding:clamp(28px,4.5vw,46px)}
 .steps{display:flex;align-items:center;gap:8px;margin-bottom:20px}
 .step{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
@@ -144,6 +144,8 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
 .form-field[hidden]{display:none}
 .form-field:not([hidden]){animation:fade .3s cubic-bezier(.2,.75,.25,1) both}
 .otp-help{margin:8px 0 0;color:var(--muted);font-size:11px;line-height:1.6}
+.edit-email{display:block;margin:10px auto 0;padding:5px 8px;border:0;background:transparent;color:var(--accent);font:700 11px "DM Sans",sans-serif;cursor:pointer}
+.edit-email:hover{text-decoration:underline}
 .btn{
   width:100%;
   min-height:50px;
@@ -193,9 +195,10 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
 @media(max-width:760px){
   body{align-items:flex-start;padding:14px}
   .auth-shell{grid-template-columns:1fr;width:min(100%,520px);border-radius:24px}
-  .auth-brand{min-height:180px;padding:24px}
-  .brand-copy{margin:22px 0 0;padding:0}
-  .brand-copy h2{font-size:27px;margin:12px 0 8px}
+  .auth-brand{min-height:142px;padding:20px 22px}
+  .brand-copy{margin:15px 0 0;padding:0}
+  .brand-copy h2{font-size:24px;margin:9px 0 6px}
+  .brand-copy p{font-size:12px;line-height:1.55}
   .feature-list,.brand-footer{display:none}
   .auth-panel{padding:28px 24px}
   h1{font-size:23px}
@@ -216,7 +219,7 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
   <aside class="auth-brand">
     <a class="brand-lockup" href="/" aria-label="Mchezo Wetu">
       <img src="./mchezo-wetu-logo.svg" alt="">
-      <span><strong>Mchezo Wetu</strong><small>MEMBER COMMUNITY</small></span>
+      <span><strong>Mchezo Wetu</strong><small>JAMII YA WANACHAMA</small></span>
     </a>
     <div class="brand-copy">
       <span class="eyebrow"><i></i> PAMOJA TUNAENDELEA</span>
@@ -257,6 +260,7 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
         <label for="otp">Namba ya uthibitisho (OTP)</label>
         <input id="otp" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000">
         <p class="otp-help">Angalia inbox au spam. Tumia OTP ya mwisho uliyotumiwa — za zamani huisha muda.</p>
+        <button id="editEmailBtn" class="edit-email" type="button" hidden>Badilisha barua pepe</button>
       </div>
       <button id="submitBtn" class="btn primary" type="submit">Tuma OTP ya kuingia</button>
     </form>
@@ -319,6 +323,7 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
     setStep(1);
     $('otpField').hidden = true;
     $('emailField').hidden = false;
+    $('editEmailBtn').hidden = true;
     $('resendBtn').hidden = true;
     $('otp').value = '';
     $('email').readOnly = false;
@@ -442,6 +447,7 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
         setStep(2);
         $('emailField').hidden = true;
         $('otpField').hidden = false;
+        $('editEmailBtn').hidden = false;
         $('email').readOnly = true;
         $('resendBtn').hidden = false;
         $('heading').textContent = 'Thibitisha barua pepe';
@@ -519,6 +525,13 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
     $('phone').value = phone;
     message('Bonyeza kitufe cha kutumia OTP ili kupata namba mpya.', 'ok');
     $('submitBtn').focus();
+  });
+
+  $('editEmailBtn').addEventListener('click', function () {
+    resetOtpStage();
+    clearMessage();
+    animateCard();
+    $('email').focus();
   });
 
   $('switchBtn').addEventListener('click', function () { setMode(!signup); });

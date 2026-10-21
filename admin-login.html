@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#080a12">
 <meta name="robots" content="noindex,nofollow">
-<title>Mchezo Wetu | Admin Login</title>
+<title>Mchezo Wetu | Kuingia kwa Msimamizi</title>
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="apple-touch-icon" href="/pwa-icon-192.png">
 <link rel="icon" type="image/svg+xml" href="./mchezo-wetu-logo.svg">
@@ -236,7 +236,7 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
   <aside class="auth-brand">
     <a class="brand-lockup" href="/" aria-label="Mchezo Wetu">
       <img src="./mchezo-wetu-logo.svg" alt="">
-      <span><strong>Mchezo Wetu</strong><small>ADMINISTRATION</small></span>
+      <span><strong>Mchezo Wetu</strong><small>USIMAMIZI</small></span>
     </a>
     <div class="brand-copy">
       <span class="eyebrow"><i></i> ENEO SALAMA LA WASIMAMIZI</span>
@@ -244,44 +244,44 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
       <p>Dashibodi moja ya kusimamia wanachama na kukagua michango kwa usalama.</p>
     </div>
     <div class="security-list">
-      <div><span class="security-icon">✓</span><span><strong>Uthibitisho wa hatua mbili</strong><small>OTP hutumwa kwenye barua pepe ya admin</small></span></div>
-      <div><span class="security-icon">◇</span><span><strong>Ufikiaji uliolindwa</strong><small>Admin pekee ndiye anayeruhusiwa kuingia</small></span></div>
+      <div><span class="security-icon">✓</span><span><strong>Uthibitisho wa hatua mbili</strong><small>OTP hutumwa kwenye barua pepe ya msimamizi</small></span></div>
+      <div><span class="security-icon">◇</span><span><strong>Ufikiaji uliolindwa</strong><small>Msimamizi pekee ndiye anayeruhusiwa kuingia</small></span></div>
     </div>
     <div class="brand-footer"><span class="live-dot"></span> Mfumo wa usimamizi · Mchezo Wetu</div>
   </aside>
 
   <section class="auth-panel">
     <div class="steps" aria-hidden="true">
-      <span class="step active" id="stepDot1"><b>1</b> Password</span>
+      <span class="step active" id="stepDot1"><b>1</b> Nenosiri</span>
       <span class="step-line"></span>
       <span class="step" id="stepDot2"><b>2</b> OTP</span>
     </div>
     <h1 id="heading">Ingia kama msimamizi</h1>
-    <p id="description">Weka password yako. Tutatuma namba ya uthibitisho (OTP) kwenye barua pepe ya msimamizi.</p>
+    <p id="description">Weka nenosiri lako. Tutatuma namba ya uthibitisho (OTP) kwenye barua pepe ya msimamizi.</p>
     <div id="notice" class="notice" role="status" aria-live="polite"></div>
 
     <form id="login" class="form-section" novalidate>
       <label for="email">Barua pepe ya msimamizi</label>
       <input id="email" type="email" autocomplete="username" readonly aria-readonly="true" value="">
-      <label for="password">Password</label>
+      <label for="password">Nenosiri</label>
       <div class="input-shell">
-        <input id="password" type="password" autocomplete="current-password" placeholder="Weka password yako" required>
-        <button id="togglePassword" class="reveal" type="button" aria-label="Onyesha password" aria-pressed="false">👁</button>
+        <input id="password" type="password" autocomplete="current-password" placeholder="Weka nenosiri lako" required>
+        <button id="togglePassword" class="reveal" type="button" aria-label="Onyesha nenosiri" aria-pressed="false">👁</button>
       </div>
       <button id="loginBtn" class="btn primary" type="submit">Endelea</button>
-      <button id="showSetup" class="btn secondary" type="button" hidden>Weka password ya admin kwa mara ya kwanza</button>
+      <button id="showSetup" class="btn secondary" type="button" hidden>Weka nenosiri la msimamizi kwa mara ya kwanza</button>
     </form>
 
     <form id="setup" class="form-section" novalidate hidden>
-      <label for="newPassword">Password mpya</label>
+      <label for="newPassword">Nenosiri jipya</label>
       <div class="input-shell">
         <input id="newPassword" type="password" autocomplete="new-password" minlength="10" placeholder="Angalau herufi 10">
-        <button id="toggleNewPassword" class="reveal" type="button" aria-label="Onyesha password" aria-pressed="false">👁</button>
+        <button id="toggleNewPassword" class="reveal" type="button" aria-label="Onyesha nenosiri" aria-pressed="false">👁</button>
       </div>
-      <label for="confirmPassword">Rudia password</label>
-      <input id="confirmPassword" type="password" autocomplete="new-password" minlength="10" placeholder="Andika password tena">
-      <p class="hint">Password iwe na angalau herufi 10. Usajili wa admin unaruhusiwa mara moja tu.</p>
-      <button id="setupBtn" class="btn primary" type="submit">Weka password na tuma OTP</button>
+      <label for="confirmPassword">Rudia nenosiri</label>
+      <input id="confirmPassword" type="password" autocomplete="new-password" minlength="10" placeholder="Andika nenosiri tena">
+      <p class="hint">Nenosiri liwe na angalau herufi 10. Usajili wa msimamizi unaruhusiwa mara moja tu.</p>
+      <button id="setupBtn" class="btn primary" type="submit">Weka nenosiri na tuma OTP</button>
       <button id="backLogin" class="btn secondary" type="button">Rudi kwenye kuingia</button>
     </form>
 
@@ -342,8 +342,8 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
     $('stepDot2').classList.toggle('active', name === 'otp');
 
     if (name === 'setup') {
-      $('heading').textContent = 'Weka password ya msimamizi';
-      $('description').textContent = 'Huenda hii ni mara ya kwanza. Usajili wa admin unaruhusiwa mara moja tu.';
+      $('heading').textContent = 'Weka nenosiri la msimamizi';
+      $('description').textContent = 'Huenda hii ni mara ya kwanza. Usajili wa msimamizi unaruhusiwa mara moja tu.';
       $('newPassword').focus();
     } else if (name === 'otp') {
       $('heading').textContent = 'Thibitisha barua pepe';
@@ -352,7 +352,7 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
       $('otp').focus();
     } else {
       $('heading').textContent = 'Ingia kama msimamizi';
-      $('description').textContent = 'Weka password yako. Tutatuma namba ya uthibitisho (OTP) kwenye barua pepe ya msimamizi.';
+      $('description').textContent = 'Weka nenosiri lako. Tutatuma namba ya uthibitisho (OTP) kwenye barua pepe ya msimamizi.';
       $('password').focus();
     }
   }
@@ -408,7 +408,7 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
       var reveal = input.type === 'password';
       input.type = reveal ? 'text' : 'password';
       $(buttonId).setAttribute('aria-pressed', reveal ? 'true' : 'false');
-      $(buttonId).setAttribute('aria-label', reveal ? 'Ficha password' : 'Onyesha password');
+      $(buttonId).setAttribute('aria-label', reveal ? 'Ficha nenosiri' : 'Onyesha nenosiri');
       $(buttonId).textContent = reveal ? '🙈' : '👁';
       input.focus();
     });
@@ -431,7 +431,7 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
         $('email').readOnly = false;
         $('email').removeAttribute('aria-readonly');
         $('email').placeholder = 'admin@example.com';
-        message('Weka barua pepe ya msimamizi kisha password yako ili kuendelea.');
+        message('Weka barua pepe ya msimamizi kisha nenosiri lako ili kuendelea.');
         showStage('login');
         return;
       }
@@ -449,7 +449,7 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
   $('login').addEventListener('submit', async function (event) {
     event.preventDefault();
     if (!currentEmail() || currentEmail().indexOf('@') < 0) return message('Weka barua pepe sahihi ya msimamizi.');
-    if (!$('password').value) return message('Weka password yako kwanza.');
+    if (!$('password').value) return message('Weka nenosiri lako kwanza.');
     busy('loginBtn', true);
     try {
       await requestOtp();
@@ -463,8 +463,8 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
   $('setup').addEventListener('submit', async function (event) {
     event.preventDefault();
     var password = $('newPassword').value;
-    if (password.length < 10) return message('Password iwe na angalau herufi 10.');
-    if (password !== $('confirmPassword').value) return message('Password hazifanani.');
+    if (password.length < 10) return message('Nenosiri liwe na angalau herufi 10.');
+    if (password !== $('confirmPassword').value) return message('Manenosiri hayalingani.');
     busy('setupBtn', true);
     try {
       await api('/api/admin/auth/setup', {
@@ -473,7 +473,7 @@ input[readonly]:focus{border-color:#34384d;box-shadow:none}
         body: JSON.stringify({ email: currentEmail(), password: password })
       });
       $('password').value = password;
-      message('Password imewekwa. Sasa thibitisha OTP.', true);
+      message('Nenosiri limewekwa. Sasa thibitisha OTP.', true);
       await requestOtp();
     } catch (error) {
       message(error.message);
